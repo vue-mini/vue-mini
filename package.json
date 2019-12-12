@@ -7,7 +7,7 @@
   "author": "Yang Mingshan <y.mingshan3@gmail.com>",
   "license": "MIT",
   "scripts": {
-    "lint": "cross-env NODE_ENV=production eslint .",
+    "lint": "cross-env NODE_ENV=production eslint --ext .js,.ts .",
     "type": "tsc --noEmit",
     "build": "rollup -c"
   },

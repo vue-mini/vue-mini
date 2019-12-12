@@ -9,11 +9,13 @@ import {
 } from '@next-vue/reactivity'
 import { isObject, isPlainObject } from './utils'
 
-interface Page {
+export interface Page {
+  [key: string]: unknown
+  route: string
   setData: (data: Record<string, unknown>) => void
 }
 
-export function deepToRaw(x: unknown): unknown {
+function deepToRaw(x: unknown): unknown {
   if (!isObject(x)) {
     return x
   }
@@ -43,12 +45,13 @@ export function deepToRaw(x: unknown): unknown {
 
 export function deepWatch(this: Page, key: string, value: unknown): void {
   if (!isObject(value) || isReadonly(value)) {
+    this.setData({ [key]: deepToRaw(value) })
     return
   }
 
   if (isRef(value)) {
     effect(() => this.setData({ [key]: deepToRaw(value.value) }))
-    return Reflect.apply(deepWatch, this, [key, value.value])
+    return deepWatch.call(this, key, value.value)
   }
 
   if (isReactive(value)) {
@@ -68,7 +71,7 @@ export function deepWatch(this: Page, key: string, value: unknown): void {
               }
             })
           )
-          Reflect.apply(deepWatch, this, [k, (value as unknown[])[i]])
+          deepWatch.call(this, k, (value as unknown[])[i])
         }
       })
       return
@@ -90,28 +93,25 @@ export function deepWatch(this: Page, key: string, value: unknown): void {
               }
             })
           )
-          Reflect.apply(deepWatch, this, [
-            k,
-            (value as { [name: string]: unknown })[name]
-          ])
+          deepWatch.call(this, k, (value as { [name: string]: unknown })[name])
         })
       })
       return
     }
-
-    return
   }
 
   if (Array.isArray(value)) {
+    this.setData({ [key]: deepToRaw(value) })
     value.forEach((_, index) => {
-      Reflect.apply(deepWatch, this, [`${key}[${index}]`, value[index]])
+      deepWatch.call(this, `${key}[${index}]`, value[index])
     })
     return
   }
 
   if (isPlainObject(value)) {
+    this.setData({ [key]: deepToRaw(value) })
     Object.keys(value).forEach(name => {
-      Reflect.apply(deepWatch, this, [`${key}.${name}`, value[name]])
+      deepWatch.call(this, `${key}.${name}`, value[name])
     })
   }
 }

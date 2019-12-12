@@ -1,73 +1,82 @@
-import { deepToRaw, deepWatch } from './shared'
+import { Page, deepWatch } from './shared'
 import { isPlainObject, isFunction } from './utils'
 
+type Query = Record<string, string | undefined>
+interface Context {
+  route: string
+}
+type Setup = (query: Query, context: Context) => Record<string, unknown>
 interface Options {
   [key: string]: unknown
-  data?: Record<string, unknown>
-  setup?: () => Record<string, unknown>
-  onReady?: () => void
+  setup?: Setup
+  onLoad?: (this: Page, query?: Query) => void
+}
+interface PageOptions {
+  [key: string]: unknown
+  onLoad?: (this: Page, query: Query) => void
 }
 
-// eslint-disable-next-line @typescript-eslint/ban-types
-export function createPage(options?: Options): Omit<Options, 'setup'> | void {
-  if (options === undefined) {
+export function createPage(
+  optionsOrSetup?: Options | Setup
+): PageOptions | void {
+  if (optionsOrSetup === undefined) {
     return
   }
 
-  if (!isPlainObject(options)) {
-    console.warn('The "createPage" function only accept an object as parameter')
+  if (!isPlainObject(optionsOrSetup) && !isFunction(optionsOrSetup)) {
+    console.warn(
+      'The "createPage" function only accept an object or a function as parameter'
+    )
     return
   }
 
-  const { setup, ...restOptions } = options
-  if (setup === undefined) {
-    return restOptions
-  }
-
-  if (!isFunction(setup)) {
-    console.warn('The "setup" option must be a function')
-    return restOptions
-  }
-
-  const binding = setup()
-  if (binding === undefined) {
-    return restOptions
-  }
-
-  if (!isPlainObject(binding)) {
-    console.warn('The "setup" function must return an object')
-    return restOptions
-  }
-
-  const newOptions = { ...restOptions }
-  Object.keys(binding).forEach(key => {
-    const value = binding[key]
-    if (typeof value === 'function') {
-      newOptions[key] = value
-      return
+  let setup: Setup
+  let pageOptions: PageOptions
+  if (isPlainObject(optionsOrSetup)) {
+    const options = optionsOrSetup
+    if (options.setup === undefined) {
+      return options
     }
 
-    if (newOptions.data === undefined || !isPlainObject(newOptions.data)) {
-      newOptions.data = {}
-      if (newOptions.data !== undefined) {
-        console.warn('The "data" option must be a object')
-      }
+    if (!isFunction(options.setup)) {
+      console.warn('The "setup" option must be a function')
+      return options
     }
 
-    newOptions.data[key] = deepToRaw(value)
-  })
-  if (restOptions.onReady !== undefined && !isFunction(restOptions.onReady)) {
-    console.warn('The "onReady" hook must be a function')
+    const { setup: setupOption, ...restOptions } = options
+    setup = setupOption
+    pageOptions = restOptions
+  } else {
+    setup = optionsOrSetup
+    pageOptions = {}
   }
 
-  newOptions.onReady = function(): void {
-    Object.keys(binding).forEach(key => {
-      Reflect.apply(deepWatch, this, [key, binding[key]])
-    })
-    if (isFunction(restOptions.onReady)) {
-      restOptions.onReady.call(this)
+  const prevOnLoad = pageOptions.onLoad
+  if (prevOnLoad !== undefined && !isFunction(prevOnLoad)) {
+    console.warn('The "onLoad" option must be a function')
+  }
+
+  pageOptions.onLoad = function(this: Page, query: Query) {
+    const context: Context = { route: this.route }
+    const binding = setup(query, context)
+    if (binding !== undefined && isPlainObject(binding)) {
+      Object.keys(binding).forEach(key => {
+        const value = binding[key]
+        if (isFunction(value)) {
+          this[key] = value
+          return
+        }
+
+        deepWatch.call(this, key, binding[key])
+      })
+    } else if (binding !== undefined) {
+      console.warn('The "setup" function must return an object')
+    }
+
+    if (isFunction(prevOnLoad)) {
+      prevOnLoad.call(this, query)
     }
   }
 
-  return newOptions
+  return pageOptions
 }
