@@ -5,7 +5,7 @@ type Query = Record<string, string | undefined>
 interface Context {
   route: string
 }
-type Setup = (query: Query, context: Context) => Record<string, unknown>
+type Setup = (query?: Query, context?: Context) => Record<string, unknown>
 interface Options {
   [key: string]: unknown
   setup?: Setup

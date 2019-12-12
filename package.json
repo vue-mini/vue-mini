@@ -3,17 +3,18 @@
   "version": "0.1.0",
   "description": "vue composition api for mini program",
   "main": "dist/vue-mini.cjs.js",
+  "types": "dist/vue-mini.d.ts",
   "repository": "https://github.com/yangmingshan/vue-mini.git",
   "author": "Yang Mingshan <y.mingshan3@gmail.com>",
   "license": "MIT",
   "scripts": {
     "lint": "cross-env NODE_ENV=production eslint --ext .js,.ts .",
     "type": "tsc --noEmit",
-    "build": "rollup -c"
+    "build": "rollup -c && api-extractor run --local --verbose"
   },
   "devDependencies": {
+    "@microsoft/api-extractor": "^7.7.0",
     "@next-vue/reactivity": "^3.0.0-alpha.8",
-    "@rollup/plugin-typescript": "^2.0.1",
     "@typescript-eslint/eslint-plugin": "^2.11.0",
     "@typescript-eslint/parser": "^2.11.0",
     "cross-env": "^6.0.3",
@@ -24,6 +25,7 @@
     "lint-staged": "^9.5.0",
     "prettier": "^1.19.1",
     "rollup": "^1.27.9",
+    "rollup-plugin-typescript2": "^0.25.3",
     "typescript": "^3.7.3",
     "xo": "^0.25.3"
   },

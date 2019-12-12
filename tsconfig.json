@@ -4,6 +4,8 @@
     "lib": [
       "esnext"
     ],
+    "declaration": true,
+    "declarationMap": true,
     "skipLibCheck": true,
     "esModuleInterop": true,
     "strict": true,
