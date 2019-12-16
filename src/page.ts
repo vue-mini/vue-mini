@@ -7,7 +7,7 @@ import {
   stop,
   ReactiveEffect
 } from '@next-vue/reactivity'
-import { isObject, isPlainObject, isFunction } from './utils'
+import { isObject, isPlainObject, isFunction, toHiddenField } from './utils'
 
 type Query = Record<string, string | undefined>
 interface Context {
@@ -58,40 +58,35 @@ interface Options {
   onResize?: (this: Page, resize?: Resize) => unknown
   onTabItemTap?: (this: Page, tap?: Tap) => unknown
 }
+interface Config {
+  listenPageScroll: boolean
+}
 interface PageOptions {
   [key: string]: unknown
   onLoad?: (this: Page, query: Query) => void
   onShareAppMessage?: (this: Page, share: Share) => ShareContent | void
   _isInjectedShareHook?: true
+  _listenPageScroll?: true
 }
-type PageLifecycle =
-  | 'onShow'
-  | 'onReady'
-  | 'onHide'
-  | 'onUnload'
-  | 'onPullDownRefresh'
-  | 'onReachBottom'
-  | 'onPageScroll'
-  | 'onResize'
-  | 'onTabItemTap'
 
-const enum PageLifecycleHooks {
-  ON_SHOW = '__onShow__',
-  ON_READY = '__onReady__',
-  ON_HIDE = '__onHide__',
-  ON_UNLOAD = '__onUnload__',
-  ON_PULL_DOWN_REFRESH = '__onPullDownRefresh__',
-  ON_REACH_BOTTOM = '__onReachBottom__',
-  ON_PAGE_SCROLL = '__onPageScroll__',
-  ON_SHARE_APP_MESSAGE = '__onShareAppMessage__',
-  ON_RESIZE = '__onResize__',
-  ON_TAB_ITEM_TAP = '__onTabItemTap__'
+const enum PageLifecycle {
+  ON_SHOW = 'onShow',
+  ON_READY = 'onReady',
+  ON_HIDE = 'onHide',
+  ON_UNLOAD = 'onUnload',
+  ON_PULL_DOWN_REFRESH = 'onPullDownRefresh',
+  ON_REACH_BOTTOM = 'onReachBottom',
+  ON_PAGE_SCROLL = 'onPageScroll',
+  ON_SHARE_APP_MESSAGE = 'onShareAppMessage',
+  ON_RESIZE = 'onResize',
+  ON_TAB_ITEM_TAP = 'onTabItemTap'
 }
 
 let currentPage: Page | null = null
 
 export function createPage(
-  optionsOrSetup?: Options | Setup
+  optionsOrSetup?: Options | Setup,
+  config: Config = { listenPageScroll: false }
 ): PageOptions | void {
   if (optionsOrSetup === undefined) {
     return
@@ -155,19 +150,18 @@ export function createPage(
     currentPage = null
   }
 
-  addHook(pageOptions, 'onShow', PageLifecycleHooks.ON_SHOW)
-  addHook(pageOptions, 'onReady', PageLifecycleHooks.ON_READY)
-  addHook(pageOptions, 'onHide', PageLifecycleHooks.ON_HIDE)
-  addHook(pageOptions, 'onUnload', PageLifecycleHooks.ON_UNLOAD)
-  addHook(
-    pageOptions,
-    'onPullDownRefresh',
-    PageLifecycleHooks.ON_PULL_DOWN_REFRESH
-  )
-  addHook(pageOptions, 'onReachBottom', PageLifecycleHooks.ON_REACH_BOTTOM)
-  addHook(pageOptions, 'onPageScroll', PageLifecycleHooks.ON_PAGE_SCROLL)
-  addHook(pageOptions, 'onResize', PageLifecycleHooks.ON_RESIZE)
-  addHook(pageOptions, 'onTabItemTap', PageLifecycleHooks.ON_TAB_ITEM_TAP)
+  addHook(pageOptions, PageLifecycle.ON_SHOW)
+  addHook(pageOptions, PageLifecycle.ON_READY)
+  addHook(pageOptions, PageLifecycle.ON_HIDE)
+  addHook(pageOptions, PageLifecycle.ON_UNLOAD)
+  addHook(pageOptions, PageLifecycle.ON_PULL_DOWN_REFRESH)
+  addHook(pageOptions, PageLifecycle.ON_REACH_BOTTOM)
+  addHook(pageOptions, PageLifecycle.ON_RESIZE)
+  addHook(pageOptions, PageLifecycle.ON_TAB_ITEM_TAP)
+  if (isFunction(pageOptions.onPageScroll) || config.listenPageScroll) {
+    addHook(pageOptions, PageLifecycle.ON_PAGE_SCROLL)
+    pageOptions._listenPageScroll = true
+  }
 
   if (!isFunction(pageOptions.onShareAppMessage)) {
     if (pageOptions.onShareAppMessage !== undefined) {
@@ -178,7 +172,7 @@ export function createPage(
       this: Page,
       share: Share
     ): ShareContent | void {
-      const hook = this[PageLifecycleHooks.ON_SHARE_APP_MESSAGE] as (
+      const hook = this[toHiddenField(PageLifecycle.ON_SHARE_APP_MESSAGE)] as (
         share: Share
       ) => ShareContent | void
       if (hook) {
@@ -195,31 +189,32 @@ export function createPage(
   return pageOptions
 }
 
-export const onShow = createHook(PageLifecycleHooks.ON_SHOW)
-export const onReady = createHook(PageLifecycleHooks.ON_READY)
-export const onHide = createHook(PageLifecycleHooks.ON_HIDE)
-export const onUnload = createHook(PageLifecycleHooks.ON_UNLOAD)
-export const onPullDownRefresh = createHook(
-  PageLifecycleHooks.ON_PULL_DOWN_REFRESH
-)
-export const onReachBottom = createHook(PageLifecycleHooks.ON_REACH_BOTTOM)
+export const onShow = createHook(PageLifecycle.ON_SHOW)
+export const onReady = createHook(PageLifecycle.ON_READY)
+export const onHide = createHook(PageLifecycle.ON_HIDE)
+export const onUnload = createHook(PageLifecycle.ON_UNLOAD)
+export const onPullDownRefresh = createHook(PageLifecycle.ON_PULL_DOWN_REFRESH)
+export const onReachBottom = createHook(PageLifecycle.ON_REACH_BOTTOM)
 export const onPageScroll = createHook<(scroll?: Scroll) => unknown>(
-  PageLifecycleHooks.ON_PAGE_SCROLL
+  PageLifecycle.ON_PAGE_SCROLL
 )
 export const onResize = createHook<(resize?: Resize) => unknown>(
-  PageLifecycleHooks.ON_RESIZE
+  PageLifecycle.ON_RESIZE
 )
 export const onTabItemTap = createHook<(tap?: Tap) => unknown>(
-  PageLifecycleHooks.ON_TAB_ITEM_TAP
+  PageLifecycle.ON_TAB_ITEM_TAP
 )
 export const onShareAppMessage = (
   hook: (share?: Share) => ShareContent | void
 ): void => {
   if (currentPage) {
     if (currentPage._isInjectedShareHook) {
-      if (currentPage[PageLifecycleHooks.ON_SHARE_APP_MESSAGE] === undefined) {
+      if (
+        currentPage[toHiddenField(PageLifecycle.ON_SHARE_APP_MESSAGE)] ===
+        undefined
+      ) {
         if (isFunction(hook)) {
-          currentPage[PageLifecycleHooks.ON_SHARE_APP_MESSAGE] = hook
+          currentPage[toHiddenField(PageLifecycle.ON_SHARE_APP_MESSAGE)] = hook
         } else {
           console.warn(
             'Lifecycle injection APIs only accept a function as parameter.'
@@ -339,18 +334,14 @@ function deepWatch(this: Page, key: string, value: unknown): void {
   }
 }
 
-function addHook(
-  target: PageOptions,
-  name: PageLifecycle,
-  type: PageLifecycleHooks
-): void {
-  const originHook = target[name]
+function addHook(target: PageOptions, lifecycle: PageLifecycle): void {
+  const originHook = target[lifecycle]
   if (originHook !== undefined && !isFunction(originHook)) {
-    console.warn(`The "${name}" hook must be a function.`)
+    console.warn(`The "${lifecycle}" hook must be a function.`)
   }
 
-  target[name] = function(this: Page, ...args: any[]) {
-    const hooks = this[type]
+  target[lifecycle] = function(this: Page, ...args: any[]) {
+    const hooks = this[toHiddenField(lifecycle)]
     if (hooks) {
       hooks.forEach((hook: any) => hook(...args))
     }
@@ -363,21 +354,27 @@ function addHook(
 
 // eslint-disable-next-line @typescript-eslint/ban-types
 function createHook<T extends Function = () => unknown>(
-  lifecycle: PageLifecycleHooks
+  lifecycle: PageLifecycle
 ) {
   return (hook: T): void => {
     if (currentPage) {
-      if (isFunction(hook)) {
-        if (currentPage[lifecycle] === undefined) {
-          currentPage[lifecycle] = []
-        }
+      if (
+        lifecycle !== PageLifecycle.ON_PAGE_SCROLL ||
+        currentPage._listenPageScroll
+      ) {
+        if (isFunction(hook)) {
+          if (currentPage[toHiddenField(lifecycle)] === undefined) {
+            currentPage[toHiddenField(lifecycle)] = []
+          }
 
-        const hooks = currentPage[lifecycle]
-        hooks.push(hook)
+          currentPage[toHiddenField(lifecycle)].push(hook)
+        } else {
+          console.warn(
+            'Lifecycle injection APIs only accept a function as parameter.'
+          )
+        }
       } else {
-        console.warn(
-          'Lifecycle injection APIs only accept a function as parameter.'
-        )
+        console.warn('Please set "listenPageScroll" config to true frist.')
       }
     } else {
       console.warn(
