@@ -61,6 +61,8 @@ interface Options {
 interface PageOptions {
   [key: string]: unknown
   onLoad?: (this: Page, query: Query) => void
+  onShareAppMessage?: (this: Page, share: Share) => ShareContent | void
+  _isInjectedShareHook?: true
 }
 type PageLifecycle =
   | 'onShow'
@@ -175,21 +177,19 @@ export function createPage(
     pageOptions.onShareAppMessage = function(
       this: Page,
       share: Share
-    ): ShareContent {
-      const hook = this[PageLifecycleHooks.ON_SHARE_APP_MESSAGE]
-      let shareContent = {}
+    ): ShareContent | void {
+      const hook = this[PageLifecycleHooks.ON_SHARE_APP_MESSAGE] as (
+        share: Share
+      ) => ShareContent | void
       if (hook) {
-        const content = hook(share)
-        if (content !== undefined) {
-          shareContent = content
+        const shareContent = hook(share)
+        if (shareContent !== undefined) {
+          return shareContent
         }
       }
-
-      return shareContent
     }
 
-    const onShareAppMessage = pageOptions.onShareAppMessage as any
-    onShareAppMessage._isInternal = true
+    pageOptions._isInjectedShareHook = true
   }
 
   return pageOptions
@@ -216,7 +216,7 @@ export const onShareAppMessage = (
   hook: (share?: Share) => ShareContent | void
 ): void => {
   if (currentPage) {
-    if (currentPage.onShareAppMessage._isInternal) {
+    if (currentPage._isInjectedShareHook) {
       if (currentPage[PageLifecycleHooks.ON_SHARE_APP_MESSAGE] === undefined) {
         if (isFunction(hook)) {
           currentPage[PageLifecycleHooks.ON_SHARE_APP_MESSAGE] = hook
