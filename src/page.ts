@@ -22,7 +22,7 @@ interface Context {
 export type Setup = (
   query?: Query,
   context?: Context
-) => Record<string, unknown>
+) => Record<string, unknown> | void
 interface Page {
   [key: string]: any
   route: string
@@ -98,51 +98,31 @@ const enum PageLifecycle {
 export let currentPage: Page | null = null
 
 export function createPage(
-  optionsOrSetup?: Options | Setup,
+  optionsOrSetup: Options | Setup,
   config: Config = { listenPageScroll: false }
 ): PageOptions | void {
-  if (optionsOrSetup === undefined) {
-    return
-  }
-
-  if (!isPlainObject(optionsOrSetup) && !isFunction(optionsOrSetup)) {
-    console.warn(
-      'The "createPage" function only accept an object or a function as parameter.'
-    )
-    return
-  }
-
   let setup: Setup
   let pageOptions: PageOptions
-  if (isPlainObject(optionsOrSetup)) {
+  if (isFunction(optionsOrSetup)) {
+    setup = optionsOrSetup
+    pageOptions = {}
+  } else {
     const options = optionsOrSetup
     if (options.setup === undefined) {
-      return options
-    }
-
-    if (!isFunction(options.setup)) {
-      console.warn('The "setup" hook must be a function.')
       return options
     }
 
     const { setup: setupOption, ...restOptions } = options
     setup = setupOption
     pageOptions = restOptions
-  } else {
-    setup = optionsOrSetup
-    pageOptions = {}
   }
 
   const originOnLoad = pageOptions.onLoad
-  if (originOnLoad !== undefined && !isFunction(originOnLoad)) {
-    console.warn('The "onLoad" hook must be a function.')
-  }
-
   pageOptions.onLoad = function(this: Page, query: Query) {
     currentPage = this
     const context: Context = { route: this.route }
     const binding = setup(query, context)
-    if (binding !== undefined && isPlainObject(binding)) {
+    if (binding !== undefined) {
       Object.keys(binding).forEach(key => {
         const value = binding[key]
         if (isFunction(value)) {
@@ -152,11 +132,9 @@ export function createPage(
 
         deepWatch.call(this, key, binding[key])
       })
-    } else if (binding !== undefined) {
-      console.warn('The "setup" hook must return an object.')
     }
 
-    if (isFunction(originOnLoad)) {
+    if (originOnLoad !== undefined) {
       originOnLoad.call(this, query)
     }
 
@@ -180,11 +158,7 @@ export function createPage(
     pageOptions._listenPageScroll = true
   }
 
-  if (!isFunction(pageOptions.onShareAppMessage)) {
-    if (pageOptions.onShareAppMessage !== undefined) {
-      console.warn('The "onShareAppMessage" hook must be a function.')
-    }
-
+  if (pageOptions.onShareAppMessage === undefined) {
     pageOptions.onShareAppMessage = function(
       this: Page,
       share: Share
@@ -259,13 +233,7 @@ export const onShareAppMessage = (
         currentPage[toHiddenField(PageLifecycle.ON_SHARE_APP_MESSAGE)] ===
         undefined
       ) {
-        if (isFunction(hook)) {
-          currentPage[toHiddenField(PageLifecycle.ON_SHARE_APP_MESSAGE)] = hook
-        } else {
-          console.warn(
-            'Lifecycle injection APIs only accept a function as parameter.'
-          )
-        }
+        currentPage[toHiddenField(PageLifecycle.ON_SHARE_APP_MESSAGE)] = hook
       } else {
         console.warn('The "onShareAppMessage" hook can only be called once.')
       }
@@ -384,11 +352,8 @@ function createLifecycle(
   target: PageOptions,
   lifecycle: PageLifecycle
 ): (...args: any[]) => void {
-  const originLifecycle = target[lifecycle]
-  if (originLifecycle !== undefined && !isFunction(originLifecycle)) {
-    console.warn(`The "${lifecycle}" hook must be a function.`)
-  }
-
+  // eslint-disable-next-line @typescript-eslint/ban-types
+  const originLifecycle = target[lifecycle] as Function
   return function(this: Page, ...args: any[]) {
     const hooks = this[toHiddenField(lifecycle)]
     if (hooks) {
@@ -396,7 +361,7 @@ function createLifecycle(
       hooks.forEach((hook: Function) => hook(...args))
     }
 
-    if (isFunction(originLifecycle)) {
+    if (originLifecycle !== undefined) {
       originLifecycle.call(this, ...args)
     }
   }
@@ -412,17 +377,11 @@ function createHook<T extends Function = () => unknown>(
         lifecycle !== PageLifecycle.ON_PAGE_SCROLL ||
         currentPage._listenPageScroll
       ) {
-        if (isFunction(hook)) {
-          if (currentPage[toHiddenField(lifecycle)] === undefined) {
-            currentPage[toHiddenField(lifecycle)] = []
-          }
-
-          currentPage[toHiddenField(lifecycle)].push(hook)
-        } else {
-          console.warn(
-            'Lifecycle injection APIs only accept a function as parameter.'
-          )
+        if (currentPage[toHiddenField(lifecycle)] === undefined) {
+          currentPage[toHiddenField(lifecycle)] = []
         }
+
+        currentPage[toHiddenField(lifecycle)].push(hook)
       } else {
         console.warn('Please set "listenPageScroll" config to true frist.')
       }
