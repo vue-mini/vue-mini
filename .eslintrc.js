@@ -21,7 +21,9 @@ const config = {
         project: './tsconfig.json'
       },
       rules: {
-        'no-redeclare': 2
+        'no-redeclare': 2,
+        '@typescript-eslint/promise-function-async': 0,
+        '@typescript-eslint/prefer-nullish-coalescing': 0
       }
     }
   ]

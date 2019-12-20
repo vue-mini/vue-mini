@@ -1,4 +1,7 @@
 export {
+  Setup,
+  Options,
+  Config,
   createPage,
   onShow,
   onReady,
@@ -11,3 +14,6 @@ export {
   onTabItemTap,
   onShareAppMessage
 } from './page'
+export * from './reactivity'
+export * from './watch'
+export { nextTick } from './scheduler'

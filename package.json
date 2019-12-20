@@ -12,9 +12,11 @@
     "type": "tsc --noEmit",
     "build": "rollup -c && api-extractor run --local --verbose"
   },
+  "dependencies": {
+    "@next-vue/reactivity": "^3.0.0-alpha.9"
+  },
   "devDependencies": {
     "@microsoft/api-extractor": "^7.7.0",
-    "@next-vue/reactivity": "^3.0.0-alpha.8",
     "@typescript-eslint/eslint-plugin": "^2.11.0",
     "@typescript-eslint/parser": "^2.11.0",
     "cross-env": "^6.0.3",

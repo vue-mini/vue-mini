@@ -7,17 +7,29 @@ import {
   stop,
   ReactiveEffect
 } from '@next-vue/reactivity'
-import { isObject, isPlainObject, isFunction, toHiddenField } from './utils'
+import {
+  isArray,
+  isObject,
+  isPlainObject,
+  isFunction,
+  toHiddenField
+} from './utils'
 
 type Query = Record<string, string | undefined>
 interface Context {
   route: string
 }
-type Setup = (query?: Query, context?: Context) => Record<string, unknown>
+export type Setup = (
+  query?: Query,
+  context?: Context
+) => Record<string, unknown>
 interface Page {
   [key: string]: any
   route: string
   setData: (data: Record<string, unknown>) => void
+  _isInjectedShareHook?: true
+  _listenPageScroll?: true
+  _effects?: ReactiveEffect[]
 }
 interface Scroll {
   scrollTop: number
@@ -43,7 +55,7 @@ interface Tap {
   pagePath: string
   text: string
 }
-interface Options {
+export interface Options {
   [key: string]: unknown
   setup?: Setup
   onLoad?: (this: Page, query?: Query) => unknown
@@ -58,7 +70,7 @@ interface Options {
   onResize?: (this: Page, resize?: Resize) => unknown
   onTabItemTap?: (this: Page, tap?: Tap) => unknown
 }
-interface Config {
+export interface Config {
   listenPageScroll: boolean
 }
 interface PageOptions {
@@ -82,7 +94,8 @@ const enum PageLifecycle {
   ON_TAB_ITEM_TAP = 'onTabItemTap'
 }
 
-let currentPage: Page | null = null
+// eslint-disable-next-line import/no-mutable-exports
+export let currentPage: Page | null = null
 
 export function createPage(
   optionsOrSetup?: Options | Setup,
@@ -150,16 +163,20 @@ export function createPage(
     currentPage = null
   }
 
-  addHook(pageOptions, PageLifecycle.ON_SHOW)
-  addHook(pageOptions, PageLifecycle.ON_READY)
-  addHook(pageOptions, PageLifecycle.ON_HIDE)
-  addHook(pageOptions, PageLifecycle.ON_UNLOAD)
-  addHook(pageOptions, PageLifecycle.ON_PULL_DOWN_REFRESH)
-  addHook(pageOptions, PageLifecycle.ON_REACH_BOTTOM)
-  addHook(pageOptions, PageLifecycle.ON_RESIZE)
-  addHook(pageOptions, PageLifecycle.ON_TAB_ITEM_TAP)
-  if (isFunction(pageOptions.onPageScroll) || config.listenPageScroll) {
-    addHook(pageOptions, PageLifecycle.ON_PAGE_SCROLL)
+  const onUnload = createLifecycle(pageOptions, PageLifecycle.ON_UNLOAD)
+  pageOptions.onUnload = function(this: Page) {
+    if (this._effects) {
+      this._effects.forEach(effect => stop(effect))
+    }
+
+    onUnload.call(this)
+  }
+
+  if (pageOptions.onPageScroll || config.listenPageScroll) {
+    pageOptions[PageLifecycle.ON_PAGE_SCROLL] = createLifecycle(
+      pageOptions,
+      PageLifecycle.ON_PAGE_SCROLL
+    )
     pageOptions._listenPageScroll = true
   }
 
@@ -185,6 +202,35 @@ export function createPage(
 
     pageOptions._isInjectedShareHook = true
   }
+
+  pageOptions[PageLifecycle.ON_SHOW] = createLifecycle(
+    pageOptions,
+    PageLifecycle.ON_SHOW
+  )
+  pageOptions[PageLifecycle.ON_READY] = createLifecycle(
+    pageOptions,
+    PageLifecycle.ON_READY
+  )
+  pageOptions[PageLifecycle.ON_HIDE] = createLifecycle(
+    pageOptions,
+    PageLifecycle.ON_HIDE
+  )
+  pageOptions[PageLifecycle.ON_PULL_DOWN_REFRESH] = createLifecycle(
+    pageOptions,
+    PageLifecycle.ON_PULL_DOWN_REFRESH
+  )
+  pageOptions[PageLifecycle.ON_REACH_BOTTOM] = createLifecycle(
+    pageOptions,
+    PageLifecycle.ON_REACH_BOTTOM
+  )
+  pageOptions[PageLifecycle.ON_RESIZE] = createLifecycle(
+    pageOptions,
+    PageLifecycle.ON_RESIZE
+  )
+  pageOptions[PageLifecycle.ON_TAB_ITEM_TAP] = createLifecycle(
+    pageOptions,
+    PageLifecycle.ON_TAB_ITEM_TAP
+  )
 
   return pageOptions
 }
@@ -246,7 +292,7 @@ function deepToRaw(x: unknown): unknown {
     return deepToRaw(toRaw(x))
   }
 
-  if (Array.isArray(x)) {
+  if (isArray(x)) {
     return x.map(item => deepToRaw(item))
   }
 
@@ -274,7 +320,7 @@ function deepWatch(this: Page, key: string, value: unknown): void {
 
   if (isReactive(value)) {
     const row = toRaw(value)
-    if (Array.isArray(row)) {
+    if (isArray(row)) {
       const effects = new Set<ReactiveEffect<void>>()
       effect(() => {
         this.setData({ [key]: deepToRaw(value) })
@@ -318,7 +364,7 @@ function deepWatch(this: Page, key: string, value: unknown): void {
     }
   }
 
-  if (Array.isArray(value)) {
+  if (isArray(value)) {
     this.setData({ [key]: deepToRaw(value) })
     value.forEach((_, index) => {
       deepWatch.call(this, `${key}[${index}]`, value[index])
@@ -334,20 +380,24 @@ function deepWatch(this: Page, key: string, value: unknown): void {
   }
 }
 
-function addHook(target: PageOptions, lifecycle: PageLifecycle): void {
-  const originHook = target[lifecycle]
-  if (originHook !== undefined && !isFunction(originHook)) {
+function createLifecycle(
+  target: PageOptions,
+  lifecycle: PageLifecycle
+): (...args: any[]) => void {
+  const originLifecycle = target[lifecycle]
+  if (originLifecycle !== undefined && !isFunction(originLifecycle)) {
     console.warn(`The "${lifecycle}" hook must be a function.`)
   }
 
-  target[lifecycle] = function(this: Page, ...args: any[]) {
+  return function(this: Page, ...args: any[]) {
     const hooks = this[toHiddenField(lifecycle)]
     if (hooks) {
-      hooks.forEach((hook: any) => hook(...args))
+      // eslint-disable-next-line @typescript-eslint/ban-types
+      hooks.forEach((hook: Function) => hook(...args))
     }
 
-    if (isFunction(originHook)) {
-      originHook.call(this, ...args)
+    if (isFunction(originLifecycle)) {
+      originLifecycle.call(this, ...args)
     }
   }
 }
