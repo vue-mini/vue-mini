@@ -20,5 +20,5 @@ export function hasChanged(value: unknown, oldValue: unknown): boolean {
 }
 
 export function toHiddenField(name: string): string {
-  return `__${name}__`
+  return `_${name}`
 }
