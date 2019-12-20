@@ -26,7 +26,10 @@ const config = {
         '@typescript-eslint/prefer-nullish-coalescing': 0
       }
     }
-  ]
+  ],
+  globals: {
+    __DEV__: 'readonly'
+  }
 };
 
 if (!isProd) {

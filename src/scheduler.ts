@@ -31,9 +31,15 @@ function flushJobs(seen?: CountMap): void {
   isFlushPending = false
   isFlushing = true
   let job
-  seen = seen || new Map()
+  if (__DEV__) {
+    seen = seen || new Map()
+  }
+
   while ((job = queue.shift())) {
-    checkRecursiveUpdates(seen, job)
+    if (__DEV__) {
+      checkRecursiveUpdates(seen!, job)
+    }
+
     job()
   }
 

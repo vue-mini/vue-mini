@@ -37,15 +37,15 @@ export const onShareAppMessage = (
         undefined
       ) {
         currentPage[toHiddenField(PageLifecycle.ON_SHARE_APP_MESSAGE)] = hook
-      } else {
+      } else if (__DEV__) {
         console.warn('onShareAppMessage() hook can only be called once.')
       }
-    } else {
+    } else if (__DEV__) {
       console.warn(
         'onShareAppMessage() hook only works when `onShareAppMessage` option is not exist.'
       )
     }
-  } else {
+  } else if (__DEV__) {
     console.warn(warnMsg)
   }
 }
@@ -65,12 +65,12 @@ function createHook<T extends Function = () => unknown>(
         }
 
         currentPage[toHiddenField(lifecycle)].push(hook)
-      } else {
+      } else if (__DEV__) {
         console.warn(
           'onPageScroll() hook only works when `listenPageScroll` is configured to true.'
         )
       }
-    } else {
+    } else if (__DEV__) {
       console.warn(warnMsg)
     }
   }

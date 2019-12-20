@@ -149,7 +149,7 @@ function doWatch(
   if (lazy && cb) {
     oldValue = runner()
   } else {
-    if (lazy && !cb) {
+    if (__DEV__ && lazy && !cb) {
       console.warn(
         `watch() lazy option is only respected when using the ` +
           `watch(getter, callback) signature.`
