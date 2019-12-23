@@ -7,12 +7,11 @@ const typescript = require('rollup-plugin-typescript2')
 const { Extractor, ExtractorConfig } = require('@microsoft/api-extractor')
 
 const input = 'src/index.ts'
-const external = ['@next-vue/reactivity']
 
 async function generateDeclaration() {
   const bundle = await rollup.rollup({
     input,
-    external,
+    external: ['@next-vue/reactivity'],
     plugins: [
       typescript({
         check: false,
@@ -31,20 +30,20 @@ async function generateDeclaration() {
   })
 }
 
-async function generateCode({ isDev, format, fileName, vuePath }) {
+async function generateCode({ isDev, format, fileName, vueReactivityPath }) {
   const bundle = await rollup.rollup({
     input,
-    external,
-    plugins: [typescript({ check: false }), replace({ __DEV__: isDev })]
+    external: [vueReactivityPath],
+    plugins: [
+      typescript({ check: false }),
+      replace({
+        __DEV__: isDev,
+        '@next-vue/reactivity': vueReactivityPath,
+        delimiters: ['', '']
+      })
+    ]
   })
-  const { output } = await bundle.generate({ format })
-  for (const chunkOrAsset of output) {
-    if (chunkOrAsset.type === 'chunk') {
-      const code = chunkOrAsset.code.replace(/@next-vue\/reactivity/g, vuePath)
-      // eslint-disable-next-line no-await-in-loop
-      await fs.writeFile(`dist/${fileName}`, code, 'utf8')
-    }
-  }
+  await bundle.write({ file: `dist/${fileName}`, format })
 }
 
 async function build() {
@@ -76,28 +75,28 @@ async function build() {
     isDev: true,
     format: 'es',
     fileName: 'vue-mini.esm.js',
-    vuePath: '@next-vue/reactivity/dist/reactivity.esm'
+    vueReactivityPath: '@next-vue/reactivity/dist/reactivity.esm'
   })
 
   await generateCode({
     isDev: false,
     format: 'es',
     fileName: 'vue-mini.esm.prod.js',
-    vuePath: '@next-vue/reactivity/dist/reactivity.esm.prod'
+    vueReactivityPath: '@next-vue/reactivity/dist/reactivity.esm.prod'
   })
 
   await generateCode({
     isDev: true,
     format: 'cjs',
     fileName: 'vue-mini.cjs.js',
-    vuePath: '@next-vue/reactivity/dist/reactivity.cjs'
+    vueReactivityPath: '@next-vue/reactivity/dist/reactivity.cjs'
   })
 
   await generateCode({
     isDev: false,
     format: 'cjs',
     fileName: 'vue-mini.cjs.prod.js',
-    vuePath: '@next-vue/reactivity/dist/reactivity.cjs.prod'
+    vueReactivityPath: '@next-vue/reactivity/dist/reactivity.cjs.prod'
   })
 }
 
