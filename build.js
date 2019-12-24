@@ -7,11 +7,12 @@ const typescript = require('rollup-plugin-typescript2')
 const { Extractor, ExtractorConfig } = require('@microsoft/api-extractor')
 
 const input = 'src/index.ts'
+const external = ['@next-vue/reactivity']
 
 async function generateDeclaration() {
   const bundle = await rollup.rollup({
     input,
-    external: ['@next-vue/reactivity'],
+    external,
     plugins: [
       typescript({
         check: false,
@@ -30,18 +31,11 @@ async function generateDeclaration() {
   })
 }
 
-async function generateCode({ isDev, format, fileName, vueReactivityPath }) {
+async function generateCode({ isDev, format, fileName }) {
   const bundle = await rollup.rollup({
     input,
-    external: [vueReactivityPath],
-    plugins: [
-      typescript({ check: false }),
-      replace({
-        __DEV__: isDev,
-        '@next-vue/reactivity': vueReactivityPath,
-        delimiters: ['', '']
-      })
-    ]
+    external,
+    plugins: [typescript({ check: false }), replace({ __DEV__: isDev })]
   })
   await bundle.write({ file: `dist/${fileName}`, format })
 }
@@ -74,29 +68,25 @@ async function build() {
   await generateCode({
     isDev: true,
     format: 'es',
-    fileName: 'vue-mini.esm.js',
-    vueReactivityPath: '@next-vue/reactivity/dist/reactivity.esm'
+    fileName: 'vue-mini.esm.js'
   })
 
   await generateCode({
     isDev: false,
     format: 'es',
-    fileName: 'vue-mini.esm.prod.js',
-    vueReactivityPath: '@next-vue/reactivity/dist/reactivity.esm.prod'
+    fileName: 'vue-mini.esm.prod.js'
   })
 
   await generateCode({
     isDev: true,
     format: 'cjs',
-    fileName: 'vue-mini.cjs.js',
-    vueReactivityPath: '@next-vue/reactivity/dist/reactivity.cjs'
+    fileName: 'vue-mini.cjs.js'
   })
 
   await generateCode({
     isDev: false,
     format: 'cjs',
-    fileName: 'vue-mini.cjs.prod.js',
-    vueReactivityPath: '@next-vue/reactivity/dist/reactivity.cjs.prod'
+    fileName: 'vue-mini.cjs.prod.js'
   })
 }
 
