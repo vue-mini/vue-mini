@@ -1,11 +1,20 @@
 export const { isArray } = Array
 
+export function getType(x: unknown): string {
+  return Object.prototype.toString.call(x).slice(8, -1)
+}
+
+export function isSimpleValue(x: unknown): boolean {
+  const simpleTypes = new Set(['undefined', 'boolean', 'number', 'string'])
+  return x === null || simpleTypes.has(typeof x)
+}
+
 export function isObject(x: unknown): x is object {
   return x !== null && typeof x === 'object'
 }
 
 export function isPlainObject(x: unknown): x is Record<string, unknown> {
-  return x !== null && Object.prototype.toString.call(x) === '[object Object]'
+  return x !== null && getType(x) === 'Object'
 }
 
 // eslint-disable-next-line @typescript-eslint/ban-types

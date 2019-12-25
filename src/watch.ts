@@ -24,9 +24,9 @@ export interface WatchOptions {
   onTrigger?: ReactiveEffectOptions['onTrigger']
 }
 
-type StopHandle = () => void
+export type StopHandle = () => void
 
-type WatcherSource<T = any> = Ref<T> | ComputedRef<T> | (() => T)
+export type WatcherSource<T = any> = Ref<T> | ComputedRef<T> | (() => T)
 
 type MapSources<T> = {
   // eslint-disable-next-line @typescript-eslint/generic-type-naming
@@ -35,7 +35,7 @@ type MapSources<T> = {
 
 export type CleanupRegistrator = (invalidate: () => void) => void
 
-type SimpleEffect = (onCleanup: CleanupRegistrator) => void
+export type SimpleEffect = (onCleanup: CleanupRegistrator) => void
 
 // eslint-disable-next-line @typescript-eslint/ban-types
 const invoke = (fn: Function): unknown => fn()

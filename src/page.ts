@@ -3,12 +3,14 @@ import {
   isReactive,
   isReadonly,
   toRaw,
-  effect,
   stop,
   ReactiveEffect
 } from '@next-vue/reactivity'
+import { watch, StopHandle } from './watch'
 import {
   isArray,
+  getType,
+  isSimpleValue,
   isObject,
   isPlainObject,
   isFunction,
@@ -130,7 +132,8 @@ export function createPage(
           return
         }
 
-        deepWatch.call(this, key, binding[key])
+        this.setData({ [key]: deepToRaw(value) })
+        deepWatch.call(this, key, value)
       })
     }
 
@@ -210,7 +213,7 @@ export function createPage(
 }
 
 function deepToRaw(x: unknown): unknown {
-  if (!isObject(x)) {
+  if (isSimpleValue(x)) {
     return x
   }
 
@@ -234,68 +237,95 @@ function deepToRaw(x: unknown): unknown {
     return obj
   }
 
-  return x
+  throw new TypeError(`${getType(x)} value is not supported`)
 }
 
 function deepWatch(this: Page, key: string, value: unknown): void {
   if (!isObject(value) || isReadonly(value)) {
-    this.setData({ [key]: deepToRaw(value) })
     return
   }
 
   if (isRef(value)) {
-    effect(() => this.setData({ [key]: deepToRaw(value.value) }))
-    return deepWatch.call(this, key, value.value)
+    watch(
+      () => value.value,
+      () => this.setData({ [key]: deepToRaw(value.value) }),
+      { lazy: true }
+    )
+    deepWatch.call(this, key, value.value)
+    return
   }
 
   if (isReactive(value)) {
     const row = toRaw(value)
     if (isArray(row)) {
-      const effects = new Set<ReactiveEffect<void>>()
-      effect(() => {
-        this.setData({ [key]: deepToRaw(value) })
-        effects.forEach(effect => stop(effect))
-        const { length } = value as unknown[]
-        for (let i = 0; i < length; i++) {
+      const stoppers = new Set<StopHandle>()
+      const watchArrayItem = (arr: unknown[]): void => {
+        for (let i = 0; i < arr.length; i++) {
           const k = `${key}[${i}]`
-          effects.add(
-            effect(() => {
-              if (i in value) {
-                this.setData({ [k]: deepToRaw((value as unknown[])[i]) })
-              }
-            })
+          stoppers.add(
+            watch(
+              () => arr[i],
+              () => {
+                if (i in arr) {
+                  this.setData({ [k]: deepToRaw(arr[i]) })
+                }
+              },
+              { lazy: true }
+            )
           )
-          deepWatch.call(this, k, (value as unknown[])[i])
+          deepWatch.call(this, k, arr[i])
         }
-      })
+      }
+
+      watch(
+        () => (value as unknown[]).length,
+        (_, __, onCleanup) => {
+          this.setData({ [key]: deepToRaw(value) })
+          watchArrayItem(value as unknown[])
+          onCleanup(() => stoppers.forEach(stopper => stopper()))
+        },
+        { lazy: true }
+      )
+      watchArrayItem(value as unknown[])
       return
     }
 
     if (isPlainObject(row)) {
-      const effects = new Set<ReactiveEffect<void>>()
-      effect(() => {
-        this.setData({ [key]: deepToRaw(value) })
-        effects.forEach(effect => stop(effect))
-        Object.keys(value).forEach(name => {
+      const stoppers = new Set<StopHandle>()
+      const watchObjectItem = (obj: Record<string, unknown>): void => {
+        Object.keys(obj).forEach(name => {
           const k = `${key}.${name}`
-          effects.add(
-            effect(() => {
-              if (name in value) {
-                this.setData({
-                  [k]: deepToRaw((value as { [name: string]: unknown })[name])
-                })
-              }
-            })
+          stoppers.add(
+            watch(
+              () => obj[name],
+              () => {
+                if (name in obj) {
+                  this.setData({ [k]: deepToRaw(obj[name]) })
+                }
+              },
+              { lazy: true }
+            )
           )
-          deepWatch.call(this, k, (value as { [name: string]: unknown })[name])
         })
-      })
+      }
+
+      watch(
+        () => Object.keys(value),
+        (_, __, onCleanup) => {
+          this.setData({ [key]: deepToRaw(value) })
+          watchObjectItem(value as Record<string, unknown>)
+          onCleanup(() => stoppers.forEach(stopper => stopper()))
+        },
+        { lazy: true }
+      )
+      watchObjectItem(value as Record<string, unknown>)
       return
     }
+
+    return
   }
 
   if (isArray(value)) {
-    this.setData({ [key]: deepToRaw(value) })
     value.forEach((_, index) => {
       deepWatch.call(this, `${key}[${index}]`, value[index])
     })
@@ -303,7 +333,6 @@ function deepWatch(this: Page, key: string, value: unknown): void {
   }
 
   if (isPlainObject(value)) {
-    this.setData({ [key]: deepToRaw(value) })
     Object.keys(value).forEach(name => {
       deepWatch.call(this, `${key}.${name}`, value[name])
     })
