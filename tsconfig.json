@@ -15,7 +15,11 @@
     "resolveJsonModule": true,
     "noFallthroughCasesInSwitch": true,
     "noUnusedLocals": true,
-    "noUnusedParameters": true
+    "noUnusedParameters": true,
+    "typeRoots" : [
+      "./node_modules/@types",
+      "./node_modules/wechat-miniprogram-types"
+    ]
   },
   "include": [
     "global.d.ts",

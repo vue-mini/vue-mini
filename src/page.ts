@@ -1,89 +1,26 @@
-import {
-  isRef,
-  isReactive,
-  isReadonly,
-  toRaw,
-  stop,
-  ReactiveEffect
-} from '@next-vue/reactivity'
-import { watch, StopHandle } from './watch'
-import {
-  isArray,
-  getType,
-  isSimpleValue,
-  isObject,
-  isPlainObject,
-  isFunction,
-  toHiddenField
-} from './utils'
+import { stop } from '@next-vue/reactivity'
+import { setCurrentPage, Page } from './instance'
+import { deepToRaw, deepWatch } from './shared'
+import { isFunction, toHiddenField } from './utils'
 
-type Query = Record<string, string | undefined>
-interface Context {
-  route: string
-}
-export type Setup = (
-  query?: Query,
-  context?: Context
-) => Record<string, unknown> | void
-interface Page {
-  [key: string]: any
-  route: string
-  setData: (data: Record<string, unknown>) => void
-  _isInjectedShareHook?: true
-  _listenPageScroll?: true
-  _effects?: ReactiveEffect[]
-}
-export interface Scroll {
-  scrollTop: number
-}
-export interface Share {
-  from: 'button' | 'menu'
-  target: object | undefined
-  webViewUrl?: string
-}
-export interface ShareContent {
-  title?: string
-  path?: string
-  imageUrl?: string
-}
-export interface Resize {
-  size: {
-    windowWidth: number
-    windowHeight: number
-  }
-}
-export interface Tap {
-  index: string
-  pagePath: string
-  text: string
-}
-export interface Options {
-  [key: string]: unknown
-  setup?: Setup
-  onLoad?: (this: Page, query?: Query) => unknown
-  onShow?: (this: Page) => unknown
-  onReady?: (this: Page) => unknown
-  onHide?: (this: Page) => unknown
-  onUnload?: (this: Page) => unknown
-  onPullDownRefresh?: (this: Page) => unknown
-  onReachBottom?: (this: Page) => unknown
-  onPageScroll?: (this: Page, scroll?: Scroll) => unknown
-  onShareAppMessage?: (this: Page, share?: Share) => ShareContent | void
-  onResize?: (this: Page, resize?: Resize) => unknown
-  onTabItemTap?: (this: Page, tap?: Tap) => unknown
-}
+export type Query = Record<string, string | undefined>
+export type PageContext = WechatMiniprogram.Page.InstanceProperties
+export type Bindings = Record<string, any> | void
+export type PageOptions<
+  RawBindings extends Bindings,
+  Data extends WechatMiniprogram.Page.DataOption,
+  Custom extends WechatMiniprogram.Page.CustomOption
+> = ({ setup: (query: Query, context: PageContext) => RawBindings } & Custom &
+  Partial<WechatMiniprogram.Page.Data<Data>> &
+  Partial<WechatMiniprogram.Page.ILifetime>) &
+  ThisType<WechatMiniprogram.Page.Instance<Data, Custom>>
 export interface Config {
   listenPageScroll: boolean
 }
-interface PageOptions {
-  [key: string]: unknown
-  onLoad?: (this: Page, query: Query) => void
-  onShareAppMessage?: (this: Page, share: Share) => ShareContent | void
-  _isInjectedShareHook?: true
-  _listenPageScroll?: true
-}
+export type OutputPageOptions = Record<string, any>
 
 export const enum PageLifecycle {
+  ON_LOAD = 'onLoad',
   ON_SHOW = 'onShow',
   ON_READY = 'onReady',
   ON_HIDE = 'onHide',
@@ -96,37 +33,47 @@ export const enum PageLifecycle {
   ON_TAB_ITEM_TAP = 'onTabItemTap'
 }
 
-// eslint-disable-next-line import/no-mutable-exports
-export let currentPage: Page | null = null
+export function createPage<RawBindings extends Bindings>(
+  setup: (query: Query, context: PageContext) => RawBindings,
+  config?: Config
+): OutputPageOptions
+
+export function createPage<
+  RawBindings extends Bindings,
+  Data extends WechatMiniprogram.Page.DataOption,
+  Custom extends WechatMiniprogram.Page.CustomOption
+>(
+  options: PageOptions<RawBindings, Data, Custom>,
+  config?: Config
+): OutputPageOptions
 
 export function createPage(
-  optionsOrSetup: Options | Setup,
+  optionsOrSetup: any,
   config: Config = { listenPageScroll: false }
-): PageOptions | void {
-  let setup: Setup
-  let pageOptions: PageOptions
+): OutputPageOptions {
+  let setup: (query: Query, context: PageContext) => Bindings
+  let options: OutputPageOptions
   if (isFunction(optionsOrSetup)) {
     setup = optionsOrSetup
-    pageOptions = {}
+    options = {}
   } else {
-    const options = optionsOrSetup
-    if (options.setup === undefined) {
-      return options
+    if (optionsOrSetup.setup === undefined) {
+      return optionsOrSetup
     }
 
-    const { setup: setupOption, ...restOptions } = options
+    const { setup: setupOption, ...restOptions } = optionsOrSetup
     setup = setupOption
-    pageOptions = restOptions
+    options = restOptions
   }
 
-  const originOnLoad = pageOptions.onLoad
-  pageOptions.onLoad = function(this: Page, query: Query) {
-    currentPage = this
-    const context: Context = { route: this.route }
-    const binding = setup(query, context)
-    if (binding !== undefined) {
-      Object.keys(binding).forEach(key => {
-        const value = binding[key]
+  const originOnLoad = options[PageLifecycle.ON_LOAD]
+  options[PageLifecycle.ON_LOAD] = function(this: Page, query: Query) {
+    setCurrentPage(this)
+    const context: PageContext = { is: this.is, route: this.route }
+    const bindings = setup(query, context)
+    if (bindings !== undefined) {
+      Object.keys(bindings).forEach(key => {
+        const value = bindings[key]
         if (isFunction(value)) {
           this[key] = value
           return
@@ -141,210 +88,82 @@ export function createPage(
       originOnLoad.call(this, query)
     }
 
-    currentPage = null
+    setCurrentPage(null)
   }
 
-  const onUnload = createLifecycle(pageOptions, PageLifecycle.ON_UNLOAD)
-  pageOptions.onUnload = function(this: Page) {
+  const onUnload = createLifecycle(options, PageLifecycle.ON_UNLOAD)
+  options[PageLifecycle.ON_UNLOAD] = function(this: Page) {
+    onUnload.call(this)
+
     if (this._effects) {
       this._effects.forEach(effect => stop(effect))
     }
-
-    onUnload.call(this)
   }
 
-  if (pageOptions.onPageScroll || config.listenPageScroll) {
-    pageOptions[PageLifecycle.ON_PAGE_SCROLL] = createLifecycle(
-      pageOptions,
+  if (options[PageLifecycle.ON_PAGE_SCROLL] || config.listenPageScroll) {
+    options[PageLifecycle.ON_PAGE_SCROLL] = createLifecycle(
+      options,
       PageLifecycle.ON_PAGE_SCROLL
     )
-    pageOptions._listenPageScroll = true
+    options._listenPageScroll = () => true
   }
 
-  if (pageOptions.onShareAppMessage === undefined) {
-    pageOptions.onShareAppMessage = function(
+  if (options[PageLifecycle.ON_SHARE_APP_MESSAGE] === undefined) {
+    options[PageLifecycle.ON_SHARE_APP_MESSAGE] = function(
       this: Page,
-      share: Share
-    ): ShareContent | void {
+      share: WechatMiniprogram.Page.IShareAppMessageOption
+    ): WechatMiniprogram.Page.ICustomShareContent {
       const hook = this[toHiddenField(PageLifecycle.ON_SHARE_APP_MESSAGE)] as (
-        share: Share
-      ) => ShareContent | void
+        share: WechatMiniprogram.Page.IShareAppMessageOption
+      ) => WechatMiniprogram.Page.ICustomShareContent
       if (hook) {
-        const shareContent = hook(share)
-        if (shareContent !== undefined) {
-          return shareContent
-        }
+        return hook(share)
       }
+
+      return {}
     }
 
-    pageOptions._isInjectedShareHook = true
+    options._isInjectedShareHook = () => true
   }
 
-  pageOptions[PageLifecycle.ON_SHOW] = createLifecycle(
-    pageOptions,
+  options[PageLifecycle.ON_SHOW] = createLifecycle(
+    options,
     PageLifecycle.ON_SHOW
   )
-  pageOptions[PageLifecycle.ON_READY] = createLifecycle(
-    pageOptions,
+  options[PageLifecycle.ON_READY] = createLifecycle(
+    options,
     PageLifecycle.ON_READY
   )
-  pageOptions[PageLifecycle.ON_HIDE] = createLifecycle(
-    pageOptions,
+  options[PageLifecycle.ON_HIDE] = createLifecycle(
+    options,
     PageLifecycle.ON_HIDE
   )
-  pageOptions[PageLifecycle.ON_PULL_DOWN_REFRESH] = createLifecycle(
-    pageOptions,
+  options[PageLifecycle.ON_PULL_DOWN_REFRESH] = createLifecycle(
+    options,
     PageLifecycle.ON_PULL_DOWN_REFRESH
   )
-  pageOptions[PageLifecycle.ON_REACH_BOTTOM] = createLifecycle(
-    pageOptions,
+  options[PageLifecycle.ON_REACH_BOTTOM] = createLifecycle(
+    options,
     PageLifecycle.ON_REACH_BOTTOM
   )
-  pageOptions[PageLifecycle.ON_RESIZE] = createLifecycle(
-    pageOptions,
+  options[PageLifecycle.ON_RESIZE] = createLifecycle(
+    options,
     PageLifecycle.ON_RESIZE
   )
-  pageOptions[PageLifecycle.ON_TAB_ITEM_TAP] = createLifecycle(
-    pageOptions,
+  options[PageLifecycle.ON_TAB_ITEM_TAP] = createLifecycle(
+    options,
     PageLifecycle.ON_TAB_ITEM_TAP
   )
 
-  return pageOptions
-}
-
-function deepToRaw(x: unknown): unknown {
-  if (isSimpleValue(x)) {
-    return x
-  }
-
-  if (isRef(x)) {
-    return deepToRaw(x.value)
-  }
-
-  if (isReactive(x) || isReadonly(x)) {
-    return deepToRaw(toRaw(x))
-  }
-
-  if (isArray(x)) {
-    return x.map(item => deepToRaw(item))
-  }
-
-  if (isPlainObject(x)) {
-    const obj: { [key: string]: unknown } = {}
-    Object.keys(x).forEach(key => {
-      obj[key] = deepToRaw(x[key])
-    })
-    return obj
-  }
-
-  throw new TypeError(`${getType(x)} value is not supported`)
-}
-
-function deepWatch(this: Page, key: string, value: unknown): void {
-  if (!isObject(value) || isReadonly(value)) {
-    return
-  }
-
-  if (isRef(value)) {
-    watch(
-      () => value.value,
-      () => this.setData({ [key]: deepToRaw(value.value) }),
-      { lazy: true }
-    )
-    deepWatch.call(this, key, value.value)
-    return
-  }
-
-  if (isReactive(value)) {
-    const row = toRaw(value)
-    if (isArray(row)) {
-      const stoppers = new Set<StopHandle>()
-      const watchArrayItem = (arr: unknown[]): void => {
-        for (let i = 0; i < arr.length; i++) {
-          const k = `${key}[${i}]`
-          stoppers.add(
-            watch(
-              () => arr[i],
-              () => {
-                if (i in arr) {
-                  this.setData({ [k]: deepToRaw(arr[i]) })
-                }
-              },
-              { lazy: true }
-            )
-          )
-          deepWatch.call(this, k, arr[i])
-        }
-      }
-
-      watch(
-        () => (value as unknown[]).length,
-        (_, __, onCleanup) => {
-          this.setData({ [key]: deepToRaw(value) })
-          watchArrayItem(value as unknown[])
-          onCleanup(() => stoppers.forEach(stopper => stopper()))
-        },
-        { lazy: true }
-      )
-      watchArrayItem(value as unknown[])
-      return
-    }
-
-    if (isPlainObject(row)) {
-      const stoppers = new Set<StopHandle>()
-      const watchObjectItem = (obj: Record<string, unknown>): void => {
-        Object.keys(obj).forEach(name => {
-          const k = `${key}.${name}`
-          stoppers.add(
-            watch(
-              () => obj[name],
-              () => {
-                if (name in obj) {
-                  this.setData({ [k]: deepToRaw(obj[name]) })
-                }
-              },
-              { lazy: true }
-            )
-          )
-        })
-      }
-
-      watch(
-        () => Object.keys(value),
-        (_, __, onCleanup) => {
-          this.setData({ [key]: deepToRaw(value) })
-          watchObjectItem(value as Record<string, unknown>)
-          onCleanup(() => stoppers.forEach(stopper => stopper()))
-        },
-        { lazy: true }
-      )
-      watchObjectItem(value as Record<string, unknown>)
-      return
-    }
-
-    return
-  }
-
-  if (isArray(value)) {
-    value.forEach((_, index) => {
-      deepWatch.call(this, `${key}[${index}]`, value[index])
-    })
-    return
-  }
-
-  if (isPlainObject(value)) {
-    Object.keys(value).forEach(name => {
-      deepWatch.call(this, `${key}.${name}`, value[name])
-    })
-  }
+  return options
 }
 
 function createLifecycle(
-  target: PageOptions,
+  options: OutputPageOptions,
   lifecycle: PageLifecycle
 ): (...args: any[]) => void {
   // eslint-disable-next-line @typescript-eslint/ban-types
-  const originLifecycle = target[lifecycle] as Function
+  const originLifecycle = options[lifecycle] as Function
   return function(this: Page, ...args: any[]) {
     const hooks = this[toHiddenField(lifecycle)]
     if (hooks) {

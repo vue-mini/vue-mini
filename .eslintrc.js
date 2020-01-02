@@ -22,6 +22,7 @@ const config = {
       },
       rules: {
         'no-redeclare': 2,
+        'import/no-mutable-exports': 0,
         '@typescript-eslint/promise-function-async': 0,
         '@typescript-eslint/prefer-nullish-coalescing': 0
       }

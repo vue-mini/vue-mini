@@ -10,11 +10,22 @@ import { queueJob } from './scheduler'
 import { recordEffect } from './reactivity'
 import { isArray, isObject, isFunction, hasChanged } from './utils'
 
-export type WatchHandler<T = any> = (
+export type WatchEffect = (onCleanup: CleanupRegistrator) => void
+
+export type WatchSource<T = any> = Ref<T> | ComputedRef<T> | (() => T)
+
+export type WatchCallback<T = any> = (
   value: T,
   oldValue: T,
   onCleanup: CleanupRegistrator
 ) => any
+
+type MapSources<T> = {
+  // eslint-disable-next-line @typescript-eslint/generic-type-naming
+  [K in keyof T]: T[K] extends WatchSource<infer V> ? V : never
+}
+
+export type CleanupRegistrator = (invalidate: () => void) => void
 
 export interface WatchOptions {
   lazy?: boolean
@@ -26,27 +37,16 @@ export interface WatchOptions {
 
 export type StopHandle = () => void
 
-export type WatcherSource<T = any> = Ref<T> | ComputedRef<T> | (() => T)
-
-type MapSources<T> = {
-  // eslint-disable-next-line @typescript-eslint/generic-type-naming
-  [K in keyof T]: T[K] extends WatcherSource<infer V> ? V : never
-}
-
-export type CleanupRegistrator = (invalidate: () => void) => void
-
-export type SimpleEffect = (onCleanup: CleanupRegistrator) => void
-
 // eslint-disable-next-line @typescript-eslint/ban-types
 const invoke = (fn: Function): unknown => fn()
 
 // Overload #1: simple effect
-export function watch(effect: SimpleEffect, options?: WatchOptions): StopHandle
+export function watch(effect: WatchEffect, options?: WatchOptions): StopHandle
 
 // Overload #2: single source + cb
 export function watch<T>(
-  source: WatcherSource<T>,
-  cb: WatchHandler<T>,
+  source: WatchSource<T>,
+  cb: WatchCallback<T>,
   options?: WatchOptions
 ): StopHandle
 
@@ -54,16 +54,16 @@ export function watch<T>(
 // Readonly constraint helps the callback to correctly infer value types based
 // on position in the source array. Otherwise the values will get a union type
 // of all possible value types.
-export function watch<T extends Readonly<Array<WatcherSource<unknown>>>>(
+export function watch<T extends Readonly<Array<WatchSource<unknown>>>>(
   sources: T,
-  cb: WatchHandler<MapSources<T>>,
+  cb: WatchCallback<MapSources<T>>,
   options?: WatchOptions
 ): StopHandle
 
 // Implementation
 export function watch<T = any>(
-  effectOrSource: WatcherSource<T> | Array<WatcherSource<T>> | SimpleEffect,
-  cbOrOptions?: WatchHandler<T> | WatchOptions,
+  effectOrSource: WatchSource<T> | Array<WatchSource<T>> | WatchEffect,
+  cbOrOptions?: WatchCallback<T> | WatchOptions,
   options?: WatchOptions
 ): StopHandle {
   if (isFunction(cbOrOptions)) {
@@ -77,8 +77,8 @@ export function watch<T = any>(
 }
 
 function doWatch(
-  source: WatcherSource | WatcherSource[] | SimpleEffect,
-  cb: WatchHandler | null,
+  source: WatchSource | WatchSource[] | WatchEffect,
+  cb: WatchCallback | null,
   { lazy, deep, flush, onTrack, onTrigger }: WatchOptions = {}
 ): StopHandle {
   let getter: () => any

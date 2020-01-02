@@ -30,13 +30,14 @@ import {
   ComputedGetter
 } from '@next-vue/reactivity'
 
-import { currentPage } from './page'
+import { getCurrentInstance } from './instance'
 
 // Record effects created during a component's setup() so that they can be
 // stopped when the component unmounts
 export function recordEffect(effect: ReactiveEffect): void {
-  if (currentPage) {
-    ;(currentPage._effects || (currentPage._effects = [])).push(effect)
+  const currentInstance = getCurrentInstance()
+  if (currentInstance) {
+    ;(currentInstance._effects || (currentInstance._effects = [])).push(effect)
   }
 }
 
