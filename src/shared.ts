@@ -5,11 +5,12 @@ import {
   getType,
   isSimpleValue,
   isObject,
-  isPlainObject
+  isPlainObject,
+  isFunction
 } from './utils'
 
 export function deepToRaw(x: unknown): unknown {
-  if (isSimpleValue(x)) {
+  if (isSimpleValue(x) || isFunction(x)) {
     return x
   }
 
