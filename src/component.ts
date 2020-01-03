@@ -29,6 +29,12 @@ export const enum ComponentLifecycle {
   ERROR = 'error'
 }
 
+const SpecialPageLifecycleMap = {
+  [PageLifecycle.ON_SHOW]: 'show',
+  [PageLifecycle.ON_HIDE]: 'hide',
+  [PageLifecycle.ON_RESIZE]: 'resize'
+}
+
 export function createComponent(
   optionsOrSetup: ComponentOptions | ComponentSetup,
   config: Config = { listenPageScroll: false }
@@ -183,18 +189,15 @@ export function createComponent(
     options.pageLifetimes = {}
   }
 
-  options.pageLifetimes.show = createPageLifecycle(
-    options,
-    PageLifecycle.ON_SHOW
-  )
-  options.pageLifetimes.hide = createPageLifecycle(
-    options,
-    PageLifecycle.ON_HIDE
-  )
-  options.pageLifetimes.resize = createPageLifecycle(
-    options,
-    PageLifecycle.ON_RESIZE
-  )
+  options.pageLifetimes[
+    SpecialPageLifecycleMap[PageLifecycle.ON_SHOW]
+  ] = createSpecialPageLifecycle(options, PageLifecycle.ON_SHOW)
+  options.pageLifetimes[
+    SpecialPageLifecycleMap[PageLifecycle.ON_HIDE]
+  ] = createSpecialPageLifecycle(options, PageLifecycle.ON_HIDE)
+  options.pageLifetimes[
+    SpecialPageLifecycleMap[PageLifecycle.ON_RESIZE]
+  ] = createSpecialPageLifecycle(options, PageLifecycle.ON_RESIZE)
 
   return options
 }
@@ -204,31 +207,36 @@ function createComponentLifecycle(
   lifecycle: ComponentLifecycle
 ): (...args: any[]) => void {
   const originLifecycle = options.lifetimes[lifecycle] || options[lifecycle]
-  return function(this: Component, ...args: any[]) {
-    const hooks = this[toHiddenField(lifecycle)]
-    if (hooks) {
-      hooks.forEach((hook: Function) => hook(...args))
-    }
-
-    if (originLifecycle !== undefined) {
-      originLifecycle.call(this)
-    }
-  }
+  return createLifecycle(lifecycle, originLifecycle)
 }
 
 function createPageLifecycle(
   options: OutputComponentOptions,
   lifecycle: PageLifecycle
 ): (...args: any[]) => void {
-  const isSpecialPageLifecycle =
-    lifecycle === PageLifecycle.ON_SHOW ||
-    lifecycle === PageLifecycle.ON_HIDE ||
-    lifecycle === PageLifecycle.ON_RESIZE
-  const originLifecycle = isSpecialPageLifecycle
-    ? options.pageLifetimes[lifecycle]
-    : options.methods[lifecycle]
+  const originLifecycle = options.methods[lifecycle]
+  return createLifecycle(lifecycle, originLifecycle)
+}
+
+function createSpecialPageLifecycle(
+  options: OutputComponentOptions,
+  lifecycle:
+    | PageLifecycle.ON_SHOW
+    | PageLifecycle.ON_HIDE
+    | PageLifecycle.ON_RESIZE
+): (...args: any[]) => void {
+  const originLifecycle =
+    options.pageLifetimes[SpecialPageLifecycleMap[lifecycle]]
+  return createLifecycle(lifecycle, originLifecycle)
+}
+
+function createLifecycle(
+  lifecycle: ComponentLifecycle | PageLifecycle,
+  originLifecycle: Function | undefined
+): (...args: any[]) => void {
+  const hiddenField = toHiddenField(lifecycle)
   return function(this: Component, ...args: any[]) {
-    const hooks = this[toHiddenField(lifecycle)]
+    const hooks = this[hiddenField]
     if (hooks) {
       hooks.forEach((hook: Function) => hook(...args))
     }
