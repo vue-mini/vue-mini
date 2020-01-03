@@ -35,7 +35,7 @@ const SpecialPageLifecycleMap = {
   [PageLifecycle.ON_RESIZE]: 'resize'
 }
 
-export function createComponent(
+export function defineComponent(
   optionsOrSetup: ComponentOptions | ComponentSetup,
   config: Config = { listenPageScroll: false }
 ): OutputComponentOptions {

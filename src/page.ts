@@ -33,12 +33,12 @@ export const enum PageLifecycle {
   ON_TAB_ITEM_TAP = 'onTabItemTap'
 }
 
-export function createPage<RawBindings extends Bindings>(
+export function definePage<RawBindings extends Bindings>(
   setup: (query: Query, context: PageContext) => RawBindings,
   config?: Config
 ): OutputPageOptions
 
-export function createPage<
+export function definePage<
   RawBindings extends Bindings,
   Data extends WechatMiniprogram.Page.DataOption,
   Custom extends WechatMiniprogram.Page.CustomOption
@@ -47,7 +47,7 @@ export function createPage<
   config?: Config
 ): OutputPageOptions
 
-export function createPage(
+export function definePage(
   optionsOrSetup: any,
   config: Config = { listenPageScroll: false }
 ): OutputPageOptions {

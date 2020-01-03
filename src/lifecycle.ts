@@ -106,7 +106,7 @@ function createComponentHook<T extends Function = () => unknown>(
       injectHook(currentComponent, lifecycle, hook)
     } else if (__DEV__) {
       console.warn(
-        `Component specific lifecycle injection APIs can only be used during execution of setup() in createComponent().`
+        `Component specific lifecycle injection APIs can only be used during execution of setup() in defineComponent().`
       )
     }
   }

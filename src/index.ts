@@ -5,14 +5,14 @@ export {
   PageOptions,
   Config,
   OutputPageOptions,
-  createPage
+  definePage
 } from './page'
 export {
   ComponentContext,
   ComponentSetup,
   ComponentOptions,
   OutputComponentOptions,
-  createComponent
+  defineComponent
 } from './component'
 export * from './reactivity'
 export * from './watch'
