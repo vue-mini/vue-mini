@@ -1,4 +1,3 @@
-// eslint-disable-next-line @typescript-eslint/ban-types
 const queue: Function[] = []
 const p = Promise.resolve()
 
@@ -6,7 +5,6 @@ let isFlushing = false
 let isFlushPending = false
 
 const RECURSION_LIMIT = 100
-// eslint-disable-next-line @typescript-eslint/ban-types
 type CountMap = Map<Function, number>
 
 export function nextTick(fn?: () => void): Promise<void> {
@@ -50,7 +48,6 @@ function flushJobs(seen?: CountMap): void {
   }
 }
 
-// eslint-disable-next-line @typescript-eslint/ban-types
 function checkRecursiveUpdates(seen: CountMap, fn: Function): void {
   const count = seen.get(fn) || 0
   if (count > RECURSION_LIMIT) {

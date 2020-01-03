@@ -1,6 +1,9 @@
 'use strict';
 
+const xoTs = require('eslint-config-xo-typescript')
+
 const isProd = process.env.NODE_ENV === 'production';
+const { Function, Omit, ...types } = xoTs.rules['@typescript-eslint/ban-types'][1].types
 
 const config = {
   root: true,
@@ -21,10 +24,11 @@ const config = {
         project: './tsconfig.json'
       },
       rules: {
-        'no-redeclare': 2,
-        'import/no-mutable-exports': 0,
-        '@typescript-eslint/promise-function-async': 0,
-        '@typescript-eslint/prefer-nullish-coalescing': 0
+        'no-redeclare': 'error',
+        'import/no-mutable-exports': 'off',
+        '@typescript-eslint/promise-function-async': 'off',
+        '@typescript-eslint/prefer-nullish-coalescing': 'off',
+        '@typescript-eslint/ban-types': ['error', { types }]
       }
     }
   ],

@@ -37,7 +37,6 @@ export interface WatchOptions {
 
 export type StopHandle = () => void
 
-// eslint-disable-next-line @typescript-eslint/ban-types
 const invoke = (fn: Function): unknown => fn()
 
 // Overload #1: simple effect
@@ -105,7 +104,6 @@ function doWatch(
     getter = () => traverse(baseGetter())
   }
 
-  // eslint-disable-next-line @typescript-eslint/ban-types
   let cleanup: Function
   const registerCleanup: CleanupRegistrator = (fn: () => void) => {
     // eslint-disable-next-line no-multi-assign

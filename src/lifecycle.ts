@@ -85,7 +85,6 @@ export const onError = createComponentHook<(error: Error) => unknown>(
   ComponentLifecycle.ERROR
 )
 
-// eslint-disable-next-line @typescript-eslint/ban-types
 function createHook<T extends Function = () => unknown>(
   lifecycle: PageLifecycle
 ) {
@@ -99,7 +98,6 @@ function createHook<T extends Function = () => unknown>(
   }
 }
 
-// eslint-disable-next-line @typescript-eslint/ban-types
 function createComponentHook<T extends Function = () => unknown>(
   lifecycle: PageLifecycle.ON_LOAD | ComponentLifecycle
 ) {
@@ -117,7 +115,7 @@ function createComponentHook<T extends Function = () => unknown>(
 function injectHook(
   currentInstance: Page | Component,
   lifecycle: PageLifecycle | ComponentLifecycle,
-  hook: Function // eslint-disable-line @typescript-eslint/ban-types
+  hook: Function
 ): void {
   const hiddenField = toHiddenField(lifecycle)
   if (currentInstance[hiddenField] === undefined) {

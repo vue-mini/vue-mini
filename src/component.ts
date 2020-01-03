@@ -5,7 +5,6 @@ import { setCurrentComponent, Component } from './instance'
 import { isFunction, toHiddenField } from './utils'
 
 export type ComponentContext = WechatMiniprogram.Component.InstanceProperties &
-  // eslint-disable-next-line @typescript-eslint/ban-types
   Omit<
     WechatMiniprogram.Component.InstanceMethods<Record<string, unknown>>,
     'setData' | 'hasBehavior'
@@ -212,7 +211,6 @@ function createComponentLifecycle(
   return function(this: Component, ...args: any[]) {
     const hooks = this[toHiddenField(lifecycle)]
     if (hooks) {
-      // eslint-disable-next-line @typescript-eslint/ban-types
       hooks.forEach((hook: Function) => hook(...args))
     }
 
@@ -240,7 +238,6 @@ function createPageLifecycle(
   return function(this: Component, ...args: any[]) {
     const hooks = this[toHiddenField(lifecycle)]
     if (hooks) {
-      // eslint-disable-next-line @typescript-eslint/ban-types
       hooks.forEach((hook: Function) => hook(...args))
     }
 

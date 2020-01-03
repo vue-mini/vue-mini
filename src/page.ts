@@ -162,12 +162,10 @@ function createLifecycle(
   options: OutputPageOptions,
   lifecycle: PageLifecycle
 ): (...args: any[]) => void {
-  // eslint-disable-next-line @typescript-eslint/ban-types
   const originLifecycle = options[lifecycle] as Function
   return function(this: Page, ...args: any[]) {
     const hooks = this[toHiddenField(lifecycle)]
     if (hooks) {
-      // eslint-disable-next-line @typescript-eslint/ban-types
       hooks.forEach((hook: Function) => hook(...args))
     }
 
