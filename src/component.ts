@@ -77,11 +77,7 @@ export function createComponent(
     }
     binding = setup(this.data, context)
     if (originCreated !== undefined) {
-      if (isFunction(originCreated)) {
-        originCreated.call(this)
-      } else {
-        this[originCreated]()
-      }
+      originCreated.call(this)
     }
 
     setCurrentComponent(null)
@@ -215,11 +211,7 @@ function createComponentLifecycle(
     }
 
     if (originLifecycle !== undefined) {
-      if (isFunction(originLifecycle)) {
-        originLifecycle.call(this)
-      } else {
-        this[originLifecycle](...args)
-      }
+      originLifecycle.call(this)
     }
   }
 }
@@ -242,15 +234,7 @@ function createPageLifecycle(
     }
 
     if (originLifecycle !== undefined) {
-      if (isSpecialPageLifecycle) {
-        if (isFunction(originLifecycle)) {
-          originLifecycle.call(this)
-        } else {
-          this[originLifecycle](...args)
-        }
-      } else {
-        originLifecycle.call(this, ...args)
-      }
+      originLifecycle.call(this, ...args)
     }
   }
 }
