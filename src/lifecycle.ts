@@ -12,6 +12,7 @@ import { toHiddenField } from './utils'
 const warnMsg =
   'Lifecycle injection APIs can only be used during execution of setup().'
 
+export const onReady = createHook(PageLifecycle.ON_READY)
 export const onShow = createHook(PageLifecycle.ON_SHOW)
 export const onHide = createHook(PageLifecycle.ON_HIDE)
 export const onUnload = createHook(PageLifecycle.ON_UNLOAD)
@@ -23,6 +24,7 @@ export const onResize = createHook<
 export const onTabItemTap = createHook<
   (tap: WechatMiniprogram.Page.ITabItemTapOption) => unknown
 >(PageLifecycle.ON_TAB_ITEM_TAP)
+
 export const onPageScroll = (
   hook: (scroll: WechatMiniprogram.Page.IPageScrollOption) => unknown
 ): void => {
@@ -58,18 +60,6 @@ export const onShareAppMessage = (
         'onShareAppMessage() hook only works when `onShareAppMessage` option is not exist.'
       )
     }
-  } else if (__DEV__) {
-    console.warn(warnMsg)
-  }
-}
-
-export const onReady = (hook: () => unknown): void => {
-  const currentInstance = getCurrentInstance()
-  if (currentInstance) {
-    const lifecycle = currentPage
-      ? PageLifecycle.ON_READY
-      : ComponentLifecycle.READY
-    injectHook(currentInstance, lifecycle, hook)
   } else if (__DEV__) {
     console.warn(warnMsg)
   }

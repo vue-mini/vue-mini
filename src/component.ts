@@ -29,10 +29,11 @@ export const enum ComponentLifecycle {
   ERROR = 'error'
 }
 
-const SpecialPageLifecycleMap = {
+const SpecialLifecycleMap = {
   [PageLifecycle.ON_SHOW]: 'show',
   [PageLifecycle.ON_HIDE]: 'hide',
-  [PageLifecycle.ON_RESIZE]: 'resize'
+  [PageLifecycle.ON_RESIZE]: 'resize',
+  [ComponentLifecycle.READY]: PageLifecycle.ON_READY
 }
 
 export function defineComponent(
@@ -122,15 +123,18 @@ export function defineComponent(
     }
   }
 
-  options[ComponentLifecycle.READY] = createComponentLifecycle(
-    options,
-    ComponentLifecycle.READY
+  const originReady =
+    options.lifetimes[ComponentLifecycle.READY] ||
+    options[ComponentLifecycle.READY]
+  options.lifetimes[ComponentLifecycle.READY] = createLifecycle(
+    SpecialLifecycleMap[ComponentLifecycle.READY],
+    originReady
   )
-  options[ComponentLifecycle.MOVED] = createComponentLifecycle(
+  options.lifetimes[ComponentLifecycle.MOVED] = createComponentLifecycle(
     options,
     ComponentLifecycle.MOVED
   )
-  options[ComponentLifecycle.ERROR] = createComponentLifecycle(
+  options.lifetimes[ComponentLifecycle.ERROR] = createComponentLifecycle(
     options,
     ComponentLifecycle.ERROR
   )
@@ -190,13 +194,13 @@ export function defineComponent(
   }
 
   options.pageLifetimes[
-    SpecialPageLifecycleMap[PageLifecycle.ON_SHOW]
+    SpecialLifecycleMap[PageLifecycle.ON_SHOW]
   ] = createSpecialPageLifecycle(options, PageLifecycle.ON_SHOW)
   options.pageLifetimes[
-    SpecialPageLifecycleMap[PageLifecycle.ON_HIDE]
+    SpecialLifecycleMap[PageLifecycle.ON_HIDE]
   ] = createSpecialPageLifecycle(options, PageLifecycle.ON_HIDE)
   options.pageLifetimes[
-    SpecialPageLifecycleMap[PageLifecycle.ON_RESIZE]
+    SpecialLifecycleMap[PageLifecycle.ON_RESIZE]
   ] = createSpecialPageLifecycle(options, PageLifecycle.ON_RESIZE)
 
   return options
@@ -225,8 +229,7 @@ function createSpecialPageLifecycle(
     | PageLifecycle.ON_HIDE
     | PageLifecycle.ON_RESIZE
 ): (...args: any[]) => void {
-  const originLifecycle =
-    options.pageLifetimes[SpecialPageLifecycleMap[lifecycle]]
+  const originLifecycle = options.pageLifetimes[SpecialLifecycleMap[lifecycle]]
   return createLifecycle(lifecycle, originLifecycle)
 }
 
