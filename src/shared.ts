@@ -86,7 +86,10 @@ export function deepWatch(
         (_, __, onCleanup) => {
           this.setData({ [key]: deepToRaw(value) })
           watchArrayItem(value as unknown[])
-          onCleanup(() => stoppers.forEach(stopper => stopper()))
+          onCleanup(() => {
+            stoppers.forEach(stopper => stopper())
+            stoppers.clear()
+          })
         },
         { lazy: true }
       )
@@ -96,7 +99,7 @@ export function deepWatch(
 
     if (isPlainObject(row)) {
       const stoppers = new Set<StopHandle>()
-      const watchObjectItem = (obj: Record<string, unknown>): void => {
+      const watchObjectField = (obj: Record<string, unknown>): void => {
         Object.keys(obj).forEach(name => {
           const k = `${key}.${name}`
           stoppers.add(
@@ -110,6 +113,7 @@ export function deepWatch(
               { lazy: true }
             )
           )
+          deepWatch.call(this, k, obj[name])
         })
       }
 
@@ -117,12 +121,15 @@ export function deepWatch(
         () => Object.keys(value),
         (_, __, onCleanup) => {
           this.setData({ [key]: deepToRaw(value) })
-          watchObjectItem(value as Record<string, unknown>)
-          onCleanup(() => stoppers.forEach(stopper => stopper()))
+          watchObjectField(value as Record<string, unknown>)
+          onCleanup(() => {
+            stoppers.forEach(stopper => stopper())
+            stoppers.clear()
+          })
         },
         { lazy: true }
       )
-      watchObjectItem(value as Record<string, unknown>)
+      watchObjectField(value as Record<string, unknown>)
       return
     }
 
