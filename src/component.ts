@@ -1,4 +1,4 @@
-import { stop } from '@next-vue/reactivity'
+import { stop, shallowReadonly, lock, unlock } from '@next-vue/reactivity'
 import { PageLifecycle, Config, Bindings } from './page'
 import { deepToRaw, deepWatch } from './shared'
 import { setCurrentComponent, Component } from './instance'
@@ -42,6 +42,7 @@ export function defineComponent(
 ): OutputComponentOptions {
   let setup: ComponentSetup
   let options: OutputComponentOptions
+  let properties: string[] | null = null
   if (isFunction(optionsOrSetup)) {
     setup = optionsOrSetup
     options = {}
@@ -53,8 +54,13 @@ export function defineComponent(
     const { setup: setupOption, ...restOptions } = optionsOrSetup
     setup = setupOption
     options = restOptions
+
+    if (options.properties) {
+      properties = Object.keys(options.properties)
+    }
   }
 
+  let props: Record<string, unknown> | null = null
   let binding: Bindings
   if (options.lifetimes === undefined) {
     options.lifetimes = {}
@@ -65,6 +71,14 @@ export function defineComponent(
     options[ComponentLifecycle.CREATED]
   options.lifetimes[ComponentLifecycle.CREATED] = function(this: Component) {
     setCurrentComponent(this)
+    if (properties) {
+      const rawProps: Record<string, unknown> = {}
+      properties.forEach(property => {
+        rawProps[property] = this[property]
+      })
+      props = shallowReadonly(rawProps)
+    }
+
     const context: ComponentContext = {
       is: this.is,
       id: this.id,
@@ -82,7 +96,7 @@ export function defineComponent(
       animate: this.animate.bind(this),
       clearAnimation: this.clearAnimation.bind(this)
     }
-    binding = setup(this.data, context)
+    binding = setup(props, context)
     if (originCreated !== undefined) {
       originCreated.call(this)
     }
@@ -202,6 +216,25 @@ export function defineComponent(
   options.pageLifetimes[
     SpecialLifecycleMap[PageLifecycle.ON_RESIZE]
   ] = createSpecialPageLifecycle(options, PageLifecycle.ON_RESIZE)
+
+  if (properties) {
+    if (options.observers === undefined) {
+      options.observers = {}
+    }
+
+    properties.forEach(property => {
+      const originObserver = options.observers[property]
+      options.observers[property] = function(this: Component, value: any) {
+        unlock()
+        props![property] = value
+        lock()
+
+        if (originObserver !== undefined) {
+          originObserver.call(this, value)
+        }
+      }
+    })
+  }
 
   return options
 }
