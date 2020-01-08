@@ -1,12 +1,13 @@
 import { isRef, isReactive, isReadonly, toRaw } from '@next-vue/reactivity'
-import { watch, StopHandle } from './watch'
+import { watch } from './watch'
 import {
   isArray,
   getType,
   isSimpleValue,
   isObject,
   isPlainObject,
-  isFunction
+  isFunction,
+  isSuperset
 } from './utils'
 
 export function deepToRaw(x: unknown): unknown {
@@ -62,70 +63,48 @@ export function deepWatch(
   if (isReactive(value)) {
     const row = toRaw(value)
     if (isArray(row)) {
-      const stoppers = new Set<StopHandle>()
-      const watchArrayItem = (arr: unknown[]): void => {
-        for (let i = 0; i < arr.length; i++) {
-          const k = `${key}[${i}]`
-          stoppers.add(
-            watch(
-              () => arr[i],
-              () => {
-                if (i in arr) {
-                  this.setData({ [k]: deepToRaw(arr[i]) })
-                }
-              },
-              { lazy: true }
-            )
-          )
-          deepWatch.call(this, k, arr[i])
-        }
-      }
-
       watch(
-        () => (value as unknown[]).length,
-        (_, __, onCleanup) => {
+        () => value,
+        () => {
           this.setData({ [key]: deepToRaw(value) })
-          watchArrayItem(value as unknown[])
-          onCleanup(() => {
-            stoppers.forEach(stopper => stopper())
-            stoppers.clear()
-          })
         },
-        { lazy: true }
+        {
+          lazy: true,
+          deep: true
+        }
       )
-      watchArrayItem(value as unknown[])
       return
     }
 
     if (isPlainObject(row)) {
-      const stoppers = new Set<StopHandle>()
-      const watchObjectField = (obj: Record<string, unknown>): void => {
+      const watchObjectField = (
+        obj: Record<string, unknown>,
+        oldObj: Record<string, unknown> = {}
+      ): void => {
         Object.keys(obj).forEach(name => {
-          const k = `${key}.${name}`
-          stoppers.add(
-            watch(
-              () => obj[name],
-              () => {
-                if (name in obj) {
-                  this.setData({ [k]: deepToRaw(obj[name]) })
-                }
-              },
-              { lazy: true }
-            )
-          )
-          deepWatch.call(this, k, obj[name])
+          if (toRaw(obj[name]) !== toRaw(oldObj[name])) {
+            deepWatch.call(this, `${key}.${name}`, obj[name])
+          }
         })
       }
 
-      watch(
-        () => Object.keys(value),
-        (_, __, onCleanup) => {
-          this.setData({ [key]: deepToRaw(value) })
-          watchObjectField(value as Record<string, unknown>)
-          onCleanup(() => {
-            stoppers.forEach(stopper => stopper())
-            stoppers.clear()
-          })
+      watch<Record<string, unknown>>(
+        () => ({ ...value }),
+        (obj, oldObj) => {
+          const keys = Object.keys(obj)
+          const oldKeys = Object.keys(oldObj)
+          if (isSuperset(keys, oldKeys)) {
+            // No deleted field
+            keys.forEach(name => {
+              if (toRaw(obj[name]) !== toRaw(oldObj[name])) {
+                this.setData({ [`${key}.${name}`]: deepToRaw(obj[name]) })
+              }
+            })
+          } else {
+            this.setData({ [key]: deepToRaw(obj) })
+          }
+
+          watchObjectField(obj, oldObj)
         },
         { lazy: true }
       )

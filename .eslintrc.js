@@ -26,6 +26,10 @@ const config = {
       rules: {
         'no-redeclare': 'error',
         'import/no-mutable-exports': 'off',
+        'unicorn/no-for-loop': 'off',
+        'unicorn/prefer-includes': 'off',
+        '@typescript-eslint/prefer-for-of': 'off',
+        '@typescript-eslint/prefer-includes': 'off',
         '@typescript-eslint/promise-function-async': 'off',
         '@typescript-eslint/prefer-nullish-coalescing': 'off',
         '@typescript-eslint/ban-types': ['error', { types }]

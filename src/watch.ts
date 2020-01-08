@@ -174,7 +174,6 @@ function traverse(value: unknown, seen: Set<unknown> = new Set()): unknown {
 
   seen.add(value)
   if (isArray(value)) {
-    // eslint-disable-next-line unicorn/no-for-loop, @typescript-eslint/prefer-for-of
     for (let i = 0; i < value.length; i++) {
       traverse(value[i], seen)
     }

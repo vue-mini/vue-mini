@@ -21,6 +21,15 @@ export function isFunction(x: unknown): x is Function {
   return typeof x === 'function'
 }
 
+export function isSuperset(x: unknown[], y: unknown[]): boolean {
+  // Is X a superset of Y
+  if (x.length < y.length) {
+    return false
+  }
+
+  return y.every(item => x.indexOf(item) !== -1)
+}
+
 // Compare whether a value has changed, accounting for NaN.
 export function hasChanged(value: unknown, oldValue: unknown): boolean {
   // eslint-disable-next-line no-self-compare
