@@ -6,8 +6,7 @@ import {
   isSimpleValue,
   isObject,
   isPlainObject,
-  isFunction,
-  isSuperset
+  isFunction
 } from './utils'
 
 export function deepToRaw(x: unknown): unknown {
@@ -50,81 +49,14 @@ export function deepWatch(
     return
   }
 
-  if (isRef(value)) {
-    watch(
-      () => value.value,
-      () => this.setData({ [key]: deepToRaw(value.value) }),
-      { lazy: true }
-    )
-    deepWatch.call(this, key, value.value)
-    return
-  }
-
-  if (isReactive(value)) {
-    const row = toRaw(value)
-    if (isArray(row)) {
-      watch(
-        () => value,
-        () => {
-          this.setData({ [key]: deepToRaw(value) })
-        },
-        {
-          lazy: true,
-          deep: true
-        }
-      )
-      return
+  watch(
+    () => value,
+    () => {
+      this.setData({ [key]: deepToRaw(value) })
+    },
+    {
+      lazy: true,
+      deep: true
     }
-
-    if (isPlainObject(row)) {
-      const watchObjectField = (
-        obj: Record<string, unknown>,
-        oldObj: Record<string, unknown> = {}
-      ): void => {
-        Object.keys(obj).forEach(name => {
-          if (toRaw(obj[name]) !== toRaw(oldObj[name])) {
-            deepWatch.call(this, `${key}.${name}`, obj[name])
-          }
-        })
-      }
-
-      watch<Record<string, unknown>>(
-        () => ({ ...value }),
-        (obj, oldObj) => {
-          const keys = Object.keys(obj)
-          const oldKeys = Object.keys(oldObj)
-          if (isSuperset(keys, oldKeys)) {
-            // No deleted field
-            keys.forEach(name => {
-              if (toRaw(obj[name]) !== toRaw(oldObj[name])) {
-                this.setData({ [`${key}.${name}`]: deepToRaw(obj[name]) })
-              }
-            })
-          } else {
-            this.setData({ [key]: deepToRaw(obj) })
-          }
-
-          watchObjectField(obj, oldObj)
-        },
-        { lazy: true }
-      )
-      watchObjectField(value as Record<string, unknown>)
-      return
-    }
-
-    return
-  }
-
-  if (isArray(value)) {
-    value.forEach((_, index) => {
-      deepWatch.call(this, `${key}[${index}]`, value[index])
-    })
-    return
-  }
-
-  if (isPlainObject(value)) {
-    Object.keys(value).forEach(name => {
-      deepWatch.call(this, `${key}.${name}`, value[name])
-    })
-  }
+  )
 }

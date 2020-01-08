@@ -97,11 +97,11 @@ export function defineComponent(
       clearAnimation: this.clearAnimation.bind(this)
     }
     binding = setup(props, context)
+    setCurrentComponent(null)
+
     if (originCreated !== undefined) {
       originCreated.call(this)
     }
-
-    setCurrentComponent(null)
   }
 
   const attached = createComponentLifecycle(
@@ -110,6 +110,7 @@ export function defineComponent(
   )
   options.lifetimes[ComponentLifecycle.ATTACHED] = function(this: Component) {
     if (binding !== undefined) {
+      setCurrentComponent(this) // For effects record
       Object.keys(binding).forEach(key => {
         const value = (binding as Record<string, unknown>)[key]
         if (isFunction(value)) {
@@ -120,6 +121,7 @@ export function defineComponent(
         this.setData({ [key]: deepToRaw(value) })
         deepWatch.call(this, key, value)
       })
+      setCurrentComponent(null)
     }
 
     attached.call(this)

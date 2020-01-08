@@ -84,11 +84,11 @@ export function definePage(
       })
     }
 
+    setCurrentPage(null)
+
     if (originOnLoad !== undefined) {
       originOnLoad.call(this, query)
     }
-
-    setCurrentPage(null)
   }
 
   const onUnload = createLifecycle(options, PageLifecycle.ON_UNLOAD)
