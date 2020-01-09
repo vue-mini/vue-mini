@@ -8,6 +8,7 @@ import {
 } from '@next-vue/reactivity'
 import { queueJob } from './scheduler'
 import { recordEffect } from './reactivity'
+import { getCurrentInstance } from './instance'
 import { isArray, isObject, isFunction, hasChanged } from './utils'
 
 export type WatchEffect = (onCleanup: CleanupRegistrator) => void
@@ -161,9 +162,17 @@ function doWatch(
     }
   }
 
+  const instance = getCurrentInstance()
   recordEffect(runner)
   return () => {
     stop(runner)
+    if (instance) {
+      const effects = instance.effects!
+      const index = effects.indexOf(runner)
+      if (index > -1) {
+        effects.splice(index, 1)
+      }
+    }
   }
 }
 
