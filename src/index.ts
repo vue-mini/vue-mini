@@ -2,6 +2,7 @@ export {
   Query,
   PageContext,
   Bindings,
+  PageSetup,
   PageOptions,
   Config,
   OutputPageOptions,
@@ -10,7 +11,8 @@ export {
 export {
   ComponentContext,
   ComponentSetup,
-  ComponentOptions,
+  ComponentOptionsWithoutProps,
+  ComponentOptionsWithProps,
   OutputComponentOptions,
   defineComponent
 } from './component'

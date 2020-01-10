@@ -13,7 +13,8 @@
     "build": "node build.js"
   },
   "dependencies": {
-    "@next-vue/reactivity": "^3.0.0-alpha.10"
+    "@next-vue/reactivity": "^3.0.0-alpha.10",
+    "wechat-miniprogram-types": "^0.1.0"
   },
   "devDependencies": {
     "@microsoft/api-extractor": "^7.7.0",
@@ -31,7 +32,6 @@
     "rollup": "^1.27.9",
     "rollup-plugin-typescript2": "^0.25.3",
     "typescript": "^3.7.3",
-    "wechat-miniprogram-types": "^0.1.0",
     "xo": "^0.25.3"
   },
   "husky": {

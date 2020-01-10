@@ -4,20 +4,53 @@ import { deepToRaw, deepWatch } from './shared'
 import { setCurrentComponent, Component } from './instance'
 import { isFunction, toHiddenField } from './utils'
 
+interface MissingInstanceMethods {
+  selectOwnerComponent: () => WechatMiniprogram.Component.TrivialInstance
+  animate: (...args: any[]) => void
+  clearAnimation: (...args: any[]) => void
+}
+
 export type ComponentContext = WechatMiniprogram.Component.InstanceProperties &
   Omit<
     WechatMiniprogram.Component.InstanceMethods<Record<string, unknown>>,
     'setData' | 'hasBehavior'
-  > & {
-    selectOwnerComponent: () => WechatMiniprogram.Component.TrivialInstance
-    animate: (...args: any[]) => void
-    clearAnimation: (...args: any[]) => void
-  }
-export type ComponentSetup = (props: any, context: ComponentContext) => Bindings
-export interface ComponentOptions {
-  [key: string]: unknown
-  setup?: ComponentSetup
-}
+  > &
+  MissingInstanceMethods
+
+export type ComponentSetup<
+  Props extends Record<string, any> = Record<string, any>,
+  RawBindings extends Bindings = Bindings
+> = (
+  this: void,
+  props: Readonly<Props>,
+  context: ComponentContext
+) => RawBindings
+
+export type ComponentOptionsWithoutProps<
+  RawBindings extends Bindings = Bindings,
+  Data extends WechatMiniprogram.Component.DataOption = WechatMiniprogram.Component.DataOption,
+  Methods extends WechatMiniprogram.Component.MethodOption = WechatMiniprogram.Component.MethodOption
+> = WechatMiniprogram.Component.Options<
+  Data,
+  WechatMiniprogram.Component.PropertyOption,
+  Methods
+> & { properties?: undefined } & {
+  // eslint-disable-next-line @typescript-eslint/ban-types
+  setup?: ComponentSetup<{}, RawBindings>
+} & ThisType<MissingInstanceMethods>
+
+export type ComponentOptionsWithProps<
+  Props extends WechatMiniprogram.Component.PropertyOption = WechatMiniprogram.Component.PropertyOption,
+  RawBindings extends Bindings = Bindings,
+  Data extends WechatMiniprogram.Component.DataOption = WechatMiniprogram.Component.DataOption,
+  Methods extends WechatMiniprogram.Component.MethodOption = WechatMiniprogram.Component.MethodOption
+> = WechatMiniprogram.Component.Options<Data, Props, Methods> & {
+  setup?: ComponentSetup<
+    WechatMiniprogram.Component.PropertyOptionToData<Props>,
+    RawBindings
+  >
+} & ThisType<MissingInstanceMethods>
+
 export type OutputComponentOptions = Record<string, any>
 
 export const enum ComponentLifecycle {
@@ -36,8 +69,36 @@ const SpecialLifecycleMap = {
   [ComponentLifecycle.READY]: PageLifecycle.ON_READY
 }
 
+export function defineComponent<RawBindings extends Bindings>(
+  // eslint-disable-next-line @typescript-eslint/ban-types
+  setup: ComponentSetup<{}, RawBindings>,
+  config?: Config
+): OutputComponentOptions
+
+export function defineComponent<
+  RawBindings extends Bindings,
+  Data extends WechatMiniprogram.Component.DataOption,
+  Methods extends WechatMiniprogram.Component.MethodOption
+>(
+  options: ComponentOptionsWithoutProps<RawBindings, Data, Methods>,
+  config?: Config
+): OutputComponentOptions
+
+export function defineComponent<
+  Props extends WechatMiniprogram.Component.PropertyOption,
+  RawBindings extends Bindings,
+  Data extends WechatMiniprogram.Component.DataOption,
+  Methods extends WechatMiniprogram.Component.MethodOption
+>(
+  options: ComponentOptionsWithProps<Props, RawBindings, Data, Methods>,
+  config?: Config
+): OutputComponentOptions
+
 export function defineComponent(
-  optionsOrSetup: ComponentOptions | ComponentSetup,
+  optionsOrSetup:
+    | ComponentOptionsWithProps
+    | ComponentOptionsWithoutProps
+    | ComponentSetup,
   config: Config = { listenPageScroll: false }
 ): OutputComponentOptions {
   let setup: ComponentSetup
@@ -60,7 +121,7 @@ export function defineComponent(
     }
   }
 
-  let props: Record<string, unknown> | null = null
+  let props: Readonly<Record<string, any>>
   let binding: Bindings
   if (options.lifetimes === undefined) {
     options.lifetimes = {}
@@ -71,13 +132,14 @@ export function defineComponent(
     options[ComponentLifecycle.CREATED]
   options.lifetimes[ComponentLifecycle.CREATED] = function(this: Component) {
     setCurrentComponent(this)
+    const rawProps: Record<string, any> = {}
     if (properties) {
-      const rawProps: Record<string, unknown> = {}
       properties.forEach(property => {
         rawProps[property] = this[property]
       })
-      props = shallowReadonly(rawProps)
     }
+
+    props = shallowReadonly(rawProps)
 
     const context: ComponentContext = {
       is: this.is,
@@ -228,7 +290,7 @@ export function defineComponent(
       const originObserver = options.observers[property]
       options.observers[property] = function(this: Component, value: any) {
         unlock()
-        props![property] = value
+        ;(props as Record<string, any>)[property] = value
         lock()
 
         if (originObserver !== undefined) {

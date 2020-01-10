@@ -6,14 +6,22 @@ import { isFunction, toHiddenField } from './utils'
 export type Query = Record<string, string | undefined>
 export type PageContext = WechatMiniprogram.Page.InstanceProperties
 export type Bindings = Record<string, any> | void
+export type PageSetup<
+  PageQuery extends Query = Query,
+  RawBindings extends Bindings = Bindings
+> = (
+  this: void,
+  query: Readonly<PageQuery>,
+  context: PageContext
+) => RawBindings
 export type PageOptions<
-  RawBindings extends Bindings,
-  Data extends WechatMiniprogram.Page.DataOption,
-  Custom extends WechatMiniprogram.Page.CustomOption
-> = ({ setup: (query: Query, context: PageContext) => RawBindings } & Custom &
-  Partial<WechatMiniprogram.Page.Data<Data>> &
-  Partial<WechatMiniprogram.Page.ILifetime>) &
-  ThisType<WechatMiniprogram.Page.Instance<Data, Custom>>
+  PageQuery extends Query = Query,
+  RawBindings extends Bindings = Bindings,
+  Data extends WechatMiniprogram.Page.DataOption = WechatMiniprogram.Page.DataOption,
+  Custom extends WechatMiniprogram.Page.CustomOption = WechatMiniprogram.Page.CustomOption
+> = WechatMiniprogram.Page.Options<Data, Custom> & {
+  setup?: PageSetup<PageQuery, RawBindings>
+}
 export interface Config {
   listenPageScroll: boolean
 }
@@ -33,25 +41,26 @@ export const enum PageLifecycle {
   ON_TAB_ITEM_TAP = 'onTabItemTap'
 }
 
-export function definePage<RawBindings extends Bindings>(
-  setup: (query: Query, context: PageContext) => RawBindings,
-  config?: Config
-): OutputPageOptions
+export function definePage<
+  PageQuery extends Query,
+  RawBindings extends Bindings
+>(setup: PageSetup<PageQuery, RawBindings>, config?: Config): OutputPageOptions
 
 export function definePage<
+  PageQuery extends Query,
   RawBindings extends Bindings,
   Data extends WechatMiniprogram.Page.DataOption,
   Custom extends WechatMiniprogram.Page.CustomOption
 >(
-  options: PageOptions<RawBindings, Data, Custom>,
+  options: PageOptions<PageQuery, RawBindings, Data, Custom>,
   config?: Config
 ): OutputPageOptions
 
 export function definePage(
-  optionsOrSetup: any,
+  optionsOrSetup: PageOptions | PageSetup,
   config: Config = { listenPageScroll: false }
 ): OutputPageOptions {
-  let setup: (query: Query, context: PageContext) => Bindings
+  let setup: PageSetup
   let options: OutputPageOptions
   if (isFunction(optionsOrSetup)) {
     setup = optionsOrSetup
