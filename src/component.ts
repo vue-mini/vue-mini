@@ -37,7 +37,7 @@ export type ComponentOptionsWithoutProps<
 > & { properties?: undefined } & {
   // eslint-disable-next-line @typescript-eslint/ban-types
   setup?: ComponentSetup<{}, RawBindings>
-} & ThisType<MissingInstanceMethods>
+}
 
 export type ComponentOptionsWithProps<
   Props extends WechatMiniprogram.Component.PropertyOption = WechatMiniprogram.Component.PropertyOption,
@@ -49,7 +49,7 @@ export type ComponentOptionsWithProps<
     WechatMiniprogram.Component.PropertyOptionToData<Props>,
     RawBindings
   >
-} & ThisType<MissingInstanceMethods>
+}
 
 export type OutputComponentOptions = Record<string, any>
 
