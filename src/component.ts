@@ -51,7 +51,7 @@ export type ComponentOptionsWithProps<
   >
 }
 
-export type OutputComponentOptions = Record<string, any>
+type Options = Record<string, any>
 
 export const enum ComponentLifecycle {
   CREATED = 'created',
@@ -73,7 +73,7 @@ export function defineComponent<RawBindings extends Bindings>(
   // eslint-disable-next-line @typescript-eslint/ban-types
   setup: ComponentSetup<{}, RawBindings>,
   config?: Config
-): OutputComponentOptions
+): string
 
 export function defineComponent<
   RawBindings extends Bindings,
@@ -82,7 +82,7 @@ export function defineComponent<
 >(
   options: ComponentOptionsWithoutProps<RawBindings, Data, Methods>,
   config?: Config
-): OutputComponentOptions
+): string
 
 export function defineComponent<
   Props extends WechatMiniprogram.Component.PropertyOption,
@@ -92,7 +92,7 @@ export function defineComponent<
 >(
   options: ComponentOptionsWithProps<Props, RawBindings, Data, Methods>,
   config?: Config
-): OutputComponentOptions
+): string
 
 export function defineComponent(
   optionsOrSetup:
@@ -100,16 +100,17 @@ export function defineComponent(
     | ComponentOptionsWithoutProps
     | ComponentSetup,
   config: Config = { listenPageScroll: false }
-): OutputComponentOptions {
+): string {
   let setup: ComponentSetup
-  let options: OutputComponentOptions
+  let options: Options
   let properties: string[] | null = null
   if (isFunction(optionsOrSetup)) {
     setup = optionsOrSetup
     options = {}
   } else {
     if (optionsOrSetup.setup === undefined) {
-      return optionsOrSetup
+      // eslint-disable-next-line new-cap
+      return Component(optionsOrSetup)
     }
 
     const { setup: setupOption, ...restOptions } = optionsOrSetup
@@ -300,11 +301,12 @@ export function defineComponent(
     })
   }
 
-  return options
+  // eslint-disable-next-line new-cap
+  return Component(options)
 }
 
 function createComponentLifecycle(
-  options: OutputComponentOptions,
+  options: Options,
   lifecycle: ComponentLifecycle
 ): (...args: any[]) => void {
   const originLifecycle = options.lifetimes[lifecycle] || options[lifecycle]
@@ -312,7 +314,7 @@ function createComponentLifecycle(
 }
 
 function createPageLifecycle(
-  options: OutputComponentOptions,
+  options: Options,
   lifecycle: PageLifecycle
 ): (...args: any[]) => void {
   const originLifecycle = options.methods[lifecycle]
@@ -320,7 +322,7 @@ function createPageLifecycle(
 }
 
 function createSpecialPageLifecycle(
-  options: OutputComponentOptions,
+  options: Options,
   lifecycle:
     | PageLifecycle.ON_SHOW
     | PageLifecycle.ON_HIDE

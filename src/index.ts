@@ -5,7 +5,6 @@ export {
   PageSetup,
   PageOptions,
   Config,
-  OutputPageOptions,
   definePage
 } from './page'
 export {
@@ -13,7 +12,6 @@ export {
   ComponentSetup,
   ComponentOptionsWithoutProps,
   ComponentOptionsWithProps,
-  OutputComponentOptions,
   defineComponent
 } from './component'
 export * from './reactivity'

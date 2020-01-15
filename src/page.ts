@@ -25,7 +25,7 @@ export type PageOptions<
 export interface Config {
   listenPageScroll: boolean
 }
-export type OutputPageOptions = Record<string, any>
+type Options = Record<string, any>
 
 export const enum PageLifecycle {
   ON_LOAD = 'onLoad',
@@ -44,7 +44,7 @@ export const enum PageLifecycle {
 export function definePage<
   PageQuery extends Query,
   RawBindings extends Bindings
->(setup: PageSetup<PageQuery, RawBindings>, config?: Config): OutputPageOptions
+>(setup: PageSetup<PageQuery, RawBindings>, config?: Config): void
 
 export function definePage<
   PageQuery extends Query,
@@ -54,20 +54,21 @@ export function definePage<
 >(
   options: PageOptions<PageQuery, RawBindings, Data, Custom>,
   config?: Config
-): OutputPageOptions
+): void
 
 export function definePage(
   optionsOrSetup: PageOptions | PageSetup,
   config: Config = { listenPageScroll: false }
-): OutputPageOptions {
+): void {
   let setup: PageSetup
-  let options: OutputPageOptions
+  let options: Options
   if (isFunction(optionsOrSetup)) {
     setup = optionsOrSetup
     options = {}
   } else {
     if (optionsOrSetup.setup === undefined) {
-      return optionsOrSetup
+      // eslint-disable-next-line new-cap
+      return Page(optionsOrSetup)
     }
 
     const { setup: setupOption, ...restOptions } = optionsOrSetup
@@ -164,11 +165,12 @@ export function definePage(
     PageLifecycle.ON_TAB_ITEM_TAP
   )
 
-  return options
+  // eslint-disable-next-line new-cap
+  return Page(options)
 }
 
 function createLifecycle(
-  options: OutputPageOptions,
+  options: Options,
   lifecycle: PageLifecycle
 ): (...args: any[]) => void {
   const originLifecycle = options[lifecycle] as Function
