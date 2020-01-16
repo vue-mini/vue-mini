@@ -4,11 +4,13 @@ import { deepToRaw, deepWatch } from './shared'
 import { setCurrentComponent, Component } from './instance'
 import { isFunction, toHiddenField } from './utils'
 
+/** * Temporary patch for https://github.com/wechat-miniprogram/api-typings/issues/96 ***/
 interface MissingInstanceMethods {
   selectOwnerComponent: () => WechatMiniprogram.Component.TrivialInstance
   animate: (...args: any[]) => void
   clearAnimation: (...args: any[]) => void
 }
+/*************************************************************************************/
 
 export type ComponentContext = WechatMiniprogram.Component.InstanceProperties &
   Omit<
@@ -45,11 +47,29 @@ export type ComponentOptionsWithProps<
   Data extends WechatMiniprogram.Component.DataOption = WechatMiniprogram.Component.DataOption,
   Methods extends WechatMiniprogram.Component.MethodOption = WechatMiniprogram.Component.MethodOption
 > = WechatMiniprogram.Component.Options<Data, Props, Methods> & {
-  setup?: ComponentSetup<
-    WechatMiniprogram.Component.PropertyOptionToData<Props>,
-    RawBindings
-  >
+  setup?: ComponentSetup<PropertyOptionToData<Props>, RawBindings>
 }
+
+/** * Temporary patch for https://github.com/wechat-miniprogram/api-typings/issues/97 ***/
+type PropertyOptionToData<
+  T extends WechatMiniprogram.Component.PropertyOption
+> = {
+  [Name in keyof T]: PropertyToData<T[Name]>
+}
+type PropertyToData<
+  T extends WechatMiniprogram.Component.AllProperty
+> = T extends WechatMiniprogram.Component.PropertyType
+  ? WechatMiniprogram.Component.ValueType<T>
+  : T extends WechatMiniprogram.Component.AllFullProperty
+  ? FullPropertyToData<T>
+  : never
+type FullPropertyToData<
+  T extends WechatMiniprogram.Component.AllFullProperty
+> = T['optionalTypes'] extends OptionalTypes<infer Option>
+  ? WechatMiniprogram.Component.ValueType<Option | T['type']>
+  : WechatMiniprogram.Component.ValueType<T['type']>
+type OptionalTypes<T extends WechatMiniprogram.Component.PropertyType> = T[]
+/*************************************************************************************/
 
 type Options = Record<string, any>
 
