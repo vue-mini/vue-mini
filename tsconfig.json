@@ -18,7 +18,7 @@
     "noUnusedParameters": true,
     "typeRoots" : [
       "./node_modules/@types",
-      "./node_modules/wechat-miniprogram-types"
+      "./node_modules/miniprogram-api-typings"
     ]
   },
   "include": [

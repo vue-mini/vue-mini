@@ -14,7 +14,7 @@
   },
   "dependencies": {
     "@next-vue/reactivity": "^3.0.0-alpha.10",
-    "wechat-miniprogram-types": "^0.1.0"
+    "miniprogram-api-typings": "^2.10.0-1"
   },
   "devDependencies": {
     "@microsoft/api-extractor": "^7.7.0",
@@ -26,7 +26,7 @@
     "eslint-config-silent": "^0.8.0",
     "eslint-config-xo-typescript": "^0.24.1",
     "fs-extra": "^8.1.0",
-    "husky": "^3.1.0",
+    "husky": "^4.0.10",
     "lint-staged": "^9.5.0",
     "prettier": "^1.19.1",
     "rollup": "^1.27.9",
