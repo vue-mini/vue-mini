@@ -37,6 +37,9 @@ const config = {
     }
   ],
   globals: {
+    App: 'readonly',
+    Page: 'readonly',
+    Component: 'readonly',
     __DEV__: 'readonly'
   }
 };

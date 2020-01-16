@@ -1,7 +1,7 @@
 import { stop, shallowReadonly, lock, unlock } from '@next-vue/reactivity'
 import { PageLifecycle, Config, Bindings } from './page'
 import { deepToRaw, deepWatch } from './shared'
-import { setCurrentComponent, Component } from './instance'
+import { setCurrentComponent, ComponentInstance } from './instance'
 import { isFunction, toHiddenField } from './utils'
 
 /** * Temporary patch for https://github.com/wechat-miniprogram/api-typings/issues/96 ***/
@@ -151,7 +151,9 @@ export function defineComponent(
   const originCreated =
     options.lifetimes[ComponentLifecycle.CREATED] ||
     options[ComponentLifecycle.CREATED]
-  options.lifetimes[ComponentLifecycle.CREATED] = function(this: Component) {
+  options.lifetimes[ComponentLifecycle.CREATED] = function(
+    this: ComponentInstance
+  ) {
     setCurrentComponent(this)
     const rawProps: Record<string, any> = {}
     if (properties) {
@@ -191,7 +193,9 @@ export function defineComponent(
     options,
     ComponentLifecycle.ATTACHED
   )
-  options.lifetimes[ComponentLifecycle.ATTACHED] = function(this: Component) {
+  options.lifetimes[ComponentLifecycle.ATTACHED] = function(
+    this: ComponentInstance
+  ) {
     if (binding !== undefined) {
       setCurrentComponent(this) // For effects record
       Object.keys(binding).forEach(key => {
@@ -214,7 +218,9 @@ export function defineComponent(
     options,
     ComponentLifecycle.DETACHED
   )
-  options.lifetimes[ComponentLifecycle.DETACHED] = function(this: Component) {
+  options.lifetimes[ComponentLifecycle.DETACHED] = function(
+    this: ComponentInstance
+  ) {
     detached.call(this)
 
     if (this._effects) {
@@ -255,7 +261,7 @@ export function defineComponent(
 
   if (options.methods[PageLifecycle.ON_SHARE_APP_MESSAGE] === undefined) {
     options.methods[PageLifecycle.ON_SHARE_APP_MESSAGE] = function(
-      this: Component,
+      this: ComponentInstance,
       share: WechatMiniprogram.Page.IShareAppMessageOption
     ): WechatMiniprogram.Page.ICustomShareContent {
       const hook = this[toHiddenField(PageLifecycle.ON_SHARE_APP_MESSAGE)] as (
@@ -309,7 +315,10 @@ export function defineComponent(
 
     properties.forEach(property => {
       const originObserver = options.observers[property]
-      options.observers[property] = function(this: Component, value: any) {
+      options.observers[property] = function(
+        this: ComponentInstance,
+        value: any
+      ) {
         unlock()
         ;(props as Record<string, any>)[property] = value
         lock()
@@ -357,7 +366,7 @@ function createLifecycle(
   originLifecycle: Function | undefined
 ): (...args: any[]) => void {
   const hiddenField = toHiddenField(lifecycle)
-  return function(this: Component, ...args: any[]) {
+  return function(this: ComponentInstance, ...args: any[]) {
     const hooks = this[hiddenField]
     if (hooks) {
       hooks.forEach((hook: Function) => hook(...args))

@@ -1,5 +1,5 @@
 import { stop } from '@next-vue/reactivity'
-import { setCurrentPage, Page } from './instance'
+import { setCurrentPage, PageInstance } from './instance'
 import { deepToRaw, deepWatch } from './shared'
 import { isFunction, toHiddenField } from './utils'
 
@@ -77,7 +77,7 @@ export function definePage(
   }
 
   const originOnLoad = options[PageLifecycle.ON_LOAD]
-  options[PageLifecycle.ON_LOAD] = function(this: Page, query: Query) {
+  options[PageLifecycle.ON_LOAD] = function(this: PageInstance, query: Query) {
     setCurrentPage(this)
     const context: PageContext = { is: this.is, route: this.route }
     const bindings = setup(query, context)
@@ -102,7 +102,7 @@ export function definePage(
   }
 
   const onUnload = createLifecycle(options, PageLifecycle.ON_UNLOAD)
-  options[PageLifecycle.ON_UNLOAD] = function(this: Page) {
+  options[PageLifecycle.ON_UNLOAD] = function(this: PageInstance) {
     onUnload.call(this)
 
     if (this._effects) {
@@ -120,7 +120,7 @@ export function definePage(
 
   if (options[PageLifecycle.ON_SHARE_APP_MESSAGE] === undefined) {
     options[PageLifecycle.ON_SHARE_APP_MESSAGE] = function(
-      this: Page,
+      this: PageInstance,
       share: WechatMiniprogram.Page.IShareAppMessageOption
     ): WechatMiniprogram.Page.ICustomShareContent {
       const hook = this[toHiddenField(PageLifecycle.ON_SHARE_APP_MESSAGE)] as (
@@ -174,7 +174,7 @@ function createLifecycle(
   lifecycle: PageLifecycle
 ): (...args: any[]) => void {
   const originLifecycle = options[lifecycle] as Function
-  return function(this: Page, ...args: any[]) {
+  return function(this: PageInstance, ...args: any[]) {
     const hooks = this[toHiddenField(lifecycle)]
     if (hooks) {
       hooks.forEach((hook: Function) => hook(...args))

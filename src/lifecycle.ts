@@ -2,8 +2,8 @@ import {
   currentPage,
   currentComponent,
   getCurrentInstance,
-  Page,
-  Component
+  PageInstance,
+  ComponentInstance
 } from './instance'
 import { ComponentLifecycle } from './component'
 import { PageLifecycle, Query } from './page'
@@ -103,7 +103,7 @@ function createComponentHook<T extends Function = () => unknown>(
 }
 
 function injectHook(
-  currentInstance: Page | Component,
+  currentInstance: PageInstance | ComponentInstance,
   lifecycle: PageLifecycle | ComponentLifecycle,
   hook: Function
 ): void {

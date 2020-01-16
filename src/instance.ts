@@ -1,6 +1,6 @@
 import { ReactiveEffect } from '@next-vue/reactivity'
 
-export type Page = WechatMiniprogram.Page.InstanceProperties &
+export type PageInstance = WechatMiniprogram.Page.InstanceProperties &
   WechatMiniprogram.Page.InstanceMethods<Record<string, unknown>> & {
     [key: string]: any
     _isInjectedShareHook?: () => true
@@ -8,24 +8,24 @@ export type Page = WechatMiniprogram.Page.InstanceProperties &
     _effects?: ReactiveEffect[]
   }
 
-export type Component = WechatMiniprogram.Component.InstanceProperties &
+export type ComponentInstance = WechatMiniprogram.Component.InstanceProperties &
   WechatMiniprogram.Component.InstanceMethods<Record<string, unknown>> & {
     [key: string]: any
     _effects?: ReactiveEffect[]
   }
 
-export let currentPage: Page | null = null
+export let currentPage: PageInstance | null = null
 
-export let currentComponent: Component | null = null
+export let currentComponent: ComponentInstance | null = null
 
-export function getCurrentInstance(): Page | Component | null {
+export function getCurrentInstance(): PageInstance | ComponentInstance | null {
   return currentPage || currentComponent
 }
 
-export function setCurrentPage(page: Page | null): void {
+export function setCurrentPage(page: PageInstance | null): void {
   currentPage = page
 }
 
-export function setCurrentComponent(component: Component | null): void {
+export function setCurrentComponent(component: ComponentInstance | null): void {
   currentComponent = component
 }
