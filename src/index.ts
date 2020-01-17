@@ -1,3 +1,4 @@
+export { AppSetup, AppOptions, createApp } from './app'
 export {
   Query,
   PageContext,
