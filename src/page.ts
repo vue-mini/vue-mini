@@ -9,11 +9,7 @@ export type Bindings = Record<string, any> | void
 export type PageSetup<
   PageQuery extends Query = Query,
   RawBindings extends Bindings = Bindings
-> = (
-  this: void,
-  query: Readonly<PageQuery>,
-  context: PageContext
-) => RawBindings
+> = (this: void, query: PageQuery, context: PageContext) => RawBindings
 export type PageOptions<
   PageQuery extends Query = Query,
   RawBindings extends Bindings = Bindings,
