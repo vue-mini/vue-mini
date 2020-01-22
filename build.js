@@ -8,6 +8,8 @@ const { Extractor, ExtractorConfig } = require('@microsoft/api-extractor')
 
 const input = 'src/index.ts'
 const external = ['@next-vue/reactivity']
+const check = false
+const include = ['src', 'global.d.ts']
 
 async function generateDeclaration() {
   const bundle = await rollup.rollup({
@@ -15,8 +17,9 @@ async function generateDeclaration() {
     external,
     plugins: [
       typescript({
-        check: false,
+        check,
         tsconfigOverride: {
+          include,
           compilerOptions: {
             declaration: true,
             declarationMap: true
@@ -35,7 +38,13 @@ async function generateCode({ isDev, format, fileName }) {
   const bundle = await rollup.rollup({
     input,
     external,
-    plugins: [typescript({ check: false }), replace({ __DEV__: isDev })]
+    plugins: [
+      typescript({
+        check,
+        tsconfigOverride: { include }
+      }),
+      replace({ __DEV__: isDev })
+    ]
   })
   await bundle.write({ file: `dist/${fileName}`, format })
 }
@@ -54,7 +63,7 @@ async function build() {
   })
 
   if (extractorResult.succeeded) {
-    console.error(`API Extractor completed successfully`)
+    console.log(`API Extractor completed successfully`)
   } else {
     console.error(
       `API Extractor completed with ${extractorResult.errorCount} errors` +

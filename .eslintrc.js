@@ -1,9 +1,11 @@
-'use strict';
+'use strict'
 
 const xoTs = require('eslint-config-xo-typescript')
 
-const isProd = process.env.NODE_ENV === 'production';
-const { Function, Omit, ...types } = xoTs.rules['@typescript-eslint/ban-types'][1].types
+const isProd = process.env.NODE_ENV === 'production'
+const { Function, Omit, ...types } = xoTs.rules[
+  '@typescript-eslint/ban-types'
+][1].types
 
 const config = {
   root: true,
@@ -16,10 +18,7 @@ const config = {
   overrides: [
     {
       files: ['*.ts', '*.tsx'],
-      extends: [
-        'xo-typescript',
-        'prettier/@typescript-eslint',
-      ],
+      extends: ['xo-typescript', 'prettier/@typescript-eslint'],
       parserOptions: {
         project: './tsconfig.json'
       },
@@ -42,7 +41,7 @@ const config = {
     Component: 'readonly',
     __DEV__: 'readonly'
   }
-};
+}
 
 if (!isProd) {
   config.extends = [
@@ -51,11 +50,11 @@ if (!isProd) {
     'silent/import',
     'silent/prettier',
     'silent/unicorn'
-  ];
+  ]
   config.overrides[0].extends = [
     ...config.overrides[0].extends,
     'silent/@typescript-eslint'
-  ];
+  ]
 }
 
-module.exports = config;
+module.exports = config

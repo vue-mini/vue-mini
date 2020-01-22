@@ -22,7 +22,8 @@
     ]
   },
   "include": [
-    "global.d.ts",
-    "src"
+    "src",
+    "__tests__",
+    "global.d.ts"
   ]
 }

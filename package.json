@@ -10,6 +10,7 @@
   "scripts": {
     "lint": "cross-env NODE_ENV=production eslint --ext .js,.ts .",
     "type": "tsc --noEmit",
+    "test": "jest",
     "build": "node build.js"
   },
   "dependencies": {
@@ -18,7 +19,9 @@
   },
   "devDependencies": {
     "@microsoft/api-extractor": "^7.7.0",
+    "@next-vue/runtime-test": "^3.0.0-alpha.8",
     "@rollup/plugin-replace": "^2.2.1",
+    "@types/jest": "^24.9.0",
     "@typescript-eslint/eslint-plugin": "^2.11.0",
     "@typescript-eslint/parser": "^2.11.0",
     "cross-env": "^6.0.3",
@@ -27,10 +30,12 @@
     "eslint-config-xo-typescript": "^0.24.1",
     "fs-extra": "^8.1.0",
     "husky": "^4.0.10",
+    "jest": "^24.9.0",
     "lint-staged": "^9.5.0",
     "prettier": "^1.19.1",
     "rollup": "^1.27.9",
     "rollup-plugin-typescript2": "^0.25.3",
+    "ts-jest": "^24.3.0",
     "typescript": "^3.7.3",
     "xo": "^0.25.3"
   },
