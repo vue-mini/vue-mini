@@ -24,7 +24,7 @@ export const enum AppLifecycle {
   ON_HIDE = 'onHide',
   ON_ERROR = 'onError',
   ON_PAGE_NOT_FOUND = 'onPageNotFound',
-  ON_UNHANDLED_REJECTION = 'onError'
+  ON_UNHANDLED_REJECTION = 'onUnhandledRejection'
 }
 
 export function createApp<RawBindings extends Bindings>(
