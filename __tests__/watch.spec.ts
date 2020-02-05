@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-expressions */
 import {
   ITERATE_KEY,
   DebuggerEvent,
@@ -114,7 +115,7 @@ describe('watch', () => {
       const [, oldStatus] = oldVals
       // Assert types
       count + 1
-      oldStatus === true
+      oldStatus === true // eslint-disable-line @typescript-eslint/no-unnecessary-boolean-literal-compare
     })
     await nextTick()
     expect(dummy).toMatchObject([[1, false], []])

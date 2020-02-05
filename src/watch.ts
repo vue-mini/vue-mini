@@ -22,7 +22,6 @@ export type WatchCallback<T = any> = (
 ) => any
 
 type MapSources<T> = {
-  // eslint-disable-next-line @typescript-eslint/generic-type-naming
   [K in keyof T]: T[K] extends WatchSource<infer V> ? V : never
 }
 
