@@ -1,4 +1,3 @@
-import { mockWarn } from '@next-vue/runtime-test'
 import {
   createApp,
   ref,
@@ -11,6 +10,7 @@ import {
   onPageNotFound,
   onUnhandledRejection
 } from '../src'
+import { mockWarn } from './mock-warn'
 
 // Mocks
 declare global {

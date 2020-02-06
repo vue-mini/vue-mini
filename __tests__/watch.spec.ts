@@ -5,8 +5,8 @@ import {
   TrackOpTypes,
   TriggerOpTypes
 } from '@next-vue/reactivity'
-import { mockWarn } from '@next-vue/runtime-test'
 import { watch, reactive, computed, nextTick, ref } from '../src'
+import { mockWarn } from './mock-warn'
 
 describe('watch', () => {
   mockWarn()
