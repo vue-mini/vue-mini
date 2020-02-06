@@ -111,6 +111,7 @@ export function definePage(
       options,
       PageLifecycle.ON_PAGE_SCROLL
     )
+    /* istanbul ignore next */
     options._listenPageScroll = () => true
   }
 
@@ -129,6 +130,7 @@ export function definePage(
       return {}
     }
 
+    /* istanbul ignore next */
     options._isInjectedShareHook = () => true
   }
 
