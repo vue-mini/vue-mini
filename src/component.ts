@@ -4,20 +4,11 @@ import { deepToRaw, deepWatch } from './shared'
 import { setCurrentComponent, ComponentInstance } from './instance'
 import { isFunction, toHiddenField } from './utils'
 
-/** * Temporary patch for https://github.com/wechat-miniprogram/api-typings/issues/96 ***/
-interface MissingInstanceMethods {
-  selectOwnerComponent: () => WechatMiniprogram.Component.TrivialInstance
-  animate: (...args: any[]) => void
-  clearAnimation: (...args: any[]) => void
-}
-/*************************************************************************************/
-
 export type ComponentContext = WechatMiniprogram.Component.InstanceProperties &
   Omit<
     WechatMiniprogram.Component.InstanceMethods<Record<string, unknown>>,
     'setData' | 'hasBehavior'
-  > &
-  MissingInstanceMethods
+  >
 
 export type ComponentSetup<
   Props extends Record<string, any> = Record<string, any>,

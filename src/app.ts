@@ -11,10 +11,6 @@ export type AppOptions<
   Custom extends WechatMiniprogram.IAnyObject = WechatMiniprogram.IAnyObject
 > = WechatMiniprogram.App.Options<Custom> & {
   setup?: AppSetup<RawBindings>
-  // Temporary patch for https://github.com/wechat-miniprogram/api-typings/issues/99
-  onUnhandledRejection?: (
-    options: WechatMiniprogram.OnUnhandledRejectionCallbackResult
-  ) => void
 }
 type Options = Record<string, any>
 
