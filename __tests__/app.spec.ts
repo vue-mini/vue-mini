@@ -168,8 +168,7 @@ describe('app', () => {
     expect(injectedFn2).toBeCalledWith(arg)
   })
 
-  it('call app lifecycle outside app setup', () => {
-    // eslint-disable-next-line @typescript-eslint/no-empty-function
+  it('inject lifecycle outside setup', () => {
     onAppShow(() => {})
     expect('App specific lifecycle').toHaveBeenWarned()
   })
@@ -200,6 +199,6 @@ describe('app', () => {
   it('no setup', () => {
     const options = {}
     createApp(options)
-    expect(app).toBe(options)
+    expect(app).toBeInstanceOf(Object)
   })
 })

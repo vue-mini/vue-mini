@@ -26,7 +26,17 @@ declare global {
 }
 let page: Record<string, any>
 global.Page = (options: Record<string, any>) => {
-  page = options
+  page = {
+    ...options,
+    is: '',
+    route: '',
+    setData(data: Record<string, unknown>) {
+      this.data = this.data || {}
+      Object.keys(data).forEach(key => {
+        this.data[key] = data[key]
+      })
+    }
+  }
 }
 
 describe('page', () => {
@@ -48,12 +58,6 @@ describe('page', () => {
         increment
       }
     })
-    page.setData = function(data: Record<string, unknown>) {
-      this.data = this.data || {}
-      Object.keys(data).forEach(key => {
-        this.data[key] = data[key]
-      })
-    }
 
     page.onLoad()
     expect(page.data.num).toBe(0)
@@ -77,14 +81,15 @@ describe('page', () => {
     const onLoad = jest.fn()
     const setup = jest.fn()
     definePage({ onLoad, setup })
-    page.is = 'is'
-    page.route = 'route'
     page.onLoad(arg)
     expect(onLoad).toBeCalledWith(arg)
-    expect(setup).toBeCalledWith(arg, { is: 'is', route: 'route' })
+    expect(setup).toBeCalledWith(arg, { is: '', route: '' })
   })
 
   it('onReady', () => {
+    onReady(() => {})
+    expect('onReady() hook can only').toHaveBeenWarned()
+
     const fn = jest.fn()
     const injectedFn1 = jest.fn()
     const injectedFn2 = jest.fn()
@@ -231,12 +236,10 @@ describe('page', () => {
   })
 
   it('onPageScroll', () => {
-    // eslint-disable-next-line @typescript-eslint/no-empty-function
     onPageScroll(() => {})
     expect('Page specific lifecycle').toHaveBeenWarned()
 
     definePage(() => {
-      // eslint-disable-next-line @typescript-eslint/no-empty-function
       onPageScroll(() => {})
     })
     page.onLoad()
@@ -303,14 +306,18 @@ describe('page', () => {
     expect(fn).toBeCalledWith(arg)
     expect(shareContent).toEqual({ title: 'test' })
 
-    // eslint-disable-next-line @typescript-eslint/no-empty-function
     definePage(() => {})
     expect(page.onShareAppMessage(arg)).toEqual({})
+  })
+
+  it('inject lifecycle outside setup', () => {
+    onShow(() => {})
+    expect('Page specific lifecycle').toHaveBeenWarned()
   })
 
   it('no setup', () => {
     const options = {}
     definePage(options)
-    expect(page).toBe(options)
+    expect(page).toBeInstanceOf(Object)
   })
 })

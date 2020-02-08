@@ -17,7 +17,7 @@ const config = {
   ],
   overrides: [
     {
-      files: ['*.ts', '*.tsx'],
+      files: ['*.ts'],
       extends: ['xo-typescript', 'prettier/@typescript-eslint'],
       parserOptions: {
         project: './tsconfig.json'

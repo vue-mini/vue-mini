@@ -149,7 +149,7 @@ export function defineComponent(
     const rawProps: Record<string, any> = {}
     if (properties) {
       properties.forEach(property => {
-        rawProps[property] = this[property]
+        rawProps[property] = this.data[property]
       })
     }
 
@@ -247,6 +247,7 @@ export function defineComponent(
       options,
       PageLifecycle.ON_PAGE_SCROLL
     )
+    /* istanbul ignore next */
     options.methods._listenPageScroll = () => true
   }
 
@@ -265,6 +266,7 @@ export function defineComponent(
       return {}
     }
 
+    /* istanbul ignore next */
     options.methods._isInjectedShareHook = () => true
   }
 
