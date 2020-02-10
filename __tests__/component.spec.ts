@@ -1,7 +1,9 @@
 import {
   defineComponent,
   ref,
+  reactive,
   computed,
+  readonly,
   nextTick,
   isReadonly,
   onAttach,
@@ -60,9 +62,81 @@ global.Component = (options: Record<string, any>) => {
 describe('component', () => {
   mockWarn()
 
-  it('binding', async () => {
+  it('raw binding', () => {
     defineComponent(() => {
-      const num = 0
+      const count = 0
+      return { count }
+    })
+    component.lifetimes.created.call(component)
+    component.lifetimes.attached.call(component)
+    expect(component.data.count).toBe(0)
+  })
+
+  it('ref binding', async () => {
+    defineComponent(() => {
+      const count = ref(0)
+      const double = computed(() => count.value * 2)
+      const increment = (): void => {
+        count.value++
+      }
+
+      const add = ref(increment)
+
+      return {
+        add,
+        count,
+        double,
+        increment
+      }
+    })
+    component.lifetimes.created.call(component)
+    component.lifetimes.attached.call(component)
+    expect(component.data.count).toBe(0)
+    expect(component.data.double).toBe(0)
+    expect(component.data.add).toBeInstanceOf(Function)
+
+    component.increment()
+    await nextTick()
+    expect(component.data.count).toBe(1)
+    expect(component.data.double).toBe(2)
+  })
+
+  it('reactive binding', async () => {
+    defineComponent(() => {
+      const state: { count: number; double: number } = reactive({
+        count: 0,
+        double: computed(() => state.count * 2)
+      })
+      const increment = (): void => {
+        state.count++
+      }
+
+      return {
+        state,
+        increment
+      }
+    })
+    component.lifetimes.created.call(component)
+    component.lifetimes.attached.call(component)
+    expect(component.data.state).toEqual({ count: 0, double: 0 })
+
+    component.increment()
+    await nextTick()
+    expect(component.data.state).toEqual({ count: 1, double: 2 })
+  })
+
+  it('readonly binding', () => {
+    defineComponent(() => {
+      const state = readonly({ count: 0 })
+      return { state }
+    })
+    component.lifetimes.created.call(component)
+    component.lifetimes.attached.call(component)
+    expect(component.data.state).toEqual({ count: 0 })
+  })
+
+  it('array binding', async () => {
+    defineComponent(() => {
       const count = ref(0)
       const double = computed(() => count.value * 2)
       const increment = (): void => {
@@ -70,29 +144,73 @@ describe('component', () => {
       }
 
       return {
-        num,
+        arr: [count, double],
+        increment
+      }
+    })
+    component.lifetimes.created.call(component)
+    component.lifetimes.attached.call(component)
+    expect(component.data.arr).toEqual([0, 0])
+
+    component.increment()
+    await nextTick()
+    expect(component.data.arr).toEqual([1, 2])
+  })
+
+  it('object binding', async () => {
+    defineComponent(() => {
+      const count = ref(0)
+      const double = computed(() => count.value * 2)
+      const increment = (): void => {
+        count.value++
+      }
+
+      return {
+        obj: { count, double },
+        increment
+      }
+    })
+    component.lifetimes.created.call(component)
+    component.lifetimes.attached.call(component)
+    expect(component.data.obj).toEqual({ count: 0, double: 0 })
+
+    component.increment()
+    await nextTick()
+    expect(component.data.obj).toEqual({ count: 1, double: 2 })
+  })
+
+  it('error binding', () => {
+    defineComponent(() => {
+      const sym = Symbol('sym')
+      return { sym }
+    })
+    expect(() => {
+      component.lifetimes.created.call(component)
+      component.lifetimes.attached.call(component)
+    }).toThrow('Symbol value is not supported')
+  })
+
+  it('unbundling', async () => {
+    defineComponent(() => {
+      const count = ref(0)
+      const double = computed(() => count.value * 2)
+      const increment = (): void => {
+        count.value++
+      }
+
+      return {
         count,
         double,
         increment
       }
     })
-
     component.lifetimes.created.call(component)
     component.lifetimes.attached.call(component)
-    expect(component.data.num).toBe(0)
-    expect(component.data.count).toBe(0)
-    expect(component.data.double).toBe(0)
-
-    component.increment()
-    await nextTick()
-    expect(component.data.count).toBe(1)
-    expect(component.data.double).toBe(2)
-
     component.lifetimes.detached.call(component)
     component.increment()
     await nextTick()
-    expect(component.data.count).toBe(1)
-    expect(component.data.double).toBe(2)
+    expect(component.data.count).toBe(0)
+    expect(component.data.double).toBe(0)
   })
 
   it('props', async () => {

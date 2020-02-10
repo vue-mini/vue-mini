@@ -1,7 +1,9 @@
 import {
   definePage,
   ref,
+  reactive,
   computed,
+  readonly,
   nextTick,
   onReady,
   onShow,
@@ -42,9 +44,77 @@ global.Page = (options: Record<string, any>) => {
 describe('page', () => {
   mockWarn()
 
-  it('binding', async () => {
+  it('raw binding', () => {
     definePage(() => {
-      const num = 0
+      const count = 0
+      return { count }
+    })
+    page.onLoad()
+    expect(page.data.count).toBe(0)
+  })
+
+  it('ref binding', async () => {
+    definePage(() => {
+      const count = ref(0)
+      const double = computed(() => count.value * 2)
+      const increment = (): void => {
+        count.value++
+      }
+
+      const add = ref(increment)
+
+      return {
+        add,
+        count,
+        double,
+        increment
+      }
+    })
+    page.onLoad()
+    expect(page.data.count).toBe(0)
+    expect(page.data.double).toBe(0)
+    expect(page.data.add).toBeInstanceOf(Function)
+
+    page.increment()
+    await nextTick()
+    expect(page.data.count).toBe(1)
+    expect(page.data.double).toBe(2)
+  })
+
+  it('reactive binding', async () => {
+    definePage(() => {
+      const state: { count: number; double: number } = reactive({
+        count: 0,
+        double: computed(() => state.count * 2)
+      })
+      const increment = (): void => {
+        state.count++
+      }
+
+      return {
+        state,
+        increment
+      }
+    })
+    page.onLoad()
+    expect(page.data.state).toEqual({ count: 0, double: 0 })
+
+    page.increment()
+    await nextTick()
+    expect(page.data.state).toEqual({ count: 1, double: 2 })
+  })
+
+  it('readonly binding', () => {
+    definePage(() => {
+      const state = readonly({ count: 0 })
+      return { state }
+    })
+    page.onLoad()
+    expect(page.data.state).toEqual({ count: 0 })
+  })
+
+  it('array binding', async () => {
+    definePage(() => {
       const count = ref(0)
       const double = computed(() => count.value * 2)
       const increment = (): void => {
@@ -52,28 +122,67 @@ describe('page', () => {
       }
 
       return {
-        num,
+        arr: [count, double],
+        increment
+      }
+    })
+    page.onLoad()
+    expect(page.data.arr).toEqual([0, 0])
+
+    page.increment()
+    await nextTick()
+    expect(page.data.arr).toEqual([1, 2])
+  })
+
+  it('object binding', async () => {
+    definePage(() => {
+      const count = ref(0)
+      const double = computed(() => count.value * 2)
+      const increment = (): void => {
+        count.value++
+      }
+
+      return {
+        obj: { count, double },
+        increment
+      }
+    })
+    page.onLoad()
+    expect(page.data.obj).toEqual({ count: 0, double: 0 })
+
+    page.increment()
+    await nextTick()
+    expect(page.data.obj).toEqual({ count: 1, double: 2 })
+  })
+
+  it('error binding', () => {
+    definePage(() => {
+      const sym = Symbol('sym')
+      return { sym }
+    })
+    expect(() => page.onLoad()).toThrow('Symbol value is not supported')
+  })
+
+  it('unbundling', async () => {
+    definePage(() => {
+      const count = ref(0)
+      const double = computed(() => count.value * 2)
+      const increment = (): void => {
+        count.value++
+      }
+
+      return {
         count,
         double,
         increment
       }
     })
-
     page.onLoad()
-    expect(page.data.num).toBe(0)
-    expect(page.data.count).toBe(0)
-    expect(page.data.double).toBe(0)
-
-    page.increment()
-    await nextTick()
-    expect(page.data.count).toBe(1)
-    expect(page.data.double).toBe(2)
-
     page.onUnload()
     page.increment()
     await nextTick()
-    expect(page.data.count).toBe(1)
-    expect(page.data.double).toBe(2)
+    expect(page.data.count).toBe(0)
+    expect(page.data.double).toBe(0)
   })
 
   it('onLoad', () => {
