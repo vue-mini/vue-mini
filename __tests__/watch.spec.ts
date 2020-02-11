@@ -354,7 +354,7 @@ describe('watch', () => {
     })
   })
 
-  /** ***** Dividing line, the above tests is directly copy from vue.js *******/
+  /** Dividing line, the above tests is directly copy from vue.js **/
 
   it('should not trigger when value changed from NaN to NaN', async () => {
     const count = ref(NaN)
