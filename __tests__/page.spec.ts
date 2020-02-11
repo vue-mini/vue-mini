@@ -4,6 +4,7 @@ import {
   reactive,
   computed,
   readonly,
+  watch,
   nextTick,
   onReady,
   onShow,
@@ -183,6 +184,44 @@ describe('page', () => {
     await nextTick()
     expect(page.data.count).toBe(0)
     expect(page.data.double).toBe(0)
+  })
+
+  it('watch', async () => {
+    let dummy: number
+    let stopper: () => void
+    definePage(() => {
+      const count = ref(0)
+      const increment = (): void => {
+        count.value++
+      }
+
+      stopper = watch(() => {
+        dummy = count.value
+      })
+      return {
+        count,
+        increment
+      }
+    })
+    page.onLoad()
+    await nextTick()
+    expect(dummy!).toBe(0)
+    expect(page.data.count).toBe(0)
+    // The other is `count` sync watcher
+    expect(page._effects.length).toBe(2)
+
+    page.increment()
+    await nextTick()
+    expect(dummy!).toBe(1)
+    expect(page.data.count).toBe(1)
+
+    stopper!()
+    stopper!()
+    page.increment()
+    await nextTick()
+    expect(dummy!).toBe(1)
+    expect(page.data.count).toBe(2)
+    expect(page._effects.length).toBe(1)
   })
 
   it('onLoad', () => {

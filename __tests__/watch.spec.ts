@@ -353,4 +353,19 @@ describe('watch', () => {
       oldValue: 2
     })
   })
+
+  /** ***** Dividing line, the above tests is directly copy from vue.js *******/
+
+  it('should not trigger when value changed from NaN to NaN', async () => {
+    const count = ref(NaN)
+    const fn = jest.fn()
+    watch(count, fn)
+
+    await nextTick()
+    expect(fn).toHaveBeenCalledTimes(1)
+
+    count.value = NaN
+    await nextTick()
+    expect(fn).toHaveBeenCalledTimes(1)
+  })
 })

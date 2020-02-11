@@ -4,6 +4,7 @@ import {
   reactive,
   computed,
   readonly,
+  watch,
   nextTick,
   isReadonly,
   onAttach,
@@ -211,6 +212,45 @@ describe('component', () => {
     await nextTick()
     expect(component.data.count).toBe(0)
     expect(component.data.double).toBe(0)
+  })
+
+  it('watch', async () => {
+    let dummy: number
+    let stopper: () => void
+    defineComponent(() => {
+      const count = ref(0)
+      const increment = (): void => {
+        count.value++
+      }
+
+      stopper = watch(() => {
+        dummy = count.value
+      })
+      return {
+        count,
+        increment
+      }
+    })
+    component.lifetimes.created.call(component)
+    component.lifetimes.attached.call(component)
+    await nextTick()
+    expect(dummy!).toBe(0)
+    expect(component.data.count).toBe(0)
+    // The other is `count` sync watcher
+    expect(component._effects.length).toBe(2)
+
+    component.increment()
+    await nextTick()
+    expect(dummy!).toBe(1)
+    expect(component.data.count).toBe(1)
+
+    stopper!()
+    stopper!()
+    component.increment()
+    await nextTick()
+    expect(dummy!).toBe(1)
+    expect(component.data.count).toBe(2)
+    expect(component._effects.length).toBe(1)
   })
 
   it('props', async () => {
