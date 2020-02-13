@@ -3,7 +3,7 @@ import { queueJob, nextTick } from '../src/scheduler'
 describe('scheduler', () => {
   it('nextTick', async () => {
     const calls: string[] = []
-    // eslint-disable-next-line promise/valid-params
+    // eslint-disable-next-line promise/valid-params, promise/prefer-await-to-then
     const dummyThen = Promise.resolve().then()
     const job1 = (): void => {
       calls.push('job1')

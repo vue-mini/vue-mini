@@ -8,6 +8,7 @@ const RECURSION_LIMIT = 100
 type CountMap = Map<Function, number>
 
 export function nextTick(fn?: () => void): Promise<void> {
+  // eslint-disable-next-line promise/prefer-await-to-then
   return fn ? p.then(fn) : p
 }
 
