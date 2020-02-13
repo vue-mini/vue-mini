@@ -1,0 +1,17 @@
+name: CI
+on: push
+env:
+  CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - uses: actions/setup-node@v1
+      with:
+        node-version: 12.x
+    - run: yarn install
+    - run: yarn lint
+    - run: yarn type
+    - run: yarn test --coverage
+    - run: yarn codecov -t $CODECOV_TOKEN

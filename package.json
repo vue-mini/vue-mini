@@ -11,6 +11,7 @@
     "lint": "cross-env NODE_ENV=production eslint --ext .js,.ts .",
     "type": "tsc --noEmit",
     "test": "jest",
+    "codecov": "codecov",
     "build": "node build.js"
   },
   "dependencies": {
@@ -23,6 +24,7 @@
     "@types/jest": "^25.1.1",
     "@typescript-eslint/eslint-plugin": "^2.11.0",
     "@typescript-eslint/parser": "^2.11.0",
+    "codecov": "^3.6.5",
     "cross-env": "^7.0.0",
     "eslint": "^6.7.2",
     "eslint-config-silent": "^0.10.0",
