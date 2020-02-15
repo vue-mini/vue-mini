@@ -29,7 +29,7 @@ async function generateDeclaration() {
     ]
   })
   await bundle.write({
-    file: 'dist/temp/vue-mini.esm.js',
+    file: 'dist/temp/wechat.esm.js',
     format: 'es'
   })
 }
@@ -77,25 +77,25 @@ async function build() {
   await generateCode({
     isDev: true,
     format: 'es',
-    fileName: 'vue-mini.esm.js'
+    fileName: 'wechat.esm.js'
   })
 
   await generateCode({
     isDev: false,
     format: 'es',
-    fileName: 'vue-mini.esm.prod.js'
+    fileName: 'wechat.esm.prod.js'
   })
 
   await generateCode({
     isDev: true,
     format: 'cjs',
-    fileName: 'vue-mini.cjs.js'
+    fileName: 'wechat.cjs.js'
   })
 
   await generateCode({
     isDev: false,
     format: 'cjs',
-    fileName: 'vue-mini.cjs.prod.js'
+    fileName: 'wechat.cjs.prod.js'
   })
 }
 

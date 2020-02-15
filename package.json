@@ -1,9 +1,9 @@
 {
-  "name": "vue-mini",
-  "version": "0.1.0",
-  "description": "vue composition api for mini program",
-  "main": "dist/vue-mini.cjs.js",
-  "types": "dist/vue-mini.d.ts",
+  "name": "@vue-mini/wechat",
+  "version": "0.1.0-alpha.1",
+  "description": "vue composition api for wechat mini program",
+  "main": "dist/wechat.cjs.js",
+  "types": "dist/wechat.d.ts",
   "repository": "https://github.com/yangmingshan/vue-mini.git",
   "author": "Yang Mingshan <y.mingshan3@gmail.com>",
   "license": "MIT",
@@ -12,8 +12,18 @@
     "type": "tsc --noEmit",
     "test": "jest",
     "codecov": "codecov",
-    "build": "node build.js"
+    "build": "node build.js",
+    "prepublishOnly": "yarn lint && yarn type && yarn test && yarn build"
   },
+  "files": [
+    "dist"
+  ],
+  "keywords": [
+    "vue",
+    "mini",
+    "wechat",
+    "weixin"
+  ],
   "dependencies": {
     "@next-vue/reactivity": "^3.0.0-alpha.10",
     "miniprogram-api-typings": "^2.10.0-1"
