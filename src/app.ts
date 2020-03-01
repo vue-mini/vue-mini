@@ -1,5 +1,4 @@
-import { Bindings } from './page'
-import { setCurrentApp, AppInstance } from './instance'
+import { Bindings, AppInstance, setCurrentApp } from './instance'
 import { isFunction, toHiddenField } from './utils'
 
 export type AppSetup<RawBindings extends Bindings = Bindings> = (

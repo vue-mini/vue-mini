@@ -1,7 +1,7 @@
 import { stop, shallowReadonly, lock, unlock } from '@next-vue/reactivity'
-import { PageLifecycle, Config, Bindings } from './page'
+import { PageLifecycle, Config } from './page'
 import { deepToRaw, deepWatch } from './shared'
-import { setCurrentComponent, ComponentInstance } from './instance'
+import { Bindings, ComponentInstance, setCurrentComponent } from './instance'
 import { isFunction, toHiddenField } from './utils'
 
 export type ComponentContext = WechatMiniprogram.Component.InstanceProperties &
@@ -133,8 +133,6 @@ export function defineComponent(
     }
   }
 
-  let props: Readonly<Record<string, any>>
-  let binding: Bindings
   if (options.lifetimes === undefined) {
     options.lifetimes = {}
   }
@@ -153,7 +151,7 @@ export function defineComponent(
       })
     }
 
-    props = shallowReadonly(rawProps)
+    this.__props__ = shallowReadonly(rawProps)
 
     const context: ComponentContext = {
       is: this.is,
@@ -172,7 +170,11 @@ export function defineComponent(
       animate: this.animate.bind(this),
       clearAnimation: this.clearAnimation.bind(this)
     }
-    binding = setup(props, context)
+    const bindings = setup(this.__props__, context)
+    if (bindings !== undefined) {
+      this.__bindings__ = bindings
+    }
+
     setCurrentComponent(null)
 
     if (originCreated !== undefined) {
@@ -187,10 +189,11 @@ export function defineComponent(
   options.lifetimes[ComponentLifecycle.ATTACHED] = function(
     this: ComponentInstance
   ) {
-    if (binding !== undefined) {
+    const bindings = this.__bindings__
+    if (bindings !== undefined) {
       setCurrentComponent(this) // For effects record
-      Object.keys(binding).forEach(key => {
-        const value = (binding as Record<string, unknown>)[key]
+      Object.keys(bindings).forEach(key => {
+        const value = bindings[key]
         if (isFunction(value)) {
           this[key] = value
           return
@@ -199,6 +202,7 @@ export function defineComponent(
         this.setData({ [key]: deepToRaw(value) })
         deepWatch.call(this, key, value)
       })
+      delete this.__bindings__
       setCurrentComponent(null)
     }
 
@@ -313,7 +317,7 @@ export function defineComponent(
         value: any
       ) {
         unlock()
-        ;(props as Record<string, any>)[property] = value
+        ;(this.__props__ as Record<string, any>)[property] = value
         lock()
 
         if (originObserver !== undefined) {

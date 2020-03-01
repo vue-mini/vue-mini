@@ -1,8 +1,8 @@
+export { Bindings } from './instance'
 export { AppSetup, AppOptions, createApp } from './app'
 export {
   Query,
   PageContext,
-  Bindings,
   PageSetup,
   PageOptions,
   Config,

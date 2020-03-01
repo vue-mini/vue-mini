@@ -1,5 +1,7 @@
 import { ReactiveEffect } from '@next-vue/reactivity'
 
+export type Bindings = Record<string, any> | void
+
 export type AppInstance = Record<string, any>
 
 export type PageInstance = WechatMiniprogram.Page.InstanceProperties &
@@ -16,6 +18,8 @@ export type ComponentInstance = WechatMiniprogram.Component.InstanceProperties &
     __isInjectedShareHook__?: () => true
     __listenPageScroll__?: () => true
     __effects__?: ReactiveEffect[]
+    __props__: Readonly<Record<string, any>>
+    __bindings__?: Record<string, any>
   }
 
 export let currentApp: AppInstance | null = null

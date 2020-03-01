@@ -1,11 +1,10 @@
 import { stop } from '@next-vue/reactivity'
-import { setCurrentPage, PageInstance } from './instance'
+import { Bindings, PageInstance, setCurrentPage } from './instance'
 import { deepToRaw, deepWatch } from './shared'
 import { isFunction, toHiddenField } from './utils'
 
 export type Query = Record<string, string | undefined>
 export type PageContext = WechatMiniprogram.Page.InstanceProperties
-export type Bindings = Record<string, any> | void
 export type PageSetup<
   PageQuery extends Query = Query,
   RawBindings extends Bindings = Bindings

@@ -33,7 +33,7 @@ declare global {
   }
 }
 let component: Record<string, any>
-global.Component = (options: Record<string, any>) => {
+global.Component = options => {
   component = {
     ...options,
     is: '',
@@ -275,6 +275,38 @@ describe('component', () => {
     component.observers.count.call(component, component.data.count)
     await nextTick()
     expect(component.data.double).toBe(2)
+  })
+
+  it('multiple instances', async () => {
+    defineComponent({
+      properties: {
+        count: Number
+      },
+      setup(props) {
+        const double = computed(() => props.count * 2)
+        return { double }
+      }
+    })
+
+    const instance1 = Object.create(component)
+    const instance2 = Object.create(component)
+
+    instance1.data = { count: 0 }
+    instance2.data = { count: 1 }
+    instance1.lifetimes.created.call(instance1)
+    instance2.lifetimes.created.call(instance2)
+    instance1.lifetimes.attached.call(instance1)
+    instance2.lifetimes.attached.call(instance2)
+    expect(instance1.data.double).toBe(0)
+    expect(instance2.data.double).toBe(2)
+
+    instance1.data.count = 1
+    instance2.data.count = 2
+    instance1.observers.count.call(instance1, instance1.data.count)
+    instance2.observers.count.call(instance2, instance2.data.count)
+    await nextTick()
+    expect(instance1.data.double).toBe(2)
+    expect(instance2.data.double).toBe(4)
   })
 
   it('observer', () => {
