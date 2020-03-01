@@ -37,7 +37,9 @@ import { getCurrentInstance } from './instance'
 export function recordEffect(effect: ReactiveEffect): void {
   const currentInstance = getCurrentInstance()
   if (currentInstance) {
-    ;(currentInstance._effects || (currentInstance._effects = [])).push(effect)
+    ;(currentInstance.__effects__ || (currentInstance.__effects__ = [])).push(
+      effect
+    )
   }
 }
 

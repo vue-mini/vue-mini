@@ -101,8 +101,8 @@ export function definePage(
   options[PageLifecycle.ON_UNLOAD] = function(this: PageInstance) {
     onUnload.call(this)
 
-    if (this._effects) {
-      this._effects.forEach(effect => stop(effect))
+    if (this.__effects__) {
+      this.__effects__.forEach(effect => stop(effect))
     }
   }
 
@@ -112,7 +112,7 @@ export function definePage(
       PageLifecycle.ON_PAGE_SCROLL
     )
     /* istanbul ignore next */
-    options._listenPageScroll = () => true
+    options.__listenPageScroll__ = () => true
   }
 
   if (options[PageLifecycle.ON_SHARE_APP_MESSAGE] === undefined) {
@@ -131,7 +131,7 @@ export function definePage(
     }
 
     /* istanbul ignore next */
-    options._isInjectedShareHook = () => true
+    options.__isInjectedShareHook__ = () => true
   }
 
   options[PageLifecycle.ON_SHOW] = createLifecycle(

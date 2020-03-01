@@ -237,7 +237,7 @@ describe('component', () => {
     expect(dummy!).toBe(0)
     expect(component.data.count).toBe(0)
     // The other is `count` sync watcher
-    expect(component._effects.length).toBe(2)
+    expect(component.__effects__.length).toBe(2)
 
     component.increment()
     await nextTick()
@@ -250,7 +250,7 @@ describe('component', () => {
     await nextTick()
     expect(dummy!).toBe(1)
     expect(component.data.count).toBe(2)
-    expect(component._effects.length).toBe(1)
+    expect(component.__effects__.length).toBe(1)
   })
 
   it('props', async () => {
@@ -571,7 +571,7 @@ describe('component', () => {
     defineComponent(() => {
       onPageScroll(() => {})
     })
-    component._listenPageScroll = component.methods._listenPageScroll
+    component.__listenPageScroll__ = component.methods.__listenPageScroll__
     component.lifetimes.created.call(component)
     component.lifetimes.attached.call(component)
     expect('onPageScroll() hook only').toHaveBeenWarned()
@@ -587,7 +587,7 @@ describe('component', () => {
         onPageScroll(injectedFn2)
       }
     })
-    component._listenPageScroll = component.methods._listenPageScroll
+    component.__listenPageScroll__ = component.methods.__listenPageScroll__
     component.lifetimes.created.call(component)
     component.lifetimes.attached.call(component)
     component.methods.onPageScroll.call(component, arg)
@@ -602,7 +602,7 @@ describe('component', () => {
       },
       { listenPageScroll: true }
     )
-    component._listenPageScroll = component.methods._listenPageScroll
+    component.__listenPageScroll__ = component.methods.__listenPageScroll__
     component.lifetimes.created.call(component)
     component.lifetimes.attached.call(component)
     component.methods.onPageScroll.call(component, arg)
@@ -623,7 +623,8 @@ describe('component', () => {
         onShareAppMessage(() => ({}))
       }
     })
-    component._isInjectedShareHook = component.methods._isInjectedShareHook
+    component.__isInjectedShareHook__ =
+      component.methods.__isInjectedShareHook__
     component.lifetimes.created.call(component)
     component.lifetimes.attached.call(component)
     expect('onShareAppMessage() hook only').toHaveBeenWarned()
@@ -632,7 +633,8 @@ describe('component', () => {
       onShareAppMessage(() => ({}))
       onShareAppMessage(() => ({}))
     })
-    component._isInjectedShareHook = component.methods._isInjectedShareHook
+    component.__isInjectedShareHook__ =
+      component.methods.__isInjectedShareHook__
     component.lifetimes.created.call(component)
     component.lifetimes.attached.call(component)
     expect('onShareAppMessage() hook can only').toHaveBeenWarned()
@@ -642,7 +644,8 @@ describe('component', () => {
     defineComponent(() => {
       onShareAppMessage(fn)
     })
-    component._isInjectedShareHook = component.methods._isInjectedShareHook
+    component.__isInjectedShareHook__ =
+      component.methods.__isInjectedShareHook__
     component.lifetimes.created.call(component)
     component.lifetimes.attached.call(component)
     const shareContent = component.methods.onShareAppMessage.call(

@@ -214,8 +214,8 @@ export function defineComponent(
   ) {
     detached.call(this)
 
-    if (this._effects) {
-      this._effects.forEach(effect => stop(effect))
+    if (this.__effects__) {
+      this.__effects__.forEach(effect => stop(effect))
     }
   }
 
@@ -248,7 +248,7 @@ export function defineComponent(
       PageLifecycle.ON_PAGE_SCROLL
     )
     /* istanbul ignore next */
-    options.methods._listenPageScroll = () => true
+    options.methods.__listenPageScroll__ = () => true
   }
 
   if (options.methods[PageLifecycle.ON_SHARE_APP_MESSAGE] === undefined) {
@@ -267,7 +267,7 @@ export function defineComponent(
     }
 
     /* istanbul ignore next */
-    options.methods._isInjectedShareHook = () => true
+    options.methods.__isInjectedShareHook__ = () => true
   }
 
   options.methods[PageLifecycle.ON_LOAD] = createPageLifecycle(

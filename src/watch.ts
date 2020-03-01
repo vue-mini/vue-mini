@@ -166,7 +166,7 @@ function doWatch(
   return () => {
     stop(runner)
     if (instance) {
-      const effects = instance._effects!
+      const effects = instance.__effects__!
       const index = effects.indexOf(runner)
       if (index > -1) {
         effects.splice(index, 1)

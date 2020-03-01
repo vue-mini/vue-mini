@@ -208,7 +208,7 @@ describe('page', () => {
     expect(dummy!).toBe(0)
     expect(page.data.count).toBe(0)
     // The other is `count` sync watcher
-    expect(page._effects.length).toBe(2)
+    expect(page.__effects__.length).toBe(2)
 
     page.increment()
     await nextTick()
@@ -221,7 +221,7 @@ describe('page', () => {
     await nextTick()
     expect(dummy!).toBe(1)
     expect(page.data.count).toBe(2)
-    expect(page._effects.length).toBe(1)
+    expect(page.__effects__.length).toBe(1)
   })
 
   it('onLoad', () => {

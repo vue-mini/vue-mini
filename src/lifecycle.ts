@@ -47,7 +47,7 @@ export const onPageScroll = (
 ): void => {
   const currentInstance = getCurrentInstance()
   if (currentInstance) {
-    if (currentInstance._listenPageScroll) {
+    if (currentInstance.__listenPageScroll__) {
       injectHook(currentInstance, PageLifecycle.ON_PAGE_SCROLL, hook)
     } /* istanbul ignore else  */ else if (__DEV__) {
       console.warn(
@@ -66,7 +66,7 @@ export const onShareAppMessage = (
 ): void => {
   const currentInstance = getCurrentInstance()
   if (currentInstance) {
-    if (currentInstance._isInjectedShareHook) {
+    if (currentInstance.__isInjectedShareHook__) {
       const hiddenField = toHiddenField(PageLifecycle.ON_SHARE_APP_MESSAGE)
       if (currentInstance[hiddenField] === undefined) {
         currentInstance[hiddenField] = hook
