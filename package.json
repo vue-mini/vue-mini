@@ -37,7 +37,7 @@
     "codecov": "^3.6.5",
     "cross-env": "^7.0.0",
     "eslint": "^6.7.2",
-    "eslint-config-silent": "^0.10.0",
+    "eslint-config-silent": "^0.11.0",
     "eslint-config-xo-typescript": "^0.26.0",
     "fs-extra": "^8.1.0",
     "husky": "^4.0.10",
@@ -48,7 +48,7 @@
     "rollup-plugin-typescript2": "^0.26.0",
     "ts-jest": "^25.2.0",
     "typescript": "^3.7.3",
-    "xo": "^0.26.0"
+    "xo": "^0.27.2"
   },
   "husky": {
     "hooks": {
