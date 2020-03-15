@@ -26,7 +26,7 @@
   ],
   "dependencies": {
     "@next-vue/reactivity": "^3.0.0-alpha.10",
-    "miniprogram-api-typings": "^2.10.0-1"
+    "miniprogram-api-typings": "^2.10.2"
   },
   "devDependencies": {
     "@microsoft/api-extractor": "^7.7.0",

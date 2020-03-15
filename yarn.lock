@@ -4295,10 +4295,10 @@ minimist@^1.1.1, minimist@^1.2.0:
   resolved "https://registry.npm.taobao.org/minimist/download/minimist-1.2.0.tgz#a35008b20f41383eec1fb914f4cd5df79a264284"
   integrity sha1-o1AIsg9BOD7sH7kU9M1d95omQoQ=
 
-miniprogram-api-typings@^2.10.0-1:
-  version "2.10.1"
-  resolved "https://registry.npm.taobao.org/miniprogram-api-typings/download/miniprogram-api-typings-2.10.1.tgz#1fe2e48dbc0fdb9b941018ae727f0bae300888d3"
-  integrity sha1-H+LkjbwP25uUEBiucn8LrjAIiNM=
+miniprogram-api-typings@^2.10.2:
+  version "2.10.2"
+  resolved "https://registry.npm.taobao.org/miniprogram-api-typings/download/miniprogram-api-typings-2.10.2.tgz#a94995fd8c167b58dcc45bee46e600f543563ec2"
+  integrity sha1-qUmV/YwWe1jcxFvuRuYA9UNWPsI=
 
 mixin-deep@^1.2.0:
   version "1.3.2"

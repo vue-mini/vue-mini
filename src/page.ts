@@ -74,7 +74,11 @@ export function definePage(
   const originOnLoad = options[PageLifecycle.ON_LOAD]
   options[PageLifecycle.ON_LOAD] = function(this: PageInstance, query: Query) {
     setCurrentPage(this)
-    const context: PageContext = { is: this.is, route: this.route }
+    const context: PageContext = {
+      is: this.is,
+      route: this.route,
+      options: this.options
+    }
     const bindings = setup(query, context)
     if (bindings !== undefined) {
       Object.keys(bindings).forEach(key => {

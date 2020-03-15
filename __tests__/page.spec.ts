@@ -33,6 +33,7 @@ global.Page = (options: Record<string, any>) => {
     ...options,
     is: '',
     route: '',
+    options: {},
     setData(data: Record<string, unknown>) {
       this.data = this.data || {}
       Object.keys(data).forEach(key => {
@@ -231,7 +232,7 @@ describe('page', () => {
     definePage({ onLoad, setup })
     page.onLoad(arg)
     expect(onLoad).toBeCalledWith(arg)
-    expect(setup).toBeCalledWith(arg, { is: '', route: '' })
+    expect(setup).toBeCalledWith(arg, { is: '', route: '', options: {} })
   })
 
   it('onReady', () => {
