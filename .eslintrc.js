@@ -27,6 +27,7 @@ const config = {
         'import/no-mutable-exports': 'off',
         'unicorn/no-for-loop': 'off',
         'unicorn/prefer-includes': 'off',
+        'unicorn/prevent-abbreviations': 'off',
         '@typescript-eslint/prefer-for-of': 'off',
         '@typescript-eslint/prefer-includes': 'off',
         '@typescript-eslint/promise-function-async': 'off',
