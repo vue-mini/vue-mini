@@ -39,6 +39,9 @@ export type StopHandle = () => void
 
 const invoke = (fn: Function): unknown => fn()
 
+// Initial value for watchers to trigger on undefined initial values
+const INITIAL_WATCHER_VALUE = {}
+
 // Overload #1: simple effect
 export function watch(effect: WatchEffect, options?: WatchOptions): StopHandle
 
@@ -110,7 +113,7 @@ function doWatch(
     cleanup = runner.options.onStop = () => fn()
   }
 
-  let oldValue = isArray(source) ? [] : undefined
+  let oldValue = isArray(source) ? [] : INITIAL_WATCHER_VALUE
   const applyCb = cb
     ? () => {
         const newValue = runner()
@@ -120,7 +123,12 @@ function doWatch(
             cleanup()
           }
 
-          cb(newValue, oldValue, registerCleanup)
+          cb(
+            newValue,
+            // Pass undefined as the old value when it's changed for the first time
+            oldValue === INITIAL_WATCHER_VALUE ? undefined : oldValue,
+            registerCleanup
+          )
           oldValue = newValue
         }
       }
