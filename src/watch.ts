@@ -7,7 +7,7 @@ import {
   ReactiveEffectOptions
 } from '@vue/reactivity'
 import { queueJob } from './scheduler'
-import { recordEffect } from './reactivity'
+import { recordInstanceBoundEffect } from './computed'
 import { getCurrentInstance } from './instance'
 import { isArray, isObject, isFunction, hasChanged } from './utils'
 
@@ -184,7 +184,7 @@ function doWatch(
   }
 
   const instance = getCurrentInstance()
-  recordEffect(runner)
+  recordInstanceBoundEffect(runner)
   return () => {
     stop(runner)
     if (instance) {

@@ -1,21 +1,73 @@
-export { Bindings } from './instance'
-export { AppSetup, AppOptions, createApp } from './app'
+// Public API ------------------------------------------------------------------
+
 export {
-  Query,
-  PageContext,
-  PageSetup,
-  PageOptions,
-  Config,
-  definePage
-} from './page'
+  ref,
+  isRef,
+  toRefs,
+  reactive,
+  isReactive,
+  readonly,
+  isReadonly,
+  shallowReactive,
+  toRaw,
+  markReadonly,
+  markNonReactive
+} from '@vue/reactivity'
+export { computed } from './computed'
+export { watch } from './watch'
+export { nextTick } from './scheduler'
+export { createApp } from './app'
+export { definePage } from './page'
+export { defineComponent } from './component'
+export {
+  onAppShow,
+  onAppHide,
+  onAppError,
+  onPageNotFound,
+  onUnhandledRejection,
+  onShow,
+  onHide,
+  onUnload,
+  onPullDownRefresh,
+  onReachBottom,
+  onResize,
+  onTabItemTap,
+  onPageScroll,
+  onShareAppMessage,
+  onReady,
+  onLoad,
+  onAttach,
+  onMove,
+  onDetach,
+  onError
+} from './lifecycle'
+
+// Types -----------------------------------------------------------------------
+
+export {
+  ReactiveEffect,
+  ReactiveEffectOptions,
+  DebuggerEvent,
+  TrackOpTypes,
+  TriggerOpTypes,
+  Ref,
+  ComputedRef,
+  UnwrapRef,
+  WritableComputedOptions
+} from '@vue/reactivity'
+export {
+  // Types
+  WatchOptions,
+  WatchCallback,
+  WatchSource,
+  StopHandle
+} from './watch'
+export { Bindings } from './instance'
+export { AppSetup, AppOptions } from './app'
+export { Query, PageContext, PageSetup, PageOptions, Config } from './page'
 export {
   ComponentContext,
   ComponentSetup,
   ComponentOptionsWithoutProps,
-  ComponentOptionsWithProps,
-  defineComponent
+  ComponentOptionsWithProps
 } from './component'
-export * from './reactivity'
-export * from './watch'
-export * from './lifecycle'
-export { nextTick } from './scheduler'
