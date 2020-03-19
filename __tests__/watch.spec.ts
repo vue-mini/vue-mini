@@ -61,7 +61,9 @@ describe('watch', () => {
         dummy = [count, prevCount]
         // Assert types
         count + 1
-        prevCount + 1
+        if (prevCount) {
+          prevCount + 1
+        }
       }
     )
     await nextTick()
@@ -79,7 +81,9 @@ describe('watch', () => {
       dummy = [count, prevCount]
       // Assert types
       count + 1
-      prevCount + 1
+      if (prevCount) {
+        prevCount + 1
+      }
     })
     await nextTick()
     expect(dummy).toMatchObject([0, undefined])
@@ -97,7 +101,9 @@ describe('watch', () => {
       dummy = [count, prevCount]
       // Assert types
       count + 1
-      prevCount + 1
+      if (prevCount) {
+        prevCount + 1
+      }
     })
     await nextTick()
     expect(dummy).toMatchObject([1, undefined])
@@ -142,7 +148,7 @@ describe('watch', () => {
       const [, oldStatus] = oldVals
       // Assert types
       count + 1
-      oldStatus === true // eslint-disable-line @typescript-eslint/no-unnecessary-boolean-literal-compare
+      oldStatus === true
     })
     await nextTick()
     expect(dummy).toMatchObject([[1, false], []])
@@ -291,6 +297,7 @@ describe('watch', () => {
   it('ignore lazy option when using simple callback', async () => {
     const count = ref(0)
     let dummy
+    // @ts-ignore
     watch(
       () => {
         dummy = count.value
