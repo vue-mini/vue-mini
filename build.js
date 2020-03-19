@@ -7,7 +7,7 @@ const typescript = require('rollup-plugin-typescript2')
 const { Extractor, ExtractorConfig } = require('@microsoft/api-extractor')
 
 const input = 'src/index.ts'
-const external = ['@next-vue/reactivity']
+const external = ['@vue/reactivity']
 const check = false
 const include = ['src', 'global.d.ts']
 

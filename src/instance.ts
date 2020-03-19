@@ -1,4 +1,4 @@
-import { ReactiveEffect } from '@next-vue/reactivity'
+import { ReactiveEffect } from '@vue/reactivity'
 
 export type Bindings = Record<string, any> | void
 

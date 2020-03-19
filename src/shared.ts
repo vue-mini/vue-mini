@@ -1,4 +1,4 @@
-import { isRef, isReactive, isReadonly, toRaw } from '@next-vue/reactivity'
+import { isRef, isReactive, isReadonly, toRaw } from '@vue/reactivity'
 import { watch } from './watch'
 import {
   isArray,

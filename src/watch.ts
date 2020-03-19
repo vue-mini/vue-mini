@@ -5,7 +5,7 @@ import {
   Ref,
   ComputedRef,
   ReactiveEffectOptions
-} from '@next-vue/reactivity'
+} from '@vue/reactivity'
 import { queueJob } from './scheduler'
 import { recordEffect } from './reactivity'
 import { getCurrentInstance } from './instance'

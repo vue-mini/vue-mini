@@ -4,7 +4,7 @@ import {
   DebuggerEvent,
   TrackOpTypes,
   TriggerOpTypes
-} from '@next-vue/reactivity'
+} from '@vue/reactivity'
 import { watch, reactive, computed, nextTick, ref } from '../src'
 import { mockWarn } from './mock-warn'
 

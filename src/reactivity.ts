@@ -19,7 +19,7 @@ export {
   ComputedRef,
   UnwrapRef,
   WritableComputedOptions
-} from '@next-vue/reactivity'
+} from '@vue/reactivity'
 
 import {
   computed as _computed,
@@ -28,7 +28,7 @@ import {
   ReactiveEffect,
   WritableComputedRef,
   ComputedGetter
-} from '@next-vue/reactivity'
+} from '@vue/reactivity'
 
 import { getCurrentInstance } from './instance'
 

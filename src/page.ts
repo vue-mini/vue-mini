@@ -1,4 +1,4 @@
-import { stop } from '@next-vue/reactivity'
+import { stop } from '@vue/reactivity'
 import { Bindings, PageInstance, setCurrentPage } from './instance'
 import { deepToRaw, deepWatch } from './shared'
 import { isFunction, toHiddenField } from './utils'

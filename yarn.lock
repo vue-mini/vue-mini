@@ -390,11 +390,6 @@
     call-me-maybe "^1.0.1"
     glob-to-regexp "^0.3.0"
 
-"@next-vue/reactivity@^3.0.0-alpha.10":
-  version "3.0.0-alpha.10"
-  resolved "https://registry.npm.taobao.org/@next-vue/reactivity/download/@next-vue/reactivity-3.0.0-alpha.10.tgz#84df1f6436ee57466b33bdec4c8a18ccc9116441"
-  integrity sha1-hN8fZDbuV0ZrM73sTIoYzMkRZEE=
-
 "@nodelib/fs.stat@^1.1.2":
   version "1.1.3"
   resolved "https://registry.npm.taobao.org/@nodelib/fs.stat/download/@nodelib/fs.stat-1.1.3.tgz?cache=0&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2F%40nodelib%2Ffs.stat%2Fdownload%2F%40nodelib%2Ffs.stat-1.1.3.tgz#2b5a3ab3f918cca48a8c754c08168e3f03eba61b"
@@ -630,6 +625,18 @@
     lodash "^4.17.15"
     semver "^6.3.0"
     tsutils "^3.17.1"
+
+"@vue/reactivity@^3.0.0-alpha.9":
+  version "3.0.0-alpha.9"
+  resolved "https://registry.npm.taobao.org/@vue/reactivity/download/@vue/reactivity-3.0.0-alpha.9.tgz#e8c8b5ecaad3a60978a503e4fdfd277644c49738"
+  integrity sha1-6Mi17KrTpgl4pQPk/f0ndkTElzg=
+  dependencies:
+    "@vue/shared" "3.0.0-alpha.9"
+
+"@vue/shared@3.0.0-alpha.9":
+  version "3.0.0-alpha.9"
+  resolved "https://registry.npm.taobao.org/@vue/shared/download/@vue/shared-3.0.0-alpha.9.tgz#681053df422dea1c8c2f54e860ef7c4b949b9852"
+  integrity sha1-aBBT30It6hyML1ToYO98S5SbmFI=
 
 abab@^2.0.0:
   version "2.0.3"

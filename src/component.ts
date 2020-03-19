@@ -1,4 +1,4 @@
-import { stop, shallowReadonly, lock, unlock } from '@next-vue/reactivity'
+import { stop, shallowReadonly, lock, unlock } from '@vue/reactivity'
 import { PageLifecycle, Config } from './page'
 import { deepToRaw, deepWatch } from './shared'
 import { Bindings, ComponentInstance, setCurrentComponent } from './instance'
