@@ -9,94 +9,116 @@ import {
 import { queueJob } from './scheduler'
 import { recordInstanceBoundEffect } from './computed'
 import { getCurrentInstance } from './instance'
-import { isArray, isObject, isFunction, hasChanged } from './utils'
+import { isArray, isObject, isFunction, hasChanged, remove } from './utils'
 
-export type WatchEffect = (onCleanup: CleanupRegistrator) => void
+export type WatchEffect = (onInvalidate: InvalidateCbRegistrator) => void
 
 export type WatchSource<T = any> = Ref<T> | ComputedRef<T> | (() => T)
 
 export type WatchCallback<V = any, OV = any> = (
   value: V,
   oldValue: OV,
-  onCleanup: CleanupRegistrator
+  onInvalidate: InvalidateCbRegistrator
 ) => any
 
 type MapSources<T> = {
   [K in keyof T]: T[K] extends WatchSource<infer V> ? V : never
 }
 
-type MapOldSources<T, Lazy> = {
+type MapOldSources<T, Immediate> = {
   [K in keyof T]: T[K] extends WatchSource<infer V>
-    ? Lazy extends true
-      ? V
-      : V | undefined
+    ? Immediate extends true
+      ? V | undefined
+      : V
     : never
 }
 
-export type CleanupRegistrator = (invalidate: () => void) => void
+type InvalidateCbRegistrator = (cb: () => void) => void
 
-export interface WatchOptions<Lazy = boolean> {
-  lazy?: Lazy
+export interface BaseWatchOptions {
   flush?: 'pre' | 'post' | 'sync'
-  deep?: boolean
   onTrack?: ReactiveEffectOptions['onTrack']
   onTrigger?: ReactiveEffectOptions['onTrigger']
+}
+
+export interface WatchOptions<Immediate = boolean> extends BaseWatchOptions {
+  immediate?: Immediate
+  deep?: boolean
 }
 
 export type StopHandle = () => void
 
 const invoke = (fn: Function): unknown => fn()
 
+// Simple effect.
+export function watchEffect(
+  effect: WatchEffect,
+  options?: BaseWatchOptions
+): StopHandle {
+  return doWatch(effect, null, options)
+}
+
 // Initial value for watchers to trigger on undefined initial values
 const INITIAL_WATCHER_VALUE = {}
 
-// Overload #1: simple effect
-export function watch(
-  effect: WatchEffect,
-  options?: WatchOptions<false>
-): StopHandle
-
-// Overload #2: single source + cb
-export function watch<T, Lazy extends Readonly<boolean> = false>(
+// Overload #1: single source + cb
+export function watch<T, Immediate extends Readonly<boolean> = false>(
   source: WatchSource<T>,
-  cb: WatchCallback<T, Lazy extends true ? T : T | undefined>,
-  options?: WatchOptions<Lazy>
+  cb: WatchCallback<T, Immediate extends true ? T | undefined : T>,
+  options?: WatchOptions<Immediate>
 ): StopHandle
 
-// Overload #3: array of multiple sources + cb
+// Overload #2: array of multiple sources + cb
 // Readonly constraint helps the callback to correctly infer value types based
 // on position in the source array. Otherwise the values will get a union type
 // of all possible value types.
 export function watch<
   T extends Readonly<Array<WatchSource<unknown>>>,
-  Lazy extends Readonly<boolean> = false
+  Immediate extends Readonly<boolean> = false
 >(
   sources: T,
-  cb: WatchCallback<MapSources<T>, MapOldSources<T, Lazy>>,
-  options?: WatchOptions<Lazy>
+  cb: WatchCallback<MapSources<T>, MapOldSources<T, Immediate>>,
+  options?: WatchOptions<Immediate>
 ): StopHandle
 
 // Implementation
 export function watch<T = any>(
-  effectOrSource: WatchSource<T> | Array<WatchSource<T>> | WatchEffect,
-  cbOrOptions?: WatchCallback<T> | WatchOptions,
+  source: WatchSource<T> | Array<WatchSource<T>>,
+  cb: WatchCallback<T>,
   options?: WatchOptions
 ): StopHandle {
-  if (isFunction(cbOrOptions)) {
-    // Effect callback as 2nd argument - this is a source watcher
-    return doWatch(effectOrSource, cbOrOptions, options)
+  if (__DEV__ && !isFunction(cb)) {
+    console.warn(
+      `\`watch(fn, options?)\` signature has been moved to a separate API. ` +
+        `Use \`watchEffect(fn, options?)\` instead. \`watch\` now only ` +
+        `supports \`watch(source, cb, options?) signature.`
+    )
   }
 
-  // 2nd argument is either missing or an options object
-  // - this is a simple effect watcher
-  return doWatch(effectOrSource, null, cbOrOptions)
+  return doWatch(source, cb, options)
 }
 
 function doWatch(
   source: WatchSource | WatchSource[] | WatchEffect,
   cb: WatchCallback | null,
-  { lazy, deep, flush, onTrack, onTrigger }: WatchOptions = {}
+  { immediate, deep, flush, onTrack, onTrigger }: WatchOptions = {}
 ): StopHandle {
+  if (__DEV__ && !cb) {
+    if (immediate !== undefined) {
+      console.warn(
+        `watch() "immediate" option is only respected when using the ` +
+          `watch(source, callback, options?) signature.`
+      )
+    }
+
+    if (deep !== undefined) {
+      console.warn(
+        `watch() "deep" option is only respected when using the ` +
+          `watch(source, callback, options?) signature.`
+      )
+    }
+  }
+
   let getter: () => any
   if (isArray(source)) {
     getter = () => source.map(s => (isRef(s) ? s.value : s()))
@@ -112,17 +134,17 @@ function doWatch(
         cleanup()
       }
 
-      return source(registerCleanup)
+      return source(onInvalidate)
     }
   }
 
-  if (deep) {
+  if (cb && deep) {
     const baseGetter = getter
     getter = () => traverse(baseGetter())
   }
 
   let cleanup: Function
-  const registerCleanup: CleanupRegistrator = (fn: () => void) => {
+  const onInvalidate: InvalidateCbRegistrator = (fn: () => void) => {
     // eslint-disable-next-line no-multi-assign
     cleanup = runner.options.onStop = () => fn()
   }
@@ -141,7 +163,7 @@ function doWatch(
             newValue,
             // Pass undefined as the old value when it's changed for the first time
             oldValue === INITIAL_WATCHER_VALUE ? undefined : oldValue,
-            registerCleanup
+            onInvalidate
           )
           oldValue = newValue
         }
@@ -166,33 +188,24 @@ function doWatch(
     scheduler: applyCb ? () => scheduler(applyCb) : scheduler
   })
 
-  if (lazy && cb) {
-    oldValue = runner()
-  } else {
-    if (__DEV__ && lazy && !cb) {
-      console.warn(
-        `watch() lazy option is only respected when using the ` +
-          `watch(getter, callback) signature.`
-      )
-    }
+  recordInstanceBoundEffect(runner)
 
-    if (applyCb) {
-      scheduler(applyCb)
+  // Initial run
+  if (applyCb) {
+    if (immediate) {
+      applyCb()
     } else {
-      scheduler(runner)
+      oldValue = runner()
     }
+  } else {
+    runner()
   }
 
   const instance = getCurrentInstance()
-  recordInstanceBoundEffect(runner)
   return () => {
     stop(runner)
     if (instance) {
-      const effects = instance.__effects__!
-      const index = effects.indexOf(runner)
-      if (index > -1) {
-        effects.splice(index, 1)
-      }
+      remove(instance.__effects__!, runner)
     }
   }
 }

@@ -55,7 +55,6 @@ export function deepWatch(
       this.setData({ [key]: deepToRaw(value) })
     },
     {
-      lazy: true,
       deep: true
     }
   )

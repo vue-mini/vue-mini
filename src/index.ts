@@ -14,7 +14,7 @@ export {
   markNonReactive
 } from '@vue/reactivity'
 export { computed } from './computed'
-export { watch } from './watch'
+export { watch, watchEffect } from './watch'
 export { nextTick } from './scheduler'
 export { createApp } from './app'
 export { definePage } from './page'

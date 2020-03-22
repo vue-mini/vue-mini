@@ -4,7 +4,7 @@ import {
   reactive,
   computed,
   readonly,
-  watch,
+  watchEffect,
   nextTick,
   isReadonly,
   onAttach,
@@ -223,7 +223,7 @@ describe('component', () => {
         count.value++
       }
 
-      stopper = watch(() => {
+      stopper = watchEffect(() => {
         dummy = count.value
       })
       return {

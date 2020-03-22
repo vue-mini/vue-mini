@@ -27,6 +27,13 @@ export function hasChanged(value: unknown, oldValue: unknown): boolean {
   return value !== oldValue && (value === value || oldValue === oldValue)
 }
 
+export function remove<T>(arr: T[], el: T): void {
+  const i = arr.indexOf(el)
+  if (i > -1) {
+    arr.splice(i, 1)
+  }
+}
+
 export function toHiddenField(name: string): string {
   return `__${name}__`
 }

@@ -2,7 +2,7 @@ import {
   createApp,
   ref,
   computed,
-  watch,
+  watchEffect,
   nextTick,
   onAppShow,
   onAppHide,
@@ -50,7 +50,7 @@ describe('app', () => {
     expect(app.double.value).toBe(0)
 
     let dummy
-    watch(() => {
+    watchEffect(() => {
       dummy = app.count.value
     })
     await nextTick()
