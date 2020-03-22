@@ -46,6 +46,9 @@
     "typescript": "^3.7.3",
     "xo": "^0.28.0"
   },
+  "resolutions": {
+    "xo/prettier": "^2.0.1"
+  },
   "husky": {
     "hooks": {
       "pre-commit": "lint-staged",

@@ -70,14 +70,14 @@ export const enum ComponentLifecycle {
   READY = 'ready',
   MOVED = 'moved',
   DETACHED = 'detached',
-  ERROR = 'error'
+  ERROR = 'error',
 }
 
 const SpecialLifecycleMap = {
   [PageLifecycle.ON_SHOW]: 'show',
   [PageLifecycle.ON_HIDE]: 'hide',
   [PageLifecycle.ON_RESIZE]: 'resize',
-  [ComponentLifecycle.READY]: PageLifecycle.ON_READY
+  [ComponentLifecycle.READY]: PageLifecycle.ON_READY,
 }
 
 export function defineComponent<RawBindings extends Bindings>(
@@ -140,13 +140,13 @@ export function defineComponent(
   const originCreated =
     options.lifetimes[ComponentLifecycle.CREATED] ||
     options[ComponentLifecycle.CREATED]
-  options.lifetimes[ComponentLifecycle.CREATED] = function(
+  options.lifetimes[ComponentLifecycle.CREATED] = function (
     this: ComponentInstance
   ) {
     setCurrentComponent(this)
     const rawProps: Record<string, any> = {}
     if (properties) {
-      properties.forEach(property => {
+      properties.forEach((property) => {
         rawProps[property] = this.data[property]
       })
     }
@@ -168,7 +168,7 @@ export function defineComponent(
       getTabBar: this.getTabBar.bind(this),
       getPageId: this.getPageId.bind(this),
       animate: this.animate.bind(this),
-      clearAnimation: this.clearAnimation.bind(this)
+      clearAnimation: this.clearAnimation.bind(this),
     }
     const bindings = setup(this.__props__, context)
     if (bindings !== undefined) {
@@ -186,13 +186,13 @@ export function defineComponent(
     options,
     ComponentLifecycle.ATTACHED
   )
-  options.lifetimes[ComponentLifecycle.ATTACHED] = function(
+  options.lifetimes[ComponentLifecycle.ATTACHED] = function (
     this: ComponentInstance
   ) {
     const bindings = this.__bindings__
     if (bindings !== undefined) {
       setCurrentComponent(this) // For effects record
-      Object.keys(bindings).forEach(key => {
+      Object.keys(bindings).forEach((key) => {
         const value = bindings[key]
         if (isFunction(value)) {
           this[key] = value
@@ -213,13 +213,13 @@ export function defineComponent(
     options,
     ComponentLifecycle.DETACHED
   )
-  options.lifetimes[ComponentLifecycle.DETACHED] = function(
+  options.lifetimes[ComponentLifecycle.DETACHED] = function (
     this: ComponentInstance
   ) {
     detached.call(this)
 
     if (this.__effects__) {
-      this.__effects__.forEach(effect => stop(effect))
+      this.__effects__.forEach((effect) => stop(effect))
     }
   }
 
@@ -256,7 +256,7 @@ export function defineComponent(
   }
 
   if (options.methods[PageLifecycle.ON_SHARE_APP_MESSAGE] === undefined) {
-    options.methods[PageLifecycle.ON_SHARE_APP_MESSAGE] = function(
+    options.methods[PageLifecycle.ON_SHARE_APP_MESSAGE] = function (
       this: ComponentInstance,
       share: WechatMiniprogram.Page.IShareAppMessageOption
     ): WechatMiniprogram.Page.ICustomShareContent {
@@ -310,9 +310,9 @@ export function defineComponent(
       options.observers = {}
     }
 
-    properties.forEach(property => {
+    properties.forEach((property) => {
       const originObserver = options.observers[property]
-      options.observers[property] = function(
+      options.observers[property] = function (
         this: ComponentInstance,
         value: any
       ) {
@@ -363,7 +363,7 @@ function createLifecycle(
   originLifecycle: Function | undefined
 ): (...args: any[]) => void {
   const hiddenField = toHiddenField(lifecycle)
-  return function(this: ComponentInstance, ...args: any[]) {
+  return function (this: ComponentInstance, ...args: any[]) {
     const hooks = this[hiddenField]
     if (hooks) {
       hooks.forEach((hook: Function) => hook(...args))

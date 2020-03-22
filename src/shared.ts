@@ -6,7 +6,7 @@ import {
   isSimpleValue,
   isObject,
   isPlainObject,
-  isFunction
+  isFunction,
 } from './utils'
 
 export function deepToRaw(x: unknown): unknown {
@@ -23,12 +23,12 @@ export function deepToRaw(x: unknown): unknown {
   }
 
   if (isArray(x)) {
-    return x.map(item => deepToRaw(item))
+    return x.map((item) => deepToRaw(item))
   }
 
   if (isPlainObject(x)) {
     const obj: { [key: string]: unknown } = {}
-    Object.keys(x).forEach(key => {
+    Object.keys(x).forEach((key) => {
       obj[key] = deepToRaw(x[key])
     })
     return obj
@@ -55,7 +55,7 @@ export function deepWatch(
       this.setData({ [key]: deepToRaw(value) })
     },
     {
-      deep: true
+      deep: true,
     }
   )
 }

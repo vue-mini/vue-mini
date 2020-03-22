@@ -3,7 +3,7 @@ import {
   ITERATE_KEY,
   DebuggerEvent,
   TrackOpTypes,
-  TriggerOpTypes
+  TriggerOpTypes,
 } from '@vue/reactivity'
 import { watch, watchEffect, reactive, computed, nextTick, ref } from '../src'
 import { mockWarn } from './mock-warn'
@@ -94,7 +94,7 @@ describe('watch', () => {
     await nextTick()
     expect(dummy).toMatchObject([
       [2, 2, 3],
-      [1, 1, 2]
+      [1, 1, 2],
     ])
   })
 
@@ -118,7 +118,7 @@ describe('watch', () => {
     await nextTick()
     expect(dummy).toMatchObject([
       [2, true],
-      [1, false]
+      [1, false],
     ])
   })
 
@@ -142,7 +142,7 @@ describe('watch', () => {
     let dummy
     const stop = watch(
       () => state.count,
-      count => {
+      (count) => {
         dummy = count
       }
     )
@@ -162,7 +162,7 @@ describe('watch', () => {
     const state = reactive({ count: 0 })
     const cleanup = jest.fn()
     let dummy
-    const stop = watchEffect(onCleanup => {
+    const stop = watchEffect((onCleanup) => {
       onCleanup(cleanup)
       dummy = state.count
     })
@@ -218,25 +218,25 @@ describe('watch', () => {
   it('deep', async () => {
     const state = reactive({
       nested: {
-        count: ref(0)
+        count: ref(0),
       },
       array: [1, 2, 3],
       map: new Map([
         ['a', 1],
-        ['b', 2]
+        ['b', 2],
       ]),
-      set: new Set([1, 2, 3])
+      set: new Set([1, 2, 3]),
     })
 
     let dummy
     watch(
       () => state,
-      state => {
+      (state) => {
         dummy = [
           state.nested.count,
           state.array[0],
           state.map.get('a'),
-          state.set.has(1)
+          state.set.has(1),
         ]
       },
       { deep: true }
@@ -353,18 +353,18 @@ describe('watch', () => {
       {
         target: obj,
         type: TrackOpTypes.GET,
-        key: 'foo'
+        key: 'foo',
       },
       {
         target: obj,
         type: TrackOpTypes.HAS,
-        key: 'bar'
+        key: 'bar',
       },
       {
         target: obj,
         type: TrackOpTypes.ITERATE,
-        key: ITERATE_KEY
-      }
+        key: ITERATE_KEY,
+      },
     ])
   })
 
@@ -392,7 +392,7 @@ describe('watch', () => {
       type: TriggerOpTypes.SET,
       key: 'foo',
       oldValue: 1,
-      newValue: 2
+      newValue: 2,
     })
 
     delete obj.foo
@@ -402,7 +402,7 @@ describe('watch', () => {
     expect(events[1]).toMatchObject({
       type: TriggerOpTypes.DELETE,
       key: 'foo',
-      oldValue: 2
+      oldValue: 2,
     })
   })
 

@@ -15,7 +15,7 @@ import {
   onResize,
   onTabItemTap,
   onPageScroll,
-  onShareAppMessage
+  onShareAppMessage,
 } from '../src'
 import { mockWarn } from './mock-warn'
 
@@ -36,10 +36,10 @@ global.Page = (options: Record<string, any>) => {
     options: {},
     setData(data: Record<string, unknown>) {
       this.data = this.data || {}
-      Object.keys(data).forEach(key => {
+      Object.keys(data).forEach((key) => {
         this.data[key] = data[key]
       })
-    }
+    },
   }
 }
 
@@ -69,7 +69,7 @@ describe('page', () => {
         add,
         count,
         double,
-        increment
+        increment,
       }
     })
     page.onLoad()
@@ -87,7 +87,7 @@ describe('page', () => {
     definePage(() => {
       const state: { count: number; double: number } = reactive({
         count: 0,
-        double: computed(() => state.count * 2)
+        double: computed(() => state.count * 2),
       })
       const increment = (): void => {
         state.count++
@@ -95,7 +95,7 @@ describe('page', () => {
 
       return {
         state,
-        increment
+        increment,
       }
     })
     page.onLoad()
@@ -125,7 +125,7 @@ describe('page', () => {
 
       return {
         arr: [count, double],
-        increment
+        increment,
       }
     })
     page.onLoad()
@@ -146,7 +146,7 @@ describe('page', () => {
 
       return {
         obj: { count, double },
-        increment
+        increment,
       }
     })
     page.onLoad()
@@ -176,7 +176,7 @@ describe('page', () => {
       return {
         count,
         double,
-        increment
+        increment,
       }
     })
     page.onLoad()
@@ -201,7 +201,7 @@ describe('page', () => {
       })
       return {
         count,
-        increment
+        increment,
       }
     })
     page.onLoad()
@@ -247,7 +247,7 @@ describe('page', () => {
       setup() {
         onReady(injectedFn1)
         onReady(injectedFn2)
-      }
+      },
     })
     page.onLoad()
     page.onReady()
@@ -265,7 +265,7 @@ describe('page', () => {
       setup() {
         onShow(injectedFn1)
         onShow(injectedFn2)
-      }
+      },
     })
     page.onLoad()
     page.onShow()
@@ -283,7 +283,7 @@ describe('page', () => {
       setup() {
         onHide(injectedFn1)
         onHide(injectedFn2)
-      }
+      },
     })
     page.onLoad()
     page.onHide()
@@ -301,7 +301,7 @@ describe('page', () => {
       setup() {
         onUnload(injectedFn1)
         onUnload(injectedFn2)
-      }
+      },
     })
     page.onLoad()
     page.onUnload()
@@ -319,7 +319,7 @@ describe('page', () => {
       setup() {
         onPullDownRefresh(injectedFn1)
         onPullDownRefresh(injectedFn2)
-      }
+      },
     })
     page.onLoad()
     page.onPullDownRefresh()
@@ -337,7 +337,7 @@ describe('page', () => {
       setup() {
         onReachBottom(injectedFn1)
         onReachBottom(injectedFn2)
-      }
+      },
     })
     page.onLoad()
     page.onReachBottom()
@@ -356,7 +356,7 @@ describe('page', () => {
       setup() {
         onResize(injectedFn1)
         onResize(injectedFn2)
-      }
+      },
     })
     page.onLoad()
     page.onResize(arg)
@@ -375,7 +375,7 @@ describe('page', () => {
       setup() {
         onTabItemTap(injectedFn1)
         onTabItemTap(injectedFn2)
-      }
+      },
     })
     page.onLoad()
     page.onTabItemTap(arg)
@@ -403,7 +403,7 @@ describe('page', () => {
       setup() {
         onPageScroll(injectedFn1)
         onPageScroll(injectedFn2)
-      }
+      },
     })
     page.onLoad()
     page.onPageScroll(arg)
@@ -433,7 +433,7 @@ describe('page', () => {
       },
       setup() {
         onShareAppMessage(() => ({}))
-      }
+      },
     })
     page.onLoad()
     expect('onShareAppMessage() hook only').toHaveBeenWarned()

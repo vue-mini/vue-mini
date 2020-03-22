@@ -11,7 +11,7 @@ export {
   shallowReactive,
   toRaw,
   markReadonly,
-  markNonReactive
+  markNonReactive,
 } from '@vue/reactivity'
 export { computed } from './computed'
 export { watch, watchEffect } from './watch'
@@ -39,7 +39,7 @@ export {
   onAttach,
   onMove,
   onDetach,
-  onError
+  onError,
 } from './lifecycle'
 
 // Types -----------------------------------------------------------------------
@@ -53,14 +53,14 @@ export {
   Ref,
   ComputedRef,
   UnwrapRef,
-  WritableComputedOptions
+  WritableComputedOptions,
 } from '@vue/reactivity'
 export {
   // Types
   WatchOptions,
   WatchCallback,
   WatchSource,
-  StopHandle
+  StopHandle,
 } from './watch'
 export { Bindings } from './instance'
 export { AppSetup, AppOptions } from './app'
@@ -69,5 +69,5 @@ export {
   ComponentContext,
   ComponentSetup,
   ComponentOptionsWithoutProps,
-  ComponentOptionsWithProps
+  ComponentOptionsWithProps,
 } from './component'

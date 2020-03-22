@@ -4,7 +4,7 @@ import {
   WritableComputedOptions,
   ReactiveEffect,
   WritableComputedRef,
-  ComputedGetter
+  ComputedGetter,
 } from '@vue/reactivity'
 import { getCurrentInstance } from './instance'
 

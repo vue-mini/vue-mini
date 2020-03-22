@@ -33,7 +33,7 @@ export const enum PageLifecycle {
   ON_PAGE_SCROLL = 'onPageScroll',
   ON_SHARE_APP_MESSAGE = 'onShareAppMessage',
   ON_RESIZE = 'onResize',
-  ON_TAB_ITEM_TAP = 'onTabItemTap'
+  ON_TAB_ITEM_TAP = 'onTabItemTap',
 }
 
 export function definePage<
@@ -72,16 +72,16 @@ export function definePage(
   }
 
   const originOnLoad = options[PageLifecycle.ON_LOAD]
-  options[PageLifecycle.ON_LOAD] = function(this: PageInstance, query: Query) {
+  options[PageLifecycle.ON_LOAD] = function (this: PageInstance, query: Query) {
     setCurrentPage(this)
     const context: PageContext = {
       is: this.is,
       route: this.route,
-      options: this.options
+      options: this.options,
     }
     const bindings = setup(query, context)
     if (bindings !== undefined) {
-      Object.keys(bindings).forEach(key => {
+      Object.keys(bindings).forEach((key) => {
         const value = bindings[key]
         if (isFunction(value)) {
           this[key] = value
@@ -101,11 +101,11 @@ export function definePage(
   }
 
   const onUnload = createLifecycle(options, PageLifecycle.ON_UNLOAD)
-  options[PageLifecycle.ON_UNLOAD] = function(this: PageInstance) {
+  options[PageLifecycle.ON_UNLOAD] = function (this: PageInstance) {
     onUnload.call(this)
 
     if (this.__effects__) {
-      this.__effects__.forEach(effect => stop(effect))
+      this.__effects__.forEach((effect) => stop(effect))
     }
   }
 
@@ -119,7 +119,7 @@ export function definePage(
   }
 
   if (options[PageLifecycle.ON_SHARE_APP_MESSAGE] === undefined) {
-    options[PageLifecycle.ON_SHARE_APP_MESSAGE] = function(
+    options[PageLifecycle.ON_SHARE_APP_MESSAGE] = function (
       this: PageInstance,
       share: WechatMiniprogram.Page.IShareAppMessageOption
     ): WechatMiniprogram.Page.ICustomShareContent {
@@ -175,7 +175,7 @@ function createLifecycle(
   lifecycle: PageLifecycle
 ): (...args: any[]) => void {
   const originLifecycle = options[lifecycle] as Function
-  return function(this: PageInstance, ...args: any[]) {
+  return function (this: PageInstance, ...args: any[]) {
     const hooks = this[toHiddenField(lifecycle)]
     if (hooks) {
       hooks.forEach((hook: Function) => hook(...args))

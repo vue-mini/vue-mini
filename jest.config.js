@@ -3,11 +3,11 @@
 module.exports = {
   preset: 'ts-jest',
   globals: {
-    __DEV__: true
+    __DEV__: true,
   },
   testMatch: ['<rootDir>/__tests__/**/*.spec.ts'],
   coverageProvider: 'v8',
   collectCoverageFrom: ['src/**/*.ts'],
   watchPathIgnorePatterns: ['<rootDir>/node_modules/'],
-  testEnvironment: 'node'
+  testEnvironment: 'node',
 }

@@ -8,7 +8,7 @@ import {
   onAppHide,
   onAppError,
   onPageNotFound,
-  onUnhandledRejection
+  onUnhandledRejection,
 } from '../src'
 import { mockWarn } from './mock-warn'
 
@@ -41,7 +41,7 @@ describe('app', () => {
         num,
         count,
         double,
-        increment
+        increment,
       }
     })
     app.onLaunch()
@@ -84,7 +84,7 @@ describe('app', () => {
       setup() {
         onAppShow(injectedFn1)
         onAppShow(injectedFn2)
-      }
+      },
     })
     app.onLaunch()
     app.onShow(arg)
@@ -102,7 +102,7 @@ describe('app', () => {
       setup() {
         onAppHide(injectedFn1)
         onAppHide(injectedFn2)
-      }
+      },
     })
     app.onLaunch()
     app.onHide()
@@ -121,7 +121,7 @@ describe('app', () => {
       setup() {
         onAppError(injectedFn1)
         onAppError(injectedFn2)
-      }
+      },
     })
     app.onLaunch()
     app.onError(arg)
@@ -140,7 +140,7 @@ describe('app', () => {
       setup() {
         onPageNotFound(injectedFn1)
         onPageNotFound(injectedFn2)
-      }
+      },
     })
     app.onLaunch()
     app.onPageNotFound(arg)
@@ -159,7 +159,7 @@ describe('app', () => {
       setup() {
         onUnhandledRejection(injectedFn1)
         onUnhandledRejection(injectedFn2)
-      }
+      },
     })
     app.onLaunch()
     app.onUnhandledRejection(arg)
@@ -179,7 +179,7 @@ describe('app', () => {
       onHide: fn,
       setup() {
         return { num: 0 }
-      }
+      },
     })
     app.onLaunch()
     expect(app.num).toBe(0)

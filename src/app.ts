@@ -19,7 +19,7 @@ export const enum AppLifecycle {
   ON_HIDE = 'onHide',
   ON_ERROR = 'onError',
   ON_PAGE_NOT_FOUND = 'onPageNotFound',
-  ON_UNHANDLED_REJECTION = 'onUnhandledRejection'
+  ON_UNHANDLED_REJECTION = 'onUnhandledRejection',
 }
 
 export function createApp<RawBindings extends Bindings>(
@@ -49,14 +49,14 @@ export function createApp(optionsOrSetup: AppOptions | AppSetup): void {
   }
 
   const originOnLaunch = options[AppLifecycle.ON_LAUNCH]
-  options[AppLifecycle.ON_LAUNCH] = function(
+  options[AppLifecycle.ON_LAUNCH] = function (
     this: AppInstance,
     options: WechatMiniprogram.App.LaunchShowOption
   ) {
     setCurrentApp(this)
     const bindings = setup(options)
     if (bindings !== undefined) {
-      Object.keys(bindings).forEach(key => {
+      Object.keys(bindings).forEach((key) => {
         this[key] = bindings[key]
       })
     }
@@ -92,7 +92,7 @@ function createLifecycle(
   lifecycle: AppLifecycle
 ): (...args: any[]) => void {
   const originLifecycle = options[lifecycle] as Function
-  return function(this: AppInstance, ...args: any[]) {
+  return function (this: AppInstance, ...args: any[]) {
     const hooks = this[toHiddenField(lifecycle)]
     if (hooks) {
       hooks.forEach((hook: Function) => hook(...args))

@@ -13,14 +13,14 @@ const config = {
     'xo/esnext',
     require.resolve('xo/config/plugins'),
     'plugin:prettier/recommended',
-    'prettier/unicorn'
+    'prettier/unicorn',
   ],
   overrides: [
     {
       files: ['*.ts'],
       extends: ['xo-typescript', 'prettier/@typescript-eslint'],
       parserOptions: {
-        project: './tsconfig.json'
+        project: './tsconfig.json',
       },
       rules: {
         'no-redeclare': 'error',
@@ -32,16 +32,16 @@ const config = {
         '@typescript-eslint/prefer-includes': 'off',
         '@typescript-eslint/promise-function-async': 'off',
         '@typescript-eslint/prefer-nullish-coalescing': 'off',
-        '@typescript-eslint/ban-types': ['error', { types }]
-      }
-    }
+        '@typescript-eslint/ban-types': ['error', { types }],
+      },
+    },
   ],
   globals: {
     App: 'readonly',
     Page: 'readonly',
     Component: 'readonly',
-    __DEV__: 'readonly'
-  }
+    __DEV__: 'readonly',
+  },
 }
 
 if (!isProd) {
@@ -50,11 +50,11 @@ if (!isProd) {
     'silent',
     'silent/import',
     'silent/prettier',
-    'silent/unicorn'
+    'silent/unicorn',
   ]
   config.overrides[0].extends = [
     ...config.overrides[0].extends,
-    'silent/@typescript-eslint'
+    'silent/@typescript-eslint',
   ]
 }
 

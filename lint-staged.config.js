@@ -1,9 +1,9 @@
 module.exports = {
-  '**/*.js': filenames => [
-    `cross-env NODE_ENV=production eslint --fix ${filenames.join(' ')}`
-  ],
-  '**/*.ts': filenames => [
+  '**/*.js': (filenames) => [
     `cross-env NODE_ENV=production eslint --fix ${filenames.join(' ')}`,
-    'tsc --noEmit'
-  ]
+  ],
+  '**/*.ts': (filenames) => [
+    `cross-env NODE_ENV=production eslint --fix ${filenames.join(' ')}`,
+    'tsc --noEmit',
+  ],
 }

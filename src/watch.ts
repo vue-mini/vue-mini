@@ -4,7 +4,7 @@ import {
   isRef,
   Ref,
   ComputedRef,
-  ReactiveEffectOptions
+  ReactiveEffectOptions,
 } from '@vue/reactivity'
 import { queueJob } from './scheduler'
 import { recordInstanceBoundEffect } from './computed'
@@ -121,7 +121,7 @@ function doWatch(
 
   let getter: () => any
   if (isArray(source)) {
-    getter = () => source.map(s => (isRef(s) ? s.value : s()))
+    getter = () => source.map((s) => (isRef(s) ? s.value : s()))
   } else if (isRef(source)) {
     getter = () => source.value
   } else if (cb) {
@@ -174,7 +174,7 @@ function doWatch(
   if (flush === 'sync') {
     scheduler = invoke
   } else {
-    scheduler = job => {
+    scheduler = (job) => {
       queueJob(job)
     }
   }
@@ -185,7 +185,7 @@ function doWatch(
     computed: true,
     onTrack,
     onTrigger,
-    scheduler: applyCb ? () => scheduler(applyCb) : scheduler
+    scheduler: applyCb ? () => scheduler(applyCb) : scheduler,
   })
 
   recordInstanceBoundEffect(runner)
@@ -226,7 +226,7 @@ function traverse(value: unknown, seen: Set<unknown> = new Set()): unknown {
       traverse(value.get(key), seen)
     })
   } else if (value instanceof Set) {
-    value.forEach(v => {
+    value.forEach((v) => {
       traverse(v, seen)
     })
   } else {

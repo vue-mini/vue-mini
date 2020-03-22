@@ -4,7 +4,7 @@ import {
   getCurrentInstance,
   AppInstance,
   PageInstance,
-  ComponentInstance
+  ComponentInstance,
 } from './instance'
 import { AppLifecycle } from './app'
 import { PageLifecycle, Query } from './page'

@@ -20,7 +20,7 @@ import {
   onResize,
   onTabItemTap,
   onPageScroll,
-  onShareAppMessage
+  onShareAppMessage,
 } from '../src'
 import { mockWarn } from './mock-warn'
 
@@ -33,7 +33,7 @@ declare global {
   }
 }
 let component: Record<string, any>
-global.Component = options => {
+global.Component = (options) => {
   component = {
     ...options,
     is: '',
@@ -53,10 +53,10 @@ global.Component = options => {
     clearAnimation() {},
     setData(data: Record<string, unknown>) {
       this.data = this.data || {}
-      Object.keys(data).forEach(key => {
+      Object.keys(data).forEach((key) => {
         this.data[key] = data[key]
       })
-    }
+    },
   }
 }
 
@@ -87,7 +87,7 @@ describe('component', () => {
         add,
         count,
         double,
-        increment
+        increment,
       }
     })
     component.lifetimes.created.call(component)
@@ -106,7 +106,7 @@ describe('component', () => {
     defineComponent(() => {
       const state: { count: number; double: number } = reactive({
         count: 0,
-        double: computed(() => state.count * 2)
+        double: computed(() => state.count * 2),
       })
       const increment = (): void => {
         state.count++
@@ -114,7 +114,7 @@ describe('component', () => {
 
       return {
         state,
-        increment
+        increment,
       }
     })
     component.lifetimes.created.call(component)
@@ -146,7 +146,7 @@ describe('component', () => {
 
       return {
         arr: [count, double],
-        increment
+        increment,
       }
     })
     component.lifetimes.created.call(component)
@@ -168,7 +168,7 @@ describe('component', () => {
 
       return {
         obj: { count, double },
-        increment
+        increment,
       }
     })
     component.lifetimes.created.call(component)
@@ -202,7 +202,7 @@ describe('component', () => {
       return {
         count,
         double,
-        increment
+        increment,
       }
     })
     component.lifetimes.created.call(component)
@@ -228,7 +228,7 @@ describe('component', () => {
       })
       return {
         count,
-        increment
+        increment,
       }
     })
     component.lifetimes.created.call(component)
@@ -256,14 +256,14 @@ describe('component', () => {
   it('props', async () => {
     defineComponent({
       properties: {
-        count: Number
+        count: Number,
       },
       setup(props) {
         expect(isReadonly(props)).toBe(true)
         expect(props.count).toBe(0)
         const double = computed(() => props.count * 2)
         return { double }
-      }
+      },
     })
 
     component.data = { count: 0 }
@@ -280,12 +280,12 @@ describe('component', () => {
   it('multiple instances', async () => {
     defineComponent({
       properties: {
-        count: Number
+        count: Number,
       },
       setup(props) {
         const double = computed(() => props.count * 2)
         return { double }
-      }
+      },
     })
 
     const instance1 = Object.create(component)
@@ -313,12 +313,12 @@ describe('component', () => {
     const fn = jest.fn()
     defineComponent({
       properties: {
-        count: Number
+        count: Number,
       },
       setup() {},
       observers: {
-        count: fn
-      }
+        count: fn,
+      },
     })
     component.data = { count: 0 }
     component.lifetimes.created.call(component)
@@ -342,7 +342,7 @@ describe('component', () => {
     const fn = jest.fn()
     defineComponent({
       lifetimes: { created: fn },
-      setup() {}
+      setup() {},
     })
     component.lifetimes.created.call(component)
     component.lifetimes.attached.call(component)
@@ -353,7 +353,7 @@ describe('component', () => {
     const fn = jest.fn()
     defineComponent({
       created: fn,
-      setup() {}
+      setup() {},
     })
     component.lifetimes.created.call(component)
     component.lifetimes.attached.call(component)
@@ -369,7 +369,7 @@ describe('component', () => {
       setup() {
         onAttach(injectedFn1)
         onAttach(injectedFn2)
-      }
+      },
     })
     component.lifetimes.created.call(component)
     component.lifetimes.attached.call(component)
@@ -382,7 +382,7 @@ describe('component', () => {
     const fn = jest.fn()
     defineComponent({
       attached: fn,
-      setup() {}
+      setup() {},
     })
     component.lifetimes.created.call(component)
     component.lifetimes.attached.call(component)
@@ -401,7 +401,7 @@ describe('component', () => {
       setup() {
         onReady(injectedFn1)
         onReady(injectedFn2)
-      }
+      },
     })
     component.lifetimes.created.call(component)
     component.lifetimes.attached.call(component)
@@ -415,7 +415,7 @@ describe('component', () => {
     const fn = jest.fn()
     defineComponent({
       ready: fn,
-      setup() {}
+      setup() {},
     })
     component.lifetimes.created.call(component)
     component.lifetimes.attached.call(component)
@@ -432,7 +432,7 @@ describe('component', () => {
       setup() {
         onMove(injectedFn1)
         onMove(injectedFn2)
-      }
+      },
     })
     component.lifetimes.created.call(component)
     component.lifetimes.attached.call(component)
@@ -446,7 +446,7 @@ describe('component', () => {
     const fn = jest.fn()
     defineComponent({
       moved: fn,
-      setup() {}
+      setup() {},
     })
     component.lifetimes.created.call(component)
     component.lifetimes.attached.call(component)
@@ -463,7 +463,7 @@ describe('component', () => {
       setup() {
         onDetach(injectedFn1)
         onDetach(injectedFn2)
-      }
+      },
     })
     component.lifetimes.created.call(component)
     component.lifetimes.attached.call(component)
@@ -477,7 +477,7 @@ describe('component', () => {
     const fn = jest.fn()
     defineComponent({
       detached: fn,
-      setup() {}
+      setup() {},
     })
     component.lifetimes.created.call(component)
     component.lifetimes.attached.call(component)
@@ -495,7 +495,7 @@ describe('component', () => {
       setup() {
         onError(injectedFn1)
         onError(injectedFn2)
-      }
+      },
     })
     component.lifetimes.created.call(component)
     component.lifetimes.attached.call(component)
@@ -510,7 +510,7 @@ describe('component', () => {
     const fn = jest.fn()
     defineComponent({
       error: fn,
-      setup() {}
+      setup() {},
     })
     component.lifetimes.created.call(component)
     component.lifetimes.attached.call(component)
@@ -528,7 +528,7 @@ describe('component', () => {
       setup() {
         onLoad(injectedFn1)
         onLoad(injectedFn2)
-      }
+      },
     })
     component.lifetimes.created.call(component)
     component.lifetimes.attached.call(component)
@@ -547,7 +547,7 @@ describe('component', () => {
       setup() {
         onPullDownRefresh(injectedFn1)
         onPullDownRefresh(injectedFn2)
-      }
+      },
     })
     component.lifetimes.created.call(component)
     component.lifetimes.attached.call(component)
@@ -566,7 +566,7 @@ describe('component', () => {
       setup() {
         onReachBottom(injectedFn1)
         onReachBottom(injectedFn2)
-      }
+      },
     })
     component.lifetimes.created.call(component)
     component.lifetimes.attached.call(component)
@@ -586,7 +586,7 @@ describe('component', () => {
       setup() {
         onTabItemTap(injectedFn1)
         onTabItemTap(injectedFn2)
-      }
+      },
     })
     component.lifetimes.created.call(component)
     component.lifetimes.attached.call(component)
@@ -617,7 +617,7 @@ describe('component', () => {
       setup() {
         onPageScroll(injectedFn1)
         onPageScroll(injectedFn2)
-      }
+      },
     })
     component.__listenPageScroll__ = component.methods.__listenPageScroll__
     component.lifetimes.created.call(component)
@@ -649,11 +649,11 @@ describe('component', () => {
       methods: {
         onShareAppMessage() {
           return {}
-        }
+        },
       },
       setup() {
         onShareAppMessage(() => ({}))
-      }
+      },
     })
     component.__isInjectedShareHook__ =
       component.methods.__isInjectedShareHook__
@@ -700,7 +700,7 @@ describe('component', () => {
       setup() {
         onShow(injectedFn1)
         onShow(injectedFn2)
-      }
+      },
     })
     component.lifetimes.created.call(component)
     component.lifetimes.attached.call(component)
@@ -719,7 +719,7 @@ describe('component', () => {
       setup() {
         onHide(injectedFn1)
         onHide(injectedFn2)
-      }
+      },
     })
     component.lifetimes.created.call(component)
     component.lifetimes.attached.call(component)
@@ -739,7 +739,7 @@ describe('component', () => {
       setup() {
         onResize(injectedFn1)
         onResize(injectedFn2)
-      }
+      },
     })
     component.lifetimes.created.call(component)
     component.lifetimes.attached.call(component)

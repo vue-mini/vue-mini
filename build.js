@@ -22,15 +22,15 @@ async function generateDeclaration() {
           include,
           compilerOptions: {
             declaration: true,
-            declarationMap: true
-          }
-        }
-      })
-    ]
+            declarationMap: true,
+          },
+        },
+      }),
+    ],
   })
   await bundle.write({
     file: 'dist/temp/wechat.esm.js',
-    format: 'es'
+    format: 'es',
   })
 }
 
@@ -41,10 +41,10 @@ async function generateCode({ isDev, format, fileName }) {
     plugins: [
       typescript({
         check,
-        tsconfigOverride: { include }
+        tsconfigOverride: { include },
       }),
-      replace({ __DEV__: isDev })
-    ]
+      replace({ __DEV__: isDev }),
+    ],
   })
   await bundle.write({ file: `dist/${fileName}`, format })
 }
@@ -59,7 +59,7 @@ async function build() {
   )
   const extractorResult = Extractor.invoke(extractorConfig, {
     localBuild: true,
-    showVerboseMessages: true
+    showVerboseMessages: true,
   })
 
   if (extractorResult.succeeded) {
@@ -77,25 +77,25 @@ async function build() {
   await generateCode({
     isDev: true,
     format: 'es',
-    fileName: 'wechat.esm.js'
+    fileName: 'wechat.esm.js',
   })
 
   await generateCode({
     isDev: false,
     format: 'es',
-    fileName: 'wechat.esm.prod.js'
+    fileName: 'wechat.esm.prod.js',
   })
 
   await generateCode({
     isDev: true,
     format: 'cjs',
-    fileName: 'wechat.cjs.js'
+    fileName: 'wechat.cjs.js',
   })
 
   await generateCode({
     isDev: false,
     format: 'cjs',
-    fileName: 'wechat.cjs.prod.js'
+    fileName: 'wechat.cjs.prod.js',
   })
 }
 
