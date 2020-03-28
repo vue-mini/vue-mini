@@ -45,6 +45,9 @@ const config = {
 }
 
 if (!isProd) {
+  config.rules = {
+    'eslint-comments/no-unused-disable': 'off',
+  }
   config.extends = [
     ...config.extends,
     'silent',
