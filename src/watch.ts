@@ -143,7 +143,7 @@ function doWatch(
     getter = () => traverse(baseGetter())
   }
 
-  let cleanup: Function
+  let cleanup: () => void
   const onInvalidate: InvalidateCbRegistrator = (fn: () => void) => {
     // eslint-disable-next-line no-multi-assign
     cleanup = runner.options.onStop = () => fn()
