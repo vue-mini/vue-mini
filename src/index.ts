@@ -16,6 +16,7 @@ export {
 export { computed } from './computed'
 export { watch, watchEffect } from './watch'
 export { nextTick } from './scheduler'
+export { provide, inject } from './inject'
 export { createApp } from './app'
 export { definePage } from './page'
 export { defineComponent } from './component'
@@ -62,6 +63,7 @@ export {
   WatchSource,
   StopHandle,
 } from './watch'
+export { InjectionKey } from './inject'
 export { Bindings } from './instance'
 export { AppSetup, AppOptions } from './app'
 export { Query, PageContext, PageSetup, PageOptions, Config } from './page'
