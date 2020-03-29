@@ -58,6 +58,8 @@ export {
 } from '@vue/reactivity'
 export {
   // Types
+  WatchEffect,
+  BaseWatchOptions,
   WatchOptions,
   WatchCallback,
   WatchSource,
