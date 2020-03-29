@@ -41,7 +41,7 @@
     "jest": "^25.1.0",
     "lint-staged": "^10.0.7",
     "rollup": "^1.27.9",
-    "rollup-plugin-typescript2": "^0.26.0",
+    "rollup-plugin-typescript2": "^0.27.0",
     "ts-jest": "^25.2.0",
     "typescript": "^3.7.3",
     "xo": "^0.28.0"
