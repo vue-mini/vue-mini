@@ -19,11 +19,11 @@ export function inject(
     return provides[key as string]
   }
 
-  if (defaultValue !== undefined) {
+  if (arguments.length > 1) {
     return defaultValue
   }
-  /* istanbul ignore else  */
 
+  /* istanbul ignore else */
   if (__DEV__) {
     console.warn(`injection "${String(key)}" not found.`)
   }

@@ -117,4 +117,9 @@ describe('provide/inject', () => {
     expect(foo).toBeUndefined()
     expect(`injection "Symbol(foo)" not found.`).toHaveBeenWarned()
   })
+
+  it('should not warn when default value is undefined', () => {
+    inject(Symbol('foo'), undefined)
+    expect(`injection "Symbol(foo)" not found.`).not.toHaveBeenWarned()
+  })
 })
