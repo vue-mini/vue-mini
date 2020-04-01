@@ -6,7 +6,7 @@ module.exports = {
     __DEV__: true,
   },
   testMatch: ['<rootDir>/__tests__/**/*.spec.ts'],
-  coverageProvider: 'v8',
+  // CoverageProvider: 'v8',
   collectCoverageFrom: ['src/**/*.ts'],
   watchPathIgnorePatterns: ['<rootDir>/node_modules/'],
   testEnvironment: 'node',
