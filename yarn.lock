@@ -687,17 +687,17 @@
     semver "^6.3.0"
     tsutils "^3.17.1"
 
-"@vue/reactivity@^3.0.0-alpha.10":
-  version "3.0.0-alpha.10"
-  resolved "https://registry.npm.taobao.org/@vue/reactivity/download/@vue/reactivity-3.0.0-alpha.10.tgz#d859acd384e42d42086cfefbefe478825aaa9b82"
-  integrity sha1-2Fms04TkLUIIbP777+R4glqqm4I=
+"@vue/reactivity@^3.0.0-alpha.11":
+  version "3.0.0-alpha.11"
+  resolved "https://registry.npm.taobao.org/@vue/reactivity/download/@vue/reactivity-3.0.0-alpha.11.tgz#4837aa6b8c6d63f333bcca9be82f461f169f7bf1"
+  integrity sha1-SDeqa4xtY/MzvMqb6C9GHxafe/E=
   dependencies:
-    "@vue/shared" "3.0.0-alpha.10"
+    "@vue/shared" "3.0.0-alpha.11"
 
-"@vue/shared@3.0.0-alpha.10":
-  version "3.0.0-alpha.10"
-  resolved "https://registry.npm.taobao.org/@vue/shared/download/@vue/shared-3.0.0-alpha.10.tgz#7026d9a81fa5f03ea03e9434be6286ed167684b8"
-  integrity sha1-cCbZqB+l8D6gPpQ0vmKG7RZ2hLg=
+"@vue/shared@3.0.0-alpha.11":
+  version "3.0.0-alpha.11"
+  resolved "https://registry.npm.taobao.org/@vue/shared/download/@vue/shared-3.0.0-alpha.11.tgz#aa2d5cc711c76c9da1da72217e917ec9c3a812d1"
+  integrity sha1-qi1cxxHHbJ2h2nIhfpF+ycOoEtE=
 
 abab@^2.0.0:
   version "2.0.3"
