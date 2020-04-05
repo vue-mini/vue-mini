@@ -51,6 +51,7 @@ global.Component = (options) => {
     getPageId() {},
     animate() {},
     clearAnimation() {},
+    getOpenerEventChannel() {},
     setData(data: Record<string, unknown>) {
       this.data = this.data || {}
       Object.keys(data).forEach((key) => {

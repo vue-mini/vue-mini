@@ -6,8 +6,8 @@ import { isFunction, toHiddenField } from './utils'
 
 export type ComponentContext = WechatMiniprogram.Component.InstanceProperties &
   Omit<
-    WechatMiniprogram.Component.InstanceMethods<Record<string, unknown>>,
-    'setData' | 'hasBehavior'
+    WechatMiniprogram.Component.InstanceMethods<Record<string, any>>,
+    'setData' | 'groupSetData' | 'hasBehavior'
   >
 
 export type ComponentSetup<
@@ -164,11 +164,11 @@ export function defineComponent(
       selectAllComponents: this.selectAllComponents.bind(this),
       selectOwnerComponent: this.selectOwnerComponent.bind(this),
       getRelationNodes: this.getRelationNodes.bind(this),
-      groupSetData: this.groupSetData.bind(this),
       getTabBar: this.getTabBar.bind(this),
       getPageId: this.getPageId.bind(this),
       animate: this.animate.bind(this),
       clearAnimation: this.clearAnimation.bind(this),
+      getOpenerEventChannel: this.getOpenerEventChannel.bind(this),
     }
     const bindings = setup(this.__props__, context)
     if (bindings !== undefined) {
