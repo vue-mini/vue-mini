@@ -34,6 +34,15 @@ global.Page = (options: Record<string, any>) => {
     is: '',
     route: '',
     options: {},
+    createSelectorQuery() {},
+    createIntersectionObserver() {},
+    selectComponent() {},
+    selectAllComponents() {},
+    getTabBar() {},
+    getPageId() {},
+    animate() {},
+    clearAnimation() {},
+    getOpenerEventChannel() {},
     setData(data: Record<string, unknown>) {
       this.data = this.data || {}
       Object.keys(data).forEach((key) => {
@@ -228,11 +237,15 @@ describe('page', () => {
   it('onLoad', () => {
     const arg = {}
     const onLoad = jest.fn()
-    const setup = jest.fn()
+    const setup = jest.fn((query, context) => {
+      expect(query).toBe(arg)
+      expect(context.is).toBe('')
+      expect(context.getOpenerEventChannel).toBeInstanceOf(Function)
+    })
     definePage({ onLoad, setup })
     page.onLoad(arg)
     expect(onLoad).toBeCalledWith(arg)
-    expect(setup).toBeCalledWith(arg, { is: '', route: '', options: {} })
+    expect(setup).toBeCalledTimes(1)
   })
 
   it('onReady', () => {

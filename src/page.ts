@@ -4,7 +4,16 @@ import { deepToRaw, deepWatch } from './shared'
 import { isFunction, toHiddenField } from './utils'
 
 export type Query = Record<string, string | undefined>
-export type PageContext = WechatMiniprogram.Page.InstanceProperties
+export type PageContext = WechatMiniprogram.Page.InstanceProperties &
+  Omit<
+    WechatMiniprogram.Page.InstanceMethods<Record<string, any>>,
+    | 'setData'
+    | 'groupSetData'
+    | 'hasBehavior'
+    | 'triggerEvent'
+    | 'selectOwnerComponent'
+    | 'getRelationNodes'
+  >
 export type PageSetup<
   PageQuery extends Query = Query,
   RawBindings extends Bindings = Bindings
@@ -78,6 +87,15 @@ export function definePage(
       is: this.is,
       route: this.route,
       options: this.options,
+      createSelectorQuery: this.createSelectorQuery.bind(this),
+      createIntersectionObserver: this.createIntersectionObserver.bind(this),
+      selectComponent: this.selectComponent.bind(this),
+      selectAllComponents: this.selectAllComponents.bind(this),
+      getTabBar: this.getTabBar.bind(this),
+      getPageId: this.getPageId.bind(this),
+      animate: this.animate.bind(this),
+      clearAnimation: this.clearAnimation.bind(this),
+      getOpenerEventChannel: this.getOpenerEventChannel.bind(this),
     }
     const bindings = setup(query, context)
     if (bindings !== undefined) {
