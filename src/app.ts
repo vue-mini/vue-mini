@@ -1,16 +1,13 @@
 import { Bindings, AppInstance, setCurrentApp } from './instance'
 import { isFunction, toHiddenField } from './utils'
 
-export type AppSetup<RawBindings extends Bindings = Bindings> = (
+export type AppSetup = (
   this: void,
   options: WechatMiniprogram.App.LaunchShowOption
-) => RawBindings
-export type AppOptions<
-  RawBindings extends Bindings = Bindings,
-  Custom extends WechatMiniprogram.IAnyObject = WechatMiniprogram.IAnyObject
-> = WechatMiniprogram.App.Options<Custom> & {
-  setup?: AppSetup<RawBindings>
-}
+) => Bindings
+export type AppOptions<T extends WechatMiniprogram.IAnyObject> = {
+  setup?: AppSetup
+} & WechatMiniprogram.App.Options<T>
 type Options = Record<string, any>
 
 export const enum AppLifecycle {
@@ -22,16 +19,13 @@ export const enum AppLifecycle {
   ON_UNHANDLED_REJECTION = 'onUnhandledRejection',
 }
 
-export function createApp<RawBindings extends Bindings>(
-  setup: AppSetup<RawBindings>
+export function createApp(setup: AppSetup): void
+
+export function createApp<T extends WechatMiniprogram.IAnyObject>(
+  options: AppOptions<T>
 ): void
 
-export function createApp<
-  RawBindings extends Bindings,
-  Custom extends WechatMiniprogram.IAnyObject
->(options: AppOptions<RawBindings, Custom>): void
-
-export function createApp(optionsOrSetup: AppOptions | AppSetup): void {
+export function createApp(optionsOrSetup: any): void {
   let setup: AppSetup
   let options: Options
   if (isFunction(optionsOrSetup)) {

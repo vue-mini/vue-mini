@@ -14,18 +14,15 @@ export type PageContext = WechatMiniprogram.Page.InstanceProperties &
     | 'selectOwnerComponent'
     | 'getRelationNodes'
   >
-export type PageSetup<
-  PageQuery extends Query = Query,
-  RawBindings extends Bindings = Bindings
-> = (this: void, query: PageQuery, context: PageContext) => RawBindings
+export type PageSetup = (
+  this: void,
+  query: Query,
+  context: PageContext
+) => Bindings
 export type PageOptions<
-  PageQuery extends Query = Query,
-  RawBindings extends Bindings = Bindings,
-  Data extends WechatMiniprogram.Page.DataOption = WechatMiniprogram.Page.DataOption,
-  Custom extends WechatMiniprogram.Page.CustomOption = WechatMiniprogram.Page.CustomOption
-> = WechatMiniprogram.Page.Options<Data, Custom> & {
-  setup?: PageSetup<PageQuery, RawBindings>
-}
+  Data extends WechatMiniprogram.Page.DataOption,
+  Custom extends WechatMiniprogram.Page.CustomOption
+> = { setup?: PageSetup } & WechatMiniprogram.Page.Options<Data, Custom>
 export interface Config {
   listenPageScroll: boolean
 }
@@ -45,23 +42,15 @@ export const enum PageLifecycle {
   ON_TAB_ITEM_TAP = 'onTabItemTap',
 }
 
-export function definePage<
-  PageQuery extends Query,
-  RawBindings extends Bindings
->(setup: PageSetup<PageQuery, RawBindings>, config?: Config): void
+export function definePage(setup: PageSetup, config?: Config): void
 
 export function definePage<
-  PageQuery extends Query,
-  RawBindings extends Bindings,
   Data extends WechatMiniprogram.Page.DataOption,
   Custom extends WechatMiniprogram.Page.CustomOption
->(
-  options: PageOptions<PageQuery, RawBindings, Data, Custom>,
-  config?: Config
-): void
+>(options: PageOptions<Data, Custom>, config?: Config): void
 
 export function definePage(
-  optionsOrSetup: PageOptions | PageSetup,
+  optionsOrSetup: any,
   config: Config = { listenPageScroll: false }
 ): void {
   let setup: PageSetup

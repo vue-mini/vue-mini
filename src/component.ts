@@ -10,35 +10,30 @@ export type ComponentContext = WechatMiniprogram.Component.InstanceProperties &
     'setData' | 'groupSetData' | 'hasBehavior'
   >
 
-export type ComponentSetup<
-  Props extends Record<string, any> = Record<string, any>,
-  RawBindings extends Bindings = Bindings
-> = (
+export type ComponentSetup<Props extends Record<string, any>> = (
   this: void,
   props: Readonly<Props>,
   context: ComponentContext
-) => RawBindings
+) => Bindings
 
 export type ComponentOptionsWithoutProps<
-  RawBindings extends Bindings = Bindings,
-  Data extends WechatMiniprogram.Component.DataOption = WechatMiniprogram.Component.DataOption,
-  Methods extends WechatMiniprogram.Component.MethodOption = WechatMiniprogram.Component.MethodOption
+  Data extends WechatMiniprogram.Component.DataOption,
+  Methods extends WechatMiniprogram.Component.MethodOption
 > = WechatMiniprogram.Component.Options<
   Data,
   WechatMiniprogram.Component.PropertyOption,
   Methods
 > & { properties?: undefined } & {
   // eslint-disable-next-line @typescript-eslint/ban-types
-  setup?: ComponentSetup<{}, RawBindings>
+  setup?: ComponentSetup<{}>
 }
 
 export type ComponentOptionsWithProps<
-  Props extends WechatMiniprogram.Component.PropertyOption = WechatMiniprogram.Component.PropertyOption,
-  RawBindings extends Bindings = Bindings,
-  Data extends WechatMiniprogram.Component.DataOption = WechatMiniprogram.Component.DataOption,
-  Methods extends WechatMiniprogram.Component.MethodOption = WechatMiniprogram.Component.MethodOption
+  Props extends WechatMiniprogram.Component.PropertyOption,
+  Data extends WechatMiniprogram.Component.DataOption,
+  Methods extends WechatMiniprogram.Component.MethodOption
 > = WechatMiniprogram.Component.Options<Data, Props, Methods> & {
-  setup?: ComponentSetup<PropertyOptionToData<Props>, RawBindings>
+  setup?: ComponentSetup<PropertyOptionToData<Props>>
 }
 
 /** * Temporary patch for https://github.com/wechat-miniprogram/api-typings/issues/97 ***/
@@ -80,39 +75,31 @@ const SpecialLifecycleMap = {
   [ComponentLifecycle.READY]: PageLifecycle.ON_READY,
 }
 
-export function defineComponent<RawBindings extends Bindings>(
+export function defineComponent(
   // eslint-disable-next-line @typescript-eslint/ban-types
-  setup: ComponentSetup<{}, RawBindings>,
+  setup: ComponentSetup<{}>,
   config?: Config
 ): string
 
 export function defineComponent<
-  RawBindings extends Bindings,
   Data extends WechatMiniprogram.Component.DataOption,
   Methods extends WechatMiniprogram.Component.MethodOption
->(
-  options: ComponentOptionsWithoutProps<RawBindings, Data, Methods>,
-  config?: Config
-): string
+>(options: ComponentOptionsWithoutProps<Data, Methods>, config?: Config): string
 
 export function defineComponent<
   Props extends WechatMiniprogram.Component.PropertyOption,
-  RawBindings extends Bindings,
   Data extends WechatMiniprogram.Component.DataOption,
   Methods extends WechatMiniprogram.Component.MethodOption
 >(
-  options: ComponentOptionsWithProps<Props, RawBindings, Data, Methods>,
+  options: ComponentOptionsWithProps<Props, Data, Methods>,
   config?: Config
 ): string
 
 export function defineComponent(
-  optionsOrSetup:
-    | ComponentOptionsWithProps
-    | ComponentOptionsWithoutProps
-    | ComponentSetup,
+  optionsOrSetup: any,
   config: Config = { listenPageScroll: false }
 ): string {
-  let setup: ComponentSetup
+  let setup: ComponentSetup<Record<string, any>>
   let options: Options
   let properties: string[] | null = null
   if (isFunction(optionsOrSetup)) {
