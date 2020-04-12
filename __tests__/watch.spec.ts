@@ -416,14 +416,14 @@ describe('watch', () => {
   })
 
   it('should not trigger when value changed from NaN to NaN', async () => {
-    const count = ref(NaN)
+    const count = ref(Number.NaN)
     const fn = jest.fn()
     watch(count, fn)
 
     await nextTick()
     expect(fn).toHaveBeenCalledTimes(0)
 
-    count.value = NaN
+    count.value = Number.NaN
     await nextTick()
     expect(fn).toHaveBeenCalledTimes(0)
   })
