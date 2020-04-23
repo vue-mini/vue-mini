@@ -212,7 +212,7 @@ function doWatch(
 
 function traverse(value: unknown, seen: Set<unknown> = new Set()): unknown {
   if (!isObject(value) || seen.has(value)) {
-    return
+    return value
   }
 
   seen.add(value)
