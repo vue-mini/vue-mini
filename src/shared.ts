@@ -1,4 +1,4 @@
-import { isRef, isReactive, isReadonly, toRaw } from '@vue/reactivity'
+import { isRef, isProxy, toRaw } from '@vue/reactivity'
 import { watch } from './watch'
 import {
   isArray,
@@ -18,7 +18,7 @@ export function deepToRaw(x: unknown): unknown {
     return deepToRaw(x.value)
   }
 
-  if (isReactive(x) || isReadonly(x)) {
+  if (isProxy(x)) {
     return deepToRaw(toRaw(x))
   }
 
@@ -45,7 +45,7 @@ export function deepWatch(
   key: string,
   value: unknown
 ): void {
-  if (!isObject(value) || isReadonly(value)) {
+  if (!isObject(value)) {
     return
   }
 

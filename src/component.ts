@@ -1,4 +1,4 @@
-import { stop, shallowReadonly, lock, unlock } from '@vue/reactivity'
+import { stop, shallowReactive, shallowReadonly } from '@vue/reactivity'
 import { PageLifecycle, Config } from './page'
 import { deepToRaw, deepWatch } from './shared'
 import { Bindings, ComponentInstance, setCurrentComponent } from './instance'
@@ -138,7 +138,7 @@ export function defineComponent(
       })
     }
 
-    this.__props__ = shallowReadonly(rawProps)
+    this.__props__ = shallowReactive(rawProps)
 
     const context: ComponentContext = {
       is: this.is,
@@ -157,7 +157,12 @@ export function defineComponent(
       clearAnimation: this.clearAnimation.bind(this),
       getOpenerEventChannel: this.getOpenerEventChannel.bind(this),
     }
-    const bindings = setup(this.__props__, context)
+    const bindings = setup(
+      __DEV__
+        ? shallowReadonly(this.__props__)
+        : /* istanbul ignore next  */ this.__props__,
+      context
+    )
     if (bindings !== undefined) {
       this.__bindings__ = bindings
     }
@@ -303,9 +308,7 @@ export function defineComponent(
         this: ComponentInstance,
         value: any
       ) {
-        unlock()
         ;(this.__props__ as Record<string, any>)[property] = value
-        lock()
 
         if (originObserver !== undefined) {
           originObserver.call(this, value)

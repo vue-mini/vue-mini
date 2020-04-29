@@ -4,6 +4,7 @@ import {
   DebuggerEvent,
   TrackOpTypes,
   TriggerOpTypes,
+  triggerRef,
 } from '@vue/reactivity'
 import { watch, watchEffect, reactive, computed, nextTick, ref } from '../src'
 import { mockWarn } from './mock-warn'
@@ -441,6 +442,7 @@ describe('watch', () => {
     expect(fn).toHaveBeenCalledTimes(0)
 
     count.value = Number.NaN
+    triggerRef(count)
     await nextTick()
     expect(fn).toHaveBeenCalledTimes(0)
   })

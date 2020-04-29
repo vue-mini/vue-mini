@@ -1,17 +1,26 @@
 // Public API ------------------------------------------------------------------
 
 export {
-  ref,
-  isRef,
-  toRefs,
+  // Core
   reactive,
-  isReactive,
+  ref,
   readonly,
+  // Utilities
+  unref,
+  isRef,
+  toRef,
+  toRefs,
+  isProxy,
+  isReactive,
   isReadonly,
+  // Advanced
+  customRef,
+  triggerRef,
+  shallowRef,
   shallowReactive,
+  shallowReadonly,
+  markRaw,
   toRaw,
-  markReadonly,
-  markNonReactive,
 } from '@vue/reactivity'
 export { computed } from './computed'
 export { watch, watchEffect } from './watch'
@@ -55,6 +64,7 @@ export {
   ComputedRef,
   UnwrapRef,
   WritableComputedOptions,
+  ToRefs,
 } from '@vue/reactivity'
 export {
   // Types
