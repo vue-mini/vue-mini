@@ -2,7 +2,9 @@
   "compilerOptions": {
     "target": "esnext",
     "lib": [
-      "esnext"
+      "esnext",
+      // TODO: Remove it when https://github.com/vuejs/vue-next/issues/1083 is solved.
+      "dom"
     ],
     "skipLibCheck": true,
     "esModuleInterop": true,
