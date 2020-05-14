@@ -1,11 +1,7 @@
 {
   "compilerOptions": {
     "target": "esnext",
-    "lib": [
-      "esnext",
-      // TODO: Remove it when https://github.com/vuejs/vue-next/issues/1083 is solved.
-      "dom"
-    ],
+    "lib": ["esnext"],
     "skipLibCheck": true,
     "esModuleInterop": true,
     "strict": true,
@@ -16,14 +12,10 @@
     "noFallthroughCasesInSwitch": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
-    "typeRoots" : [
+    "typeRoots": [
       "./node_modules/@types",
       "./node_modules/miniprogram-api-typings"
     ]
   },
-  "include": [
-    "src",
-    "__tests__",
-    "global.d.ts"
-  ]
+  "include": ["src", "__tests__", "global.d.ts"]
 }
