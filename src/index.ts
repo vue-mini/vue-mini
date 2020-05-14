@@ -69,11 +69,11 @@ export {
 export {
   // Types
   WatchEffect,
-  BaseWatchOptions,
   WatchOptions,
+  WatchOptionsBase,
   WatchCallback,
   WatchSource,
-  StopHandle,
+  WatchStopHandle,
 } from './watch'
 export { InjectionKey } from './inject'
 export { Bindings } from './instance'
