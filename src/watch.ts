@@ -5,6 +5,7 @@ import {
   Ref,
   ComputedRef,
   ReactiveEffectOptions,
+  isReactive,
 } from '@vue/reactivity'
 import { queueJob } from './scheduler'
 import { recordInstanceBoundEffect } from './computed'
@@ -61,14 +62,7 @@ export function watchEffect(
 // Initial value for watchers to trigger on undefined initial values
 const INITIAL_WATCHER_VALUE = {}
 
-// Overload #1: single source + cb
-export function watch<T, Immediate extends Readonly<boolean> = false>(
-  source: WatchSource<T>,
-  cb: WatchCallback<T, Immediate extends true ? T | undefined : T>,
-  options?: WatchOptions<Immediate>
-): WatchStopHandle
-
-// Overload #2: array of multiple sources + cb
+// Overload #1: array of multiple sources + cb
 // Readonly constraint helps the callback to correctly infer value types based
 // on position in the source array. Otherwise the values will get a union type
 // of all possible value types.
@@ -78,6 +72,23 @@ export function watch<
 >(
   sources: T,
   cb: WatchCallback<MapSources<T>, MapOldSources<T, Immediate>>,
+  options?: WatchOptions<Immediate>
+): WatchStopHandle
+
+// Overload #2: single source + cb
+export function watch<T, Immediate extends Readonly<boolean> = false>(
+  source: WatchSource<T>,
+  cb: WatchCallback<T, Immediate extends true ? T | undefined : T>,
+  options?: WatchOptions<Immediate>
+): WatchStopHandle
+
+// Overload #3: watching reactive object w/ cb
+export function watch<
+  T extends object,
+  Immediate extends Readonly<boolean> = false
+>(
+  source: T,
+  cb: WatchCallback<T, Immediate extends true ? T | undefined : T>,
   options?: WatchOptions<Immediate>
 ): WatchStopHandle
 
@@ -124,17 +135,34 @@ function doWatch(
     getter = () => source.map((s) => (isRef(s) ? s.value : s()))
   } else if (isRef(source)) {
     getter = () => source.value
-  } else if (cb) {
-    // Getter with cb
-    getter = () => (source as () => any)()
-  } else {
-    // No cb -> simple effect
-    getter = () => {
-      if (cleanup) {
-        cleanup()
-      }
+  } else if (isReactive(source)) {
+    getter = () => source
+    deep = true
+  } else if (isFunction(source)) {
+    if (cb) {
+      // Getter with cb
+      getter = () => (source as () => any)()
+    } else {
+      // No cb -> simple effect
+      getter = () => {
+        if (cleanup) {
+          cleanup()
+        }
 
-      return source(onInvalidate)
+        return source(onInvalidate)
+      }
+    }
+  } else {
+    // eslint-disable-next-line @typescript-eslint/no-empty-function
+    getter = () => {}
+    /* istanbul ignore else  */
+    if (__DEV__) {
+      console.warn(
+        `Invalid watch source:`,
+        source,
+        `A watch source can only be a getter/effect function, a ref, ` +
+          `a reactive object, or an array of these types.`
+      )
     }
   }
 
