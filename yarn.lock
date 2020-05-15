@@ -752,7 +752,7 @@
     semver "^6.3.0"
     tsutils "^3.17.1"
 
-"@vue/reactivity@^3.0.0-beta.6":
+"@vue/reactivity@^3.0.0-beta.12":
   version "3.0.0-beta.12"
   resolved "https://registry.npm.taobao.org/@vue/reactivity/download/@vue/reactivity-3.0.0-beta.12.tgz#33e8c3845dc663967c85217316f831a0153c40dc"
   integrity sha1-M+jDhF3GY5Z8hSFzFvgxoBU8QNw=
