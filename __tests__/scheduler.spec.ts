@@ -13,6 +13,7 @@ describe('scheduler', () => {
       calls.push('job2')
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     nextTick(job1)
     job2()
 

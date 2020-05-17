@@ -752,47 +752,47 @@
   dependencies:
     "@types/yargs-parser" "*"
 
-"@typescript-eslint/eslint-plugin@^2.27.0":
-  version "2.27.0"
-  resolved "https://registry.npm.taobao.org/@typescript-eslint/eslint-plugin/download/@typescript-eslint/eslint-plugin-2.27.0.tgz#e479cdc4c9cf46f96b4c287755733311b0d0ba4b"
-  integrity sha1-5HnNxMnPRvlrTCh3VXMzEbDQuks=
+"@typescript-eslint/eslint-plugin@^2.29.0":
+  version "2.33.0"
+  resolved "https://registry.npm.taobao.org/@typescript-eslint/eslint-plugin/download/@typescript-eslint/eslint-plugin-2.33.0.tgz#d6c8319d5011b4783bb3d2dadf105d8bdd499bd5"
+  integrity sha1-1sgxnVARtHg7s9La3xBdi91Jm9U=
   dependencies:
-    "@typescript-eslint/experimental-utils" "2.27.0"
+    "@typescript-eslint/experimental-utils" "2.33.0"
     functional-red-black-tree "^1.0.1"
     regexpp "^3.0.0"
     tsutils "^3.17.1"
 
-"@typescript-eslint/experimental-utils@2.27.0":
-  version "2.27.0"
-  resolved "https://registry.npm.taobao.org/@typescript-eslint/experimental-utils/download/@typescript-eslint/experimental-utils-2.27.0.tgz#801a952c10b58e486c9a0b36cf21e2aab1e9e01a"
-  integrity sha1-gBqVLBC1jkhsmgs2zyHiqrHp4Bo=
+"@typescript-eslint/experimental-utils@2.33.0":
+  version "2.33.0"
+  resolved "https://registry.npm.taobao.org/@typescript-eslint/experimental-utils/download/@typescript-eslint/experimental-utils-2.33.0.tgz?cache=0&sync_timestamp=1589563526867&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2F%40typescript-eslint%2Fexperimental-utils%2Fdownload%2F%40typescript-eslint%2Fexperimental-utils-2.33.0.tgz#000f1e5f344fbea1323dc91cc174805d75f99a03"
+  integrity sha1-AA8eXzRPvqEyPckcwXSAXXX5mgM=
   dependencies:
     "@types/json-schema" "^7.0.3"
-    "@typescript-eslint/typescript-estree" "2.27.0"
+    "@typescript-eslint/typescript-estree" "2.33.0"
     eslint-scope "^5.0.0"
     eslint-utils "^2.0.0"
 
-"@typescript-eslint/parser@^2.27.0":
-  version "2.27.0"
-  resolved "https://registry.npm.taobao.org/@typescript-eslint/parser/download/@typescript-eslint/parser-2.27.0.tgz?cache=0&sync_timestamp=1586628987528&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2F%40typescript-eslint%2Fparser%2Fdownload%2F%40typescript-eslint%2Fparser-2.27.0.tgz#d91664335b2c46584294e42eb4ff35838c427287"
-  integrity sha1-2RZkM1ssRlhClOQutP81g4xCcoc=
+"@typescript-eslint/parser@^2.29.0":
+  version "2.33.0"
+  resolved "https://registry.npm.taobao.org/@typescript-eslint/parser/download/@typescript-eslint/parser-2.33.0.tgz#395c0ef229ebef883608f8632a34f0acf02b9bdd"
+  integrity sha1-OVwO8inr74g2CPhjKjTwrPArm90=
   dependencies:
     "@types/eslint-visitor-keys" "^1.0.0"
-    "@typescript-eslint/experimental-utils" "2.27.0"
-    "@typescript-eslint/typescript-estree" "2.27.0"
+    "@typescript-eslint/experimental-utils" "2.33.0"
+    "@typescript-eslint/typescript-estree" "2.33.0"
     eslint-visitor-keys "^1.1.0"
 
-"@typescript-eslint/typescript-estree@2.27.0":
-  version "2.27.0"
-  resolved "https://registry.npm.taobao.org/@typescript-eslint/typescript-estree/download/@typescript-eslint/typescript-estree-2.27.0.tgz#a288e54605412da8b81f1660b56c8b2e42966ce8"
-  integrity sha1-oojlRgVBLai4HxZgtWyLLkKWbOg=
+"@typescript-eslint/typescript-estree@2.33.0":
+  version "2.33.0"
+  resolved "https://registry.npm.taobao.org/@typescript-eslint/typescript-estree/download/@typescript-eslint/typescript-estree-2.33.0.tgz#33504c050ccafd38f397a645d4e9534d2eccbb5c"
+  integrity sha1-M1BMBQzK/Tjzl6ZF1OlTTS7Mu1w=
   dependencies:
     debug "^4.1.1"
     eslint-visitor-keys "^1.1.0"
     glob "^7.1.6"
     is-glob "^4.0.1"
     lodash "^4.17.15"
-    semver "^6.3.0"
+    semver "^7.3.2"
     tsutils "^3.17.1"
 
 "@vue/reactivity@^3.0.0-beta.13":
@@ -2143,10 +2143,10 @@ eslint-ast-utils@^1.1.0:
     lodash.get "^4.4.2"
     lodash.zip "^4.2.0"
 
-eslint-config-prettier@^6.10.0:
-  version "6.10.1"
-  resolved "https://registry.npm.taobao.org/eslint-config-prettier/download/eslint-config-prettier-6.10.1.tgz#129ef9ec575d5ddc0e269667bf09defcd898642a"
-  integrity sha1-Ep757FddXdwOJpZnvwne/NiYZCo=
+eslint-config-prettier@^6.11.0:
+  version "6.11.0"
+  resolved "https://registry.npm.taobao.org/eslint-config-prettier/download/eslint-config-prettier-6.11.0.tgz#f6d2238c1290d01c859a8b5c1f7d352a0b0da8b1"
+  integrity sha1-9tIjjBKQ0ByFmotcH301KgsNqLE=
   dependencies:
     get-stdin "^6.0.0"
 
@@ -2155,10 +2155,10 @@ eslint-config-silent@^0.11.0:
   resolved "https://registry.npm.taobao.org/eslint-config-silent/download/eslint-config-silent-0.11.0.tgz#ec20ec4e190cb7df86e89de645e08a7e1d43231d"
   integrity sha1-7CDsThkMt9+G6J3mReCKfh1DIx0=
 
-eslint-config-xo-typescript@^0.27.0:
-  version "0.27.0"
-  resolved "https://registry.npm.taobao.org/eslint-config-xo-typescript/download/eslint-config-xo-typescript-0.27.0.tgz#9b9febe1f673af9ba936b85f5e5b8669f2505f67"
-  integrity sha1-m5/r4fZzr5upNrhfXluGafJQX2c=
+eslint-config-xo-typescript@^0.28.0:
+  version "0.28.0"
+  resolved "https://registry.npm.taobao.org/eslint-config-xo-typescript/download/eslint-config-xo-typescript-0.28.0.tgz#312286a90881097865f73e3237081a12e90f16c4"
+  integrity sha1-MSKGqQiBCXhl9z4yNwgaEukPFsQ=
 
 eslint-config-xo@^0.29.0:
   version "0.29.1"
@@ -2259,10 +2259,10 @@ eslint-plugin-import@^2.20.1:
     read-pkg-up "^2.0.0"
     resolve "^1.12.0"
 
-eslint-plugin-no-use-extend-native@^0.4.1:
-  version "0.4.1"
-  resolved "https://registry.npm.taobao.org/eslint-plugin-no-use-extend-native/download/eslint-plugin-no-use-extend-native-0.4.1.tgz#b2a631219b6a2e91b4370ef6559a754356560a40"
-  integrity sha1-sqYxIZtqLpG0Nw72VZp1Q1ZWCkA=
+eslint-plugin-no-use-extend-native@^0.5.0:
+  version "0.5.0"
+  resolved "https://registry.npm.taobao.org/eslint-plugin-no-use-extend-native/download/eslint-plugin-no-use-extend-native-0.5.0.tgz#d6855e3a823a819b467cf7df56adca57de741bf9"
+  integrity sha1-1oVeOoI6gZtGfPffVq3KV950G/k=
   dependencies:
     is-get-set-prop "^1.0.0"
     is-js-type "^2.0.0"
@@ -2281,10 +2281,10 @@ eslint-plugin-node@^11.0.0:
     resolve "^1.10.1"
     semver "^6.1.0"
 
-eslint-plugin-prettier@^3.1.2:
-  version "3.1.2"
-  resolved "https://registry.npm.taobao.org/eslint-plugin-prettier/download/eslint-plugin-prettier-3.1.2.tgz#432e5a667666ab84ce72f945c72f77d996a5c9ba"
-  integrity sha1-Qy5aZnZmq4TOcvlFxy932Zalybo=
+eslint-plugin-prettier@^3.1.3:
+  version "3.1.3"
+  resolved "https://registry.npm.taobao.org/eslint-plugin-prettier/download/eslint-plugin-prettier-3.1.3.tgz#ae116a0fc0e598fdae48743a4430903de5b4e6ca"
+  integrity sha1-rhFqD8DlmP2uSHQ6RDCQPeW05so=
   dependencies:
     prettier-linter-helpers "^1.0.0"
 
@@ -2293,15 +2293,16 @@ eslint-plugin-promise@^4.2.1:
   resolved "https://registry.npm.taobao.org/eslint-plugin-promise/download/eslint-plugin-promise-4.2.1.tgz#845fd8b2260ad8f82564c1222fce44ad71d9418a"
   integrity sha1-hF/YsiYK2PglZMEiL85ErXHZQYo=
 
-eslint-plugin-unicorn@^18.0.1:
-  version "18.0.1"
-  resolved "https://registry.npm.taobao.org/eslint-plugin-unicorn/download/eslint-plugin-unicorn-18.0.1.tgz#8d3285ffa57b2f6b07550b94e62228d93bf61813"
-  integrity sha1-jTKF/6V7L2sHVQuU5iIo2Tv2GBM=
+eslint-plugin-unicorn@^19.0.0:
+  version "19.0.1"
+  resolved "https://registry.npm.taobao.org/eslint-plugin-unicorn/download/eslint-plugin-unicorn-19.0.1.tgz#05eef02f33426b8aa4f21cd5e4785b456335b85b"
+  integrity sha1-Be7wLzNCa4qk8hzV5HhbRWM1uFs=
   dependencies:
     ci-info "^2.0.0"
     clean-regexp "^1.0.0"
     eslint-ast-utils "^1.1.0"
     eslint-template-visitor "^1.1.0"
+    eslint-utils "^2.0.0"
     import-modules "^2.0.0"
     lodash "^4.17.15"
     read-pkg-up "^7.0.1"
@@ -5156,9 +5157,9 @@ prettier-linter-helpers@^1.0.0:
   dependencies:
     fast-diff "^1.1.2"
 
-prettier@^2.0.4:
+prettier@2.0.4:
   version "2.0.4"
-  resolved "https://registry.npm.taobao.org/prettier/download/prettier-2.0.4.tgz#2d1bae173e355996ee355ec9830a7a1ee05457ef"
+  resolved "https://registry.npm.taobao.org/prettier/download/prettier-2.0.4.tgz?cache=0&sync_timestamp=1587488828880&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Fprettier%2Fdownload%2Fprettier-2.0.4.tgz#2d1bae173e355996ee355ec9830a7a1ee05457ef"
   integrity sha1-LRuuFz41WZbuNV7Jgwp6HuBUV+8=
 
 pretty-format@^25.2.1, pretty-format@^25.3.0:
@@ -6765,30 +6766,30 @@ xmlchars@^2.2.0:
   resolved "https://registry.npm.taobao.org/xmlchars/download/xmlchars-2.2.0.tgz#060fe1bcb7f9c76fe2a17db86a9bc3ab894210cb"
   integrity sha1-Bg/hvLf5x2/ioX24apvDq4lCEMs=
 
-xo@^0.29.0:
-  version "0.29.0"
-  resolved "https://registry.npm.taobao.org/xo/download/xo-0.29.0.tgz#8d5ccef9a6952864bc74eb12e4bd97fa61d62416"
-  integrity sha1-jVzO+aaVKGS8dOsS5L2X+mHWJBY=
+xo@^0.30.0:
+  version "0.30.0"
+  resolved "https://registry.npm.taobao.org/xo/download/xo-0.30.0.tgz#e2991da22dea4c08c192cf74bba66cb634528ed2"
+  integrity sha1-4pkdoi3qTAjBks90u6ZstjRSjtI=
   dependencies:
-    "@typescript-eslint/eslint-plugin" "^2.27.0"
-    "@typescript-eslint/parser" "^2.27.0"
+    "@typescript-eslint/eslint-plugin" "^2.29.0"
+    "@typescript-eslint/parser" "^2.29.0"
     arrify "^2.0.1"
     cosmiconfig "^6.0.0"
     debug "^4.1.0"
     eslint "^6.8.0"
-    eslint-config-prettier "^6.10.0"
+    eslint-config-prettier "^6.11.0"
     eslint-config-xo "^0.29.0"
-    eslint-config-xo-typescript "^0.27.0"
+    eslint-config-xo-typescript "^0.28.0"
     eslint-formatter-pretty "^3.0.1"
     eslint-import-resolver-webpack "^0.12.1"
     eslint-plugin-ava "^10.0.1"
     eslint-plugin-eslint-comments "^3.1.2"
     eslint-plugin-import "^2.20.1"
-    eslint-plugin-no-use-extend-native "^0.4.1"
+    eslint-plugin-no-use-extend-native "^0.5.0"
     eslint-plugin-node "^11.0.0"
-    eslint-plugin-prettier "^3.1.2"
+    eslint-plugin-prettier "^3.1.3"
     eslint-plugin-promise "^4.2.1"
-    eslint-plugin-unicorn "^18.0.1"
+    eslint-plugin-unicorn "^19.0.0"
     find-cache-dir "^3.3.1"
     find-up "^4.1.0"
     fs-extra "^9.0.0"
@@ -6805,10 +6806,10 @@ xo@^0.29.0:
     open-editor "^2.0.1"
     p-reduce "^2.1.0"
     path-exists "^4.0.0"
-    prettier "^2.0.4"
+    prettier "2.0.4"
     resolve-cwd "^3.0.0"
     resolve-from "^5.0.0"
-    semver "^7.2.1"
+    semver "^7.3.2"
     slash "^3.0.0"
     to-absolute-glob "^2.0.2"
     typescript "^3.0.0"

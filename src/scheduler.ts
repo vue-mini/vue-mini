@@ -24,6 +24,7 @@ export function queueJob(job: Job): void {
 function queueFlush(): void {
   if (!isFlushing && !isFlushPending) {
     isFlushPending = true
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     nextTick(flushJobs)
   }
 }
