@@ -36,14 +36,14 @@
     "codecov": "^3.6.5",
     "cross-env": "^7.0.0",
     "eslint": "^6.7.2",
-    "eslint-config-silent": "^0.11.0",
+    "eslint-config-silent": "^0.14.0",
     "fs-extra": "^9.0.0",
     "husky": "^4.0.10",
     "jest": "^26.0.1",
     "lint-staged": "^10.0.7",
     "rollup": "^2.6.1",
     "ts-jest": "^26.0.0",
-    "typescript": "^3.7.3",
+    "typescript": "^3.9.2",
     "xo": "^0.30.0"
   },
   "husky": {

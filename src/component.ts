@@ -47,13 +47,10 @@ type PropertyToData<
 > = T extends WechatMiniprogram.Component.PropertyType
   ? WechatMiniprogram.Component.ValueType<T>
   : T extends WechatMiniprogram.Component.AllFullProperty
-  ? FullPropertyToData<T>
+  ? T['optionalTypes'] extends OptionalTypes<infer Option>
+    ? WechatMiniprogram.Component.ValueType<Option | T['type']>
+    : WechatMiniprogram.Component.ValueType<T['type']>
   : never
-type FullPropertyToData<
-  T extends WechatMiniprogram.Component.AllFullProperty
-> = T['optionalTypes'] extends OptionalTypes<infer Option>
-  ? WechatMiniprogram.Component.ValueType<Option | T['type']>
-  : WechatMiniprogram.Component.ValueType<T['type']>
 type OptionalTypes<T extends WechatMiniprogram.Component.PropertyType> = T[]
 /*************************************************************************************/
 
