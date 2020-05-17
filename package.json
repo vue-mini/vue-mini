@@ -1,6 +1,6 @@
 {
   "name": "@vue-mini/wechat",
-  "version": "0.1.0-alpha.4",
+  "version": "0.1.0-beta.1",
   "description": "vue composition api for wechat mini program",
   "main": "dist/wechat.cjs.js",
   "types": "dist/wechat.d.ts",
