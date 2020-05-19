@@ -153,9 +153,27 @@ describe('watch', () => {
     ])
   })
 
+  it('watching multiple sources: reactive object (with automatic deep: true)', async () => {
+    const src = reactive({ count: 0 })
+    let dummy
+    watch([src], ([state]) => {
+      dummy = state
+      // Assert types
+      state.count === 1
+    })
+    src.count++
+    await nextTick()
+    expect(dummy).toMatchObject({ count: 1 })
+  })
+
   it('warn invalid watch source', () => {
     // @ts-ignore
     watch(1, () => {})
+    expect(`Invalid watch source`).toHaveBeenWarned()
+  })
+
+  it('warn invalid watch source: multiple sources', () => {
+    watch([1], () => {})
     expect(`Invalid watch source`).toHaveBeenWarned()
   })
 

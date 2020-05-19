@@ -23,7 +23,11 @@ export type WatchCallback<V = any, OV = any> = (
 ) => any
 
 type MapSources<T> = {
-  [K in keyof T]: T[K] extends WatchSource<infer V> ? V : never
+  [K in keyof T]: T[K] extends WatchSource<infer V>
+    ? V
+    : T[K] extends object
+    ? T[K]
+    : never
 }
 
 type MapOldSources<T, Immediate> = {
@@ -31,6 +35,10 @@ type MapOldSources<T, Immediate> = {
     ? Immediate extends true
       ? V | undefined
       : V
+    : T[K] extends object
+    ? Immediate extends true
+      ? T[K] | undefined
+      : T[K]
     : never
 }
 
@@ -67,7 +75,7 @@ const INITIAL_WATCHER_VALUE = {}
 // on position in the source array. Otherwise the values will get a union type
 // of all possible value types.
 export function watch<
-  T extends Readonly<Array<WatchSource<unknown>>>,
+  T extends Readonly<Array<WatchSource<unknown> | object>>,
   Immediate extends Readonly<boolean> = false
 >(
   sources: T,
@@ -130,9 +138,38 @@ function doWatch(
     }
   }
 
+  const warnInvalidSource = (s: unknown) => {
+    console.warn(
+      `Invalid watch source:`,
+      s,
+      `A watch source can only be a getter/effect function, a ref, ` +
+        `a reactive object, or an array of these types.`
+    )
+  }
+
   let getter: () => any
   if (isArray(source)) {
-    getter = () => source.map((s) => (isRef(s) ? s.value : s()))
+    getter = () =>
+      source.map((s) => {
+        if (isRef(s)) {
+          return s.value
+        }
+
+        if (isReactive(s)) {
+          return traverse(s)
+        }
+
+        if (isFunction(s)) {
+          return s()
+        }
+
+        /* istanbul ignore else  */
+        if (__DEV__) {
+          warnInvalidSource(s)
+        }
+
+        return undefined
+      })
   } else if (isRef(source)) {
     getter = () => source.value
   } else if (isReactive(source)) {
@@ -157,12 +194,7 @@ function doWatch(
     getter = () => {}
     /* istanbul ignore else  */
     if (__DEV__) {
-      console.warn(
-        `Invalid watch source:`,
-        source,
-        `A watch source can only be a getter/effect function, a ref, ` +
-          `a reactive object, or an array of these types.`
-      )
+      warnInvalidSource(source)
     }
   }
 
