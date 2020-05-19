@@ -50,7 +50,7 @@ export function deepWatch(
   }
 
   watch(
-    () => value,
+    isRef(value) ? value : () => value,
     () => {
       this.setData({ [key]: deepToRaw(value) })
     },
