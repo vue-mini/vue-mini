@@ -3,7 +3,9 @@
 const fs = require('fs-extra')
 const rollup = require('rollup')
 const replace = require('@rollup/plugin-replace')
+const { terser } = require('rollup-plugin-terser')
 const typescript = require('@rollup/plugin-typescript')
+const { default: resolve } = require('@rollup/plugin-node-resolve')
 const { Extractor, ExtractorConfig } = require('@microsoft/api-extractor')
 
 const input = 'src/index.ts'
@@ -27,11 +29,26 @@ async function generateDeclaration() {
   })
 }
 
-async function generateCode({ isDev, format, fileName }) {
+async function generateCode({ minify, external, replaces, fileName, format }) {
   const bundle = await rollup.rollup({
     input,
     external,
-    plugins: [typescript(), replace({ __DEV__: isDev })],
+    plugins: [
+      ...(minify
+        ? [
+            terser({
+              compress: {
+                ecma: 2015,
+                // eslint-disable-next-line camelcase
+                pure_getters: true,
+              },
+            }),
+          ]
+        : []),
+      typescript(),
+      replace(replaces),
+      resolve(),
+    ],
   })
   await bundle.write({ file: `dist/${fileName}`, format })
 }
@@ -64,27 +81,33 @@ async function build() {
   await fs.remove('dist/__tests__')
 
   await generateCode({
-    isDev: true,
-    format: 'es',
-    fileName: 'wechat.esm.js',
-  })
-
-  await generateCode({
-    isDev: false,
-    format: 'es',
-    fileName: 'wechat.esm.prod.js',
-  })
-
-  await generateCode({
-    isDev: true,
-    format: 'cjs',
+    minify: false,
+    replaces: {
+      __DEV__: true,
+      'process.env.NODE_ENV': JSON.stringify('development'),
+    },
     fileName: 'wechat.cjs.js',
+    format: 'cjs',
   })
 
   await generateCode({
-    isDev: false,
-    format: 'cjs',
+    minify: true,
+    replaces: {
+      __DEV__: false,
+      'process.env.NODE_ENV': JSON.stringify('production'),
+    },
     fileName: 'wechat.cjs.prod.js',
+    format: 'cjs',
+  })
+
+  await generateCode({
+    minify: false,
+    external,
+    replaces: {
+      __DEV__: `(process.env.NODE_ENV !== 'production')`,
+    },
+    fileName: 'wechat.esm-bundler.js',
+    format: 'es',
   })
 }
 
