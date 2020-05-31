@@ -14,6 +14,8 @@
     "test": "jest",
     "codecov": "codecov",
     "build": "node build.js",
+    "docs:dev": "vuepress dev docs",
+    "docs:build": "vuepress build docs",
     "prepublishOnly": "yarn lint && yarn type && yarn test && yarn build"
   },
   "files": [
@@ -47,7 +49,11 @@
     "rollup-plugin-terser": "^6.0.1",
     "ts-jest": "^26.0.0",
     "typescript": "^3.9.2",
+    "vuepress": "^1.5.0",
     "xo": "^0.30.0"
+  },
+  "resolutions": {
+    "chokidar": "^3.4.0"
   },
   "husky": {
     "hooks": {
