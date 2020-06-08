@@ -9,6 +9,7 @@ import {
   onAppError,
   onPageNotFound,
   onUnhandledRejection,
+  onThemeChange,
 } from '../src'
 import { mockWarn } from './mock-warn'
 
@@ -163,6 +164,25 @@ describe('app', () => {
     })
     app.onLaunch()
     app.onUnhandledRejection(arg)
+    expect(fn).toBeCalledWith(arg)
+    expect(injectedFn1).toBeCalledWith(arg)
+    expect(injectedFn2).toBeCalledWith(arg)
+  })
+
+  it('onThemeChange', () => {
+    const arg = {}
+    const fn = jest.fn()
+    const injectedFn1 = jest.fn()
+    const injectedFn2 = jest.fn()
+    createApp({
+      onThemeChange: fn,
+      setup() {
+        onThemeChange(injectedFn1)
+        onThemeChange(injectedFn2)
+      },
+    })
+    app.onLaunch()
+    app.onThemeChange(arg)
     expect(fn).toBeCalledWith(arg)
     expect(injectedFn1).toBeCalledWith(arg)
     expect(injectedFn2).toBeCalledWith(arg)

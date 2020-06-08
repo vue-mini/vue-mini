@@ -35,6 +35,7 @@ export {
   onAppError,
   onPageNotFound,
   onUnhandledRejection,
+  onThemeChange,
   onShow,
   onHide,
   onUnload,

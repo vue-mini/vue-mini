@@ -17,6 +17,7 @@ export const enum AppLifecycle {
   ON_ERROR = 'onError',
   ON_PAGE_NOT_FOUND = 'onPageNotFound',
   ON_UNHANDLED_REJECTION = 'onUnhandledRejection',
+  ON_THEME_CHANGE = 'onThemeChange',
 }
 
 export function createApp(setup: AppSetup): void
@@ -75,6 +76,10 @@ export function createApp(optionsOrSetup: any): void {
   options[AppLifecycle.ON_UNHANDLED_REJECTION] = createLifecycle(
     options,
     AppLifecycle.ON_UNHANDLED_REJECTION
+  )
+  options[AppLifecycle.ON_THEME_CHANGE] = createLifecycle(
+    options,
+    AppLifecycle.ON_THEME_CHANGE
   )
 
   // eslint-disable-next-line new-cap

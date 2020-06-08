@@ -27,6 +27,9 @@ export const onPageNotFound = createAppHook<
 export const onUnhandledRejection = createAppHook<
   (options: WechatMiniprogram.OnUnhandledRejectionCallbackResult) => unknown
 >(AppLifecycle.ON_UNHANDLED_REJECTION)
+export const onThemeChange = createAppHook<
+  (options: WechatMiniprogram.OnThemeChangeCallbackResult) => unknown
+>(AppLifecycle.ON_THEME_CHANGE)
 
 export const onShow = createPageHook(PageLifecycle.ON_SHOW)
 export const onHide = createPageHook(PageLifecycle.ON_HIDE)
