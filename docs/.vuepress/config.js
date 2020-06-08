@@ -22,7 +22,15 @@ module.exports = {
       },
     ],
     sidebar: {
-      '/guide/': ['/guide/', '/guide/installation'],
+      '/guide/': [
+        '/guide/',
+        '/guide/installation',
+        {
+          title: '基础',
+          collapsable: false,
+          children: ['/guide/app'],
+        },
+      ],
     },
   },
 }
