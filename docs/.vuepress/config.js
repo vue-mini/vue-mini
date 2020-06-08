@@ -22,7 +22,7 @@ module.exports = {
       },
     ],
     sidebar: {
-      '/guide/': ['/guide/'],
+      '/guide/': ['/guide/', '/guide/installation'],
     },
   },
 }
