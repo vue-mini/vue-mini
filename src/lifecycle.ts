@@ -7,7 +7,12 @@ import {
   ComponentInstance,
 } from './instance'
 import { AppLifecycle } from './app'
-import { PageLifecycle, Query } from './page'
+import {
+  AddToFavoritesOption,
+  CustomFavoritesContent,
+  PageLifecycle,
+  Query,
+} from './page'
 import { ComponentLifecycle } from './component'
 import { toHiddenField } from './utils'
 
@@ -79,6 +84,28 @@ export const onShareAppMessage = (
     } /* istanbul ignore else  */ else if (__DEV__) {
       console.warn(
         'onShareAppMessage() hook only works when `onShareAppMessage` option is not exist.'
+      )
+    }
+  } /* istanbul ignore else  */ else if (__DEV__) {
+    console.warn(pageHookWarn)
+  }
+}
+
+export const onAddToFavorites = (
+  hook: (share: AddToFavoritesOption) => CustomFavoritesContent
+): void => {
+  const currentInstance = getCurrentInstance()
+  if (currentInstance) {
+    if (currentInstance.__isInjectedFavoritesHook__) {
+      const hiddenField = toHiddenField(PageLifecycle.ON_ADD_TO_FAVORITES)
+      if (currentInstance[hiddenField] === undefined) {
+        currentInstance[hiddenField] = hook
+      } /* istanbul ignore else  */ else if (__DEV__) {
+        console.warn('onAddToFavorites() hook can only be called once.')
+      }
+    } /* istanbul ignore else  */ else if (__DEV__) {
+      console.warn(
+        'onAddToFavorites() hook only works when `onAddToFavorites` option is not exist.'
       )
     }
   } /* istanbul ignore else  */ else if (__DEV__) {

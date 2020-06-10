@@ -1,5 +1,10 @@
 import { stop, shallowReactive, shallowReadonly } from '@vue/reactivity'
-import { PageLifecycle, Config } from './page'
+import {
+  AddToFavoritesOption,
+  CustomFavoritesContent,
+  PageLifecycle,
+  Config,
+} from './page'
 import { deepToRaw, deepWatch } from './shared'
 import { Bindings, ComponentInstance, setCurrentComponent } from './instance'
 import { isFunction, toHiddenField } from './utils'
@@ -261,6 +266,25 @@ export function defineComponent(
 
     /* istanbul ignore next */
     options.methods.__isInjectedShareHook__ = () => true
+  }
+
+  if (options.methods[PageLifecycle.ON_ADD_TO_FAVORITES] === undefined) {
+    options.methods[PageLifecycle.ON_ADD_TO_FAVORITES] = function (
+      this: ComponentInstance,
+      favorites: AddToFavoritesOption
+    ): CustomFavoritesContent {
+      const hook = this[toHiddenField(PageLifecycle.ON_ADD_TO_FAVORITES)] as (
+        avorites: AddToFavoritesOption
+      ) => CustomFavoritesContent
+      if (hook) {
+        return hook(favorites)
+      }
+
+      return {}
+    }
+
+    /* istanbul ignore next */
+    options.methods.__isInjectedFavoritesHook__ = () => true
   }
 
   options.methods[PageLifecycle.ON_LOAD] = createPageLifecycle(

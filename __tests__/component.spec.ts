@@ -21,6 +21,7 @@ import {
   onTabItemTap,
   onPageScroll,
   onShareAppMessage,
+  onAddToFavorites,
 } from '../src'
 import { mockWarn } from './mock-warn'
 
@@ -690,6 +691,56 @@ describe('component', () => {
 
     defineComponent(() => {})
     expect(component.methods.onShareAppMessage.call(component, arg)).toEqual({})
+  })
+
+  it('onAddToFavorites', () => {
+    onAddToFavorites(() => ({}))
+    expect('Page specific lifecycle').toHaveBeenWarned()
+
+    defineComponent({
+      methods: {
+        onAddToFavorites() {
+          return {}
+        },
+      },
+      setup() {
+        onAddToFavorites(() => ({}))
+      },
+    })
+    component.__isInjectedFavoritesHook__ =
+      component.methods.__isInjectedFavoritesHook__
+    component.lifetimes.created.call(component)
+    component.lifetimes.attached.call(component)
+    expect('onAddToFavorites() hook only').toHaveBeenWarned()
+
+    defineComponent(() => {
+      onAddToFavorites(() => ({}))
+      onAddToFavorites(() => ({}))
+    })
+    component.__isInjectedFavoritesHook__ =
+      component.methods.__isInjectedFavoritesHook__
+    component.lifetimes.created.call(component)
+    component.lifetimes.attached.call(component)
+    expect('onAddToFavorites() hook can only').toHaveBeenWarned()
+
+    const arg = {}
+    const fn = jest.fn(() => ({ title: 'test' }))
+    defineComponent(() => {
+      onAddToFavorites(fn)
+    })
+    component.__isInjectedFavoritesHook__ =
+      component.methods.__isInjectedFavoritesHook__
+    component.lifetimes.created.call(component)
+    component.lifetimes.attached.call(component)
+    const favoritesContent = component.methods.onAddToFavorites.call(
+      component,
+      arg
+    )
+    expect(fn).toBeCalledWith(arg)
+    expect(favoritesContent).toEqual({ title: 'test' })
+
+    defineComponent(() => {})
+    expect(component.methods.onAddToFavorites.call(component, arg)).toEqual({})
   })
 
   it('onShow', () => {

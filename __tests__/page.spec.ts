@@ -16,6 +16,7 @@ import {
   onTabItemTap,
   onPageScroll,
   onShareAppMessage,
+  onAddToFavorites,
 } from '../src'
 import { mockWarn } from './mock-warn'
 
@@ -470,6 +471,42 @@ describe('page', () => {
 
     definePage(() => {})
     expect(page.onShareAppMessage(arg)).toEqual({})
+  })
+
+  it('onAddToFavorites', () => {
+    onAddToFavorites(() => ({}))
+    expect('Page specific lifecycle').toHaveBeenWarned()
+
+    definePage({
+      onAddToFavorites() {
+        return {}
+      },
+      setup() {
+        onAddToFavorites(() => ({}))
+      },
+    })
+    page.onLoad()
+    expect('onAddToFavorites() hook only').toHaveBeenWarned()
+
+    definePage(() => {
+      onAddToFavorites(() => ({}))
+      onAddToFavorites(() => ({}))
+    })
+    page.onLoad()
+    expect('onAddToFavorites() hook can only').toHaveBeenWarned()
+
+    const arg = {}
+    const fn = jest.fn(() => ({ title: 'test' }))
+    definePage(() => {
+      onAddToFavorites(fn)
+    })
+    page.onLoad()
+    const favoritesContent = page.onAddToFavorites(arg)
+    expect(fn).toBeCalledWith(arg)
+    expect(favoritesContent).toEqual({ title: 'test' })
+
+    definePage(() => {})
+    expect(page.onAddToFavorites(arg)).toEqual({})
   })
 
   it('inject lifecycle outside setup', () => {

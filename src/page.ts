@@ -3,6 +3,15 @@ import { Bindings, PageInstance, setCurrentPage } from './instance'
 import { deepToRaw, deepWatch } from './shared'
 import { isFunction, toHiddenField } from './utils'
 
+export interface AddToFavoritesOption {
+  webviewUrl: string
+}
+export interface CustomFavoritesContent {
+  title?: string
+  imageUrl?: string
+  query?: string
+}
+
 export type Query = Record<string, string | undefined>
 export type PageContext = WechatMiniprogram.Page.InstanceProperties &
   Omit<
@@ -38,6 +47,7 @@ export const enum PageLifecycle {
   ON_REACH_BOTTOM = 'onReachBottom',
   ON_PAGE_SCROLL = 'onPageScroll',
   ON_SHARE_APP_MESSAGE = 'onShareAppMessage',
+  ON_ADD_TO_FAVORITES = 'onAddToFavorites',
   ON_RESIZE = 'onResize',
   ON_TAB_ITEM_TAP = 'onTabItemTap',
 }
@@ -142,6 +152,25 @@ export function definePage(
 
     /* istanbul ignore next */
     options.__isInjectedShareHook__ = () => true
+  }
+
+  if (options[PageLifecycle.ON_ADD_TO_FAVORITES] === undefined) {
+    options[PageLifecycle.ON_ADD_TO_FAVORITES] = function (
+      this: PageInstance,
+      favorites: AddToFavoritesOption
+    ): CustomFavoritesContent {
+      const hook = this[toHiddenField(PageLifecycle.ON_ADD_TO_FAVORITES)] as (
+        favorites: AddToFavoritesOption
+      ) => CustomFavoritesContent
+      if (hook) {
+        return hook(favorites)
+      }
+
+      return {}
+    }
+
+    /* istanbul ignore next */
+    options.__isInjectedFavoritesHook__ = () => true
   }
 
   options[PageLifecycle.ON_SHOW] = createLifecycle(

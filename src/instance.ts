@@ -8,6 +8,7 @@ export type PageInstance = WechatMiniprogram.Page.InstanceProperties &
   WechatMiniprogram.Page.InstanceMethods<Record<string, unknown>> & {
     [key: string]: any
     __isInjectedShareHook__?: () => true
+    __isInjectedFavoritesHook__?: () => true
     __listenPageScroll__?: () => true
     __effects__?: ReactiveEffect[]
   }
@@ -16,6 +17,7 @@ export type ComponentInstance = WechatMiniprogram.Component.InstanceProperties &
   WechatMiniprogram.Component.InstanceMethods<Record<string, unknown>> & {
     [key: string]: any
     __isInjectedShareHook__?: () => true
+    __isInjectedFavoritesHook__?: () => true
     __listenPageScroll__?: () => true
     __effects__?: ReactiveEffect[]
     __props__: Readonly<Record<string, any>>
