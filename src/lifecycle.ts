@@ -127,7 +127,6 @@ export const onReady = (hook: () => unknown): void => {
 export const onLoad = createComponentHook<(query: Query) => unknown>(
   PageLifecycle.ON_LOAD
 )
-export const onAttach = createComponentHook(ComponentLifecycle.ATTACHED)
 export const onMove = createComponentHook(ComponentLifecycle.MOVED)
 export const onDetach = createComponentHook(ComponentLifecycle.DETACHED)
 export const onError = createComponentHook<(error: Error) => unknown>(

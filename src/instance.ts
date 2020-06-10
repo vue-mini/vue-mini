@@ -20,8 +20,7 @@ export type ComponentInstance = WechatMiniprogram.Component.InstanceProperties &
     __isInjectedFavoritesHook__?: () => true
     __listenPageScroll__?: () => true
     __effects__?: ReactiveEffect[]
-    __props__: Readonly<Record<string, any>>
-    __bindings__?: Record<string, any>
+    __props__: Record<string, any>
   }
 
 export let currentApp: AppInstance | null = null

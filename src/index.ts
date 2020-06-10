@@ -48,7 +48,6 @@ export {
   onAddToFavorites,
   onReady,
   onLoad,
-  onAttach,
   onMove,
   onDetach,
   onError,

@@ -62,7 +62,6 @@ type OptionalTypes<T extends WechatMiniprogram.Component.PropertyType> = T[]
 type Options = Record<string, any>
 
 export const enum ComponentLifecycle {
-  CREATED = 'created',
   ATTACHED = 'attached',
   READY = 'ready',
   MOVED = 'moved',
@@ -126,10 +125,10 @@ export function defineComponent(
     options.lifetimes = {}
   }
 
-  const originCreated =
-    options.lifetimes[ComponentLifecycle.CREATED] ||
-    options[ComponentLifecycle.CREATED]
-  options.lifetimes[ComponentLifecycle.CREATED] = function (
+  const originAttached =
+    options.lifetimes[ComponentLifecycle.ATTACHED] ||
+    options[ComponentLifecycle.ATTACHED]
+  options.lifetimes[ComponentLifecycle.ATTACHED] = function (
     this: ComponentInstance
   ) {
     setCurrentComponent(this)
@@ -166,26 +165,6 @@ export function defineComponent(
       context
     )
     if (bindings !== undefined) {
-      this.__bindings__ = bindings
-    }
-
-    setCurrentComponent(null)
-
-    if (originCreated !== undefined) {
-      originCreated.call(this)
-    }
-  }
-
-  const attached = createComponentLifecycle(
-    options,
-    ComponentLifecycle.ATTACHED
-  )
-  options.lifetimes[ComponentLifecycle.ATTACHED] = function (
-    this: ComponentInstance
-  ) {
-    const bindings = this.__bindings__
-    if (bindings !== undefined) {
-      setCurrentComponent(this) // For effects record
       Object.keys(bindings).forEach((key) => {
         const value = bindings[key]
         if (isFunction(value)) {
@@ -196,11 +175,13 @@ export function defineComponent(
         this.setData({ [key]: deepToRaw(value) })
         deepWatch.call(this, key, value)
       })
-      delete this.__bindings__
-      setCurrentComponent(null)
     }
 
-    attached.call(this)
+    setCurrentComponent(null)
+
+    if (originAttached !== undefined) {
+      originAttached.call(this)
+    }
   }
 
   const detached = createComponentLifecycle(
@@ -329,7 +310,7 @@ export function defineComponent(
         this: ComponentInstance,
         value: any
       ) {
-        ;(this.__props__ as Record<string, any>)[property] = value
+        this.__props__[property] = value
 
         if (originObserver !== undefined) {
           originObserver.call(this, value)

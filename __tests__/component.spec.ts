@@ -7,7 +7,6 @@ import {
   watchEffect,
   nextTick,
   isReadonly,
-  onAttach,
   onReady,
   onMove,
   onDetach,
@@ -70,7 +69,6 @@ describe('component', () => {
       const count = 0
       return { count }
     })
-    component.lifetimes.created.call(component)
     component.lifetimes.attached.call(component)
     expect(component.data.count).toBe(0)
   })
@@ -92,7 +90,6 @@ describe('component', () => {
         increment,
       }
     })
-    component.lifetimes.created.call(component)
     component.lifetimes.attached.call(component)
     expect(component.data.count).toBe(0)
     expect(component.data.double).toBe(0)
@@ -119,7 +116,6 @@ describe('component', () => {
         increment,
       }
     })
-    component.lifetimes.created.call(component)
     component.lifetimes.attached.call(component)
     expect(component.data.state).toEqual({ count: 0, double: 0 })
 
@@ -133,7 +129,6 @@ describe('component', () => {
       const state = readonly({ count: 0 })
       return { state }
     })
-    component.lifetimes.created.call(component)
     component.lifetimes.attached.call(component)
     expect(component.data.state).toEqual({ count: 0 })
   })
@@ -151,7 +146,6 @@ describe('component', () => {
         increment,
       }
     })
-    component.lifetimes.created.call(component)
     component.lifetimes.attached.call(component)
     expect(component.data.arr).toEqual([0, 0])
 
@@ -173,7 +167,6 @@ describe('component', () => {
         increment,
       }
     })
-    component.lifetimes.created.call(component)
     component.lifetimes.attached.call(component)
     expect(component.data.obj).toEqual({ count: 0, double: 0 })
 
@@ -188,7 +181,6 @@ describe('component', () => {
       return { sym }
     })
     expect(() => {
-      component.lifetimes.created.call(component)
       component.lifetimes.attached.call(component)
     }).toThrow('Symbol value is not supported')
   })
@@ -207,7 +199,6 @@ describe('component', () => {
         increment,
       }
     })
-    component.lifetimes.created.call(component)
     component.lifetimes.attached.call(component)
     component.lifetimes.detached.call(component)
     component.increment()
@@ -233,7 +224,6 @@ describe('component', () => {
         increment,
       }
     })
-    component.lifetimes.created.call(component)
     component.lifetimes.attached.call(component)
     await nextTick()
     expect(dummy!).toBe(0)
@@ -269,7 +259,6 @@ describe('component', () => {
     })
 
     component.data = { count: 0 }
-    component.lifetimes.created.call(component)
     component.lifetimes.attached.call(component)
     expect(component.data.double).toBe(0)
 
@@ -295,8 +284,6 @@ describe('component', () => {
 
     instance1.data = { count: 0 }
     instance2.data = { count: 1 }
-    instance1.lifetimes.created.call(instance1)
-    instance2.lifetimes.created.call(instance2)
     instance1.lifetimes.attached.call(instance1)
     instance2.lifetimes.attached.call(instance2)
     expect(instance1.data.double).toBe(0)
@@ -323,7 +310,6 @@ describe('component', () => {
       },
     })
     component.data = { count: 0 }
-    component.lifetimes.created.call(component)
     component.lifetimes.attached.call(component)
     component.observers.count.call(component, component.data.count)
     expect(fn).toBeCalledWith(0)
@@ -335,49 +321,18 @@ describe('component', () => {
       expect(context.triggerEvent).toBeInstanceOf(Function)
       return { num: 0 }
     })
-    component.lifetimes.created.call(component)
     component.lifetimes.attached.call(component)
     expect(component.data.num).toBe(0)
   })
 
-  it('created', () => {
-    const fn = jest.fn()
-    defineComponent({
-      lifetimes: { created: fn },
-      setup() {},
-    })
-    component.lifetimes.created.call(component)
-    component.lifetimes.attached.call(component)
-    expect(fn).toBeCalledTimes(1)
-  })
-
-  it('legacy created', () => {
-    const fn = jest.fn()
-    defineComponent({
-      created: fn,
-      setup() {},
-    })
-    component.lifetimes.created.call(component)
-    component.lifetimes.attached.call(component)
-    expect(fn).toBeCalledTimes(1)
-  })
-
   it('attached', () => {
     const fn = jest.fn()
-    const injectedFn1 = jest.fn()
-    const injectedFn2 = jest.fn()
     defineComponent({
       lifetimes: { attached: fn },
-      setup() {
-        onAttach(injectedFn1)
-        onAttach(injectedFn2)
-      },
+      setup() {},
     })
-    component.lifetimes.created.call(component)
     component.lifetimes.attached.call(component)
     expect(fn).toBeCalledTimes(1)
-    expect(injectedFn1).toBeCalledTimes(1)
-    expect(injectedFn2).toBeCalledTimes(1)
   })
 
   it('legacy attached', () => {
@@ -386,7 +341,6 @@ describe('component', () => {
       attached: fn,
       setup() {},
     })
-    component.lifetimes.created.call(component)
     component.lifetimes.attached.call(component)
     expect(fn).toBeCalledTimes(1)
   })
@@ -405,7 +359,6 @@ describe('component', () => {
         onReady(injectedFn2)
       },
     })
-    component.lifetimes.created.call(component)
     component.lifetimes.attached.call(component)
     component.lifetimes.ready.call(component)
     expect(fn).toBeCalledTimes(1)
@@ -419,7 +372,6 @@ describe('component', () => {
       ready: fn,
       setup() {},
     })
-    component.lifetimes.created.call(component)
     component.lifetimes.attached.call(component)
     component.lifetimes.ready.call(component)
     expect(fn).toBeCalledTimes(1)
@@ -436,7 +388,6 @@ describe('component', () => {
         onMove(injectedFn2)
       },
     })
-    component.lifetimes.created.call(component)
     component.lifetimes.attached.call(component)
     component.lifetimes.moved.call(component)
     expect(fn).toBeCalledTimes(1)
@@ -450,7 +401,6 @@ describe('component', () => {
       moved: fn,
       setup() {},
     })
-    component.lifetimes.created.call(component)
     component.lifetimes.attached.call(component)
     component.lifetimes.moved.call(component)
     expect(fn).toBeCalledTimes(1)
@@ -467,7 +417,6 @@ describe('component', () => {
         onDetach(injectedFn2)
       },
     })
-    component.lifetimes.created.call(component)
     component.lifetimes.attached.call(component)
     component.lifetimes.detached.call(component)
     expect(fn).toBeCalledTimes(1)
@@ -481,7 +430,6 @@ describe('component', () => {
       detached: fn,
       setup() {},
     })
-    component.lifetimes.created.call(component)
     component.lifetimes.attached.call(component)
     component.lifetimes.detached.call(component)
     expect(fn).toBeCalledTimes(1)
@@ -499,7 +447,6 @@ describe('component', () => {
         onError(injectedFn2)
       },
     })
-    component.lifetimes.created.call(component)
     component.lifetimes.attached.call(component)
     component.lifetimes.error.call(component, error)
     expect(fn).toBeCalledWith(error)
@@ -514,7 +461,6 @@ describe('component', () => {
       error: fn,
       setup() {},
     })
-    component.lifetimes.created.call(component)
     component.lifetimes.attached.call(component)
     component.lifetimes.error.call(component, error)
     expect(fn).toBeCalledWith(error)
@@ -532,7 +478,6 @@ describe('component', () => {
         onLoad(injectedFn2)
       },
     })
-    component.lifetimes.created.call(component)
     component.lifetimes.attached.call(component)
     component.methods.onLoad.call(component, arg)
     expect(fn).toBeCalledWith(arg)
@@ -551,7 +496,6 @@ describe('component', () => {
         onPullDownRefresh(injectedFn2)
       },
     })
-    component.lifetimes.created.call(component)
     component.lifetimes.attached.call(component)
     component.methods.onPullDownRefresh.call(component)
     expect(fn).toBeCalledTimes(1)
@@ -570,7 +514,6 @@ describe('component', () => {
         onReachBottom(injectedFn2)
       },
     })
-    component.lifetimes.created.call(component)
     component.lifetimes.attached.call(component)
     component.methods.onReachBottom.call(component)
     expect(fn).toBeCalledTimes(1)
@@ -590,7 +533,6 @@ describe('component', () => {
         onTabItemTap(injectedFn2)
       },
     })
-    component.lifetimes.created.call(component)
     component.lifetimes.attached.call(component)
     component.methods.onTabItemTap.call(component, arg)
     expect(fn).toBeCalledWith(arg)
@@ -606,7 +548,6 @@ describe('component', () => {
       onPageScroll(() => {})
     })
     component.__listenPageScroll__ = component.methods.__listenPageScroll__
-    component.lifetimes.created.call(component)
     component.lifetimes.attached.call(component)
     expect('onPageScroll() hook only').toHaveBeenWarned()
 
@@ -622,7 +563,6 @@ describe('component', () => {
       },
     })
     component.__listenPageScroll__ = component.methods.__listenPageScroll__
-    component.lifetimes.created.call(component)
     component.lifetimes.attached.call(component)
     component.methods.onPageScroll.call(component, arg)
     expect(fn).toBeCalledWith(arg)
@@ -637,7 +577,6 @@ describe('component', () => {
       { listenPageScroll: true }
     )
     component.__listenPageScroll__ = component.methods.__listenPageScroll__
-    component.lifetimes.created.call(component)
     component.lifetimes.attached.call(component)
     component.methods.onPageScroll.call(component, arg)
     expect(injectedFn).toBeCalledWith(arg)
@@ -659,7 +598,6 @@ describe('component', () => {
     })
     component.__isInjectedShareHook__ =
       component.methods.__isInjectedShareHook__
-    component.lifetimes.created.call(component)
     component.lifetimes.attached.call(component)
     expect('onShareAppMessage() hook only').toHaveBeenWarned()
 
@@ -669,7 +607,6 @@ describe('component', () => {
     })
     component.__isInjectedShareHook__ =
       component.methods.__isInjectedShareHook__
-    component.lifetimes.created.call(component)
     component.lifetimes.attached.call(component)
     expect('onShareAppMessage() hook can only').toHaveBeenWarned()
 
@@ -680,7 +617,6 @@ describe('component', () => {
     })
     component.__isInjectedShareHook__ =
       component.methods.__isInjectedShareHook__
-    component.lifetimes.created.call(component)
     component.lifetimes.attached.call(component)
     const shareContent = component.methods.onShareAppMessage.call(
       component,
@@ -709,7 +645,6 @@ describe('component', () => {
     })
     component.__isInjectedFavoritesHook__ =
       component.methods.__isInjectedFavoritesHook__
-    component.lifetimes.created.call(component)
     component.lifetimes.attached.call(component)
     expect('onAddToFavorites() hook only').toHaveBeenWarned()
 
@@ -719,7 +654,6 @@ describe('component', () => {
     })
     component.__isInjectedFavoritesHook__ =
       component.methods.__isInjectedFavoritesHook__
-    component.lifetimes.created.call(component)
     component.lifetimes.attached.call(component)
     expect('onAddToFavorites() hook can only').toHaveBeenWarned()
 
@@ -730,7 +664,6 @@ describe('component', () => {
     })
     component.__isInjectedFavoritesHook__ =
       component.methods.__isInjectedFavoritesHook__
-    component.lifetimes.created.call(component)
     component.lifetimes.attached.call(component)
     const favoritesContent = component.methods.onAddToFavorites.call(
       component,
@@ -754,7 +687,6 @@ describe('component', () => {
         onShow(injectedFn2)
       },
     })
-    component.lifetimes.created.call(component)
     component.lifetimes.attached.call(component)
     component.pageLifetimes.show.call(component)
     expect(fn).toBeCalledTimes(1)
@@ -773,7 +705,6 @@ describe('component', () => {
         onHide(injectedFn2)
       },
     })
-    component.lifetimes.created.call(component)
     component.lifetimes.attached.call(component)
     component.pageLifetimes.hide.call(component)
     expect(fn).toBeCalledTimes(1)
@@ -793,7 +724,6 @@ describe('component', () => {
         onResize(injectedFn2)
       },
     })
-    component.lifetimes.created.call(component)
     component.lifetimes.attached.call(component)
     component.pageLifetimes.resize.call(component, arg)
     expect(fn).toBeCalledWith(arg)
@@ -802,7 +732,7 @@ describe('component', () => {
   })
 
   it('inject component lifecycle outside setup', () => {
-    onAttach(() => {})
+    onMove(() => {})
     expect('Component specific lifecycle').toHaveBeenWarned()
   })
 
