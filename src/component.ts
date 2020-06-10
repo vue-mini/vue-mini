@@ -310,7 +310,10 @@ export function defineComponent(
         this: ComponentInstance,
         value: any
       ) {
-        this.__props__[property] = value
+        // Observer executes before attached
+        if (this.__props__) {
+          this.__props__[property] = value
+        }
 
         if (originObserver !== undefined) {
           originObserver.call(this, value)

@@ -259,6 +259,7 @@ describe('component', () => {
     })
 
     component.data = { count: 0 }
+    component.observers.count.call(component, component.data.count)
     component.lifetimes.attached.call(component)
     expect(component.data.double).toBe(0)
 
@@ -284,6 +285,8 @@ describe('component', () => {
 
     instance1.data = { count: 0 }
     instance2.data = { count: 1 }
+    instance1.observers.count.call(instance1, instance1.data.count)
+    instance2.observers.count.call(instance2, instance2.data.count)
     instance1.lifetimes.attached.call(instance1)
     instance2.lifetimes.attached.call(instance2)
     expect(instance1.data.double).toBe(0)
