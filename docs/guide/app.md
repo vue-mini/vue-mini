@@ -117,3 +117,19 @@ createApp({
 ```
 
 请不要在其他选项中访问 `setup()` 返回的数据或方法，这将引起混乱。如果你确实有此需求，你应该将相关逻辑搬到 `setup()` 内。
+
+## 简洁语法
+
+如果你不需要使用原生语法，你也可以直接传递一个 `setup` 函数给 `createApp()`。
+
+```js
+import { createApp } from '@vue-mini/wechat'
+
+createApp(() => {
+  const greeting = 'Hello World!'
+
+  return {
+    greeting
+  }
+})
+```
