@@ -167,7 +167,7 @@ describe('watch', () => {
   })
 
   it('warn invalid watch source', () => {
-    // @ts-ignore
+    // @ts-expect-error
     watch(1, () => {})
     expect(`Invalid watch source`).toHaveBeenWarned()
   })
@@ -359,7 +359,7 @@ describe('watch', () => {
       () => {
         dummy = count.value
       },
-      // @ts-ignore
+      // @ts-expect-error
       { immediate: false }
     )
     expect(dummy).toBe(0)
@@ -378,7 +378,7 @@ describe('watch', () => {
         spy()
         return arr
       },
-      // @ts-ignore
+      // @ts-expect-error
       { deep: true }
     )
     expect(spy).toHaveBeenCalledTimes(1)
@@ -465,7 +465,7 @@ describe('watch', () => {
 
   it('warn when using old simple watch api', async () => {
     const count = ref(0)
-    // @ts-ignore
+    // @ts-expect-error
     watch(() => count.value)
     expect('`watch(fn, options?)` signature has been moved').toHaveBeenWarned()
   })

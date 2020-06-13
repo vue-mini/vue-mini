@@ -2,6 +2,7 @@ import { Bindings, AppInstance, setCurrentApp } from './instance'
 import { isFunction, toHiddenField } from './utils'
 
 export type AppSetup = (
+  // eslint-disable-next-line @typescript-eslint/no-invalid-void-type
   this: void,
   options: WechatMiniprogram.App.LaunchShowOption
 ) => Bindings

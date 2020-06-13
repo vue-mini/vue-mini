@@ -16,6 +16,7 @@ export type ComponentContext = WechatMiniprogram.Component.InstanceProperties &
   >
 
 export type ComponentSetup<Props extends Record<string, any>> = (
+  // eslint-disable-next-line @typescript-eslint/no-invalid-void-type
   this: void,
   props: Readonly<Props>,
   context: ComponentContext

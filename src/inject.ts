@@ -1,6 +1,6 @@
 const provides = Object.create(null)
 
-// @ts-ignore
+// @ts-expect-error
 export interface InjectionKey<T> extends Symbol {}
 
 export function provide<T>(key: InjectionKey<T> | string, value: T): void {

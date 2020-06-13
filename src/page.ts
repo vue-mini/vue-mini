@@ -24,6 +24,7 @@ export type PageContext = WechatMiniprogram.Page.InstanceProperties &
     | 'getRelationNodes'
   >
 export type PageSetup = (
+  // eslint-disable-next-line @typescript-eslint/no-invalid-void-type
   this: void,
   query: Query,
   context: PageContext

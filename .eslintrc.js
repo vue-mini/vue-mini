@@ -1,9 +1,10 @@
 'use strict'
 
+// eslint-disable-next-line import/no-extraneous-dependencies
 const xoTs = require('eslint-config-xo-typescript')
 
 const isProd = process.env.NODE_ENV === 'production'
-const { Function, Omit, ...types } = xoTs.rules[
+const { object, Function, Omit, ...types } = xoTs.rules[
   '@typescript-eslint/ban-types'
 ][1].types
 
@@ -15,6 +16,7 @@ const config = {
     'plugin:prettier/recommended',
     'prettier/unicorn',
   ],
+  ignorePatterns: ['dist', 'coverage'],
   overrides: [
     {
       files: ['*.ts'],
@@ -32,7 +34,10 @@ const config = {
         '@typescript-eslint/prefer-includes': 'off',
         '@typescript-eslint/promise-function-async': 'off',
         '@typescript-eslint/prefer-nullish-coalescing': 'off',
-        '@typescript-eslint/ban-types': ['error', { types }],
+        '@typescript-eslint/ban-types': [
+          'error',
+          { extendDefaults: false, types },
+        ],
         '@typescript-eslint/no-unsafe-call': 'off',
         '@typescript-eslint/no-unsafe-return': 'off',
         '@typescript-eslint/no-unsafe-member-access': 'off',

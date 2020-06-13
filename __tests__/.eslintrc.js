@@ -2,14 +2,14 @@
 
 module.exports = {
   env: {
-    jest: true
+    jest: true,
   },
   overrides: [
     {
       files: ['*.ts'],
       rules: {
-        '@typescript-eslint/no-empty-function': 'off'
-      }
-    }
+        '@typescript-eslint/no-empty-function': 'off',
+      },
+    },
   ],
-};
+}
