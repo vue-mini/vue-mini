@@ -10,7 +10,7 @@ sidebarDepth: 0
 // page.js
 import { definePage, reactive, computed } from '@vue-mini/wechat'
 
-createApp({
+definePage({
   setup() {
     const state = reactive({
       count: 0,
@@ -48,13 +48,13 @@ createApp({
 
 - **参数**
 
-`setup` 的第一个参数与 `onLoad` 的参数相同。
+`setup` 函数的第一个参数与 `onLoad` 的参数相同。
 
 ```js
 // page.js
 import { definePage } from '@vue-mini/wechat'
 
-createApp({
+definePage({
   setup(query) {
     // query 为打开当前页面路径中的参数
   }
@@ -67,11 +67,12 @@ createApp({
 // page.js
 import { definePage } from '@vue-mini/wechat'
 
-createApp({
+definePage({
   setup(query, context) {
     context.is
     context.route
     context.getOpenerEventChannel
+    // ...
   }
 })
 ```
