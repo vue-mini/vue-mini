@@ -28,7 +28,7 @@ module.exports = {
         {
           title: '基础',
           collapsable: false,
-          children: ['/guide/app', '/guide/page'],
+          children: ['/guide/app', '/guide/page', '/guide/component'],
         },
       ],
     },
