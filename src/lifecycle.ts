@@ -7,12 +7,7 @@ import {
   ComponentInstance,
 } from './instance'
 import { AppLifecycle } from './app'
-import {
-  AddToFavoritesOption,
-  CustomFavoritesContent,
-  PageLifecycle,
-  Query,
-} from './page'
+import { PageLifecycle, Query } from './page'
 import { ComponentLifecycle } from './component'
 import { toHiddenField } from './utils'
 
@@ -92,7 +87,9 @@ export const onShareAppMessage = (
 }
 
 export const onAddToFavorites = (
-  hook: (share: AddToFavoritesOption) => CustomFavoritesContent
+  hook: (
+    share: WechatMiniprogram.Page.IAddToFavoritesOption
+  ) => WechatMiniprogram.Page.IAddToFavoritesContent
 ): void => {
   const currentInstance = getCurrentInstance()
   if (currentInstance) {

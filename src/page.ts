@@ -3,15 +3,6 @@ import { Bindings, PageInstance, setCurrentPage } from './instance'
 import { deepToRaw, deepWatch } from './shared'
 import { isFunction, toHiddenField } from './utils'
 
-export interface AddToFavoritesOption {
-  webviewUrl: string
-}
-export interface CustomFavoritesContent {
-  title?: string
-  imageUrl?: string
-  query?: string
-}
-
 export type Query = Record<string, string | undefined>
 export type PageContext = WechatMiniprogram.Page.InstanceProperties &
   Omit<
@@ -158,11 +149,11 @@ export function definePage(
   if (options[PageLifecycle.ON_ADD_TO_FAVORITES] === undefined) {
     options[PageLifecycle.ON_ADD_TO_FAVORITES] = function (
       this: PageInstance,
-      favorites: AddToFavoritesOption
-    ): CustomFavoritesContent {
+      favorites: WechatMiniprogram.Page.IAddToFavoritesOption
+    ): WechatMiniprogram.Page.IAddToFavoritesContent {
       const hook = this[toHiddenField(PageLifecycle.ON_ADD_TO_FAVORITES)] as (
-        favorites: AddToFavoritesOption
-      ) => CustomFavoritesContent
+        favorites: WechatMiniprogram.Page.IAddToFavoritesOption
+      ) => WechatMiniprogram.Page.IAddToFavoritesContent
       if (hook) {
         return hook(favorites)
       }

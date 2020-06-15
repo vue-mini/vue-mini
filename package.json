@@ -29,7 +29,7 @@
   ],
   "dependencies": {
     "@vue/reactivity": "^3.0.0-beta.15",
-    "miniprogram-api-typings": "^2.11.0"
+    "miniprogram-api-typings": "^2.11.0-1"
   },
   "devDependencies": {
     "@microsoft/api-extractor": "^7.7.0",

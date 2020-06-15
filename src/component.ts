@@ -1,10 +1,5 @@
 import { stop, shallowReactive, shallowReadonly } from '@vue/reactivity'
-import {
-  AddToFavoritesOption,
-  CustomFavoritesContent,
-  PageLifecycle,
-  Config,
-} from './page'
+import { PageLifecycle, Config } from './page'
 import { deepToRaw, deepWatch } from './shared'
 import { Bindings, ComponentInstance, setCurrentComponent } from './instance'
 import { isFunction, toHiddenField } from './utils'
@@ -253,11 +248,11 @@ export function defineComponent(
   if (options.methods[PageLifecycle.ON_ADD_TO_FAVORITES] === undefined) {
     options.methods[PageLifecycle.ON_ADD_TO_FAVORITES] = function (
       this: ComponentInstance,
-      favorites: AddToFavoritesOption
-    ): CustomFavoritesContent {
+      favorites: WechatMiniprogram.Page.IAddToFavoritesOption
+    ): WechatMiniprogram.Page.IAddToFavoritesContent {
       const hook = this[toHiddenField(PageLifecycle.ON_ADD_TO_FAVORITES)] as (
-        avorites: AddToFavoritesOption
-      ) => CustomFavoritesContent
+        avorites: WechatMiniprogram.Page.IAddToFavoritesOption
+      ) => WechatMiniprogram.Page.IAddToFavoritesContent
       if (hook) {
         return hook(favorites)
       }
