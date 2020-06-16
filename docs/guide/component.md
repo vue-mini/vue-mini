@@ -128,3 +128,106 @@ defineComponent({
 - **`this` 的用法**
 
 **`this` 在 `setup()` 中不可用**。这是为了避免混乱。
+
+## 生命周期
+
+可以直接导入 `onXXX` 一族的函数来注册生命周期钩子。它们接收的参数与对应的生命周期一致，每个 `onXXX` 函数都能被多次调用。
+
+```js
+// component.js
+import { defineComponent, onReady, onMove, onDetach } from '@vue-mini/wechat'
+
+createApp({
+  setup() {
+    onReady(() => {
+      console.log('ready')
+    })
+    onMove(() => {
+      console.log('move')
+    })
+    onDetach(() => {
+      console.log('detach')
+    })
+  }
+})
+```
+
+这些生命周期钩子注册函数只能在 `setup()` 期间同步使用，其他场景下调用这些函数会抛出一个错误。
+
+在 `setup()` 内同步创建的侦听器和计算状态会在页面销毁时自动删除。
+
+- **created**
+
+Vue Mini 并没有 `onCreate` 钩子函数，这是因为 `setup` 是在 `attached` 阶段执行的，此时 `created` 生命周期已经执行完毕了。不过在绝大部分情况下，你应该都不需要使用 `created` 生命周期。如果你真的需要，可以使用小程序原生语法。
+
+组件 `setup` 在 `attached` 阶段执行，而非在 `created` 阶段执行的原因有两个。一是 `created` 阶段组件 `props` 还未初始化，二是 `created` 阶段不能调用 `setData` 同步数据。
+
+- **生命周期对应关系**
+
+  - `lifetimes.created` -> 无
+  - `lifetimes.attached` -> `setup`
+  - `lifetimes.ready` -> `onReady`
+  - `lifetimes.moved` -> `onMove`
+  - `lifetimes.detached` -> `onDetach`
+  - `lifetimes.error` -> `onError`
+  - `pageLifetimes.show` -> `onShow`
+  - `pageLifetimes.hide` -> `onHide`
+  - `pageLifetimes.resize` -> `onResize`
+
+## 与原生语法混用
+
+由于 `defineComponent()` 是 `Component()` 的超集，所以你也能使用原生语法。
+
+```js
+// component.js
+import { defineComponent, ref } from '@vue-mini/wechat'
+
+defineComponent({
+  setup() {
+    const count = ref(0)
+
+    function increment() {
+      count.value++
+    }
+
+    return {
+      count,
+      increment
+    }
+  },
+  data: {
+    number: 0
+  },
+  methods: {
+    add() {
+      this.setData({ number: this.data.number + 1 })
+    }
+  }
+})
+```
+
+如果名称相同，`setup()` 返回的数据或方法会覆盖原生语法声明的数据或方法。你应该避免出现这种情况。
+
+请不要在其他选项中访问 `setup()` 返回的数据或方法，这将引起混乱。如果确实有此需求，应该将相关逻辑搬到 `setup()` 内。
+
+## 简洁语法
+
+如果组件没有 `props`，且不需要使用原生语法，也可以直接传递一个 `setup` 函数给 `defineComponent()`。
+
+```js
+// page.js
+import { defineComponent, ref } from '@vue-mini/wechat'
+
+defineComponent(() => {
+  const count = ref(0)
+
+  function increment() {
+    count.value++
+  }
+
+  return {
+    count,
+    increment
+  }
+})
+```
