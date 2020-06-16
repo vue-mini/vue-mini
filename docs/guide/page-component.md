@@ -4,7 +4,7 @@ sidebarDepth: 0
 
 # 定义页面组件
 
-小程序支持将组件作为页面使用，本文档称此类组件为`页面组件`。使用页面组件的好处是可以使用 `behaviors` 来提取和复用逻辑。然而 Vue Mini 支持更好的逻辑提取与复用机制，也就是 Composition 函数。并且页面组件的生命周期十分混乱。因此 Vue Mini 虽然支持页面组件，但**不推荐**使用。
+小程序支持将组件作为页面使用，本文档称此类组件为`页面组件`。使用页面组件的好处是可以使用 `behaviors` 来提取和复用逻辑。然而 Vue Mini 支持更好的逻辑提取与复用机制，也就是 Composition 函数。另外页面组件的生命周期十分混乱。因此 Vue Mini 虽然支持页面组件，但**不推荐**使用。
 
 ```js
 import { defineComponent } from '@vue-mini/wechat'
