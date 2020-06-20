@@ -16,4 +16,4 @@ jobs:
     - run: yarn type
     - run: yarn test --coverage
     - run: yarn codecov -t $CODECOV_TOKEN
-    - run: ./deploy.sh
+    - run: sh deploy.sh
