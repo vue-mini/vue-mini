@@ -6,8 +6,8 @@ yarn docs:build
 
 cd docs/.vuepress/dist
 
-git config user.email 'y.mingshan3@gmail.com'
-git config user.name 'Yang Mingshan'
+git config --global user.email 'y.mingshan3@gmail.com'
+git config --global user.name 'Yang Mingshan'
 git init
 git add -A
 git commit -m 'deploy'
