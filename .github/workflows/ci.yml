@@ -1,6 +1,7 @@
 name: CI
 on: push
 env:
+  ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
   CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
 jobs:
   run:
@@ -15,3 +16,4 @@ jobs:
     - run: yarn type
     - run: yarn test --coverage
     - run: yarn codecov -t $CODECOV_TOKEN
+    - run: ./deploy.sh
