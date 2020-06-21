@@ -1,5 +1,6 @@
 'use strict'
 
+const path = require('path')
 const fs = require('fs-extra')
 const rollup = require('rollup')
 const replace = require('@rollup/plugin-replace')
@@ -11,55 +12,60 @@ const { Extractor, ExtractorConfig } = require('@microsoft/api-extractor')
 const input = 'src/index.ts'
 const external = ['@vue/reactivity']
 
-async function generateDeclaration() {
+async function generateDeclaration(target) {
   const bundle = await rollup.rollup({
-    input,
+    input: path.join(target, input),
     external,
     plugins: [
       typescript({
+        rootDir: target,
         declaration: true,
         declarationMap: true,
-        declarationDir: 'dist',
+        declarationDir: path.join(target, 'dist'),
       }),
     ],
   })
   await bundle.write({
-    dir: 'dist',
+    dir: path.join(target, 'dist'),
     format: 'es',
   })
 }
 
-async function generateCode({ minify, external, replaces, fileName, format }) {
+async function generateCode({
+  target,
+  minify,
+  external,
+  replaces,
+  fileName,
+  format,
+}) {
   const bundle = await rollup.rollup({
-    input,
+    input: path.join(target, input),
     external,
     plugins: [
-      ...(minify
-        ? [
-            terser({
-              compress: {
-                ecma: 2015,
-                // eslint-disable-next-line camelcase
-                pure_getters: true,
-              },
-            }),
-          ]
-        : []),
+      minify &&
+        terser({
+          compress: {
+            ecma: 2015,
+            // eslint-disable-next-line camelcase
+            pure_getters: true,
+          },
+        }),
       typescript(),
       replace(replaces),
       resolve(),
-    ],
+    ].filter(Boolean),
   })
-  await bundle.write({ file: `dist/${fileName}`, format })
+  await bundle.write({ file: path.join(target, 'dist', fileName), format })
 }
 
-async function build() {
-  await fs.remove('dist')
+async function build(target) {
+  await fs.remove(path.join(target, 'dist'))
 
-  await generateDeclaration()
+  await generateDeclaration(target)
 
   const extractorConfig = ExtractorConfig.loadFileAndPrepare(
-    'api-extractor.json'
+    path.join(target, 'api-extractor.json')
   )
   const extractorResult = Extractor.invoke(extractorConfig, {
     localBuild: true,
@@ -76,11 +82,12 @@ async function build() {
     process.exitCode = 1
   }
 
-  await fs.remove('dist/src')
-  await fs.remove('dist/index.js')
-  await fs.remove('dist/__tests__')
+  await fs.remove(path.join(target, 'dist', 'src'))
+  await fs.remove(path.join(target, 'dist', 'index.js'))
+  await fs.remove(path.join(target, 'dist', '__tests__'))
 
   await generateCode({
+    target,
     minify: false,
     replaces: {
       __DEV__: true,
@@ -91,6 +98,7 @@ async function build() {
   })
 
   await generateCode({
+    target,
     minify: true,
     replaces: {
       __DEV__: false,
@@ -101,6 +109,7 @@ async function build() {
   })
 
   await generateCode({
+    target,
     minify: false,
     external,
     replaces: {
@@ -111,4 +120,8 @@ async function build() {
   })
 }
 
-build()
+fs.readdirSync('packages').forEach((pkg) => {
+  const target = path.join('packages', pkg)
+  if (!fs.statSync(target).isDirectory()) return
+  build(target)
+})

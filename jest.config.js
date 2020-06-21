@@ -5,9 +5,9 @@ module.exports = {
   globals: {
     __DEV__: true,
   },
-  testMatch: ['<rootDir>/__tests__/**/*.spec.ts'],
+  testMatch: ['<rootDir>/packages/**/__tests__/**/*.spec.ts'],
   // CoverageProvider: 'v8',
-  collectCoverageFrom: ['src/**/*.ts', '!src/index.ts'],
-  watchPathIgnorePatterns: ['<rootDir>/node_modules/'],
+  collectCoverageFrom: ['packages/*/src/**/*.ts', '!packages/*/src/index.ts'],
+  watchPathIgnorePatterns: ['/node_modules/'],
   testEnvironment: 'node',
 }

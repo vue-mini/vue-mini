@@ -17,5 +17,5 @@
       "./node_modules/miniprogram-api-typings"
     ]
   },
-  "include": ["src", "__tests__", "global.d.ts"]
+  "include": ["packages", "global.d.ts"]
 }

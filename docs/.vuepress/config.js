@@ -10,7 +10,7 @@ module.exports = {
   description: '像写 Vue 3 一样写小程序',
   head: [['link', { rel: 'icon', href: '/logo.png' }]],
   themeConfig: {
-    repo: 'yangmingshan/vue-mini',
+    repo: 'vue-mini/vue-mini',
     docsDir: 'docs',
     docsBranch: 'master',
     editLinks: true,

@@ -1,8 +1,6 @@
 {
   "$schema": "https://developer.microsoft.com/json-schemas/api-extractor/v7/api-extractor.schema.json",
 
-  "mainEntryPointFilePath": "./dist/src/index.d.ts",
-
   "apiReport": {
     "enabled": true,
     "reportFolder": "<projectFolder>/temp/"
@@ -13,8 +11,7 @@
   },
 
   "dtsRollup": {
-    "enabled": true,
-    "untrimmedFilePath": "./dist/<unscopedPackageName>.d.ts"
+    "enabled": true
   },
 
   "tsdocMetadata": {
@@ -42,6 +39,10 @@
     "tsdocMessageReporting": {
       "default": {
         "logLevel": "warning"
+      },
+
+      "tsdoc-undefined-tag": {
+        "logLevel": "none"
       }
     }
   }
