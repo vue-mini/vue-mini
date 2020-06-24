@@ -8,8 +8,6 @@
 
 <h1 align="center">Vue Mini</h1>
 
-## 介绍
-
 Vue Mini 是一个基于 Vue 3 的小程序开发库，它能让你用 Composition API 写小程序，就像写 Vue 3 一样。
 
 ## 状态：Beta
