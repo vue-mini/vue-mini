@@ -10,7 +10,7 @@
     "build": "node build.js",
     "docs:dev": "vuepress dev docs",
     "docs:build": "vuepress build docs",
-    "prepublishOnly": "yarn lint && yarn type && yarn test && yarn build"
+    "release": "node release.js"
   },
   "devDependencies": {
     "@microsoft/api-extractor": "^7.7.0",
