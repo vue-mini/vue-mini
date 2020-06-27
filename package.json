@@ -16,7 +16,7 @@
     "@microsoft/api-extractor": "^7.7.0",
     "@rollup/plugin-node-resolve": "^8.0.0",
     "@rollup/plugin-replace": "^2.2.1",
-    "@rollup/plugin-typescript": "^4.1.1",
+    "@rollup/plugin-typescript": "^5.0.0",
     "@types/jest": "^26.0.0",
     "@vue/reactivity": "^3.0.0-beta.15",
     "codecov": "^3.6.5",
