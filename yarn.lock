@@ -4430,7 +4430,7 @@ execa@^1.0.0:
     signal-exit "^3.0.0"
     strip-eof "^1.0.0"
 
-execa@^4.0.0, execa@^4.0.1:
+execa@^4.0.0, execa@^4.0.1, execa@^4.0.2:
   version "4.0.2"
   resolved "https://registry.npm.taobao.org/execa/download/execa-4.0.2.tgz#ad87fb7b2d9d564f70d2b62d511bee41d5cbb240"
   integrity sha1-rYf7ey2dVk9w0rYtURvuQdXLskA=
