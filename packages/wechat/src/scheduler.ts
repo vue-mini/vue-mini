@@ -5,6 +5,7 @@ const p = Promise.resolve()
 
 let isFlushing = false
 let isFlushPending = false
+let flushIndex = 0
 
 const RECURSION_LIMIT = 100
 type CountMap = Map<Job | Function, number>
@@ -15,7 +16,7 @@ export function nextTick(fn?: () => void): Promise<void> {
 }
 
 export function queueJob(job: Job): void {
-  if (!queue.includes(job)) {
+  if (!queue.includes(job, flushIndex)) {
     queue.push(job)
     queueFlush()
   }
@@ -32,13 +33,13 @@ function queueFlush(): void {
 function flushJobs(seen?: CountMap): void {
   isFlushPending = false
   isFlushing = true
-  let job
   /* istanbul ignore else */
   if (__DEV__) {
     seen = seen || new Map()
   }
 
-  while ((job = queue.shift())) {
+  for (flushIndex = 0; flushIndex < queue.length; flushIndex++) {
+    const job = queue[flushIndex]
     /* istanbul ignore else */
     if (__DEV__) {
       checkRecursiveUpdates(seen!, job)
@@ -46,6 +47,9 @@ function flushJobs(seen?: CountMap): void {
 
     job()
   }
+
+  flushIndex = 0
+  queue.length = 0
 
   isFlushing = false
 }
