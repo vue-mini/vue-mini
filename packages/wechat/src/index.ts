@@ -63,6 +63,7 @@ export {
   TriggerOpTypes,
   Ref,
   ComputedRef,
+  WritableComputedRef,
   UnwrapRef,
   WritableComputedOptions,
   ToRefs,
