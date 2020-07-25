@@ -146,7 +146,12 @@ function doWatch(
   }
 
   let getter: () => any
-  if (isArray(source)) {
+  if (isRef(source)) {
+    getter = () => source.value
+  } else if (isReactive(source)) {
+    getter = () => source
+    deep = true
+  } else if (isArray(source)) {
     getter = () =>
       source.map((s) => {
         if (isRef(s)) {
@@ -168,11 +173,6 @@ function doWatch(
 
         return undefined
       })
-  } else if (isRef(source)) {
-    getter = () => source.value
-  } else if (isReactive(source)) {
-    getter = () => source
-    deep = true
   } else if (isFunction(source)) {
     if (cb) {
       // Getter with cb
