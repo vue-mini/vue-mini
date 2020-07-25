@@ -18,7 +18,7 @@
     "@rollup/plugin-replace": "^2.2.1",
     "@rollup/plugin-typescript": "^5.0.0",
     "@types/jest": "^26.0.0",
-    "@vue/reactivity": "^3.0.0-beta.15",
+    "@vue/reactivity": "^3.0.0-rc.4",
     "codecov": "^3.6.5",
     "cross-env": "^7.0.0",
     "eslint": "^7.2.0",
