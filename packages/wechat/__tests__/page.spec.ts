@@ -190,8 +190,10 @@ describe('page', () => {
       }
     })
     page.onLoad()
-    page.onUnload()
+    expect(page.__effects__.length).toBe(3)
+
     page.increment()
+    page.onUnload()
     await nextTick()
     expect(page.data.count).toBe(0)
     expect(page.data.double).toBe(0)

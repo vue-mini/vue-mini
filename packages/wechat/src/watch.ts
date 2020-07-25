@@ -57,8 +57,6 @@ export interface WatchOptions<Immediate = boolean> extends WatchOptionsBase {
 
 export type WatchStopHandle = () => void
 
-const invoke = (fn: Function): unknown => fn()
-
 // Simple effect.
 export function watchEffect(
   effect: WatchEffect,
@@ -210,50 +208,56 @@ function doWatch(
   }
 
   let oldValue = isArray(source) ? [] : INITIAL_WATCHER_VALUE
-  const applyCb = cb
-    ? () => {
-        const newValue = runner()
-        if (deep || hasChanged(newValue, oldValue)) {
-          // Cleanup before running cb again
-          if (cleanup) {
-            cleanup()
-          }
+  const job = () => {
+    if (!runner.active) {
+      return
+    }
 
-          cb(
-            newValue,
-            // Pass undefined as the old value when it's changed for the first time
-            oldValue === INITIAL_WATCHER_VALUE ? undefined : oldValue,
-            onInvalidate
-          )
-          oldValue = newValue
+    if (cb) {
+      // Watch(source, cb)
+      const newValue = runner()
+      if (deep || hasChanged(newValue, oldValue)) {
+        // Cleanup before running cb again
+        if (cleanup) {
+          cleanup()
         }
+
+        cb(
+          newValue,
+          // Pass undefined as the old value when it's changed for the first time
+          oldValue === INITIAL_WATCHER_VALUE ? undefined : oldValue,
+          onInvalidate
+        )
+        oldValue = newValue
       }
-    : undefined
+    } else {
+      // WatchEffect
+      runner()
+    }
+  }
 
   let scheduler: (job: () => any) => void
   if (flush === 'sync') {
-    scheduler = invoke
+    scheduler = job
   } else {
-    scheduler = (job) => {
+    scheduler = () => {
       queueJob(job)
     }
   }
 
   const runner = effect(getter, {
     lazy: true,
-    // So it runs before component update effects in pre flush mode
-    computed: true,
     onTrack,
     onTrigger,
-    scheduler: applyCb ? () => scheduler(applyCb) : scheduler,
+    scheduler,
   })
 
   recordInstanceBoundEffect(runner)
 
   // Initial run
-  if (applyCb) {
+  if (cb) {
     if (immediate) {
-      applyCb()
+      job()
     } else {
       oldValue = runner()
     }

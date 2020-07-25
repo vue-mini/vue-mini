@@ -255,21 +255,6 @@ describe('watch', () => {
     expect(cleanup).toHaveBeenCalledTimes(2)
   })
 
-  it('flush timing: sync', async () => {
-    const count = ref(0)
-    let dummy
-    watchEffect(
-      () => {
-        dummy = count.value
-      },
-      { flush: 'sync' }
-    )
-    expect(dummy).toBe(0)
-
-    count.value++
-    expect(dummy).toBe(1)
-  })
-
   it('deep', async () => {
     const state = reactive({
       nested: {
@@ -459,6 +444,25 @@ describe('watch', () => {
       key: 'foo',
       oldValue: 2,
     })
+  })
+
+  it('should work sync', () => {
+    const v = ref(1)
+    let calls = 0
+
+    watch(
+      v,
+      () => {
+        ++calls
+      },
+      {
+        flush: 'sync',
+      }
+    )
+
+    expect(calls).toBe(0)
+    v.value++
+    expect(calls).toBe(1)
   })
 
   /** Dividing line, the above tests is directly copy from vue.js **/

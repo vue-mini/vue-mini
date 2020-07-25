@@ -200,8 +200,10 @@ describe('component', () => {
       }
     })
     component.lifetimes.attached.call(component)
-    component.lifetimes.detached.call(component)
+    expect(component.__effects__.length).toBe(3)
+
     component.increment()
+    component.lifetimes.detached.call(component)
     await nextTick()
     expect(component.data.count).toBe(0)
     expect(component.data.double).toBe(0)
