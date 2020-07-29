@@ -6,7 +6,7 @@ let currentFlushPromise: Promise<void> | null = null
 
 let isFlushing = false
 let isFlushPending = false
-let flushIndex = 0
+let flushIndex = -1
 
 const RECURSION_LIMIT = 100
 type CountMap = Map<Job | Function, number>
@@ -18,7 +18,7 @@ export function nextTick(fn?: () => void): Promise<void> {
 }
 
 export function queueJob(job: Job): void {
-  if (!queue.includes(job, flushIndex)) {
+  if (!queue.includes(job, flushIndex + 1)) {
     queue.push(job)
     queueFlush()
   }
@@ -50,7 +50,7 @@ function flushJobs(seen?: CountMap): void {
     job()
   }
 
-  flushIndex = 0
+  flushIndex = -1
   queue.length = 0
 
   isFlushing = false
