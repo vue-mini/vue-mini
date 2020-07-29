@@ -1510,17 +1510,17 @@
   optionalDependencies:
     prettier "^1.18.2"
 
-"@vue/reactivity@^3.0.0-rc.4":
-  version "3.0.0-rc.4"
-  resolved "https://registry.npm.taobao.org/@vue/reactivity/download/@vue/reactivity-3.0.0-rc.4.tgz#0a917d9809967c78c32436fb0113dac6d157b87a"
-  integrity sha1-CpF9mAmWfHjDJDb7ARPaxtFXuHo=
+"@vue/reactivity@3.0.0-rc.5":
+  version "3.0.0-rc.5"
+  resolved "https://registry.npm.taobao.org/@vue/reactivity/download/@vue/reactivity-3.0.0-rc.5.tgz?cache=0&sync_timestamp=1595984076692&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2F%40vue%2Freactivity%2Fdownload%2F%40vue%2Freactivity-3.0.0-rc.5.tgz#45cff8d839d7ad130b1e499239090050fdecff13"
+  integrity sha1-Rc/42DnXrRMLHkmSOQkAUP3s/xM=
   dependencies:
-    "@vue/shared" "3.0.0-rc.4"
+    "@vue/shared" "3.0.0-rc.5"
 
-"@vue/shared@3.0.0-rc.4":
-  version "3.0.0-rc.4"
-  resolved "https://registry.npm.taobao.org/@vue/shared/download/@vue/shared-3.0.0-rc.4.tgz#fac45cd6fec76a1e284b41f1b49c2cb13c914598"
-  integrity sha1-+sRc1v7Hah4oS0HxtJwssTyRRZg=
+"@vue/shared@3.0.0-rc.5":
+  version "3.0.0-rc.5"
+  resolved "https://registry.npm.taobao.org/@vue/shared/download/@vue/shared-3.0.0-rc.5.tgz?cache=0&sync_timestamp=1595984024972&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2F%40vue%2Fshared%2Fdownload%2F%40vue%2Fshared-3.0.0-rc.5.tgz#cea2378e3e37363ddc1f5dd158edc9c9b5b3fff0"
+  integrity sha1-zqI3jj43Nj3cH13RWO3JybWz//A=
 
 "@vuepress/core@1.5.2":
   version "1.5.2"
