@@ -1,7 +1,8 @@
 export type Job = () => void
 
 const queue: Job[] = []
-const p = Promise.resolve()
+const resolvedPromise: Promise<any> = Promise.resolve()
+let currentFlushPromise: Promise<void> | null = null
 
 let isFlushing = false
 let isFlushPending = false
@@ -11,6 +12,7 @@ const RECURSION_LIMIT = 100
 type CountMap = Map<Job | Function, number>
 
 export function nextTick(fn?: () => void): Promise<void> {
+  const p = currentFlushPromise || resolvedPromise
   // eslint-disable-next-line promise/prefer-await-to-then
   return fn ? p.then(fn) : p
 }
@@ -25,8 +27,8 @@ export function queueJob(job: Job): void {
 function queueFlush(): void {
   if (!isFlushing && !isFlushPending) {
     isFlushPending = true
-    // eslint-disable-next-line @typescript-eslint/no-floating-promises
-    nextTick(flushJobs)
+    // eslint-disable-next-line promise/prefer-await-to-then
+    currentFlushPromise = resolvedPromise.then(flushJobs)
   }
 }
 
@@ -52,6 +54,7 @@ function flushJobs(seen?: CountMap): void {
   queue.length = 0
 
   isFlushing = false
+  currentFlushPromise = null
 }
 
 function checkRecursiveUpdates(seen: CountMap, fn: Job | Function): void {

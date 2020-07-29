@@ -79,4 +79,16 @@ describe('scheduler', () => {
       expect(calls).toEqual(['job1', 'job2'])
     })
   })
+
+  test('nextTick should capture scheduler flush errors', async () => {
+    const err = new Error('test')
+    queueJob(() => {
+      throw err
+    })
+    try {
+      await nextTick()
+    } catch (error) {
+      expect(error).toBe(err)
+    }
+  })
 })
