@@ -28,7 +28,7 @@
     "husky": "^4.0.10",
     "jest": "^26.0.1",
     "lint-staged": "^10.0.7",
-    "miniprogram-api-typings": "^2.11.0-1",
+    "miniprogram-api-typings": "2.12.0",
     "rollup": "^2.6.1",
     "rollup-plugin-terser": "^6.0.1",
     "ts-jest": "^26.0.0",
