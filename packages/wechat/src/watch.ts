@@ -7,7 +7,7 @@ import {
   ReactiveEffectOptions,
   isReactive,
 } from '@vue/reactivity'
-import { queueJob } from './scheduler'
+import { queueJob, SchedulerJob } from './scheduler'
 import { recordInstanceBoundEffect } from './computed'
 import { getCurrentInstance } from './instance'
 import { isArray, isObject, isFunction, hasChanged, remove } from './utils'
@@ -208,7 +208,7 @@ function doWatch(
   }
 
   let oldValue = isArray(source) ? [] : INITIAL_WATCHER_VALUE
-  const job = () => {
+  const job: SchedulerJob = () => {
     if (!runner.active) {
       return
     }
@@ -235,6 +235,10 @@ function doWatch(
       runner()
     }
   }
+
+  // Important: mark the job as a watcher callback so that scheduler knows it
+  // is allowed to self-trigger
+  job.cb = Boolean(cb)
 
   let scheduler: (job: () => any) => void
   if (flush === 'sync') {

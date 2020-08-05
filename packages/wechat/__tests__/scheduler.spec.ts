@@ -90,5 +90,51 @@ describe('scheduler', () => {
     } catch (error) {
       expect(error).toBe(err)
     }
+
+    // This one should no longer error
+    await nextTick()
+  })
+
+  test('should prevent self-triggering jobs by default', async () => {
+    let count = 0
+    const job = () => {
+      if (count < 3) {
+        count++
+        queueJob(job)
+      }
+    }
+
+    queueJob(job)
+    await nextTick()
+    // Only runs once - a job cannot queue itself
+    expect(count).toBe(1)
+  })
+
+  test('should allow watcher callbacks to trigger itself', async () => {
+    let count = 0
+    const job = () => {
+      if (count < 3) {
+        count++
+        queueJob(job)
+      }
+    }
+
+    job.cb = true
+    queueJob(job)
+    await nextTick()
+    expect(count).toBe(3)
+  })
+
+  test('should prevent duplicate queue', async () => {
+    let count = 0
+    const job = () => {
+      count++
+    }
+
+    job.cb = true
+    queueJob(job)
+    queueJob(job)
+    await nextTick()
+    expect(count).toBe(1)
   })
 })
