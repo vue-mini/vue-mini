@@ -25,6 +25,17 @@ const config = {
         project: './tsconfig.json',
       },
       rules: {
+        'capitalized-comments': isProd
+          ? [
+              'error',
+              'always',
+              {
+                ignorePattern: /pragma|ignore|prettier-ignore|c8/.source,
+                ignoreInlineComments: true,
+                ignoreConsecutiveComments: true,
+              },
+            ]
+          : 'off',
         'no-redeclare': 'error',
         'import/no-mutable-exports': 'off',
         'unicorn/no-for-loop': 'off',

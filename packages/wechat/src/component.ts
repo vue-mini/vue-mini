@@ -157,7 +157,7 @@ export function defineComponent(
     const bindings = setup(
       __DEV__
         ? shallowReadonly(this.__props__)
-        : /* istanbul ignore next  */ this.__props__,
+        : /* c8 ignore next */ this.__props__,
       context
     )
     if (bindings !== undefined) {
@@ -222,7 +222,7 @@ export function defineComponent(
       options,
       PageLifecycle.ON_PAGE_SCROLL
     )
-    /* istanbul ignore next */
+    /* c8 ignore next */
     options.methods.__listenPageScroll__ = () => true
   }
 
@@ -241,7 +241,7 @@ export function defineComponent(
       return {}
     }
 
-    /* istanbul ignore next */
+    /* c8 ignore next */
     options.methods.__isInjectedShareHook__ = () => true
   }
 
@@ -260,7 +260,7 @@ export function defineComponent(
       return {}
     }
 
-    /* istanbul ignore next */
+    /* c8 ignore next */
     options.methods.__isInjectedFavoritesHook__ = () => true
   }
 

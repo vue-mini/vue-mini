@@ -166,7 +166,6 @@ function doWatch(
           return s()
         }
 
-        /* istanbul ignore else  */
         if (__DEV__) {
           warnInvalidSource(s)
         }
@@ -190,7 +189,6 @@ function doWatch(
   } else {
     // eslint-disable-next-line @typescript-eslint/no-empty-function
     getter = () => {}
-    /* istanbul ignore else  */
     if (__DEV__) {
       warnInvalidSource(source)
     }
