@@ -1,6 +1,5 @@
 import { ReactiveEffect } from '@vue/reactivity'
 
-// eslint-disable-next-line @typescript-eslint/no-invalid-void-type
 export type Bindings = Record<string, any> | void
 
 export type AppInstance = Record<string, any>

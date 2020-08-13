@@ -15,7 +15,6 @@ export type PageContext = WechatMiniprogram.Page.InstanceProperties &
     | 'getRelationNodes'
   >
 export type PageSetup = (
-  // eslint-disable-next-line @typescript-eslint/no-invalid-void-type
   this: void,
   query: Query,
   context: PageContext
@@ -53,6 +52,7 @@ export function definePage<
 
 export function definePage(
   optionsOrSetup: any,
+  // eslint-disable-next-line unicorn/no-object-as-default-parameter
   config: Config = { listenPageScroll: false }
 ): void {
   let setup: PageSetup
