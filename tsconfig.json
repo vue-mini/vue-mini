@@ -11,11 +11,7 @@
     "resolveJsonModule": true,
     "noFallthroughCasesInSwitch": true,
     "noUnusedLocals": true,
-    "noUnusedParameters": true,
-    "typeRoots": [
-      "./node_modules/@types",
-      "./node_modules/miniprogram-api-typings"
-    ]
+    "noUnusedParameters": true
   },
   "include": ["packages", "global.d.ts"]
 }
