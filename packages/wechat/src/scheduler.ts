@@ -1,24 +1,19 @@
 export interface SchedulerJob {
-  /**
-   * Indicates this is a watch() callback and is allowed to trigger itself.
-   * A watch callback doesn't track its dependencies so if it triggers itself
-   * again, it's likely intentional and it is the user's responsibility to
-   * perform recursive state mutation that eventually stabilizes.
-   */
-  cb?: boolean
+  allowRecurse?: boolean
   (): void
 }
 
+let isFlushing = false
+let isFlushPending = false
+
 const queue: SchedulerJob[] = []
+let flushIndex = 0
+
 const resolvedPromise: Promise<any> = Promise.resolve()
 let currentFlushPromise: Promise<void> | null = null
 
-let isFlushing = false
-let isFlushPending = false
-let flushIndex = 0
-
 const RECURSION_LIMIT = 100
-type CountMap = Map<SchedulerJob | Function, number>
+type CountMap = Map<SchedulerJob, number>
 
 export function nextTick(fn?: () => void): Promise<void> {
   const p = currentFlushPromise || resolvedPromise
@@ -35,7 +30,10 @@ export function queueJob(job: SchedulerJob) {
   // ensure it doesn't end up in an infinite loop.
   if (
     queue.length === 0 ||
-    !queue.includes(job, isFlushing && job.cb ? flushIndex + 1 : flushIndex)
+    !queue.includes(
+      job,
+      isFlushing && job.allowRecurse ? flushIndex + 1 : flushIndex
+    )
   ) {
     queue.push(job)
     queueFlush()
@@ -75,10 +73,7 @@ function flushJobs(seen?: CountMap): void {
   }
 }
 
-function checkRecursiveUpdates(
-  seen: CountMap,
-  fn: SchedulerJob | Function
-): void {
+function checkRecursiveUpdates(seen: CountMap, fn: SchedulerJob): void {
   const count = seen.get(fn) || 0
   /* c8 ignore next 6 */
   if (count > RECURSION_LIMIT) {
