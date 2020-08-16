@@ -146,8 +146,9 @@ function doWatch(
   }
 
   let getter: () => any
-  if (isRef(source)) {
-    getter = () => source.value
+  const isRefSource = isRef(source)
+  if (isRefSource) {
+    getter = () => (source as Ref).value
   } else if (isReactive(source)) {
     getter = () => source
     deep = true
@@ -214,7 +215,7 @@ function doWatch(
     if (cb) {
       // Watch(source, cb)
       const newValue = runner()
-      if (deep || hasChanged(newValue, oldValue)) {
+      if (deep || isRefSource || hasChanged(newValue, oldValue)) {
         // Cleanup before running cb again
         if (cleanup) {
           cleanup()

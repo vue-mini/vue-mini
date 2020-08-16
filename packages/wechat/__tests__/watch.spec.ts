@@ -70,6 +70,21 @@ describe('watch', () => {
     expect(spy).toBeCalledWith([1], expect.anything(), expect.anything())
   })
 
+  it('should not fire if watched getter result did not change', async () => {
+    const spy = jest.fn()
+    const n = ref(0)
+    watch(() => n.value % 2, spy)
+
+    n.value++
+    await nextTick()
+    expect(spy).toBeCalledTimes(1)
+
+    n.value += 2
+    await nextTick()
+    // Should not be called again because getter result did not change
+    expect(spy).toBeCalledTimes(1)
+  })
+
   it('watching single source: computed ref', async () => {
     const count = ref(0)
     const plus = computed(() => count.value + 1)
@@ -475,6 +490,30 @@ describe('watch', () => {
     expect(calls).toBe(1)
   })
 
+  test('should force trigger on triggerRef when watching a ref', async () => {
+    const v = ref({ a: 1 })
+    let sideEffect = 0
+    watch(v, (obj) => {
+      sideEffect = obj.a
+    })
+
+    // eslint-disable-next-line no-self-assign
+    v.value = v.value
+    await nextTick()
+    // Should not trigger
+    expect(sideEffect).toBe(0)
+
+    v.value.a++
+    await nextTick()
+    // Should not trigger
+    expect(sideEffect).toBe(0)
+
+    triggerRef(v)
+    await nextTick()
+    // Should trigger now
+    expect(sideEffect).toBe(2)
+  })
+
   /** Dividing line, the above tests is directly copy from vue.js **/
 
   it('warn when using old simple watch api', async () => {
@@ -485,16 +524,12 @@ describe('watch', () => {
   })
 
   it('should not trigger when value changed from NaN to NaN', async () => {
-    const count = ref(Number.NaN)
-    const fn = jest.fn()
-    watch(count, fn)
+    const spy = jest.fn()
+    const s = ref('a')
+    watch(() => Number(s.value), spy)
 
+    s.value = 'b'
     await nextTick()
-    expect(fn).toHaveBeenCalledTimes(0)
-
-    count.value = Number.NaN
-    triggerRef(count)
-    await nextTick()
-    expect(fn).toHaveBeenCalledTimes(0)
+    expect(spy).not.toBeCalled()
   })
 })
