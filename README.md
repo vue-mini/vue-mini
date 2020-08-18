@@ -20,10 +20,6 @@ Vue Mini 是一个基于 Vue 3 的小程序开发库，它能让你用 Compositi
 
 https://vue-mini.github.io
 
-## 兼容性
-
-仅支持 iOS 10 及以上，Android 理论上问题不大。微信小程序仅支持基础库 v2.9.0 及以上。
-
 ## 许可证
 
 [MIT](https://opensource.org/licenses/MIT)
