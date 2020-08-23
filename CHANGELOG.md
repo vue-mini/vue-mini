@@ -1,3 +1,16 @@
+# 0.1.0-rc3 (2020-08-23)
+
+### 依赖
+
+- @vue/reactivity 从 3.0.0-rc.5 升至 3.0.0-rc.6 ([80583ba](https://github.com/vue-mini/vue-mini/commit/80583baaed3edd0ecbecade7e24e4caa96fe0549))
+- 将 miniprogram-api-typings 2.12.0 升级为 @types/wechat-miniprogram 3.0.0 ([b65ede8](https://github.com/vue-mini/vue-mini/commit/b65ede811097b8e7ffe3d6a8859a4577edb1baa2))
+- 解锁 @types/wechat-miniprogram 的版本
+
+### Bug 修复
+
+- scheduler 仅允许带回调的 watch 自我触发 ([7ee769e](https://github.com/vue-mini/vue-mini/commit/7ee769ec28cc19f42d8d01382830c23adcb2f8ea))
+- 调用 triggerRef 应该触发 ref 的 watcher ([f7cfe99](https://github.com/vue-mini/vue-mini/commit/f7cfe99d038b0a29703900d026c8b8c7b9698929))
+
 # 0.1.0-rc.2 (2020-07-30)
 
 ### 依赖
