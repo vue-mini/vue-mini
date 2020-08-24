@@ -283,7 +283,9 @@ function traverse(value: unknown, seen: Set<unknown> = new Set()): unknown {
   }
 
   seen.add(value)
-  if (isArray(value)) {
+  if (isRef(value)) {
+    traverse(value.value, seen)
+  } else if (isArray(value)) {
     for (let i = 0; i < value.length; i++) {
       traverse(value[i], seen)
     }
