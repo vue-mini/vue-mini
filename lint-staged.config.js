@@ -8,4 +8,5 @@ module.exports = {
     `cross-env NODE_ENV=production eslint --fix ${filenames.join(' ')}`,
     'tsc --noEmit',
   ],
+  '**/*.md': (filenames) => [`prettier --write ${filenames.join(' ')}`],
 }

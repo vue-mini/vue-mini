@@ -46,6 +46,10 @@ defineComponent({
 
 `setup` 会在 `attached` 阶段被调用。返回都数据和方法也会在此时才会被合并到组件实例上，所以模版初次渲染时数据可能是 `undefined`。不过小程序模版对此做了兼容，所以不用担心会报错。
 
+- **调用顺序**
+
+组件 `setup` 函数会跟 `attached` 钩子一样按组件树从上到下依次执行，但是可能会早于页面的 `setup` 函数执行（取决于定义页面的方式），所以在 `setup` 函数执行时，`props` 可能还未初始化。在这种情况下，如果你需要依据 `props` 派生状态，可以使用 `computed`，如果你需要依据 `props` 执行副作用，可以使用 `watchEffect` 或 `watch`。
+
 - **参数**
 
 `setup` 函数接收组件 `props` 作为其第一个参数，`props` 的声明与小程序原生语法没有差别。`setup` 函数无需返回 `props`，它的属性默认就能在模版中使用。
@@ -159,8 +163,6 @@ createApp({
 - **created**
 
 Vue Mini 并没有 `onCreate` 钩子函数，这是因为 `setup` 是在 `attached` 阶段执行的，此时 `created` 生命周期已经执行完毕了。不过在绝大部分情况下，你应该都不需要使用 `created` 生命周期。如果你真的需要，可以使用小程序原生语法。
-
-组件 `setup` 在 `attached` 阶段执行，而非在 `created` 阶段执行的原因有两个。一是 `created` 阶段组件 `props` 还未初始化，二是 `created` 阶段不能调用 `setData` 同步数据。
 
 - **生命周期对应关系**
 

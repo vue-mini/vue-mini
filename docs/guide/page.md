@@ -44,7 +44,11 @@ definePage({
 
 - **调用时机**
 
-`setup` 会在 `onLoad` 阶段被调用。返回都数据和方法也会在此时才会被合并到页面实例上，所以模版初次渲染时数据可能是 `undefined`。不过小程序模版对此做了兼容，所以不用担心会报错。
+`setup` 会在 `onLoad` 阶段被调用。返回的数据和方法也会在此时才会被合并到页面实例上，所以模版初次渲染时数据可能是 `undefined`。不过小程序模版对此做了兼容，所以不用担心会报错。
+
+- **调用顺序**
+
+由于页面 `onLoad` 钩子会晚于所有子组件的 `attached` 钩子执行，所以 `definePage` 的 `setup` 函数会晚于所有子组件的 `setup` 函数执行。这在某些情况下可能会造成问题，如果你需要 `setup` 函数按组件树从上到下依次执行，可以使用[页面组件](/guide/page-component.html)。
 
 - **参数**
 
@@ -87,7 +91,7 @@ definePage({
 
 ```js
 // page.js
-import { definePage, onShow, onHide, onUnload  } from '@vue-mini/wechat'
+import { definePage, onShow, onHide, onUnload } from '@vue-mini/wechat'
 
 definePage({
   setup() {
@@ -114,7 +118,7 @@ definePage({
 
 ```js
 // page.js
-import { definePage, onPageScroll  } from '@vue-mini/wechat'
+import { definePage, onPageScroll } from '@vue-mini/wechat'
 
 definePage(
   {
@@ -134,7 +138,7 @@ definePage(
 
 ```js
 // page.js
-import { definePage, onPageScroll  } from '@vue-mini/wechat'
+import { definePage, onPageScroll } from '@vue-mini/wechat'
 
 definePage({
   setup() {
@@ -156,7 +160,7 @@ definePage({
 
 ```js
 // page.js
-import { definePage, onShareAppMessage  } from '@vue-mini/wechat'
+import { definePage, onShareAppMessage } from '@vue-mini/wechat'
 
 definePage({
   setup() {
@@ -180,7 +184,7 @@ definePage({
 
 ```js
 // page.js
-import { definePage, onAddToFavorites  } from '@vue-mini/wechat'
+import { definePage, onAddToFavorites } from '@vue-mini/wechat'
 
 definePage({
   setup() {
