@@ -7,11 +7,8 @@ import {
   triggerRef,
 } from '@vue/reactivity'
 import { watch, watchEffect, reactive, computed, nextTick, ref } from '../src'
-import { mockWarn } from './mock-warn'
 
 describe('watch', () => {
-  mockWarn()
-
   it('effect', async () => {
     const state = reactive({ count: 0 })
     let dummy

@@ -18,7 +18,6 @@ import {
   onShareAppMessage,
   onAddToFavorites,
 } from '../src'
-import { mockWarn } from './mock-warn'
 
 // Mocks
 declare global {
@@ -54,8 +53,6 @@ global.Page = (options: Record<string, any>) => {
 }
 
 describe('page', () => {
-  mockWarn()
-
   it('raw binding', () => {
     definePage(() => {
       const count = 0

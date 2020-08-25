@@ -22,7 +22,6 @@ import {
   onShareAppMessage,
   onAddToFavorites,
 } from '../src'
-import { mockWarn } from './mock-warn'
 
 // Mocks
 declare global {
@@ -62,8 +61,6 @@ global.Component = (options) => {
 }
 
 describe('component', () => {
-  mockWarn()
-
   it('raw binding', () => {
     defineComponent(() => {
       const count = 0

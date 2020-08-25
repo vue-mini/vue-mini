@@ -13,5 +13,5 @@
     "noUnusedLocals": true,
     "noUnusedParameters": true
   },
-  "include": ["packages", "global.d.ts"]
+  "include": ["packages", "global.d.ts", "jest.setup.ts"]
 }

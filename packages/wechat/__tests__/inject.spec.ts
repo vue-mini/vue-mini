@@ -8,13 +8,10 @@ import {
   readonly,
   reactive,
 } from '../src'
-import { mockWarn } from './mock-warn'
 
 // Reference: https://vue-composition-api-rfc.netlify.com/api.html#provide-inject
 
 describe('provide/inject', () => {
-  mockWarn()
-
   it('string keys', () => {
     provide('foo', 1)
     const foo = inject('foo')

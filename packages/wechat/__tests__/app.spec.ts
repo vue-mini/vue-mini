@@ -11,7 +11,6 @@ import {
   onUnhandledRejection,
   onThemeChange,
 } from '../src'
-import { mockWarn } from './mock-warn'
 
 // Mocks
 declare global {
@@ -27,8 +26,6 @@ global.App = (options: Record<string, any>) => {
 }
 
 describe('app', () => {
-  mockWarn()
-
   it('binding', async () => {
     createApp(() => {
       const num = 0
