@@ -48,7 +48,7 @@ definePage({
 
 - **调用顺序**
 
-由于页面 `onLoad` 钩子会晚于所有子组件的 `attached` 钩子执行，所以 `definePage` 的 `setup` 函数会晚于所有子组件的 `setup` 函数执行。这在某些情况下可能会造成问题，如果你需要 `setup` 函数按组件树从上到下依次执行，可以使用[页面组件](/guide/page-component.html)。
+由于页面 `onLoad` 钩子会晚于所有子组件的 `attached` 钩子执行，所以 `definePage` 的 `setup` 函数会晚于所有子组件的 `setup` 函数执行。这在某些情况下（如：[依赖注入](/guide/provide-inject.html)）可能会造成问题，如果你需要 `setup` 函数按组件树从上到下依次执行，可以使用[页面组件](/guide/page-component.html)。
 
 - **参数**
 

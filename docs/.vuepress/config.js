@@ -33,6 +33,7 @@ module.exports = {
             '/guide/page',
             '/guide/component',
             '/guide/page-component',
+            '/guide/provide-inject',
             '/guide/compatibility',
           ],
         },
