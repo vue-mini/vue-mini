@@ -33,5 +33,7 @@ function run(bin, args, options) {
         { cwd: target }
       )
     }
-  } catch {}
+  } catch {
+    process.exitCode = 1
+  }
 })()

@@ -123,5 +123,7 @@ async function build(target) {
 fs.readdirSync('packages').forEach((pkg) => {
   const target = path.join('packages', pkg)
   if (!fs.statSync(target).isDirectory()) return
-  build(target)
+  build(target).catch(() => {
+    process.exitCode = 1
+  })
 })
