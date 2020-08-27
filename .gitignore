@@ -2,6 +2,7 @@
 node_modules
 coverage
 dist
+!packages/*/dist
 temp
 *.log*
 .vscode

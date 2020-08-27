@@ -1,3 +1,13 @@
+# 0.1.0-rc4 (2020-08-28)
+
+### 依赖
+
+- @vue/reactivity 从 3.0.0-rc.6 升至 3.0.0-rc.9 ([f48b91b](https://github.com/vue-mini/vue-mini/commit/f48b91b3b8323c776755a885d96a7019e29f54f1), [9227135](https://github.com/vue-mini/vue-mini/commit/9227135ebbc896da5f19cb498c1ca87cae06222e))
+
+### Bug 修复
+
+- refs 深度侦听修复 ([91d0c6f](https://github.com/vue-mini/vue-mini/commit/91d0c6f88f8b134b3defcf06f35779040a4e2acc))
+
 # 0.1.0-rc3 (2020-08-23)
 
 ### 依赖
