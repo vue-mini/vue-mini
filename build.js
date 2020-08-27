@@ -12,6 +12,15 @@ const { Extractor, ExtractorConfig } = require('@microsoft/api-extractor')
 const input = 'src/index.ts'
 const external = ['@vue/reactivity']
 
+function getBanner(version) {
+  return `/*!
+ * vue-mini v${version}
+ * https://github.com/vue-mini/vue-mini
+ * (c) 2019-present Yang Mingshan
+ * @license MIT
+ */`
+}
+
 async function generateDeclaration(target) {
   const bundle = await rollup.rollup({
     input: path.join(target, input),
@@ -56,7 +65,12 @@ async function generateCode({
       resolve(),
     ].filter(Boolean),
   })
-  await bundle.write({ file: path.join(target, 'dist', fileName), format })
+  const { version } = require(path.resolve(target, 'package.json'))
+  await bundle.write({
+    file: path.join(target, 'dist', fileName),
+    banner: getBanner(version),
+    format,
+  })
 }
 
 async function build(target) {
