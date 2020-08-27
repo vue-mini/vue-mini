@@ -1,10 +1,8 @@
 /* eslint-env jest */
 expect.extend({
-  toHaveBeenWarned(received: string) {
+  toHaveBeenWarned(received) {
     asserted.add(received)
-    const passed = warn.mock.calls.some(
-      (args) => args[0].indexOf(received) > -1
-    )
+    const passed = warn.mock.calls.some((args) => args[0].includes(received))
     if (passed) {
       return {
         pass: true,
@@ -23,10 +21,11 @@ expect.extend({
     }
   },
 
-  toHaveBeenWarnedLast(received: string) {
+  toHaveBeenWarnedLast(received) {
     asserted.add(received)
-    const passed =
-      warn.mock.calls[warn.mock.calls.length - 1][0].indexOf(received) > -1
+    const passed = warn.mock.calls[warn.mock.calls.length - 1][0].includes(
+      received
+    )
     if (passed) {
       return {
         pass: true,
@@ -42,11 +41,11 @@ expect.extend({
     }
   },
 
-  toHaveBeenWarnedTimes(received: string, n: number) {
+  toHaveBeenWarnedTimes(received, n) {
     asserted.add(received)
     let found = 0
     warn.mock.calls.forEach((args) => {
-      if (args[0].indexOf(received) > -1) {
+      if (args[0].includes(received)) {
         found++
       }
     })
@@ -66,13 +65,12 @@ expect.extend({
   },
 })
 
-let warn: jest.SpyInstance
-const asserted: Set<string> = new Set()
+let warn
+const asserted = new Set()
 
 beforeEach(() => {
   asserted.clear()
   warn = jest.spyOn(console, 'warn')
-  // eslint-disable-next-line @typescript-eslint/no-empty-function
   warn.mockImplementation(() => {})
 })
 
@@ -81,8 +79,8 @@ afterEach(() => {
   const nonAssertedWarnings = warn.mock.calls
     .map((args) => args[0])
     .filter((received) => {
-      return !assertedArray.some((assertedMsg) => {
-        return received.indexOf(assertedMsg) > -1
+      return !assertedArray.some((assertedMessage) => {
+        return received.includes(assertedMessage)
       })
     })
   warn.mockRestore()
