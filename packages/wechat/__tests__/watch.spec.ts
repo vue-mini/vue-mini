@@ -476,6 +476,7 @@ describe('watch', () => {
       newValue: 2,
     })
 
+    // @ts-expect-error
     delete obj.foo
     await nextTick()
     expect(dummy).toBeUndefined()

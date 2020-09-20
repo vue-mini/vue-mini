@@ -26,7 +26,7 @@ export function inject(
   defaultValue?: unknown,
   treatDefaultAsFactory = false
 ): unknown {
-  if (key in provides) {
+  if ((key as string | symbol) in provides) {
     // TS doesn't allow symbol as index type
     return provides[key as string]
   }

@@ -32,12 +32,13 @@
     "rollup": "^2.6.1",
     "rollup-plugin-terser": "^7.0.0",
     "ts-jest": "^26.0.0",
-    "typescript": "^3.9.2",
+    "typescript": "^4.0.3",
     "vuepress": "^1.5.0",
     "xo": "^0.33.0"
   },
   "resolutions": {
-    "chokidar": "^3.4.0"
+    "chokidar": "^3.4.0",
+    "typescript": "^4.0.3"
   },
   "husky": {
     "hooks": {
