@@ -35,6 +35,15 @@ describe('provide/inject', () => {
     expect(foo + bar).toBe('foobar')
   })
 
+  it('default values with factory function', () => {
+    provide('foo', 'foo')
+    // Default value should be ignored if value is provided
+    const foo = inject('foo', () => 'fooDefault', true)
+    // Default value should be used if value is not provided
+    const bar = inject('bar', () => 'bar', true)
+    expect(foo + bar).toBe('foobar')
+  })
+
   it('override providers', () => {
     provide('foo', 'foo')
     provide('bar', 'bar')

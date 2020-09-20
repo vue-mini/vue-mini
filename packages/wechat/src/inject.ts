@@ -1,3 +1,5 @@
+import { isFunction } from './utils'
+
 const provides = Object.create(null)
 
 // @ts-expect-error
@@ -9,10 +11,20 @@ export function provide<T>(key: InjectionKey<T> | string, value: T): void {
 }
 
 export function inject<T>(key: InjectionKey<T> | string): T | undefined
-export function inject<T>(key: InjectionKey<T> | string, defaultValue: T): T
+export function inject<T>(
+  key: InjectionKey<T> | string,
+  defaultValue: T,
+  treatDefaultAsFactory?: false
+): T
+export function inject<T>(
+  key: InjectionKey<T> | string,
+  defaultValue: T | (() => T),
+  treatDefaultAsFactory: true
+): T
 export function inject(
   key: InjectionKey<any> | string,
-  defaultValue?: unknown
+  defaultValue?: unknown,
+  treatDefaultAsFactory = false
 ): unknown {
   if (key in provides) {
     // TS doesn't allow symbol as index type
@@ -20,7 +32,9 @@ export function inject(
   }
 
   if (arguments.length > 1) {
-    return defaultValue
+    return treatDefaultAsFactory && isFunction(defaultValue)
+      ? defaultValue()
+      : defaultValue
   }
 
   if (__DEV__) {
