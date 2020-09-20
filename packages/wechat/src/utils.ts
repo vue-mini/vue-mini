@@ -21,6 +21,14 @@ export function isFunction(x: unknown): x is Function {
   return typeof x === 'function'
 }
 
+export function isMap(x: unknown): x is Map<any, any> {
+  return getType(x) === 'Map'
+}
+
+export function isSet(x: unknown): x is Set<any> {
+  return getType(x) === 'Set'
+}
+
 // Compare whether a value has changed, accounting for NaN.
 export function hasChanged(value: unknown, oldValue: unknown): boolean {
   // eslint-disable-next-line no-self-compare

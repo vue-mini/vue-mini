@@ -10,7 +10,15 @@ import {
 import { queueJob, SchedulerJob } from './scheduler'
 import { recordInstanceBoundEffect } from './computed'
 import { getCurrentInstance } from './instance'
-import { isArray, isObject, isFunction, hasChanged, remove } from './utils'
+import {
+  isArray,
+  isObject,
+  isFunction,
+  hasChanged,
+  remove,
+  isMap,
+  isSet,
+} from './utils'
 
 export type WatchEffect = (onInvalidate: InvalidateCbRegistrator) => void
 
@@ -289,12 +297,12 @@ function traverse(value: unknown, seen: Set<unknown> = new Set()): unknown {
     for (let i = 0; i < value.length; i++) {
       traverse(value[i], seen)
     }
-  } else if (value instanceof Map) {
+  } else if (isMap(value)) {
     value.forEach((_, key) => {
       // To register mutation dep for existing keys
       traverse(value.get(key), seen)
     })
-  } else if (value instanceof Set) {
+  } else if (isSet(value)) {
     value.forEach((v) => {
       traverse(v, seen)
     })
