@@ -531,6 +531,18 @@ describe('watch', () => {
     expect(sideEffect).toBe(2)
   })
 
+  test('watchEffect should not recursively trigger itself', async () => {
+    const spy = jest.fn()
+    const price = ref(10)
+    const history = ref<number[]>([])
+    watchEffect(() => {
+      history.value.push(price.value)
+      spy()
+    })
+    await nextTick()
+    expect(spy).toHaveBeenCalledTimes(1)
+  })
+
   /** Dividing line, the above tests is directly copy from vue.js **/
 
   it('warn when using old simple watch api', async () => {
