@@ -52,12 +52,12 @@ export const onPageScroll = (
   if (currentInstance) {
     if (currentInstance.__listenPageScroll__) {
       injectHook(currentInstance, PageLifecycle.ON_PAGE_SCROLL, hook)
-    } else if (__DEV__) {
+    } /* istanbul ignore else  */ else if (__DEV__) {
       console.warn(
         'onPageScroll() hook only works when `listenPageScroll` is configured to true.'
       )
     }
-  } else if (__DEV__) {
+  } /* istanbul ignore else  */ else if (__DEV__) {
     console.warn(pageHookWarn)
   }
 }
@@ -73,15 +73,15 @@ export const onShareAppMessage = (
       const hiddenField = toHiddenField(PageLifecycle.ON_SHARE_APP_MESSAGE)
       if (currentInstance[hiddenField] === undefined) {
         currentInstance[hiddenField] = hook
-      } else if (__DEV__) {
+      } /* istanbul ignore else  */ else if (__DEV__) {
         console.warn('onShareAppMessage() hook can only be called once.')
       }
-    } else if (__DEV__) {
+    } /* istanbul ignore else  */ else if (__DEV__) {
       console.warn(
         'onShareAppMessage() hook only works when `onShareAppMessage` option is not exist.'
       )
     }
-  } else if (__DEV__) {
+  } /* istanbul ignore else  */ else if (__DEV__) {
     console.warn(pageHookWarn)
   }
 }
@@ -97,15 +97,15 @@ export const onAddToFavorites = (
       const hiddenField = toHiddenField(PageLifecycle.ON_ADD_TO_FAVORITES)
       if (currentInstance[hiddenField] === undefined) {
         currentInstance[hiddenField] = hook
-      } else if (__DEV__) {
+      } /* istanbul ignore else  */ else if (__DEV__) {
         console.warn('onAddToFavorites() hook can only be called once.')
       }
-    } else if (__DEV__) {
+    } /* istanbul ignore else  */ else if (__DEV__) {
       console.warn(
         'onAddToFavorites() hook only works when `onAddToFavorites` option is not exist.'
       )
     }
-  } else if (__DEV__) {
+  } /* istanbul ignore else  */ else if (__DEV__) {
     console.warn(pageHookWarn)
   }
 }
@@ -114,7 +114,7 @@ export const onReady = (hook: () => unknown): void => {
   const currentInstance = getCurrentInstance()
   if (currentInstance) {
     injectHook(currentInstance, PageLifecycle.ON_READY, hook)
-  } else if (__DEV__) {
+  } /* istanbul ignore else  */ else if (__DEV__) {
     console.warn(
       'onReady() hook can only be called during execution of setup() in definePage() or defineComponent().'
     )
@@ -136,7 +136,7 @@ function createAppHook<T extends Function = () => unknown>(
   return (hook: T): void => {
     if (currentApp) {
       injectHook(currentApp, lifecycle, hook)
-    } else if (__DEV__) {
+    } /* istanbul ignore else  */ else if (__DEV__) {
       console.warn(
         'App specific lifecycle injection APIs can only be used during execution of setup() in createApp().'
       )
@@ -151,7 +151,7 @@ function createPageHook<T extends Function = () => unknown>(
     const currentInstance = getCurrentInstance()
     if (currentInstance) {
       injectHook(currentInstance, lifecycle, hook)
-    } else if (__DEV__) {
+    } /* istanbul ignore else  */ else if (__DEV__) {
       console.warn(pageHookWarn)
     }
   }
@@ -163,7 +163,7 @@ function createComponentHook<T extends Function = () => unknown>(
   return (hook: T): void => {
     if (currentComponent) {
       injectHook(currentComponent, lifecycle, hook)
-    } else if (__DEV__) {
+    } /* istanbul ignore else  */ else if (__DEV__) {
       console.warn(
         'Component specific lifecycle injection APIs can only be used during execution of setup() in defineComponent().'
       )

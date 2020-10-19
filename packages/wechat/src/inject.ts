@@ -37,6 +37,7 @@ export function inject(
       : defaultValue
   }
 
+  /* istanbul ignore else */
   if (__DEV__) {
     console.warn(`injection "${String(key)}" not found.`)
   }

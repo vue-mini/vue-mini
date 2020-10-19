@@ -123,7 +123,7 @@ export function definePage(
       options,
       PageLifecycle.ON_PAGE_SCROLL
     )
-    /* c8 ignore next */
+    /* istanbul ignore next */
     options.__listenPageScroll__ = () => true
   }
 
@@ -142,7 +142,7 @@ export function definePage(
       return {}
     }
 
-    /* c8 ignore next */
+    /* istanbul ignore next */
     options.__isInjectedShareHook__ = () => true
   }
 
@@ -161,7 +161,7 @@ export function definePage(
       return {}
     }
 
-    /* c8 ignore next */
+    /* istanbul ignore next */
     options.__isInjectedFavoritesHook__ = () => true
   }
 
