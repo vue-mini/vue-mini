@@ -1,3 +1,13 @@
+# 0.1.0 (2020-10-20)
+
+### 依赖
+
+- @vue/reactivity 从 3.0.0-rc.9 升至 3.0.0 ([2f8f641](https://github.com/vue-mini/vue-mini/commit/efd3da82efc97de1b214278de44c444932f8f641), [a1c5515](https://github.com/vue-mini/vue-mini/commit/f0f81e1085344a9a3fa7012f1dbc35ebea1c5515))
+
+### Bug 修复
+
+- inject 支持工厂函数型默认值 ([0100777](https://github.com/vue-mini/vue-mini/commit/b5d32a3c12455a8f9e814691a8f843a130100777))
+
 # 0.1.0-rc4 (2020-08-28)
 
 ### 依赖

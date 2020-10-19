@@ -1,5 +1,5 @@
 /*!
- * vue-mini v0.1.0-rc.4
+ * vue-mini v0.1.0
  * https://github.com/vue-mini/vue-mini
  * (c) 2019-present Yang Mingshan
  * @license MIT
@@ -21,6 +21,7 @@ const extend = Object.assign;
 const hasOwnProperty = Object.prototype.hasOwnProperty;
 const hasOwn = (val, key) => hasOwnProperty.call(val, key);
 const isArray = Array.isArray;
+const isMap = (val) => toTypeString(val) === '[object Map]';
 const isFunction = (val) => typeof val === 'function';
 const isString = (val) => typeof val === 'string';
 const isSymbol = (val) => typeof val === 'symbol';
@@ -30,7 +31,10 @@ const toTypeString = (value) => objectToString.call(value);
 const toRawType = (value) => {
     return toTypeString(value).slice(8, -1);
 };
-const isIntegerKey = (key) => isString(key) && key[0] !== '-' && '' + parseInt(key, 10) === key;
+const isIntegerKey = (key) => isString(key) &&
+    key !== 'NaN' &&
+    key[0] !== '-' &&
+    '' + parseInt(key, 10) === key;
 const cacheStringFunction = (fn) => {
     const cache = Object.create(null);
     return ((str) => {
@@ -121,6 +125,10 @@ function cleanup(effect) {
 }
 let shouldTrack = true;
 const trackStack = [];
+function pauseTracking() {
+    trackStack.push(shouldTrack);
+    shouldTrack = false;
+}
 function enableTracking() {
     trackStack.push(shouldTrack);
     shouldTrack = true;
@@ -164,7 +172,7 @@ function trigger(target, type, key, newValue, oldValue, oldTarget) {
     const add = (effectsToAdd) => {
         if (effectsToAdd) {
             effectsToAdd.forEach(effect => {
-                if (effect !== activeEffect) {
+                if (effect !== activeEffect || effect.options.allowRecurse) {
                     effects.add(effect);
                 }
             });
@@ -188,15 +196,32 @@ function trigger(target, type, key, newValue, oldValue, oldTarget) {
             add(depsMap.get(key));
         }
         // also run for iteration key on ADD | DELETE | Map.SET
-        const shouldTriggerIteration = (type === "add" /* ADD */ &&
-            (!isArray(target) || isIntegerKey(key))) ||
-            (type === "delete" /* DELETE */ && !isArray(target));
-        if (shouldTriggerIteration ||
-            (type === "set" /* SET */ && target instanceof Map)) {
-            add(depsMap.get(isArray(target) ? 'length' : ITERATE_KEY));
-        }
-        if (shouldTriggerIteration && target instanceof Map) {
-            add(depsMap.get(MAP_KEY_ITERATE_KEY));
+        switch (type) {
+            case "add" /* ADD */:
+                if (!isArray(target)) {
+                    add(depsMap.get(ITERATE_KEY));
+                    if (isMap(target)) {
+                        add(depsMap.get(MAP_KEY_ITERATE_KEY));
+                    }
+                }
+                else if (isIntegerKey(key)) {
+                    // new index added to array -> length changes
+                    add(depsMap.get('length'));
+                }
+                break;
+            case "delete" /* DELETE */:
+                if (!isArray(target)) {
+                    add(depsMap.get(ITERATE_KEY));
+                    if (isMap(target)) {
+                        add(depsMap.get(MAP_KEY_ITERATE_KEY));
+                    }
+                }
+                break;
+            case "set" /* SET */:
+                if (isMap(target)) {
+                    add(depsMap.get(ITERATE_KEY));
+                }
+                break;
         }
     }
     const run = (effect) => {
@@ -230,20 +255,30 @@ const readonlyGet = /*#__PURE__*/ createGetter(true);
 const shallowReadonlyGet = /*#__PURE__*/ createGetter(true, true);
 const arrayInstrumentations = {};
 ['includes', 'indexOf', 'lastIndexOf'].forEach(key => {
+    const method = Array.prototype[key];
     arrayInstrumentations[key] = function (...args) {
         const arr = toRaw(this);
         for (let i = 0, l = this.length; i < l; i++) {
             track(arr, "get" /* GET */, i + '');
         }
         // we run the method using the original args first (which may be reactive)
-        const res = arr[key](...args);
+        const res = method.apply(arr, args);
         if (res === -1 || res === false) {
             // if that didn't work, run it again using raw values.
-            return arr[key](...args.map(toRaw));
+            return method.apply(arr, args.map(toRaw));
         }
         else {
             return res;
         }
+    };
+});
+['push', 'pop', 'shift', 'unshift', 'splice'].forEach(key => {
+    const method = Array.prototype[key];
+    arrayInstrumentations[key] = function (...args) {
+        pauseTracking();
+        const res = method.apply(this, args);
+        enableTracking();
+        return res;
     };
 });
 function createGetter(isReadonly = false, shallow = false) {
@@ -346,8 +381,6 @@ const mutableHandlers = {
 };
 const readonlyHandlers = {
     get: readonlyGet,
-    has,
-    ownKeys,
     set(target, key) {
         {
             console.warn(`Set operation on key "${String(key)}" failed: target is readonly.`, target);
@@ -417,7 +450,7 @@ function add(value) {
     const target = toRaw(this);
     const proto = getProto(target);
     const hadKey = proto.has.call(target, value);
-    const result = proto.add.call(target, value);
+    const result = target.add(value);
     if (!hadKey) {
         trigger(target, "add" /* ADD */, value, value);
     }
@@ -426,7 +459,7 @@ function add(value) {
 function set$1(key, value) {
     value = toRaw(value);
     const target = toRaw(this);
-    const { has, get, set } = getProto(target);
+    const { has, get } = getProto(target);
     let hadKey = has.call(target, key);
     if (!hadKey) {
         key = toRaw(key);
@@ -436,7 +469,7 @@ function set$1(key, value) {
         checkIdentityKeys(target, has, key);
     }
     const oldValue = get.call(target, key);
-    const result = set.call(target, key, value);
+    const result = target.set(key, value);
     if (!hadKey) {
         trigger(target, "add" /* ADD */, key, value);
     }
@@ -447,7 +480,7 @@ function set$1(key, value) {
 }
 function deleteEntry(key) {
     const target = toRaw(this);
-    const { has, get, delete: del } = getProto(target);
+    const { has, get } = getProto(target);
     let hadKey = has.call(target, key);
     if (!hadKey) {
         key = toRaw(key);
@@ -458,7 +491,7 @@ function deleteEntry(key) {
     }
     const oldValue = get ? get.call(target, key) : undefined;
     // forward the operation before queueing reactions
-    const result = del.call(target, key);
+    const result = target.delete(key);
     if (hadKey) {
         trigger(target, "delete" /* DELETE */, key, undefined, oldValue);
     }
@@ -467,12 +500,12 @@ function deleteEntry(key) {
 function clear() {
     const target = toRaw(this);
     const hadItems = target.size !== 0;
-    const oldTarget =  target instanceof Map
+    const oldTarget =  isMap(target)
             ? new Map(target)
             : new Set(target)
         ;
     // forward the operation before queueing reactions
-    const result = getProto(target).clear.call(target);
+    const result = target.clear();
     if (hadItems) {
         trigger(target, "clear" /* CLEAR */, undefined, undefined, oldTarget);
     }
@@ -497,9 +530,9 @@ function createIterableMethod(method, isReadonly, isShallow) {
     return function (...args) {
         const target = this["__v_raw" /* RAW */];
         const rawTarget = toRaw(target);
-        const isMap = rawTarget instanceof Map;
-        const isPair = method === 'entries' || (method === Symbol.iterator && isMap);
-        const isKeyOnly = method === 'keys' && isMap;
+        const targetIsMap = isMap(rawTarget);
+        const isPair = method === 'entries' || (method === Symbol.iterator && targetIsMap);
+        const isKeyOnly = method === 'keys' && targetIsMap;
         const innerIterator = target[method](...args);
         const wrap = isReadonly ? toReadonly : isShallow ? toShallow : toReactive;
         !isReadonly &&
@@ -817,7 +850,9 @@ class ObjectRefImpl {
     }
 }
 function toRef(object, key) {
-    return new ObjectRefImpl(object, key);
+    return isRef(object[key])
+        ? object[key]
+        : new ObjectRefImpl(object, key);
 }
 
 class ComputedRefImpl {
@@ -930,12 +965,14 @@ function queueFlush() {
 function flushJobs(seen) {
     isFlushPending = false;
     isFlushing = true;
+    /* istanbul ignore else  */
     {
         seen = seen || new Map();
     }
     try {
         for (flushIndex = 0; flushIndex < queue.length; flushIndex++) {
             const job = queue[flushIndex];
+            /* istanbul ignore else  */
             if (true) {
                 checkRecursiveUpdates(seen, job);
             }
@@ -951,7 +988,7 @@ function flushJobs(seen) {
 }
 function checkRecursiveUpdates(seen, fn) {
     const count = seen.get(fn) || 0;
-    /* c8 ignore next 6 */
+    /* istanbul ignore if */
     if (count > RECURSION_LIMIT) {
         throw new Error(`Maximum recursive updates exceeded. ` +
             `This means you have a reactive effect that is mutating its own ` +
@@ -978,6 +1015,12 @@ function isPlainObject(x) {
 }
 function isFunction$1(x) {
     return typeof x === 'function';
+}
+function isMap$1(x) {
+    return getType(x) === 'Map';
+}
+function isSet(x) {
+    return getType(x) === 'Set';
 }
 // Compare whether a value has changed, accounting for NaN.
 function hasChanged$1(value, oldValue) {
@@ -1044,6 +1087,7 @@ function doWatch(source, cb, { immediate, deep, flush, onTrack, onTrigger } = {}
             if (isFunction$1(s)) {
                 return s();
             }
+            /* istanbul ignore else  */
             {
                 warnInvalidSource(s);
             }
@@ -1068,6 +1112,7 @@ function doWatch(source, cb, { immediate, deep, flush, onTrack, onTrigger } = {}
     else {
         // eslint-disable-next-line @typescript-eslint/no-empty-function
         getter = () => { };
+        /* istanbul ignore else  */
         {
             warnInvalidSource(source);
         }
@@ -1157,13 +1202,13 @@ function traverse(value, seen = new Set()) {
             traverse(value[i], seen);
         }
     }
-    else if (value instanceof Map) {
+    else if (isMap$1(value)) {
         value.forEach((_, key) => {
             // To register mutation dep for existing keys
             traverse(value.get(key), seen);
         });
     }
-    else if (value instanceof Set) {
+    else if (isSet(value)) {
         value.forEach((v) => {
             traverse(v, seen);
         });
@@ -1182,14 +1227,17 @@ function provide(key, value) {
     // TS doesn't allow symbol as index type
     provides[key] = value;
 }
-function inject(key, defaultValue) {
+function inject(key, defaultValue, treatDefaultAsFactory = false) {
     if (key in provides) {
         // TS doesn't allow symbol as index type
         return provides[key];
     }
     if (arguments.length > 1) {
-        return defaultValue;
+        return treatDefaultAsFactory && isFunction$1(defaultValue)
+            ? defaultValue()
+            : defaultValue;
     }
+    /* istanbul ignore else */
     {
         console.warn(`injection "${String(key)}" not found.`);
     }
@@ -1341,7 +1389,7 @@ config = { listenPageScroll: false }) {
     };
     if (options["onPageScroll" /* ON_PAGE_SCROLL */] || config.listenPageScroll) {
         options["onPageScroll" /* ON_PAGE_SCROLL */] = createLifecycle$1(options, "onPageScroll" /* ON_PAGE_SCROLL */);
-        /* c8 ignore next */
+        /* istanbul ignore next */
         options.__listenPageScroll__ = () => true;
     }
     if (options["onShareAppMessage" /* ON_SHARE_APP_MESSAGE */] === undefined) {
@@ -1352,7 +1400,7 @@ config = { listenPageScroll: false }) {
             }
             return {};
         };
-        /* c8 ignore next */
+        /* istanbul ignore next */
         options.__isInjectedShareHook__ = () => true;
     }
     if (options["onAddToFavorites" /* ON_ADD_TO_FAVORITES */] === undefined) {
@@ -1363,7 +1411,7 @@ config = { listenPageScroll: false }) {
             }
             return {};
         };
-        /* c8 ignore next */
+        /* istanbul ignore next */
         options.__isInjectedFavoritesHook__ = () => true;
     }
     options["onShow" /* ON_SHOW */] = createLifecycle$1(options, "onShow" /* ON_SHOW */);
@@ -1484,7 +1532,7 @@ config = { listenPageScroll: false }) {
     if (options.methods["onPageScroll" /* ON_PAGE_SCROLL */] ||
         config.listenPageScroll) {
         options.methods["onPageScroll" /* ON_PAGE_SCROLL */] = createPageLifecycle(options, "onPageScroll" /* ON_PAGE_SCROLL */);
-        /* c8 ignore next */
+        /* istanbul ignore next */
         options.methods.__listenPageScroll__ = () => true;
     }
     if (options.methods["onShareAppMessage" /* ON_SHARE_APP_MESSAGE */] === undefined) {
@@ -1495,7 +1543,7 @@ config = { listenPageScroll: false }) {
             }
             return {};
         };
-        /* c8 ignore next */
+        /* istanbul ignore next */
         options.methods.__isInjectedShareHook__ = () => true;
     }
     if (options.methods["onAddToFavorites" /* ON_ADD_TO_FAVORITES */] === undefined) {
@@ -1506,7 +1554,7 @@ config = { listenPageScroll: false }) {
             }
             return {};
         };
-        /* c8 ignore next */
+        /* istanbul ignore next */
         options.methods.__isInjectedFavoritesHook__ = () => true;
     }
     options.methods["onLoad" /* ON_LOAD */] = createPageLifecycle(options, "onLoad" /* ON_LOAD */);
@@ -1583,11 +1631,11 @@ const onPageScroll = (hook) => {
     if (currentInstance) {
         if (currentInstance.__listenPageScroll__) {
             injectHook(currentInstance, "onPageScroll" /* ON_PAGE_SCROLL */, hook);
-        }
+        } /* istanbul ignore else  */
         else {
             console.warn('onPageScroll() hook only works when `listenPageScroll` is configured to true.');
         }
-    }
+    } /* istanbul ignore else  */
     else {
         console.warn(pageHookWarn);
     }
@@ -1599,15 +1647,15 @@ const onShareAppMessage = (hook) => {
             const hiddenField = toHiddenField("onShareAppMessage" /* ON_SHARE_APP_MESSAGE */);
             if (currentInstance[hiddenField] === undefined) {
                 currentInstance[hiddenField] = hook;
-            }
+            } /* istanbul ignore else  */
             else {
                 console.warn('onShareAppMessage() hook can only be called once.');
             }
-        }
+        } /* istanbul ignore else  */
         else {
             console.warn('onShareAppMessage() hook only works when `onShareAppMessage` option is not exist.');
         }
-    }
+    } /* istanbul ignore else  */
     else {
         console.warn(pageHookWarn);
     }
@@ -1619,15 +1667,15 @@ const onAddToFavorites = (hook) => {
             const hiddenField = toHiddenField("onAddToFavorites" /* ON_ADD_TO_FAVORITES */);
             if (currentInstance[hiddenField] === undefined) {
                 currentInstance[hiddenField] = hook;
-            }
+            } /* istanbul ignore else  */
             else {
                 console.warn('onAddToFavorites() hook can only be called once.');
             }
-        }
+        } /* istanbul ignore else  */
         else {
             console.warn('onAddToFavorites() hook only works when `onAddToFavorites` option is not exist.');
         }
-    }
+    } /* istanbul ignore else  */
     else {
         console.warn(pageHookWarn);
     }
@@ -1636,7 +1684,7 @@ const onReady = (hook) => {
     const currentInstance = getCurrentInstance();
     if (currentInstance) {
         injectHook(currentInstance, "onReady" /* ON_READY */, hook);
-    }
+    } /* istanbul ignore else  */
     else {
         console.warn('onReady() hook can only be called during execution of setup() in definePage() or defineComponent().');
     }
@@ -1649,7 +1697,7 @@ function createAppHook(lifecycle) {
     return (hook) => {
         if (currentApp) {
             injectHook(currentApp, lifecycle, hook);
-        }
+        } /* istanbul ignore else  */
         else {
             console.warn('App specific lifecycle injection APIs can only be used during execution of setup() in createApp().');
         }
@@ -1660,7 +1708,7 @@ function createPageHook(lifecycle) {
         const currentInstance = getCurrentInstance();
         if (currentInstance) {
             injectHook(currentInstance, lifecycle, hook);
-        }
+        } /* istanbul ignore else  */
         else {
             console.warn(pageHookWarn);
         }
@@ -1670,7 +1718,7 @@ function createComponentHook(lifecycle) {
     return (hook) => {
         if (currentComponent) {
             injectHook(currentComponent, lifecycle, hook);
-        }
+        } /* istanbul ignore else  */
         else {
             console.warn('Component specific lifecycle injection APIs can only be used during execution of setup() in defineComponent().');
         }

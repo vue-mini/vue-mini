@@ -1,5 +1,5 @@
 /*!
- * vue-mini v0.1.0-rc.4
+ * vue-mini v0.1.0
  * https://github.com/vue-mini/vue-mini
  * (c) 2019-present Yang Mingshan
  * @license MIT
@@ -72,12 +72,14 @@ function queueFlush() {
 function flushJobs(seen) {
     isFlushPending = false;
     isFlushing = true;
+    /* istanbul ignore else  */
     if ((process.env.NODE_ENV !== 'production')) {
         seen = seen || new Map();
     }
     try {
         for (flushIndex = 0; flushIndex < queue.length; flushIndex++) {
             const job = queue[flushIndex];
+            /* istanbul ignore else  */
             if ((process.env.NODE_ENV !== 'production')) {
                 checkRecursiveUpdates(seen, job);
             }
@@ -93,7 +95,7 @@ function flushJobs(seen) {
 }
 function checkRecursiveUpdates(seen, fn) {
     const count = seen.get(fn) || 0;
-    /* c8 ignore next 6 */
+    /* istanbul ignore if */
     if (count > RECURSION_LIMIT) {
         throw new Error(`Maximum recursive updates exceeded. ` +
             `This means you have a reactive effect that is mutating its own ` +
@@ -120,6 +122,12 @@ function isPlainObject(x) {
 }
 function isFunction(x) {
     return typeof x === 'function';
+}
+function isMap(x) {
+    return getType(x) === 'Map';
+}
+function isSet(x) {
+    return getType(x) === 'Set';
 }
 // Compare whether a value has changed, accounting for NaN.
 function hasChanged(value, oldValue) {
@@ -186,6 +194,7 @@ function doWatch(source, cb, { immediate, deep, flush, onTrack, onTrigger } = {}
             if (isFunction(s)) {
                 return s();
             }
+            /* istanbul ignore else  */
             if ((process.env.NODE_ENV !== 'production')) {
                 warnInvalidSource(s);
             }
@@ -210,6 +219,7 @@ function doWatch(source, cb, { immediate, deep, flush, onTrack, onTrigger } = {}
     else {
         // eslint-disable-next-line @typescript-eslint/no-empty-function
         getter = () => { };
+        /* istanbul ignore else  */
         if ((process.env.NODE_ENV !== 'production')) {
             warnInvalidSource(source);
         }
@@ -299,13 +309,13 @@ function traverse(value, seen = new Set()) {
             traverse(value[i], seen);
         }
     }
-    else if (value instanceof Map) {
+    else if (isMap(value)) {
         value.forEach((_, key) => {
             // To register mutation dep for existing keys
             traverse(value.get(key), seen);
         });
     }
-    else if (value instanceof Set) {
+    else if (isSet(value)) {
         value.forEach((v) => {
             traverse(v, seen);
         });
@@ -324,14 +334,17 @@ function provide(key, value) {
     // TS doesn't allow symbol as index type
     provides[key] = value;
 }
-function inject(key, defaultValue) {
+function inject(key, defaultValue, treatDefaultAsFactory = false) {
     if (key in provides) {
         // TS doesn't allow symbol as index type
         return provides[key];
     }
     if (arguments.length > 1) {
-        return defaultValue;
+        return treatDefaultAsFactory && isFunction(defaultValue)
+            ? defaultValue()
+            : defaultValue;
     }
+    /* istanbul ignore else */
     if ((process.env.NODE_ENV !== 'production')) {
         console.warn(`injection "${String(key)}" not found.`);
     }
@@ -483,7 +496,7 @@ config = { listenPageScroll: false }) {
     };
     if (options["onPageScroll" /* ON_PAGE_SCROLL */] || config.listenPageScroll) {
         options["onPageScroll" /* ON_PAGE_SCROLL */] = createLifecycle$1(options, "onPageScroll" /* ON_PAGE_SCROLL */);
-        /* c8 ignore next */
+        /* istanbul ignore next */
         options.__listenPageScroll__ = () => true;
     }
     if (options["onShareAppMessage" /* ON_SHARE_APP_MESSAGE */] === undefined) {
@@ -494,7 +507,7 @@ config = { listenPageScroll: false }) {
             }
             return {};
         };
-        /* c8 ignore next */
+        /* istanbul ignore next */
         options.__isInjectedShareHook__ = () => true;
     }
     if (options["onAddToFavorites" /* ON_ADD_TO_FAVORITES */] === undefined) {
@@ -505,7 +518,7 @@ config = { listenPageScroll: false }) {
             }
             return {};
         };
-        /* c8 ignore next */
+        /* istanbul ignore next */
         options.__isInjectedFavoritesHook__ = () => true;
     }
     options["onShow" /* ON_SHOW */] = createLifecycle$1(options, "onShow" /* ON_SHOW */);
@@ -592,7 +605,7 @@ config = { listenPageScroll: false }) {
         };
         const bindings = setup((process.env.NODE_ENV !== 'production')
             ? shallowReadonly(this.__props__)
-            : /* c8 ignore next */ this.__props__, context);
+            : /* istanbul ignore next */ this.__props__, context);
         if (bindings !== undefined) {
             Object.keys(bindings).forEach((key) => {
                 const value = bindings[key];
@@ -627,7 +640,7 @@ config = { listenPageScroll: false }) {
     if (options.methods["onPageScroll" /* ON_PAGE_SCROLL */] ||
         config.listenPageScroll) {
         options.methods["onPageScroll" /* ON_PAGE_SCROLL */] = createPageLifecycle(options, "onPageScroll" /* ON_PAGE_SCROLL */);
-        /* c8 ignore next */
+        /* istanbul ignore next */
         options.methods.__listenPageScroll__ = () => true;
     }
     if (options.methods["onShareAppMessage" /* ON_SHARE_APP_MESSAGE */] === undefined) {
@@ -638,7 +651,7 @@ config = { listenPageScroll: false }) {
             }
             return {};
         };
-        /* c8 ignore next */
+        /* istanbul ignore next */
         options.methods.__isInjectedShareHook__ = () => true;
     }
     if (options.methods["onAddToFavorites" /* ON_ADD_TO_FAVORITES */] === undefined) {
@@ -649,7 +662,7 @@ config = { listenPageScroll: false }) {
             }
             return {};
         };
-        /* c8 ignore next */
+        /* istanbul ignore next */
         options.methods.__isInjectedFavoritesHook__ = () => true;
     }
     options.methods["onLoad" /* ON_LOAD */] = createPageLifecycle(options, "onLoad" /* ON_LOAD */);
@@ -726,11 +739,11 @@ const onPageScroll = (hook) => {
     if (currentInstance) {
         if (currentInstance.__listenPageScroll__) {
             injectHook(currentInstance, "onPageScroll" /* ON_PAGE_SCROLL */, hook);
-        }
+        } /* istanbul ignore else  */
         else if ((process.env.NODE_ENV !== 'production')) {
             console.warn('onPageScroll() hook only works when `listenPageScroll` is configured to true.');
         }
-    }
+    } /* istanbul ignore else  */
     else if ((process.env.NODE_ENV !== 'production')) {
         console.warn(pageHookWarn);
     }
@@ -742,15 +755,15 @@ const onShareAppMessage = (hook) => {
             const hiddenField = toHiddenField("onShareAppMessage" /* ON_SHARE_APP_MESSAGE */);
             if (currentInstance[hiddenField] === undefined) {
                 currentInstance[hiddenField] = hook;
-            }
+            } /* istanbul ignore else  */
             else if ((process.env.NODE_ENV !== 'production')) {
                 console.warn('onShareAppMessage() hook can only be called once.');
             }
-        }
+        } /* istanbul ignore else  */
         else if ((process.env.NODE_ENV !== 'production')) {
             console.warn('onShareAppMessage() hook only works when `onShareAppMessage` option is not exist.');
         }
-    }
+    } /* istanbul ignore else  */
     else if ((process.env.NODE_ENV !== 'production')) {
         console.warn(pageHookWarn);
     }
@@ -762,15 +775,15 @@ const onAddToFavorites = (hook) => {
             const hiddenField = toHiddenField("onAddToFavorites" /* ON_ADD_TO_FAVORITES */);
             if (currentInstance[hiddenField] === undefined) {
                 currentInstance[hiddenField] = hook;
-            }
+            } /* istanbul ignore else  */
             else if ((process.env.NODE_ENV !== 'production')) {
                 console.warn('onAddToFavorites() hook can only be called once.');
             }
-        }
+        } /* istanbul ignore else  */
         else if ((process.env.NODE_ENV !== 'production')) {
             console.warn('onAddToFavorites() hook only works when `onAddToFavorites` option is not exist.');
         }
-    }
+    } /* istanbul ignore else  */
     else if ((process.env.NODE_ENV !== 'production')) {
         console.warn(pageHookWarn);
     }
@@ -779,7 +792,7 @@ const onReady = (hook) => {
     const currentInstance = getCurrentInstance();
     if (currentInstance) {
         injectHook(currentInstance, "onReady" /* ON_READY */, hook);
-    }
+    } /* istanbul ignore else  */
     else if ((process.env.NODE_ENV !== 'production')) {
         console.warn('onReady() hook can only be called during execution of setup() in definePage() or defineComponent().');
     }
@@ -792,7 +805,7 @@ function createAppHook(lifecycle) {
     return (hook) => {
         if (currentApp) {
             injectHook(currentApp, lifecycle, hook);
-        }
+        } /* istanbul ignore else  */
         else if ((process.env.NODE_ENV !== 'production')) {
             console.warn('App specific lifecycle injection APIs can only be used during execution of setup() in createApp().');
         }
@@ -803,7 +816,7 @@ function createPageHook(lifecycle) {
         const currentInstance = getCurrentInstance();
         if (currentInstance) {
             injectHook(currentInstance, lifecycle, hook);
-        }
+        } /* istanbul ignore else  */
         else if ((process.env.NODE_ENV !== 'production')) {
             console.warn(pageHookWarn);
         }
@@ -813,7 +826,7 @@ function createComponentHook(lifecycle) {
     return (hook) => {
         if (currentComponent) {
             injectHook(currentComponent, lifecycle, hook);
-        }
+        } /* istanbul ignore else  */
         else if ((process.env.NODE_ENV !== 'production')) {
             console.warn('Component specific lifecycle injection APIs can only be used during execution of setup() in defineComponent().');
         }

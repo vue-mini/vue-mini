@@ -82,7 +82,9 @@ export declare function definePage<Data extends WechatMiniprogram.Page.DataOptio
 
 export declare function inject<T>(key: InjectionKey<T> | string): T | undefined;
 
-export declare function inject<T>(key: InjectionKey<T> | string, defaultValue: T): T;
+export declare function inject<T>(key: InjectionKey<T> | string, defaultValue: T, treatDefaultAsFactory?: false): T;
+
+export declare function inject<T>(key: InjectionKey<T> | string, defaultValue: T | (() => T), treatDefaultAsFactory: true): T;
 
 export declare interface InjectionKey<T> extends Symbol {
 }
