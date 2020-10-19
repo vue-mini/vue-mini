@@ -19,3 +19,21 @@ npm install @vue-mini/wechat
 ```
 
 安装之后，你可以通过[微信开发者工具](https://developers.weixin.qq.com/miniprogram/dev/devtools/npm.html)来提取 Vue Mini 以供使用，但是这种方式会提取出一些不必要的文件，并且只能提取 Vue Mini 的开发版本。所以最好还是使用一段自定义脚本来提取 Vue Mini。
+
+## 使用脚手架
+
+Vue Mini 提供了一个全功能的小程序[脚手架](https://github.com/vue-mini/template)，你可以直接使用此脚手架创建新的小程序。现有小程序也可以迁移至此脚手架，或将此脚手架作为参考。
+
+使用前请先全局安装 [SAO](https://github.com/saojs/sao) v2：
+
+```bash
+yarn global add sao@beta
+# OR
+npm install -g sao@beta
+```
+
+然后运行：
+
+```bash
+sao vue-mini/template new-miniprogram
+```
