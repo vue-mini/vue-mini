@@ -85,9 +85,10 @@ describe('scheduler', () => {
     queueJob(() => {
       throw err
     })
+    // prettier-ignore
     try {
       await nextTick()
-    } catch (error) {
+    } catch (error: unknown) {
       expect(error).toBe(err)
     }
 

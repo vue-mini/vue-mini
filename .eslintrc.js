@@ -25,9 +25,10 @@ const config = {
         project: './tsconfig.json',
       },
       rules: {
-        'no-redeclare': 'error',
         'import/no-mutable-exports': 'off',
         'unicorn/no-for-loop': 'off',
+        'unicorn/import-style': 'off',
+        'unicorn/prefer-ternary': 'off',
         'unicorn/prefer-includes': 'off',
         'unicorn/prevent-abbreviations': 'off',
         '@typescript-eslint/prefer-for-of': 'off',

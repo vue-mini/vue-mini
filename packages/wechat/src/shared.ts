@@ -27,7 +27,7 @@ export function deepToRaw(x: unknown): unknown {
   }
 
   if (isPlainObject(x)) {
-    const obj: { [key: string]: unknown } = {}
+    const obj: Record<string, unknown> = {}
     Object.keys(x).forEach((key) => {
       obj[key] = deepToRaw(x[key])
     })
