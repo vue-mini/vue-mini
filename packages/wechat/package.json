@@ -18,7 +18,7 @@
     "weixin"
   ],
   "dependencies": {
-    "@types/wechat-miniprogram": "^3.0.0",
+    "@types/wechat-miniprogram": "^3.1.0",
     "@vue/reactivity": "3.0.2"
   }
 }

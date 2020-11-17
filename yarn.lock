@@ -1418,10 +1418,10 @@
   resolved "https://registry.npm.taobao.org/@types/stack-utils/download/@types/stack-utils-2.0.0.tgz#7036640b4e21cc2f259ae826ce843d277dad8cff"
   integrity sha1-cDZkC04hzC8lmugmzoQ9J32tjP8=
 
-"@types/wechat-miniprogram@^3.0.0":
-  version "3.0.0"
-  resolved "https://registry.npm.taobao.org/@types/wechat-miniprogram/download/@types/wechat-miniprogram-3.0.0.tgz#401d0bf4f437dd9463e8ca99209e4742302d1e54"
-  integrity sha1-QB0L9PQ33ZRj6MqZIJ5HQjAtHlQ=
+"@types/wechat-miniprogram@^3.1.0":
+  version "3.1.0"
+  resolved "https://registry.npm.taobao.org/@types/wechat-miniprogram/download/@types/wechat-miniprogram-3.1.0.tgz#b7c2bbe7738857372627e82e972145ec5bc6f04a"
+  integrity sha1-t8K753OIVzcmJ+gulyFF7FvG8Eo=
 
 "@types/yargs-parser@*":
   version "15.0.0"

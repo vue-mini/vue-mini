@@ -18,7 +18,7 @@
     "@rollup/plugin-replace": "^2.2.1",
     "@rollup/plugin-typescript": "^6.0.0",
     "@types/jest": "^26.0.0",
-    "@types/wechat-miniprogram": "^3.0.0",
+    "@types/wechat-miniprogram": "^3.1.0",
     "@vue/reactivity": "3.0.2",
     "codecov": "^3.6.5",
     "cross-env": "^7.0.0",
