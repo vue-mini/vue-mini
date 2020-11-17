@@ -1,5 +1,5 @@
 /*!
- * vue-mini v0.1.0
+ * vue-mini v0.1.1
  * https://github.com/vue-mini/vue-mini
  * (c) 2019-present Yang Mingshan
  * @license MIT
@@ -175,9 +175,11 @@ function doWatch(source, cb, { immediate, deep, flush, onTrack, onTrigger } = {}
             `a reactive object, or an array of these types.`);
     };
     let getter;
-    const isRefSource = isRef(source);
-    if (isRefSource) {
+    let forceTrigger = false;
+    if (isRef(source)) {
         getter = () => source.value;
+        // @ts-expect-error
+        forceTrigger = Boolean(source._shallow);
     }
     else if (isReactive(source)) {
         getter = () => source;
@@ -241,7 +243,7 @@ function doWatch(source, cb, { immediate, deep, flush, onTrack, onTrigger } = {}
         if (cb) {
             // Watch(source, cb)
             const newValue = runner();
-            if (deep || isRefSource || hasChanged(newValue, oldValue)) {
+            if (deep || forceTrigger || hasChanged(newValue, oldValue)) {
                 // Cleanup before running cb again
                 if (cleanup) {
                     cleanup();
@@ -257,8 +259,8 @@ function doWatch(source, cb, { immediate, deep, flush, onTrack, onTrigger } = {}
             runner();
         }
     };
-    // Important: mark the job as a watcher callback so that scheduler knows it
-    // is allowed to self-trigger
+    // Important: mark the job as a watcher callback so that scheduler knows
+    // it is allowed to self-trigger
     job.allowRecurse = Boolean(cb);
     let scheduler;
     if (flush === 'sync') {
@@ -309,13 +311,7 @@ function traverse(value, seen = new Set()) {
             traverse(value[i], seen);
         }
     }
-    else if (isMap(value)) {
-        value.forEach((_, key) => {
-            // To register mutation dep for existing keys
-            traverse(value.get(key), seen);
-        });
-    }
-    else if (isSet(value)) {
+    else if (isSet(value) || isMap(value)) {
         value.forEach((v) => {
             traverse(v, seen);
         });

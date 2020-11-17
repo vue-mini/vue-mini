@@ -1,3 +1,14 @@
+# 0.1.1 (2020-11-17)
+
+### 依赖
+
+- @vue/reactivity 从 3.0.0 升至 3.0.2 ([cf9537f](https://github.com/vue-mini/vue-mini/commit/cf9537fd6929b72605c8f516d3372eb40fc4589c))
+- @types/wechat-miniprogram 从 3.0.0 升至 3.1.0 ([6f2c55c](https://github.com/vue-mini/vue-mini/commit/6f2c55c866ad95566b29b4103aba99460a69ab8c))
+
+### Bug 修复
+
+- computed ref 值未变更时不应触发 watch ([ff638be](https://github.com/vue-mini/vue-mini/commit/ff638bef03053280a6fc9dcc5580e2933d70a27f))
+
 # 0.1.0 (2020-10-20)
 
 ### 依赖

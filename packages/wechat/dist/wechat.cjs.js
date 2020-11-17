@@ -1,5 +1,5 @@
 /*!
- * vue-mini v0.1.0
+ * vue-mini v0.1.1
  * https://github.com/vue-mini/vue-mini
  * (c) 2019-present Yang Mingshan
  * @license MIT
@@ -17,6 +17,7 @@ Object.defineProperty(exports, '__esModule', { value: true });
  */
 const EMPTY_OBJ =  Object.freeze({})
     ;
+const EMPTY_ARR =  Object.freeze([]) ;
 const extend = Object.assign;
 const hasOwnProperty = Object.prototype.hasOwnProperty;
 const hasOwn = (val, key) => hasOwnProperty.call(val, key);
@@ -29,6 +30,7 @@ const isObject = (val) => val !== null && typeof val === 'object';
 const objectToString = Object.prototype.toString;
 const toTypeString = (value) => objectToString.call(value);
 const toRawType = (value) => {
+    // extract "RawType" from strings like "[object RawType]"
     return toTypeString(value).slice(8, -1);
 };
 const isIntegerKey = (key) => isString(key) &&
@@ -45,9 +47,7 @@ const cacheStringFunction = (fn) => {
 /**
  * @private
  */
-const capitalize = cacheStringFunction((str) => {
-    return str.charAt(0).toUpperCase() + str.slice(1);
-});
+const capitalize = cacheStringFunction((str) => str.charAt(0).toUpperCase() + str.slice(1));
 // compare whether a value has changed, accounting for NaN.
 const hasChanged = (value, oldValue) => value !== oldValue && (value === value || oldValue === oldValue);
 const def = (obj, key, value) => {
@@ -107,6 +107,7 @@ function createReactiveEffect(fn, options) {
         }
     };
     effect.id = uid++;
+    effect.allowRecurse = !!options.allowRecurse;
     effect._isEffect = true;
     effect.active = true;
     effect.raw = fn;
@@ -172,7 +173,7 @@ function trigger(target, type, key, newValue, oldValue, oldTarget) {
     const add = (effectsToAdd) => {
         if (effectsToAdd) {
             effectsToAdd.forEach(effect => {
-                if (effect !== activeEffect || effect.options.allowRecurse) {
+                if (effect !== activeEffect || effect.allowRecurse) {
                     effects.add(effect);
                 }
             });
@@ -277,7 +278,7 @@ const arrayInstrumentations = {};
     arrayInstrumentations[key] = function (...args) {
         pauseTracking();
         const res = method.apply(this, args);
-        enableTracking();
+        resetTracking();
         return res;
     };
 });
@@ -298,8 +299,7 @@ function createGetter(isReadonly = false, shallow = false) {
             return Reflect.get(arrayInstrumentations, key, receiver);
         }
         const res = Reflect.get(target, key, receiver);
-        const keyIsSymbol = isSymbol(key);
-        if (keyIsSymbol
+        if (isSymbol(key)
             ? builtInSymbols.has(key)
             : key === `__proto__` || key === `__v_isRef`) {
             return res;
@@ -369,7 +369,7 @@ function has(target, key) {
     return result;
 }
 function ownKeys(target) {
-    track(target, "iterate" /* ITERATE */, ITERATE_KEY);
+    track(target, "iterate" /* ITERATE */, isArray(target) ? 'length' : ITERATE_KEY);
     return Reflect.ownKeys(target);
 }
 const mutableHandlers = {
@@ -651,7 +651,7 @@ function checkIdentityKeys(target, has, key) {
     if (rawKey !== key && has.call(target, rawKey)) {
         const type = toRawType(target);
         console.warn(`Reactive ${type} contains both the raw and reactive ` +
-            `versions of the same object${type === `Map` ? `as keys` : ``}, ` +
+            `versions of the same object${type === `Map` ? ` as keys` : ``}, ` +
             `which can lead to inconsistencies. ` +
             `Avoid differentiating between the raw and reactive versions ` +
             `of an object and only use the reactive version if possible.`);
@@ -786,7 +786,7 @@ function createRef(rawValue, shallow = false) {
     return new RefImpl(rawValue, shallow);
 }
 function triggerRef(ref) {
-    trigger(ref, "set" /* SET */, 'value',  ref.value );
+    trigger(toRaw(ref), "set" /* SET */, 'value',  ref.value );
 }
 function unref(ref) {
     return isRef(ref) ? ref.value : ref;
@@ -1068,9 +1068,11 @@ function doWatch(source, cb, { immediate, deep, flush, onTrack, onTrigger } = {}
             `a reactive object, or an array of these types.`);
     };
     let getter;
-    const isRefSource = isRef(source);
-    if (isRefSource) {
+    let forceTrigger = false;
+    if (isRef(source)) {
         getter = () => source.value;
+        // @ts-expect-error
+        forceTrigger = Boolean(source._shallow);
     }
     else if (isReactive(source)) {
         getter = () => source;
@@ -1134,7 +1136,7 @@ function doWatch(source, cb, { immediate, deep, flush, onTrack, onTrigger } = {}
         if (cb) {
             // Watch(source, cb)
             const newValue = runner();
-            if (deep || isRefSource || hasChanged$1(newValue, oldValue)) {
+            if (deep || forceTrigger || hasChanged$1(newValue, oldValue)) {
                 // Cleanup before running cb again
                 if (cleanup) {
                     cleanup();
@@ -1150,8 +1152,8 @@ function doWatch(source, cb, { immediate, deep, flush, onTrack, onTrigger } = {}
             runner();
         }
     };
-    // Important: mark the job as a watcher callback so that scheduler knows it
-    // is allowed to self-trigger
+    // Important: mark the job as a watcher callback so that scheduler knows
+    // it is allowed to self-trigger
     job.allowRecurse = Boolean(cb);
     let scheduler;
     if (flush === 'sync') {
@@ -1202,13 +1204,7 @@ function traverse(value, seen = new Set()) {
             traverse(value[i], seen);
         }
     }
-    else if (isMap$1(value)) {
-        value.forEach((_, key) => {
-            // To register mutation dep for existing keys
-            traverse(value.get(key), seen);
-        });
-    }
-    else if (isSet(value)) {
+    else if (isSet(value) || isMap$1(value)) {
         value.forEach((v) => {
             traverse(v, seen);
         });
