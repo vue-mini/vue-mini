@@ -5,6 +5,7 @@ import {
   TrackOpTypes,
   TriggerOpTypes,
   triggerRef,
+  shallowRef,
 } from '@vue/reactivity'
 import { watch, watchEffect, reactive, computed, nextTick, ref } from '../src'
 
@@ -507,8 +508,8 @@ describe('watch', () => {
     expect(calls).toBe(1)
   })
 
-  test('should force trigger on triggerRef when watching a ref', async () => {
-    const v = ref({ a: 1 })
+  test('should force trigger on triggerRef when watching a shallow ref', async () => {
+    const v = shallowRef({ a: 1 })
     let sideEffect = 0
     watch(v, (obj) => {
       sideEffect = obj.a
@@ -539,6 +540,18 @@ describe('watch', () => {
       history.value.push(price.value)
       spy()
     })
+    await nextTick()
+    expect(spy).toHaveBeenCalledTimes(1)
+  })
+
+  test('computed refs should not trigger watch if value has no change', async () => {
+    const spy = jest.fn()
+    const source = ref(0)
+    const price = computed(() => source.value === 0)
+    watch(price, spy)
+    source.value++
+    await nextTick()
+    source.value++
     await nextTick()
     expect(spy).toHaveBeenCalledTimes(1)
   })
