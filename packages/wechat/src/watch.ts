@@ -293,13 +293,8 @@ function traverse(value: unknown, seen: Set<unknown> = new Set()): unknown {
     for (let i = 0; i < value.length; i++) {
       traverse(value[i], seen)
     }
-  } else if (isMap(value)) {
-    value.forEach((_, key) => {
-      // To register mutation dep for existing keys
-      traverse(value.get(key), seen)
-    })
-  } else if (isSet(value)) {
-    value.forEach((v) => {
+  } else if (isSet(value) || isMap(value)) {
+    value.forEach((v: any) => {
       traverse(v, seen)
     })
   } else {
