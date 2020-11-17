@@ -30,15 +30,7 @@ export type WatchCallback<V = any, OV = any> = (
   onInvalidate: InvalidateCbRegistrator
 ) => any
 
-type MapSources<T> = {
-  [K in keyof T]: T[K] extends WatchSource<infer V>
-    ? V
-    : T[K] extends object
-    ? T[K]
-    : never
-}
-
-type MapOldSources<T, Immediate> = {
+type MapSources<T, Immediate> = {
   [K in keyof T]: T[K] extends WatchSource<infer V>
     ? Immediate extends true
       ? V | undefined
@@ -85,7 +77,7 @@ export function watch<
   Immediate extends Readonly<boolean> = false
 >(
   sources: T,
-  cb: WatchCallback<MapSources<T>, MapOldSources<T, Immediate>>,
+  cb: WatchCallback<MapSources<T, false>, MapSources<T, Immediate>>,
   options?: WatchOptions<Immediate>
 ): WatchStopHandle
 
@@ -107,10 +99,10 @@ export function watch<
 ): WatchStopHandle
 
 // Implementation
-export function watch<T = any>(
-  source: WatchSource<T> | Array<WatchSource<T>>,
-  cb: WatchCallback<T>,
-  options?: WatchOptions
+export function watch<T = any, Immediate extends Readonly<boolean> = false>(
+  source: T | WatchSource<T>,
+  cb: any,
+  options?: WatchOptions<Immediate>
 ): WatchStopHandle {
   if (__DEV__ && !isFunction(cb)) {
     console.warn(
@@ -120,11 +112,11 @@ export function watch<T = any>(
     )
   }
 
-  return doWatch(source, cb, options)
+  return doWatch(source as any, cb, options)
 }
 
 function doWatch(
-  source: WatchSource | WatchSource[] | WatchEffect,
+  source: WatchSource | WatchSource[] | WatchEffect | object,
   cb: WatchCallback | null,
   { immediate, deep, flush, onTrack, onTrigger }: WatchOptions = {}
 ): WatchStopHandle {
@@ -247,11 +239,11 @@ function doWatch(
     }
   }
 
-  // Important: mark the job as a watcher callback so that scheduler knows it
-  // is allowed to self-trigger
+  // Important: mark the job as a watcher callback so that scheduler knows
+  // it is allowed to self-trigger
   job.allowRecurse = Boolean(cb)
 
-  let scheduler: (job: () => any) => void
+  let scheduler: ReactiveEffectOptions['scheduler']
   if (flush === 'sync') {
     scheduler = job
   } else {
