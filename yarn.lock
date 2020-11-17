@@ -1642,17 +1642,17 @@
   optionalDependencies:
     prettier "^1.18.2"
 
-"@vue/reactivity@3.0.0":
-  version "3.0.0"
-  resolved "https://registry.npm.taobao.org/@vue/reactivity/download/@vue/reactivity-3.0.0.tgz?cache=0&sync_timestamp=1602780834576&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2F%40vue%2Freactivity%2Fdownload%2F%40vue%2Freactivity-3.0.0.tgz#fd15632a608650ce2a969c721787e27e2c80aa6b"
-  integrity sha1-/RVjKmCGUM4qlpxyF4fifiyAqms=
+"@vue/reactivity@3.0.2":
+  version "3.0.2"
+  resolved "https://registry.npm.taobao.org/@vue/reactivity/download/@vue/reactivity-3.0.2.tgz?cache=0&sync_timestamp=1603223903280&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2F%40vue%2Freactivity%2Fdownload%2F%40vue%2Freactivity-3.0.2.tgz#42ed5af6025b494a5e69b05169fcddf04eebfe77"
+  integrity sha1-Qu1a9gJbSUpeabBRafzd8E7r/nc=
   dependencies:
-    "@vue/shared" "3.0.0"
+    "@vue/shared" "3.0.2"
 
-"@vue/shared@3.0.0":
-  version "3.0.0"
-  resolved "https://registry.npm.taobao.org/@vue/shared/download/@vue/shared-3.0.0.tgz?cache=0&sync_timestamp=1602780831085&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2F%40vue%2Fshared%2Fdownload%2F%40vue%2Fshared-3.0.0.tgz#ec089236629ecc0f10346b92f101ff4339169f1a"
-  integrity sha1-7AiSNmKezA8QNGuS8QH/QzkWnxo=
+"@vue/shared@3.0.2":
+  version "3.0.2"
+  resolved "https://registry.npm.taobao.org/@vue/shared/download/@vue/shared-3.0.2.tgz#419bd85a2ebdbd4f42963e98c5a1b103452176d9"
+  integrity sha1-QZvYWi69vU9Clj6YxaGxA0Uhdtk=
 
 "@vuepress/core@1.7.1":
   version "1.7.1"
