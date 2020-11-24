@@ -69,7 +69,10 @@ export const onShareAppMessage = (
 ): void => {
   const currentInstance = getCurrentInstance()
   if (currentInstance) {
-    if (currentInstance.__isInjectedShareHook__) {
+    if (
+      currentInstance[PageLifecycle.ON_SHARE_APP_MESSAGE] &&
+      currentInstance.__isInjectedShareHook__
+    ) {
       const hiddenField = toHiddenField(PageLifecycle.ON_SHARE_APP_MESSAGE)
       if (currentInstance[hiddenField] === undefined) {
         currentInstance[hiddenField] = hook
@@ -78,7 +81,7 @@ export const onShareAppMessage = (
       }
     } /* istanbul ignore else  */ else if (__DEV__) {
       console.warn(
-        'onShareAppMessage() hook only works when `onShareAppMessage` option is not exist.'
+        'onShareAppMessage() hook only works when `onShareAppMessage` option is not exist and `canShareToOthers` is configured to true.'
       )
     }
   } /* istanbul ignore else  */ else if (__DEV__) {

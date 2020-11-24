@@ -24,7 +24,8 @@ export type PageOptions<
   Custom extends WechatMiniprogram.Page.CustomOption
 > = { setup?: PageSetup } & WechatMiniprogram.Page.Options<Data, Custom>
 export interface Config {
-  listenPageScroll: boolean
+  listenPageScroll?: boolean
+  canShareToOthers?: boolean
 }
 type Options = Record<string, any>
 
@@ -50,11 +51,8 @@ export function definePage<
   Custom extends WechatMiniprogram.Page.CustomOption
 >(options: PageOptions<Data, Custom>, config?: Config): void
 
-export function definePage(
-  optionsOrSetup: any,
-  // eslint-disable-next-line unicorn/no-object-as-default-parameter
-  config: Config = { listenPageScroll: false }
-): void {
+export function definePage(optionsOrSetup: any, config?: Config): void {
+  config = { listenPageScroll: false, canShareToOthers: false, ...config }
   let setup: PageSetup
   let options: Options
   if (isFunction(optionsOrSetup)) {
@@ -127,7 +125,10 @@ export function definePage(
     options.__listenPageScroll__ = () => true
   }
 
-  if (options[PageLifecycle.ON_SHARE_APP_MESSAGE] === undefined) {
+  if (
+    options[PageLifecycle.ON_SHARE_APP_MESSAGE] === undefined &&
+    config.canShareToOthers
+  ) {
     options[PageLifecycle.ON_SHARE_APP_MESSAGE] = function (
       this: PageInstance,
       share: WechatMiniprogram.Page.IShareAppMessageOption

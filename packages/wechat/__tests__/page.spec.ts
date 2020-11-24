@@ -449,27 +449,42 @@ describe('page', () => {
       },
     })
     page.onLoad()
-    expect('onShareAppMessage() hook only').toHaveBeenWarned()
+    expect('onShareAppMessage() hook only').toHaveBeenWarnedTimes(1)
 
     definePage(() => {
       onShareAppMessage(() => ({}))
-      onShareAppMessage(() => ({}))
     })
+    page.onLoad()
+    expect('onShareAppMessage() hook only').toHaveBeenWarnedTimes(2)
+
+    definePage(
+      () => {
+        onShareAppMessage(() => ({}))
+        onShareAppMessage(() => ({}))
+      },
+      { canShareToOthers: true }
+    )
     page.onLoad()
     expect('onShareAppMessage() hook can only').toHaveBeenWarned()
 
     const arg = {}
     const fn = jest.fn(() => ({ title: 'test' }))
-    definePage(() => {
-      onShareAppMessage(fn)
-    })
+    definePage(
+      () => {
+        onShareAppMessage(fn)
+      },
+      { canShareToOthers: true }
+    )
     page.onLoad()
     const shareContent = page.onShareAppMessage(arg)
     expect(fn).toBeCalledWith(arg)
     expect(shareContent).toEqual({ title: 'test' })
 
-    definePage(() => {})
+    definePage(() => {}, { canShareToOthers: true })
     expect(page.onShareAppMessage(arg)).toEqual({})
+
+    definePage(() => {})
+    expect(page.onShareAppMessage).toBeUndefined()
   })
 
   it('onAddToFavorites', () => {

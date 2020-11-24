@@ -91,11 +91,8 @@ export function defineComponent<
   config?: Config
 ): string
 
-export function defineComponent(
-  optionsOrSetup: any,
-  // eslint-disable-next-line unicorn/no-object-as-default-parameter
-  config: Config = { listenPageScroll: false }
-): string {
+export function defineComponent(optionsOrSetup: any, config?: Config): string {
+  config = { listenPageScroll: false, canShareToOthers: false, ...config }
   let setup: ComponentSetup<Record<string, any>>
   let options: Options
   let properties: string[] | null = null
@@ -226,7 +223,10 @@ export function defineComponent(
     options.methods.__listenPageScroll__ = () => true
   }
 
-  if (options.methods[PageLifecycle.ON_SHARE_APP_MESSAGE] === undefined) {
+  if (
+    options.methods[PageLifecycle.ON_SHARE_APP_MESSAGE] === undefined &&
+    config.canShareToOthers
+  ) {
     options.methods[PageLifecycle.ON_SHARE_APP_MESSAGE] = function (
       this: ComponentInstance,
       share: WechatMiniprogram.Page.IShareAppMessageOption

@@ -598,15 +598,29 @@ describe('component', () => {
         onShareAppMessage(() => ({}))
       },
     })
+    component.onShareAppMessage = component.methods.onShareAppMessage
     component.__isInjectedShareHook__ =
       component.methods.__isInjectedShareHook__
     component.lifetimes.attached.call(component)
-    expect('onShareAppMessage() hook only').toHaveBeenWarned()
+    expect('onShareAppMessage() hook only').toHaveBeenWarnedTimes(1)
 
     defineComponent(() => {
       onShareAppMessage(() => ({}))
-      onShareAppMessage(() => ({}))
     })
+    component.onShareAppMessage = component.methods.onShareAppMessage
+    component.__isInjectedShareHook__ =
+      component.methods.__isInjectedShareHook__
+    component.lifetimes.attached.call(component)
+    expect('onShareAppMessage() hook only').toHaveBeenWarnedTimes(2)
+
+    defineComponent(
+      () => {
+        onShareAppMessage(() => ({}))
+        onShareAppMessage(() => ({}))
+      },
+      { canShareToOthers: true }
+    )
+    component.onShareAppMessage = component.methods.onShareAppMessage
     component.__isInjectedShareHook__ =
       component.methods.__isInjectedShareHook__
     component.lifetimes.attached.call(component)
@@ -614,9 +628,13 @@ describe('component', () => {
 
     const arg = {}
     const fn = jest.fn(() => ({ title: 'test' }))
-    defineComponent(() => {
-      onShareAppMessage(fn)
-    })
+    defineComponent(
+      () => {
+        onShareAppMessage(fn)
+      },
+      { canShareToOthers: true }
+    )
+    component.onShareAppMessage = component.methods.onShareAppMessage
     component.__isInjectedShareHook__ =
       component.methods.__isInjectedShareHook__
     component.lifetimes.attached.call(component)
@@ -627,8 +645,11 @@ describe('component', () => {
     expect(fn).toBeCalledWith(arg)
     expect(shareContent).toEqual({ title: 'test' })
 
-    defineComponent(() => {})
+    defineComponent(() => {}, { canShareToOthers: true })
     expect(component.methods.onShareAppMessage.call(component, arg)).toEqual({})
+
+    defineComponent(() => {})
+    expect(component.methods.onShareAppMessage).toBeUndefined()
   })
 
   it('onAddToFavorites', () => {
