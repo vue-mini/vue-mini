@@ -60,7 +60,9 @@ export declare function computed<T>(options: WritableComputedOptions<T>): Writab
 export { ComputedRef }
 
 export declare interface Config {
-    listenPageScroll: boolean;
+    listenPageScroll?: boolean;
+    canShareToOthers?: boolean;
+    canShareToTimeline?: boolean;
 }
 
 export declare function createApp(setup: AppSetup): void;
@@ -133,6 +135,8 @@ export declare const onReady: (hook: () => unknown) => void;
 export declare const onResize: (hook: (resize: WechatMiniprogram.Page.IResizeOption) => unknown) => void;
 
 export declare const onShareAppMessage: (hook: (share: WechatMiniprogram.Page.IShareAppMessageOption) => WechatMiniprogram.Page.ICustomShareContent) => void;
+
+export declare const onShareTimeline: (hook: () => WechatMiniprogram.Page.ICustomTimelineContent) => void;
 
 export declare const onShow: (hook: () => unknown) => void;
 

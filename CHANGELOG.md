@@ -1,3 +1,13 @@
+# 0.2.0 (2020-11-24)
+
+### Bug 修复
+
+- 仅在 `canShareToOthers` 配置为 `true` 时才设置 `onShareAppMessage` 生命周期 ([75360e8](https://github.com/vue-mini/vue-mini/commit/75360e84970d8cfedf854bb1cb77f952d9ebd32a))
+
+### 特性
+
+- 新增 `onShareTimeline` 生命周期钩子 ([a175e03](https://github.com/vue-mini/vue-mini/commit/a175e032bed4c3551274b556a5f168d68ea2b20a))
+
 # 0.1.1 (2020-11-17)
 
 ### 依赖

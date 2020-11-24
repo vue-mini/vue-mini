@@ -1,5 +1,5 @@
 /*!
- * vue-mini v0.1.1
+ * vue-mini v0.2.0
  * https://github.com/vue-mini/vue-mini
  * (c) 2019-present Yang Mingshan
  * @license MIT
@@ -431,9 +431,13 @@ function deepWatch(key, value) {
     });
 }
 
-function definePage(optionsOrSetup, 
-// eslint-disable-next-line unicorn/no-object-as-default-parameter
-config = { listenPageScroll: false }) {
+function definePage(optionsOrSetup, config) {
+    config = {
+        listenPageScroll: false,
+        canShareToOthers: false,
+        canShareToTimeline: false,
+        ...config,
+    };
     let setup;
     let options;
     if (isFunction(optionsOrSetup)) {
@@ -495,7 +499,8 @@ config = { listenPageScroll: false }) {
         /* istanbul ignore next */
         options.__listenPageScroll__ = () => true;
     }
-    if (options["onShareAppMessage" /* ON_SHARE_APP_MESSAGE */] === undefined) {
+    if (options["onShareAppMessage" /* ON_SHARE_APP_MESSAGE */] === undefined &&
+        config.canShareToOthers) {
         options["onShareAppMessage" /* ON_SHARE_APP_MESSAGE */] = function (share) {
             const hook = this[toHiddenField("onShareAppMessage" /* ON_SHARE_APP_MESSAGE */)];
             if (hook) {
@@ -504,7 +509,19 @@ config = { listenPageScroll: false }) {
             return {};
         };
         /* istanbul ignore next */
-        options.__isInjectedShareHook__ = () => true;
+        options.__isInjectedShareToOthersHook__ = () => true;
+    }
+    if (options["onShareTimeline" /* ON_SHARE_TIMELINE */] === undefined &&
+        config.canShareToTimeline) {
+        options["onShareTimeline" /* ON_SHARE_TIMELINE */] = function () {
+            const hook = this[toHiddenField("onShareTimeline" /* ON_SHARE_TIMELINE */)];
+            if (hook) {
+                return hook();
+            }
+            return {};
+        };
+        /* istanbul ignore next */
+        options.__isInjectedShareToTimelineHook__ = () => true;
     }
     if (options["onAddToFavorites" /* ON_ADD_TO_FAVORITES */] === undefined) {
         options["onAddToFavorites" /* ON_ADD_TO_FAVORITES */] = function (favorites) {
@@ -546,9 +563,13 @@ const SpecialLifecycleMap = {
     ["onResize" /* ON_RESIZE */]: 'resize',
     ["ready" /* READY */]: "onReady" /* ON_READY */,
 };
-function defineComponent(optionsOrSetup, 
-// eslint-disable-next-line unicorn/no-object-as-default-parameter
-config = { listenPageScroll: false }) {
+function defineComponent(optionsOrSetup, config) {
+    config = {
+        listenPageScroll: false,
+        canShareToOthers: false,
+        canShareToTimeline: false,
+        ...config,
+    };
     let setup;
     let options;
     let properties = null;
@@ -639,7 +660,8 @@ config = { listenPageScroll: false }) {
         /* istanbul ignore next */
         options.methods.__listenPageScroll__ = () => true;
     }
-    if (options.methods["onShareAppMessage" /* ON_SHARE_APP_MESSAGE */] === undefined) {
+    if (options.methods["onShareAppMessage" /* ON_SHARE_APP_MESSAGE */] === undefined &&
+        config.canShareToOthers) {
         options.methods["onShareAppMessage" /* ON_SHARE_APP_MESSAGE */] = function (share) {
             const hook = this[toHiddenField("onShareAppMessage" /* ON_SHARE_APP_MESSAGE */)];
             if (hook) {
@@ -648,7 +670,19 @@ config = { listenPageScroll: false }) {
             return {};
         };
         /* istanbul ignore next */
-        options.methods.__isInjectedShareHook__ = () => true;
+        options.methods.__isInjectedShareToOthersHook__ = () => true;
+    }
+    if (options.methods["onShareTimeline" /* ON_SHARE_TIMELINE */] === undefined &&
+        config.canShareToTimeline) {
+        options.methods["onShareTimeline" /* ON_SHARE_TIMELINE */] = function () {
+            const hook = this[toHiddenField("onShareTimeline" /* ON_SHARE_TIMELINE */)];
+            if (hook) {
+                return hook();
+            }
+            return {};
+        };
+        /* istanbul ignore next */
+        options.methods.__isInjectedShareToTimelineHook__ = () => true;
     }
     if (options.methods["onAddToFavorites" /* ON_ADD_TO_FAVORITES */] === undefined) {
         options.methods["onAddToFavorites" /* ON_ADD_TO_FAVORITES */] = function (favorites) {
@@ -747,7 +781,8 @@ const onPageScroll = (hook) => {
 const onShareAppMessage = (hook) => {
     const currentInstance = getCurrentInstance();
     if (currentInstance) {
-        if (currentInstance.__isInjectedShareHook__) {
+        if (currentInstance["onShareAppMessage" /* ON_SHARE_APP_MESSAGE */] &&
+            currentInstance.__isInjectedShareToOthersHook__) {
             const hiddenField = toHiddenField("onShareAppMessage" /* ON_SHARE_APP_MESSAGE */);
             if (currentInstance[hiddenField] === undefined) {
                 currentInstance[hiddenField] = hook;
@@ -757,7 +792,28 @@ const onShareAppMessage = (hook) => {
             }
         } /* istanbul ignore else  */
         else if ((process.env.NODE_ENV !== 'production')) {
-            console.warn('onShareAppMessage() hook only works when `onShareAppMessage` option is not exist.');
+            console.warn('onShareAppMessage() hook only works when `onShareAppMessage` option is not exist and `canShareToOthers` is configured to true.');
+        }
+    } /* istanbul ignore else  */
+    else if ((process.env.NODE_ENV !== 'production')) {
+        console.warn(pageHookWarn);
+    }
+};
+const onShareTimeline = (hook) => {
+    const currentInstance = getCurrentInstance();
+    if (currentInstance) {
+        if (currentInstance["onShareTimeline" /* ON_SHARE_TIMELINE */] &&
+            currentInstance.__isInjectedShareToTimelineHook__) {
+            const hiddenField = toHiddenField("onShareTimeline" /* ON_SHARE_TIMELINE */);
+            if (currentInstance[hiddenField] === undefined) {
+                currentInstance[hiddenField] = hook;
+            } /* istanbul ignore else  */
+            else if ((process.env.NODE_ENV !== 'production')) {
+                console.warn('onShareTimeline() hook can only be called once.');
+            }
+        } /* istanbul ignore else  */
+        else if ((process.env.NODE_ENV !== 'production')) {
+            console.warn('onShareTimeline() hook only works when `onShareTimeline` option is not exist and `canShareToTimeline` is configured to true.');
         }
     } /* istanbul ignore else  */
     else if ((process.env.NODE_ENV !== 'production')) {
@@ -836,4 +892,4 @@ function injectHook(currentInstance, lifecycle, hook) {
     currentInstance[hiddenField].push(hook);
 }
 
-export { computed, createApp, defineComponent, definePage, inject, nextTick, onAddToFavorites, onAppError, onAppHide, onAppShow, onDetach, onError, onHide, onLoad, onMove, onPageNotFound, onPageScroll, onPullDownRefresh, onReachBottom, onReady, onResize, onShareAppMessage, onShow, onTabItemTap, onThemeChange, onUnhandledRejection, onUnload, provide, watch, watchEffect };
+export { computed, createApp, defineComponent, definePage, inject, nextTick, onAddToFavorites, onAppError, onAppHide, onAppShow, onDetach, onError, onHide, onLoad, onMove, onPageNotFound, onPageScroll, onPullDownRefresh, onReachBottom, onReady, onResize, onShareAppMessage, onShareTimeline, onShow, onTabItemTap, onThemeChange, onUnhandledRejection, onUnload, provide, watch, watchEffect };
