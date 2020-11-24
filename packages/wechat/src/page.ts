@@ -26,6 +26,7 @@ export type PageOptions<
 export interface Config {
   listenPageScroll?: boolean
   canShareToOthers?: boolean
+  canShareToTimeline?: boolean
 }
 type Options = Record<string, any>
 
@@ -39,6 +40,7 @@ export const enum PageLifecycle {
   ON_REACH_BOTTOM = 'onReachBottom',
   ON_PAGE_SCROLL = 'onPageScroll',
   ON_SHARE_APP_MESSAGE = 'onShareAppMessage',
+  ON_SHARE_TIMELINE = 'onShareTimeline',
   ON_ADD_TO_FAVORITES = 'onAddToFavorites',
   ON_RESIZE = 'onResize',
   ON_TAB_ITEM_TAP = 'onTabItemTap',
@@ -52,7 +54,12 @@ export function definePage<
 >(options: PageOptions<Data, Custom>, config?: Config): void
 
 export function definePage(optionsOrSetup: any, config?: Config): void {
-  config = { listenPageScroll: false, canShareToOthers: false, ...config }
+  config = {
+    listenPageScroll: false,
+    canShareToOthers: false,
+    canShareToTimeline: false,
+    ...config,
+  }
   let setup: PageSetup
   let options: Options
   if (isFunction(optionsOrSetup)) {
@@ -144,7 +151,28 @@ export function definePage(optionsOrSetup: any, config?: Config): void {
     }
 
     /* istanbul ignore next */
-    options.__isInjectedShareHook__ = () => true
+    options.__isInjectedShareToOthersHook__ = () => true
+  }
+
+  if (
+    options[PageLifecycle.ON_SHARE_TIMELINE] === undefined &&
+    config.canShareToTimeline
+  ) {
+    options[PageLifecycle.ON_SHARE_TIMELINE] = function (
+      this: PageInstance
+    ): WechatMiniprogram.Page.ICustomTimelineContent {
+      const hook = this[
+        toHiddenField(PageLifecycle.ON_SHARE_TIMELINE)
+      ] as () => WechatMiniprogram.Page.ICustomTimelineContent
+      if (hook) {
+        return hook()
+      }
+
+      return {}
+    }
+
+    /* istanbul ignore next */
+    options.__isInjectedShareToTimelineHook__ = () => true
   }
 
   if (options[PageLifecycle.ON_ADD_TO_FAVORITES] === undefined) {

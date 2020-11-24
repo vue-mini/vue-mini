@@ -7,7 +7,8 @@ export type AppInstance = Record<string, any>
 export type PageInstance = WechatMiniprogram.Page.InstanceProperties &
   WechatMiniprogram.Page.InstanceMethods<Record<string, unknown>> & {
     [key: string]: any
-    __isInjectedShareHook__?: () => true
+    __isInjectedShareToOthersHook__?: () => true
+    __isInjectedShareToTimelineHook__?: () => true
     __isInjectedFavoritesHook__?: () => true
     __listenPageScroll__?: () => true
     __effects__?: ReactiveEffect[]
@@ -16,7 +17,8 @@ export type PageInstance = WechatMiniprogram.Page.InstanceProperties &
 export type ComponentInstance = WechatMiniprogram.Component.InstanceProperties &
   WechatMiniprogram.Component.InstanceMethods<Record<string, unknown>> & {
     [key: string]: any
-    __isInjectedShareHook__?: () => true
+    __isInjectedShareToOthersHook__?: () => true
+    __isInjectedShareToTimelineHook__?: () => true
     __isInjectedFavoritesHook__?: () => true
     __listenPageScroll__?: () => true
     __effects__?: ReactiveEffect[]

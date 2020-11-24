@@ -16,6 +16,7 @@ import {
   onTabItemTap,
   onPageScroll,
   onShareAppMessage,
+  onShareTimeline,
   onAddToFavorites,
 } from '../src'
 
@@ -485,6 +486,56 @@ describe('page', () => {
 
     definePage(() => {})
     expect(page.onShareAppMessage).toBeUndefined()
+  })
+
+  it('onShareTimeline', () => {
+    onShareTimeline(() => ({}))
+    expect('Page specific lifecycle').toHaveBeenWarned()
+
+    definePage({
+      onShareTimeline() {
+        return {}
+      },
+      setup() {
+        onShareTimeline(() => ({}))
+      },
+    })
+    page.onLoad()
+    expect('onShareTimeline() hook only').toHaveBeenWarnedTimes(1)
+
+    definePage(() => {
+      onShareTimeline(() => ({}))
+    })
+    page.onLoad()
+    expect('onShareTimeline() hook only').toHaveBeenWarnedTimes(2)
+
+    definePage(
+      () => {
+        onShareTimeline(() => ({}))
+        onShareTimeline(() => ({}))
+      },
+      { canShareToTimeline: true }
+    )
+    page.onLoad()
+    expect('onShareTimeline() hook can only').toHaveBeenWarned()
+
+    const fn = jest.fn(() => ({ title: 'test' }))
+    definePage(
+      () => {
+        onShareTimeline(fn)
+      },
+      { canShareToTimeline: true }
+    )
+    page.onLoad()
+    const shareContent = page.onShareTimeline()
+    expect(fn).toBeCalledWith()
+    expect(shareContent).toEqual({ title: 'test' })
+
+    definePage(() => {}, { canShareToTimeline: true })
+    expect(page.onShareTimeline()).toEqual({})
+
+    definePage(() => {})
+    expect(page.onShareTimeline).toBeUndefined()
   })
 
   it('onAddToFavorites', () => {

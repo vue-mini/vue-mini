@@ -92,7 +92,12 @@ export function defineComponent<
 ): string
 
 export function defineComponent(optionsOrSetup: any, config?: Config): string {
-  config = { listenPageScroll: false, canShareToOthers: false, ...config }
+  config = {
+    listenPageScroll: false,
+    canShareToOthers: false,
+    canShareToTimeline: false,
+    ...config,
+  }
   let setup: ComponentSetup<Record<string, any>>
   let options: Options
   let properties: string[] | null = null
@@ -242,7 +247,28 @@ export function defineComponent(optionsOrSetup: any, config?: Config): string {
     }
 
     /* istanbul ignore next */
-    options.methods.__isInjectedShareHook__ = () => true
+    options.methods.__isInjectedShareToOthersHook__ = () => true
+  }
+
+  if (
+    options.methods[PageLifecycle.ON_SHARE_TIMELINE] === undefined &&
+    config.canShareToTimeline
+  ) {
+    options.methods[PageLifecycle.ON_SHARE_TIMELINE] = function (
+      this: ComponentInstance
+    ): WechatMiniprogram.Page.ICustomTimelineContent {
+      const hook = this[
+        toHiddenField(PageLifecycle.ON_SHARE_TIMELINE)
+      ] as () => WechatMiniprogram.Page.ICustomTimelineContent
+      if (hook) {
+        return hook()
+      }
+
+      return {}
+    }
+
+    /* istanbul ignore next */
+    options.methods.__isInjectedShareToTimelineHook__ = () => true
   }
 
   if (options.methods[PageLifecycle.ON_ADD_TO_FAVORITES] === undefined) {

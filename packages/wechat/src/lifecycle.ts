@@ -71,7 +71,7 @@ export const onShareAppMessage = (
   if (currentInstance) {
     if (
       currentInstance[PageLifecycle.ON_SHARE_APP_MESSAGE] &&
-      currentInstance.__isInjectedShareHook__
+      currentInstance.__isInjectedShareToOthersHook__
     ) {
       const hiddenField = toHiddenField(PageLifecycle.ON_SHARE_APP_MESSAGE)
       if (currentInstance[hiddenField] === undefined) {
@@ -82,6 +82,31 @@ export const onShareAppMessage = (
     } /* istanbul ignore else  */ else if (__DEV__) {
       console.warn(
         'onShareAppMessage() hook only works when `onShareAppMessage` option is not exist and `canShareToOthers` is configured to true.'
+      )
+    }
+  } /* istanbul ignore else  */ else if (__DEV__) {
+    console.warn(pageHookWarn)
+  }
+}
+
+export const onShareTimeline = (
+  hook: () => WechatMiniprogram.Page.ICustomTimelineContent
+): void => {
+  const currentInstance = getCurrentInstance()
+  if (currentInstance) {
+    if (
+      currentInstance[PageLifecycle.ON_SHARE_TIMELINE] &&
+      currentInstance.__isInjectedShareToTimelineHook__
+    ) {
+      const hiddenField = toHiddenField(PageLifecycle.ON_SHARE_TIMELINE)
+      if (currentInstance[hiddenField] === undefined) {
+        currentInstance[hiddenField] = hook
+      } /* istanbul ignore else  */ else if (__DEV__) {
+        console.warn('onShareTimeline() hook can only be called once.')
+      }
+    } /* istanbul ignore else  */ else if (__DEV__) {
+      console.warn(
+        'onShareTimeline() hook only works when `onShareTimeline` option is not exist and `canShareToTimeline` is configured to true.'
       )
     }
   } /* istanbul ignore else  */ else if (__DEV__) {

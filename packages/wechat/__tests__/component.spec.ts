@@ -20,6 +20,7 @@ import {
   onTabItemTap,
   onPageScroll,
   onShareAppMessage,
+  onShareTimeline,
   onAddToFavorites,
 } from '../src'
 
@@ -599,8 +600,8 @@ describe('component', () => {
       },
     })
     component.onShareAppMessage = component.methods.onShareAppMessage
-    component.__isInjectedShareHook__ =
-      component.methods.__isInjectedShareHook__
+    component.__isInjectedShareToOthersHook__ =
+      component.methods.__isInjectedShareToOthersHook__
     component.lifetimes.attached.call(component)
     expect('onShareAppMessage() hook only').toHaveBeenWarnedTimes(1)
 
@@ -608,8 +609,8 @@ describe('component', () => {
       onShareAppMessage(() => ({}))
     })
     component.onShareAppMessage = component.methods.onShareAppMessage
-    component.__isInjectedShareHook__ =
-      component.methods.__isInjectedShareHook__
+    component.__isInjectedShareToOthersHook__ =
+      component.methods.__isInjectedShareToOthersHook__
     component.lifetimes.attached.call(component)
     expect('onShareAppMessage() hook only').toHaveBeenWarnedTimes(2)
 
@@ -621,8 +622,8 @@ describe('component', () => {
       { canShareToOthers: true }
     )
     component.onShareAppMessage = component.methods.onShareAppMessage
-    component.__isInjectedShareHook__ =
-      component.methods.__isInjectedShareHook__
+    component.__isInjectedShareToOthersHook__ =
+      component.methods.__isInjectedShareToOthersHook__
     component.lifetimes.attached.call(component)
     expect('onShareAppMessage() hook can only').toHaveBeenWarned()
 
@@ -635,8 +636,8 @@ describe('component', () => {
       { canShareToOthers: true }
     )
     component.onShareAppMessage = component.methods.onShareAppMessage
-    component.__isInjectedShareHook__ =
-      component.methods.__isInjectedShareHook__
+    component.__isInjectedShareToOthersHook__ =
+      component.methods.__isInjectedShareToOthersHook__
     component.lifetimes.attached.call(component)
     const shareContent = component.methods.onShareAppMessage.call(
       component,
@@ -650,6 +651,70 @@ describe('component', () => {
 
     defineComponent(() => {})
     expect(component.methods.onShareAppMessage).toBeUndefined()
+  })
+
+  it('onShareTimeline', () => {
+    onShareTimeline(() => ({}))
+    expect('Page specific lifecycle').toHaveBeenWarned()
+
+    defineComponent({
+      methods: {
+        onShareTimeline() {
+          return {}
+        },
+      },
+      setup() {
+        onShareTimeline(() => ({}))
+      },
+    })
+    component.onShareTimeline = component.methods.onShareTimeline
+    component.__isInjectedShareToTimelineHook__ =
+      component.methods.__isInjectedShareToTimelineHook__
+    component.lifetimes.attached.call(component)
+    expect('onShareTimeline() hook only').toHaveBeenWarnedTimes(1)
+
+    defineComponent(() => {
+      onShareTimeline(() => ({}))
+    })
+    component.onShareTimeline = component.methods.onShareTimeline
+    component.__isInjectedShareToTimelineHook__ =
+      component.methods.__isInjectedShareToTimelineHook__
+    component.lifetimes.attached.call(component)
+    expect('onShareTimeline() hook only').toHaveBeenWarnedTimes(2)
+
+    defineComponent(
+      () => {
+        onShareTimeline(() => ({}))
+        onShareTimeline(() => ({}))
+      },
+      { canShareToTimeline: true }
+    )
+    component.onShareTimeline = component.methods.onShareTimeline
+    component.__isInjectedShareToTimelineHook__ =
+      component.methods.__isInjectedShareToTimelineHook__
+    component.lifetimes.attached.call(component)
+    expect('onShareTimeline() hook can only').toHaveBeenWarned()
+
+    const fn = jest.fn(() => ({ title: 'test' }))
+    defineComponent(
+      () => {
+        onShareTimeline(fn)
+      },
+      { canShareToTimeline: true }
+    )
+    component.onShareTimeline = component.methods.onShareTimeline
+    component.__isInjectedShareToTimelineHook__ =
+      component.methods.__isInjectedShareToTimelineHook__
+    component.lifetimes.attached.call(component)
+    const shareContent = component.methods.onShareTimeline.call(component)
+    expect(fn).toBeCalledWith()
+    expect(shareContent).toEqual({ title: 'test' })
+
+    defineComponent(() => {}, { canShareToTimeline: true })
+    expect(component.methods.onShareTimeline.call(component)).toEqual({})
+
+    defineComponent(() => {})
+    expect(component.methods.onShareTimeline).toBeUndefined()
   })
 
   it('onAddToFavorites', () => {

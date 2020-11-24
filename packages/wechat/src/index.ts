@@ -46,6 +46,7 @@ export {
   onTabItemTap,
   onPageScroll,
   onShareAppMessage,
+  onShareTimeline,
   onAddToFavorites,
   onReady,
   onLoad,
