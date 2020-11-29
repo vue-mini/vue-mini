@@ -74,6 +74,9 @@ defineComponent({
     onShareAppMessage() {
       console.log('onShareAppMessage')
     },
+    onShareTimeline() {
+      console.log('onShareTimeline')
+    },
     onAddToFavorites() {
       console.log('onAddToFavorites')
     },
@@ -92,7 +95,7 @@ defineComponent({
 
 以上是页面组件可用的所有生命周期，可以看到这些生命周期有些混乱，并且很多是重复的。
 
-Vue Mini 对页面组件的生命周期钩子做了些许整合和简化。同样它们是一族 `onXXX` 函数，它们接收的参数和返回值与对应的生命周期一致。`onPageScroll()`、`onShareAppMessage()` 和 `onAddToFavorites()` 的使用限制与页面中一样。
+Vue Mini 对页面组件的生命周期钩子做了些许整合和简化。同样它们是一族 `onXXX` 函数，它们接收的参数和返回值与对应的生命周期一致。`onPageScroll()`、`onShareAppMessage()`、`onShareTimeline()` 以及 `onAddToFavorites()` 的使用限制与页面中一样。
 
 - **onLoad**
 
@@ -117,6 +120,7 @@ Vue Mini 对页面组件的生命周期钩子做了些许整合和简化。同�
   - `methods.onPullDownRefresh` -> `onPullDownRefresh`
   - `methods.onReachBottom` -> `onReachBottom`
   - `methods.onShareAppMessage` -> `onShareAppMessage`
+  - `methods.onShareTimeline` -> `onShareTimeline`
   - `methods.onAddToFavorites` -> `onAddToFavorites`
   - `methods.onPageScroll` -> `onPageScroll`
   - `methods.onResize` -> `onResize`
