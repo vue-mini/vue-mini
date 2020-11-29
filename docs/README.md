@@ -17,6 +17,6 @@ footer: MIT Licensed | Copyright © 2019-present Yang Mingshan
   </div>
   <div class="feature">
     <h2>小巧</h2>
-    <p>Minify 后仅 16KB，不会占用你宝贵的小程序尺寸。</p>
+    <p>Minify 后仅 18KB，不会占用你宝贵的小程序尺寸。</p>
   </div>
 </div>
