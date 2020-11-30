@@ -12,7 +12,9 @@ Vue Mini 是一个基于 Vue 3 的小程序开发库，它能让你用 Compositi
 
 ## 文档（编写中）
 
-https://vue-mini.github.io
+墙外主站：https://vue-mini.github.io
+
+墙内镜像：https://vue-mini.gitee.io
 
 ## 许可证
 
