@@ -192,7 +192,9 @@ export function defineComponent(optionsOrSetup: any, config?: Config): string {
     detached.call(this)
 
     if (this.__effects__) {
-      this.__effects__.forEach((effect) => stop(effect))
+      this.__effects__.forEach((effect) => {
+        stop(effect)
+      })
     }
   }
 

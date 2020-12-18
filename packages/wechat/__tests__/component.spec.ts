@@ -439,7 +439,7 @@ describe('component', () => {
   })
 
   it('error', () => {
-    const error = new Error()
+    const error = new Error('unknown')
     const fn = jest.fn()
     const injectedFn1 = jest.fn()
     const injectedFn2 = jest.fn()
@@ -458,7 +458,7 @@ describe('component', () => {
   })
 
   it('legacy error', () => {
-    const error = new Error()
+    const error = new Error('unknown')
     const fn = jest.fn()
     defineComponent({
       error: fn,

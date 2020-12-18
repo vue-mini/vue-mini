@@ -157,6 +157,8 @@ describe('watch', () => {
     const status = ref(false)
 
     let dummy
+    // https://github.com/typescript-eslint/typescript-eslint/issues/2879
+    // eslint-disable-next-line @typescript-eslint/non-nullable-type-assertion-style
     watch([() => state.count, status] as const, (vals, oldVals) => {
       dummy = [vals, oldVals]
       const [count] = vals

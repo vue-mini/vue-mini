@@ -68,7 +68,8 @@ export function definePage(optionsOrSetup: any, config?: Config): void {
   } else {
     if (optionsOrSetup.setup === undefined) {
       // eslint-disable-next-line new-cap
-      return Page(optionsOrSetup)
+      Page(optionsOrSetup)
+      return
     }
 
     const { setup: setupOption, ...restOptions } = optionsOrSetup
@@ -119,7 +120,9 @@ export function definePage(optionsOrSetup: any, config?: Config): void {
     onUnload.call(this)
 
     if (this.__effects__) {
-      this.__effects__.forEach((effect) => stop(effect))
+      this.__effects__.forEach((effect) => {
+        stop(effect)
+      })
     }
   }
 
@@ -224,7 +227,7 @@ export function definePage(optionsOrSetup: any, config?: Config): void {
   )
 
   // eslint-disable-next-line new-cap
-  return Page(options)
+  Page(options)
 }
 
 function createLifecycle(

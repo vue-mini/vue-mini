@@ -35,7 +35,8 @@ export function createApp(optionsOrSetup: any): void {
   } else {
     if (optionsOrSetup.setup === undefined) {
       // eslint-disable-next-line new-cap
-      return App(optionsOrSetup)
+      App(optionsOrSetup)
+      return
     }
 
     const { setup: setupOption, ...restOptions } = optionsOrSetup
@@ -83,7 +84,7 @@ export function createApp(optionsOrSetup: any): void {
   )
 
   // eslint-disable-next-line new-cap
-  return App(options)
+  App(options)
 }
 
 function createLifecycle(

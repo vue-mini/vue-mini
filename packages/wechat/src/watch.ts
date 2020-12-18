@@ -207,7 +207,9 @@ function doWatch(
   let cleanup: () => void
   const onInvalidate: InvalidateCbRegistrator = (fn: () => void) => {
     // eslint-disable-next-line no-multi-assign
-    cleanup = runner.options.onStop = () => fn()
+    cleanup = runner.options.onStop = () => {
+      fn()
+    }
   }
 
   let oldValue = isArray(source) ? [] : INITIAL_WATCHER_VALUE

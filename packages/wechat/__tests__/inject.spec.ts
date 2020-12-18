@@ -63,7 +63,7 @@ describe('provide/inject', () => {
     const count = ref(1)
     provide('count', count)
 
-    const injectedCount = inject('count') as Ref<number>
+    const injectedCount = inject<Ref<number>>('count')!
     expect(injectedCount.value).toBe(1)
 
     count.value++
@@ -75,7 +75,7 @@ describe('provide/inject', () => {
     const count = ref(1)
     provide('count', readonly(count))
 
-    const injectedCount = inject('count') as Ref<number>
+    const injectedCount = inject<Ref<number>>('count')!
     // Should not work
     injectedCount.value++
     expect(injectedCount.value).toBe(1)
@@ -93,7 +93,7 @@ describe('provide/inject', () => {
     const rootState = reactive({ count: 1 })
     provide('state', rootState)
 
-    const state = inject('state') as typeof rootState
+    const state = inject<typeof rootState>('state')!
     expect(state.count).toBe(1)
 
     rootState.count++
@@ -105,7 +105,7 @@ describe('provide/inject', () => {
     const rootState = reactive({ count: 1 })
     provide('state', readonly(rootState))
 
-    const state = inject('state') as typeof rootState
+    const state = inject<typeof rootState>('state')!
     // Should not work
     state.count++
     expect(state.count).toBe(1)

@@ -207,7 +207,9 @@ describe('app', () => {
 
   it('only injected lifecycle', () => {
     const fn = jest.fn()
-    createApp(() => onAppHide(fn))
+    createApp(() => {
+      onAppHide(fn)
+    })
     app.onLaunch()
     app.onHide()
     expect(fn).toBeCalledTimes(1)
