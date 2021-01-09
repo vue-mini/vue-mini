@@ -233,7 +233,9 @@ function doWatch(source, cb, { immediate, deep, flush, onTrack, onTrigger } = {}
     let cleanup;
     const onInvalidate = (fn) => {
         // eslint-disable-next-line no-multi-assign
-        cleanup = runner.options.onStop = () => fn();
+        cleanup = runner.options.onStop = () => {
+            fn();
+        };
     };
     let oldValue = isArray(source) ? [] : INITIAL_WATCHER_VALUE;
     const job = () => {
@@ -356,7 +358,8 @@ function createApp(optionsOrSetup) {
     else {
         if (optionsOrSetup.setup === undefined) {
             // eslint-disable-next-line new-cap
-            return App(optionsOrSetup);
+            App(optionsOrSetup);
+            return;
         }
         const { setup: setupOption, ...restOptions } = optionsOrSetup;
         setup = setupOption;
@@ -383,7 +386,7 @@ function createApp(optionsOrSetup) {
     options["onUnhandledRejection" /* ON_UNHANDLED_REJECTION */] = createLifecycle(options, "onUnhandledRejection" /* ON_UNHANDLED_REJECTION */);
     options["onThemeChange" /* ON_THEME_CHANGE */] = createLifecycle(options, "onThemeChange" /* ON_THEME_CHANGE */);
     // eslint-disable-next-line new-cap
-    return App(options);
+    App(options);
 }
 function createLifecycle(options, lifecycle) {
     const originLifecycle = options[lifecycle];
@@ -447,7 +450,8 @@ function definePage(optionsOrSetup, config) {
     else {
         if (optionsOrSetup.setup === undefined) {
             // eslint-disable-next-line new-cap
-            return Page(optionsOrSetup);
+            Page(optionsOrSetup);
+            return;
         }
         const { setup: setupOption, ...restOptions } = optionsOrSetup;
         setup = setupOption;
@@ -491,7 +495,9 @@ function definePage(optionsOrSetup, config) {
     options["onUnload" /* ON_UNLOAD */] = function () {
         onUnload.call(this);
         if (this.__effects__) {
-            this.__effects__.forEach((effect) => stop(effect));
+            this.__effects__.forEach((effect) => {
+                stop(effect);
+            });
         }
     };
     if (options["onPageScroll" /* ON_PAGE_SCROLL */] || config.listenPageScroll) {
@@ -542,7 +548,7 @@ function definePage(optionsOrSetup, config) {
     options["onResize" /* ON_RESIZE */] = createLifecycle$1(options, "onResize" /* ON_RESIZE */);
     options["onTabItemTap" /* ON_TAB_ITEM_TAP */] = createLifecycle$1(options, "onTabItemTap" /* ON_TAB_ITEM_TAP */);
     // eslint-disable-next-line new-cap
-    return Page(options);
+    Page(options);
 }
 function createLifecycle$1(options, lifecycle) {
     const originLifecycle = options[lifecycle];
@@ -643,7 +649,9 @@ function defineComponent(optionsOrSetup, config) {
     options.lifetimes["detached" /* DETACHED */] = function () {
         detached.call(this);
         if (this.__effects__) {
-            this.__effects__.forEach((effect) => stop(effect));
+            this.__effects__.forEach((effect) => {
+                stop(effect);
+            });
         }
     };
     const originReady = options.lifetimes["ready" /* READY */] ||

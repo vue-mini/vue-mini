@@ -295,7 +295,7 @@ function createGetter(isReadonly = false, shallow = false) {
             return target;
         }
         const targetIsArray = isArray(target);
-        if (targetIsArray && hasOwn(arrayInstrumentations, key)) {
+        if (!isReadonly && targetIsArray && hasOwn(arrayInstrumentations, key)) {
             return Reflect.get(arrayInstrumentations, key, receiver);
         }
         const res = Reflect.get(target, key, receiver);
@@ -450,11 +450,11 @@ function add(value) {
     const target = toRaw(this);
     const proto = getProto(target);
     const hadKey = proto.has.call(target, value);
-    const result = target.add(value);
+    target.add(value);
     if (!hadKey) {
         trigger(target, "add" /* ADD */, value, value);
     }
-    return result;
+    return this;
 }
 function set$1(key, value) {
     value = toRaw(value);
@@ -469,14 +469,14 @@ function set$1(key, value) {
         checkIdentityKeys(target, has, key);
     }
     const oldValue = get.call(target, key);
-    const result = target.set(key, value);
+    target.set(key, value);
     if (!hadKey) {
         trigger(target, "add" /* ADD */, key, value);
     }
     else if (hasChanged(value, oldValue)) {
         trigger(target, "set" /* SET */, key, value, oldValue);
     }
-    return result;
+    return this;
 }
 function deleteEntry(key) {
     const target = toRaw(this);
@@ -686,19 +686,27 @@ function reactive(target) {
     }
     return createReactiveObject(target, false, mutableHandlers, mutableCollectionHandlers);
 }
-// Return a reactive-copy of the original object, where only the root level
-// properties are reactive, and does NOT unwrap refs nor recursively convert
-// returned properties.
+/**
+ * Return a shallowly-reactive copy of the original object, where only the root
+ * level properties are reactive. It also does not auto-unwrap refs (even at the
+ * root level).
+ */
 function shallowReactive(target) {
     return createReactiveObject(target, false, shallowReactiveHandlers, shallowCollectionHandlers);
 }
+/**
+ * Creates a readonly copy of the original object. Note the returned copy is not
+ * made reactive, but `readonly` can be called on an already reactive object.
+ */
 function readonly(target) {
     return createReactiveObject(target, true, readonlyHandlers, readonlyCollectionHandlers);
 }
-// Return a reactive-copy of the original object, where only the root level
-// properties are readonly, and does NOT unwrap refs nor recursively convert
-// returned properties.
-// This is used for creating the props proxy object for stateful components.
+/**
+ * Returns a reactive-copy of the original object, where only the root level
+ * properties are readonly, and does NOT unwrap refs nor recursively convert
+ * returned properties.
+ * This is used for creating the props proxy object for stateful components.
+ */
 function shallowReadonly(target) {
     return createReactiveObject(target, true, shallowReadonlyHandlers, readonlyCollectionHandlers);
 }
@@ -1126,7 +1134,9 @@ function doWatch(source, cb, { immediate, deep, flush, onTrack, onTrigger } = {}
     let cleanup;
     const onInvalidate = (fn) => {
         // eslint-disable-next-line no-multi-assign
-        cleanup = runner.options.onStop = () => fn();
+        cleanup = runner.options.onStop = () => {
+            fn();
+        };
     };
     let oldValue = isArray$1(source) ? [] : INITIAL_WATCHER_VALUE;
     const job = () => {
@@ -1249,7 +1259,8 @@ function createApp(optionsOrSetup) {
     else {
         if (optionsOrSetup.setup === undefined) {
             // eslint-disable-next-line new-cap
-            return App(optionsOrSetup);
+            App(optionsOrSetup);
+            return;
         }
         const { setup: setupOption, ...restOptions } = optionsOrSetup;
         setup = setupOption;
@@ -1276,7 +1287,7 @@ function createApp(optionsOrSetup) {
     options["onUnhandledRejection" /* ON_UNHANDLED_REJECTION */] = createLifecycle(options, "onUnhandledRejection" /* ON_UNHANDLED_REJECTION */);
     options["onThemeChange" /* ON_THEME_CHANGE */] = createLifecycle(options, "onThemeChange" /* ON_THEME_CHANGE */);
     // eslint-disable-next-line new-cap
-    return App(options);
+    App(options);
 }
 function createLifecycle(options, lifecycle) {
     const originLifecycle = options[lifecycle];
@@ -1340,7 +1351,8 @@ function definePage(optionsOrSetup, config) {
     else {
         if (optionsOrSetup.setup === undefined) {
             // eslint-disable-next-line new-cap
-            return Page(optionsOrSetup);
+            Page(optionsOrSetup);
+            return;
         }
         const { setup: setupOption, ...restOptions } = optionsOrSetup;
         setup = setupOption;
@@ -1384,7 +1396,9 @@ function definePage(optionsOrSetup, config) {
     options["onUnload" /* ON_UNLOAD */] = function () {
         onUnload.call(this);
         if (this.__effects__) {
-            this.__effects__.forEach((effect) => stop(effect));
+            this.__effects__.forEach((effect) => {
+                stop(effect);
+            });
         }
     };
     if (options["onPageScroll" /* ON_PAGE_SCROLL */] || config.listenPageScroll) {
@@ -1435,7 +1449,7 @@ function definePage(optionsOrSetup, config) {
     options["onResize" /* ON_RESIZE */] = createLifecycle$1(options, "onResize" /* ON_RESIZE */);
     options["onTabItemTap" /* ON_TAB_ITEM_TAP */] = createLifecycle$1(options, "onTabItemTap" /* ON_TAB_ITEM_TAP */);
     // eslint-disable-next-line new-cap
-    return Page(options);
+    Page(options);
 }
 function createLifecycle$1(options, lifecycle) {
     const originLifecycle = options[lifecycle];
@@ -1535,7 +1549,9 @@ function defineComponent(optionsOrSetup, config) {
     options.lifetimes["detached" /* DETACHED */] = function () {
         detached.call(this);
         if (this.__effects__) {
-            this.__effects__.forEach((effect) => stop(effect));
+            this.__effects__.forEach((effect) => {
+                stop(effect);
+            });
         }
     };
     const originReady = options.lifetimes["ready" /* READY */] ||
