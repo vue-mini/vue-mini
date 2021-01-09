@@ -68,27 +68,39 @@ export function watchEffect(
 // Initial value for watchers to trigger on undefined initial values
 const INITIAL_WATCHER_VALUE = {}
 
+type MultiWatchSources = Array<WatchSource<unknown> | object>
+
 // Overload #1: array of multiple sources + cb
-// Readonly constraint helps the callback to correctly infer value types based
-// on position in the source array. Otherwise the values will get a union type
-// of all possible value types.
 export function watch<
-  T extends Readonly<Array<WatchSource<unknown> | object>>,
+  T extends MultiWatchSources,
   Immediate extends Readonly<boolean> = false
 >(
-  sources: T,
+  sources: [...T],
   cb: WatchCallback<MapSources<T, false>, MapSources<T, Immediate>>,
   options?: WatchOptions<Immediate>
 ): WatchStopHandle
 
-// Overload #2: single source + cb
+// Overload #2 for multiple sources w/ `as const`
+// watch([foo, bar] as const, () => {})
+// somehow [...T] breaks when the type is readonly
+export function watch<
+  T extends Readonly<MultiWatchSources>,
+  Immediate extends Readonly<boolean> = false
+>(
+  // eslint-disable-next-line @typescript-eslint/unified-signatures
+  source: T,
+  cb: WatchCallback<MapSources<T, false>, MapSources<T, Immediate>>,
+  options?: WatchOptions<Immediate>
+): WatchStopHandle
+
+// Overload #3: single source + cb
 export function watch<T, Immediate extends Readonly<boolean> = false>(
   source: WatchSource<T>,
   cb: WatchCallback<T, Immediate extends true ? T | undefined : T>,
   options?: WatchOptions<Immediate>
 ): WatchStopHandle
 
-// Overload #3: watching reactive object w/ cb
+// Overload #4: watching reactive object w/ cb
 export function watch<
   T extends object,
   Immediate extends Readonly<boolean> = false
