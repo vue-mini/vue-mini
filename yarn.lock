@@ -1614,17 +1614,17 @@
   optionalDependencies:
     prettier "^1.18.2"
 
-"@vue/reactivity@3.0.2":
-  version "3.0.2"
-  resolved "https://registry.npm.taobao.org/@vue/reactivity/download/@vue/reactivity-3.0.2.tgz#42ed5af6025b494a5e69b05169fcddf04eebfe77"
-  integrity sha1-Qu1a9gJbSUpeabBRafzd8E7r/nc=
+"@vue/reactivity@3.0.5":
+  version "3.0.5"
+  resolved "https://registry.npm.taobao.org/@vue/reactivity/download/@vue/reactivity-3.0.5.tgz#e3789e4d523d845f9ae0b4d770e2b45594742fd2"
+  integrity sha1-43ieTVI9hF+a4LTXcOK0VZR0L9I=
   dependencies:
-    "@vue/shared" "3.0.2"
+    "@vue/shared" "3.0.5"
 
-"@vue/shared@3.0.2":
-  version "3.0.2"
-  resolved "https://registry.npm.taobao.org/@vue/shared/download/@vue/shared-3.0.2.tgz#419bd85a2ebdbd4f42963e98c5a1b103452176d9"
-  integrity sha1-QZvYWi69vU9Clj6YxaGxA0Uhdtk=
+"@vue/shared@3.0.5":
+  version "3.0.5"
+  resolved "https://registry.npm.taobao.org/@vue/shared/download/@vue/shared-3.0.5.tgz#c131d88bd6713cc4d93b3bb1372edb1983225ff0"
+  integrity sha1-wTHYi9ZxPMTZOzuxNy7bGYMiX/A=
 
 "@vuepress/core@1.8.0":
   version "1.8.0"

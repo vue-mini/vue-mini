@@ -19,7 +19,7 @@
     "@rollup/plugin-typescript": "^8.1.0",
     "@types/jest": "^26.0.0",
     "@types/wechat-miniprogram": "^3.1.0",
-    "@vue/reactivity": "3.0.2",
+    "@vue/reactivity": "3.0.5",
     "codecov": "^3.6.5",
     "cross-env": "^7.0.0",
     "eslint-config-silent": "^0.20.0",
