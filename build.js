@@ -134,10 +134,10 @@ async function build(target) {
   })
 }
 
-fs.readdirSync('packages').forEach((pkg) => {
+for (const pkg of fs.readdirSync('packages')) {
   const target = path.join('packages', pkg)
-  if (!fs.statSync(target).isDirectory()) return
+  if (!fs.statSync(target).isDirectory()) continue
   build(target).catch(() => {
     process.exitCode = 1
   })
-})
+}

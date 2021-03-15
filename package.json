@@ -23,10 +23,10 @@
     "@vue/reactivity": "3.0.5",
     "codecov": "^3.6.5",
     "cross-env": "^7.0.0",
-    "eslint-config-silent": "^0.20.0",
+    "eslint-config-silent": "^0.22.0",
     "execa": "^5.0.0",
     "fs-extra": "^9.0.0",
-    "husky": "^4.0.10",
+    "husky": "^5.1.3",
     "jest": "^26.0.1",
     "lint-staged": "^10.0.7",
     "rollup": "^2.6.1",
@@ -34,12 +34,6 @@
     "ts-jest": "^26.0.0",
     "typescript": "^4.0.3",
     "vitepress": "^0.12.2",
-    "xo": "^0.37.1"
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "lint-staged",
-      "pre-push": "jest"
-    }
+    "xo": "^0.38.2"
   }
 }

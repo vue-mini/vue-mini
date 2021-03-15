@@ -30,6 +30,7 @@ const config = {
         'unicorn/import-style': 'off',
         'unicorn/prefer-ternary': 'off',
         'unicorn/prefer-includes': 'off',
+        'unicorn/no-array-for-each': 'off',
         'unicorn/prevent-abbreviations': 'off',
         '@typescript-eslint/prefer-for-of': 'off',
         '@typescript-eslint/prefer-includes': 'off',

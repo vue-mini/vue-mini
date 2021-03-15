@@ -139,7 +139,9 @@ describe('watch', () => {
     watch([() => state.count, count, plus], (vals, oldVals) => {
       dummy = [vals, oldVals]
       // Assert types
+      // eslint-disable-next-line unicorn/prefer-spread
       vals.concat(1)
+      // eslint-disable-next-line unicorn/prefer-spread
       oldVals.concat(1)
     })
 
