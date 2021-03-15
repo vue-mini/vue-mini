@@ -1,7 +1,3 @@
----
-sidebarDepth: 0
----
-
 # 兼容性
 
 Vue Mini 底层直接依赖于 [@vue/reactivity](https://github.com/vuejs/vue-next/tree/master/packages/reactivity)，它的内部使用了 [Proxy](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Proxy)，所以 Vue Mini 需要运行环境原生支持 ES6。幸运的是绝大部分用户的微信小程序运行环境都已经原生支持 ES6 了。

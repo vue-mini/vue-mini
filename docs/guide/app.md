@@ -1,7 +1,3 @@
----
-sidebarDepth: 0
----
-
 # 创建小程序
 
 每个小程序都需要在 `app.js` 中调用 `createApp` 函数创建小程序实例。它是 `App` 函数的超集，它额外接收一个 `setup` 函数。
@@ -15,9 +11,9 @@ createApp({
     const greeting = 'Hello World!'
 
     return {
-      greeting
+      greeting,
     }
-  }
+  },
 })
 ```
 
@@ -46,7 +42,7 @@ import { createApp } from '@vue-mini/wechat'
 createApp({
   setup(options) {
     // options 为小程序启动参数
-  }
+  },
 })
 ```
 
@@ -73,7 +69,7 @@ createApp({
     onAppError(() => {
       console.log('error')
     })
-  }
+  },
 })
 ```
 
@@ -106,13 +102,13 @@ createApp({
     })
 
     return {
-      hello
+      hello,
     }
   },
   onShow() {
     console.log('from option')
   },
-  world: 'World!'
+  world: 'World!',
 })
 ```
 
@@ -132,7 +128,7 @@ createApp(() => {
   const greeting = 'Hello World!'
 
   return {
-    greeting
+    greeting,
   }
 })
 ```

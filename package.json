@@ -8,8 +8,9 @@
     "test": "jest",
     "codecov": "codecov",
     "build": "node build.js",
-    "docs:dev": "vuepress dev docs",
-    "docs:build": "vuepress build docs",
+    "docs:dev": "vitepress dev docs",
+    "docs:build": "vitepress build docs",
+    "docs:serve": "vitepress serve docs",
     "release": "node release.js"
   },
   "devDependencies": {
@@ -32,11 +33,8 @@
     "rollup-plugin-terser": "^7.0.0",
     "ts-jest": "^26.0.0",
     "typescript": "^4.0.3",
-    "vuepress": "^1.5.0",
+    "vitepress": "^0.12.2",
     "xo": "^0.37.1"
-  },
-  "resolutions": {
-    "chokidar": "^3.4.0"
   },
   "husky": {
     "hooks": {

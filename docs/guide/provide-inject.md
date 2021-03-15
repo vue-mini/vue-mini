@@ -1,7 +1,3 @@
----
-sidebarDepth: 0
----
-
 # 依赖注入
 
 与 Vue 一样，Vue Mini 提供了依赖注入功能，以解决 `props` 深度透传的问题。它们是一对 `provide / inject` 函数，它们的使用方式和 API 均与 Vue 一致。
@@ -22,7 +18,7 @@ defineComponent({
 
     provide('count', readonly(count))
     provide('increment', increment)
-  }
+  },
 })
 ```
 
@@ -39,9 +35,9 @@ defineComponent({
 
     return {
       count,
-      increment
+      increment,
     }
-  }
+  },
 })
 ```
 

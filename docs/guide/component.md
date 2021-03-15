@@ -1,7 +1,3 @@
----
-sidebarDepth: 0
----
-
 # 定义组件
 
 小程序中的每个组件都需要在对应的 js 文件中使用 `defineComponent` 函数进行定义。它是 `Component` 函数的超集，它额外接收一个 `setup` 函数。
@@ -14,7 +10,7 @@ defineComponent({
   setup() {
     const state = reactive({
       count: 0,
-      double: computed(() => state.count * 2)
+      double: computed(() => state.count * 2),
     })
 
     function increment() {
@@ -23,9 +19,9 @@ defineComponent({
 
     return {
       state,
-      increment
+      increment,
     }
-  }
+  },
 })
 ```
 
@@ -60,11 +56,11 @@ import { defineComponent } from '@vue-mini/wechat'
 
 defineComponent({
   properties: {
-    count: Number
+    count: Number,
   },
   setup(props) {
     console.log(props.count)
-  }
+  },
 })
 ```
 
@@ -76,7 +72,7 @@ import { defineComponent, watchEffect, computed } from '@vue-mini/wechat'
 
 defineComponent({
   properties: {
-    count: Number
+    count: Number,
   },
   setup(props) {
     watchEffect(() => {
@@ -86,9 +82,9 @@ defineComponent({
     const double = computed(() => props.count * 2)
 
     return {
-      double
+      double,
     }
-  }
+  },
 })
 ```
 
@@ -100,13 +96,13 @@ import { defineComponent, watchEffect } from '@vue-mini/wechat'
 
 defineComponent({
   properties: {
-    count: Number
+    count: Number,
   },
   setup({ count }) {
     watchEffect(() => {
       console.log('count is: ' + count) // Will not be reactive!
     })
-  }
+  },
 })
 ```
 
@@ -125,7 +121,7 @@ defineComponent({
     context.dataset
     context.triggerEvent
     // ...
-  }
+  },
 })
 ```
 
@@ -152,7 +148,7 @@ createApp({
     onDetach(() => {
       console.log('detach')
     })
-  }
+  },
 })
 ```
 
@@ -194,17 +190,17 @@ defineComponent({
 
     return {
       count,
-      increment
+      increment,
     }
   },
   data: {
-    number: 0
+    number: 0,
   },
   methods: {
     add() {
       this.setData({ number: this.data.number + 1 })
-    }
-  }
+    },
+  },
 })
 ```
 
@@ -229,7 +225,7 @@ defineComponent(() => {
 
   return {
     count,
-    increment
+    increment,
   }
 })
 ```

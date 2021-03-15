@@ -4,7 +4,7 @@ set -e
 
 yarn docs:build
 
-cd docs/.vuepress/dist
+cd docs/.vitepress/dist
 
 git config --global user.email 'y.mingshan3@gmail.com'
 git config --global user.name 'Yang Mingshan'

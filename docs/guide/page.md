@@ -1,7 +1,3 @@
----
-sidebarDepth: 0
----
-
 # 定义页面
 
 小程序中的每个页面都需要在对应的 js 文件中使用 `definePage` 函数进行定义。它是 `Page` 函数的超集，它额外接收一个 `setup` 函数。
@@ -14,7 +10,7 @@ definePage({
   setup() {
     const state = reactive({
       count: 0,
-      double: computed(() => state.count * 2)
+      double: computed(() => state.count * 2),
     })
 
     function increment() {
@@ -23,9 +19,9 @@ definePage({
 
     return {
       state,
-      increment
+      increment,
     }
-  }
+  },
 })
 ```
 
@@ -61,7 +57,7 @@ import { definePage } from '@vue-mini/wechat'
 definePage({
   setup(query) {
     // query 为打开当前页面路径中的参数
-  }
+  },
 })
 ```
 
@@ -77,7 +73,7 @@ definePage({
     context.route
     context.getOpenerEventChannel
     // ...
-  }
+  },
 })
 ```
 
@@ -104,7 +100,7 @@ definePage({
     onUnload(() => {
       console.log('unload')
     })
-  }
+  },
 })
 ```
 
@@ -126,10 +122,10 @@ definePage(
       onPageScroll(({ scrollTop }) => {
         console.log('scrollTop:', scrollTop)
       })
-    }
+    },
   },
   {
-    listenPageScroll: true // 默认为 false
+    listenPageScroll: true, // 默认为 false
   }
 )
 ```
@@ -148,7 +144,7 @@ definePage({
   },
   onPageScroll({ scrollTop }) {
     console.log('scrollTop (from option):', scrollTop)
-  }
+  },
 })
 ```
 
@@ -170,13 +166,13 @@ definePage(
         return {
           title: '自定义标题',
           path: '/my/page/path',
-          imageUrl: 'https://hosts.com/my-image.png'
+          imageUrl: 'https://hosts.com/my-image.png',
         }
       })
-    }
+    },
   },
   {
-    canShareToOthers: true // 默认为 false
+    canShareToOthers: true, // 默认为 false
   }
 )
 ```
@@ -199,13 +195,13 @@ definePage(
         return {
           title: '自定义标题',
           query: 'a=1&b=2',
-          imageUrl: 'https://hosts.com/my-image.png'
+          imageUrl: 'https://hosts.com/my-image.png',
         }
       })
-    }
+    },
   },
   {
-    canShareToTimeline: true // 默认为 false
+    canShareToTimeline: true, // 默认为 false
   }
 )
 ```
@@ -227,10 +223,10 @@ definePage({
       return {
         title: '自定义标题',
         query: 'a=xxx&b=xxx',
-        imageUrl: 'https://hosts.com/my-image.png'
+        imageUrl: 'https://hosts.com/my-image.png',
       }
     })
-  }
+  },
 })
 ```
 
@@ -270,15 +266,15 @@ definePage({
 
     return {
       count,
-      increment
+      increment,
     }
   },
   data: {
-    number: 0
+    number: 0,
   },
   add() {
     this.setData({ number: this.data.number + 1 })
-  }
+  },
 })
 ```
 
@@ -303,7 +299,7 @@ definePage(() => {
 
   return {
     count,
-    increment
+    increment,
   }
 })
 ```

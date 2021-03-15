@@ -1,7 +1,3 @@
----
-sidebarDepth: 0
----
-
 # 定义页面组件
 
 小程序支持将组件作为页面使用，本文档称此类组件为`页面组件`。定义页面组件与定义普通组件没有什么区别，都是使用 `defineComponent`，只需注意[小程序自身的规则](https://developers.weixin.qq.com/miniprogram/dev/framework/custom-component/component.html#%E4%BD%BF%E7%94%A8-Component-%E6%9E%84%E9%80%A0%E5%99%A8%E6%9E%84%E9%80%A0%E9%A1%B5%E9%9D%A2)。
@@ -36,7 +32,7 @@ defineComponent({
     },
     error() {
       console.log('error')
-    }
+    },
   },
   pageLifetimes: {
     show() {
@@ -47,7 +43,7 @@ defineComponent({
     },
     resize() {
       console.log('resize')
-    }
+    },
   },
   methods: {
     onLoad() {
@@ -88,8 +84,8 @@ defineComponent({
     },
     onTabItemTap() {
       console.log('onTabItemTap')
-    }
-  }
+    },
+  },
 })
 ```
 
