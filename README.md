@@ -4,6 +4,7 @@
   <a href="https://github.com/vue-mini/vue-mini/actions"><img src="https://github.com/vue-mini/vue-mini/workflows/CI/badge.svg" alt="Actions Status"></a>
   <a href="https://codecov.io/gh/vue-mini/vue-mini"><img src="https://img.shields.io/codecov/c/github/vue-mini/vue-mini.svg" alt="Coverage Status"></a>
   <a href="https://opensource.org/licenses/MIT"><img src="https://img.shields.io/npm/l/@vue-mini/wechat.svg" alt="License"></a>
+  <a href="https://discord.gg/MtUz5Gsg96"><img src="https://img.shields.io/badge/chat-discord-blue?style=flat&logo=discord" alt="discord chat"></a>
 </p>
 
 <h1 align="center">Vue Mini</h1>
