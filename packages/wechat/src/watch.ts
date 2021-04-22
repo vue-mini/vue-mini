@@ -70,7 +70,7 @@ const INITIAL_WATCHER_VALUE = {}
 
 type MultiWatchSources = Array<WatchSource<unknown> | object>
 
-// Overload #1: array of multiple sources + cb
+// Overload: array of multiple sources + cb
 export function watch<
   T extends MultiWatchSources,
   Immediate extends Readonly<boolean> = false
@@ -80,7 +80,7 @@ export function watch<
   options?: WatchOptions<Immediate>
 ): WatchStopHandle
 
-// Overload #2 for multiple sources w/ `as const`
+// Overload: multiple sources w/ `as const`
 // watch([foo, bar] as const, () => {})
 // somehow [...T] breaks when the type is readonly
 export function watch<
@@ -93,14 +93,14 @@ export function watch<
   options?: WatchOptions<Immediate>
 ): WatchStopHandle
 
-// Overload #3: single source + cb
+// Overload: single source + cb
 export function watch<T, Immediate extends Readonly<boolean> = false>(
   source: WatchSource<T>,
   cb: WatchCallback<T, Immediate extends true ? T | undefined : T>,
   options?: WatchOptions<Immediate>
 ): WatchStopHandle
 
-// Overload #4: watching reactive object w/ cb
+// Overload: watching reactive object w/ cb
 export function watch<
   T extends object,
   Immediate extends Readonly<boolean> = false
