@@ -1,5 +1,5 @@
 /*!
- * vue-mini v0.2.1
+ * vue-mini v0.2.2
  * https://github.com/vue-mini/vue-mini
  * (c) 2019-present Yang Mingshan
  * @license MIT
@@ -15,18 +15,26 @@ Object.defineProperty(exports, '__esModule', { value: true });
  * \/\*#\_\_PURE\_\_\*\/
  * So that rollup can tree-shake them if necessary.
  */
-const EMPTY_OBJ =  Object.freeze({})
+function makeMap(str, expectsLowerCase) {
+    const map = Object.create(null);
+    const list = str.split(',');
+    for (let i = 0; i < list.length; i++) {
+        map[list[i]] = true;
+    }
+    return expectsLowerCase ? val => !!map[val.toLowerCase()] : val => !!map[val];
+}
+const EMPTY_OBJ = Object.freeze({})
     ;
-const EMPTY_ARR =  Object.freeze([]) ;
+Object.freeze([]) ;
 const extend = Object.assign;
 const hasOwnProperty = Object.prototype.hasOwnProperty;
 const hasOwn = (val, key) => hasOwnProperty.call(val, key);
-const isArray = Array.isArray;
-const isMap = (val) => toTypeString(val) === '[object Map]';
-const isFunction = (val) => typeof val === 'function';
+const isArray$1 = Array.isArray;
+const isMap$1 = (val) => toTypeString(val) === '[object Map]';
+const isFunction$1 = (val) => typeof val === 'function';
 const isString = (val) => typeof val === 'string';
 const isSymbol = (val) => typeof val === 'symbol';
-const isObject = (val) => val !== null && typeof val === 'object';
+const isObject$1 = (val) => val !== null && typeof val === 'object';
 const objectToString = Object.prototype.toString;
 const toTypeString = (value) => objectToString.call(value);
 const toRawType = (value) => {
@@ -49,7 +57,7 @@ const cacheStringFunction = (fn) => {
  */
 const capitalize = cacheStringFunction((str) => str.charAt(0).toUpperCase() + str.slice(1));
 // compare whether a value has changed, accounting for NaN.
-const hasChanged = (value, oldValue) => value !== oldValue && (value === value || oldValue === oldValue);
+const hasChanged$1 = (value, oldValue) => value !== oldValue && (value === value || oldValue === oldValue);
 const def = (obj, key, value) => {
     Object.defineProperty(obj, key, {
         configurable: true,
@@ -61,8 +69,8 @@ const def = (obj, key, value) => {
 const targetMap = new WeakMap();
 const effectStack = [];
 let activeEffect;
-const ITERATE_KEY = Symbol( 'iterate' );
-const MAP_KEY_ITERATE_KEY = Symbol( 'Map key iterate' );
+const ITERATE_KEY = Symbol('iterate' );
+const MAP_KEY_ITERATE_KEY = Symbol('Map key iterate' );
 function isEffect(fn) {
     return fn && fn._isEffect === true;
 }
@@ -153,7 +161,7 @@ function track(target, type, key) {
     if (!dep.has(activeEffect)) {
         dep.add(activeEffect);
         activeEffect.deps.push(dep);
-        if ( activeEffect.options.onTrack) {
+        if (activeEffect.options.onTrack) {
             activeEffect.options.onTrack({
                 effect: activeEffect,
                 target,
@@ -184,7 +192,7 @@ function trigger(target, type, key, newValue, oldValue, oldTarget) {
         // trigger all effects for target
         depsMap.forEach(add);
     }
-    else if (key === 'length' && isArray(target)) {
+    else if (key === 'length' && isArray$1(target)) {
         depsMap.forEach((dep, key) => {
             if (key === 'length' || key >= newValue) {
                 add(dep);
@@ -199,9 +207,9 @@ function trigger(target, type, key, newValue, oldValue, oldTarget) {
         // also run for iteration key on ADD | DELETE | Map.SET
         switch (type) {
             case "add" /* ADD */:
-                if (!isArray(target)) {
+                if (!isArray$1(target)) {
                     add(depsMap.get(ITERATE_KEY));
-                    if (isMap(target)) {
+                    if (isMap$1(target)) {
                         add(depsMap.get(MAP_KEY_ITERATE_KEY));
                     }
                 }
@@ -211,22 +219,22 @@ function trigger(target, type, key, newValue, oldValue, oldTarget) {
                 }
                 break;
             case "delete" /* DELETE */:
-                if (!isArray(target)) {
+                if (!isArray$1(target)) {
                     add(depsMap.get(ITERATE_KEY));
-                    if (isMap(target)) {
+                    if (isMap$1(target)) {
                         add(depsMap.get(MAP_KEY_ITERATE_KEY));
                     }
                 }
                 break;
             case "set" /* SET */:
-                if (isMap(target)) {
+                if (isMap$1(target)) {
                     add(depsMap.get(ITERATE_KEY));
                 }
                 break;
         }
     }
     const run = (effect) => {
-        if ( effect.options.onTrigger) {
+        if (effect.options.onTrigger) {
             effect.options.onTrigger({
                 effect,
                 target,
@@ -247,6 +255,7 @@ function trigger(target, type, key, newValue, oldValue, oldTarget) {
     effects.forEach(run);
 }
 
+const isNonTrackableKeys = /*#__PURE__*/ makeMap(`__proto__,__v_isRef,__isVue`);
 const builtInSymbols = new Set(Object.getOwnPropertyNames(Symbol)
     .map(key => Symbol[key])
     .filter(isSymbol));
@@ -291,17 +300,24 @@ function createGetter(isReadonly = false, shallow = false) {
             return isReadonly;
         }
         else if (key === "__v_raw" /* RAW */ &&
-            receiver === (isReadonly ? readonlyMap : reactiveMap).get(target)) {
+            receiver ===
+                (isReadonly
+                    ? shallow
+                        ? shallowReadonlyMap
+                        : readonlyMap
+                    : shallow
+                        ? shallowReactiveMap
+                        : reactiveMap).get(target)) {
             return target;
         }
-        const targetIsArray = isArray(target);
+        const targetIsArray = isArray$1(target);
         if (!isReadonly && targetIsArray && hasOwn(arrayInstrumentations, key)) {
             return Reflect.get(arrayInstrumentations, key, receiver);
         }
         const res = Reflect.get(target, key, receiver);
         if (isSymbol(key)
             ? builtInSymbols.has(key)
-            : key === `__proto__` || key === `__v_isRef`) {
+            : isNonTrackableKeys(key)) {
             return res;
         }
         if (!isReadonly) {
@@ -315,7 +331,7 @@ function createGetter(isReadonly = false, shallow = false) {
             const shouldUnwrap = !targetIsArray || !isIntegerKey(key);
             return shouldUnwrap ? res.value : res;
         }
-        if (isObject(res)) {
+        if (isObject$1(res)) {
             // Convert returned value into a proxy as well. we do the isObject check
             // here to avoid invalid value warning. Also need to lazy access readonly
             // and reactive here to avoid circular dependency.
@@ -328,15 +344,16 @@ const set = /*#__PURE__*/ createSetter();
 const shallowSet = /*#__PURE__*/ createSetter(true);
 function createSetter(shallow = false) {
     return function set(target, key, value, receiver) {
-        const oldValue = target[key];
+        let oldValue = target[key];
         if (!shallow) {
             value = toRaw(value);
-            if (!isArray(target) && isRef(oldValue) && !isRef(value)) {
+            oldValue = toRaw(oldValue);
+            if (!isArray$1(target) && isRef(oldValue) && !isRef(value)) {
                 oldValue.value = value;
                 return true;
             }
         }
-        const hadKey = isArray(target) && isIntegerKey(key)
+        const hadKey = isArray$1(target) && isIntegerKey(key)
             ? Number(key) < target.length
             : hasOwn(target, key);
         const result = Reflect.set(target, key, value, receiver);
@@ -345,7 +362,7 @@ function createSetter(shallow = false) {
             if (!hadKey) {
                 trigger(target, "add" /* ADD */, key, value);
             }
-            else if (hasChanged(value, oldValue)) {
+            else if (hasChanged$1(value, oldValue)) {
                 trigger(target, "set" /* SET */, key, value, oldValue);
             }
         }
@@ -369,7 +386,7 @@ function has(target, key) {
     return result;
 }
 function ownKeys(target) {
-    track(target, "iterate" /* ITERATE */, isArray(target) ? 'length' : ITERATE_KEY);
+    track(target, "iterate" /* ITERATE */, isArray$1(target) ? 'length' : ITERATE_KEY);
     return Reflect.ownKeys(target);
 }
 const mutableHandlers = {
@@ -405,8 +422,8 @@ const shallowReadonlyHandlers = extend({}, readonlyHandlers, {
     get: shallowReadonlyGet
 });
 
-const toReactive = (value) => isObject(value) ? reactive(value) : value;
-const toReadonly = (value) => isObject(value) ? readonly(value) : value;
+const toReactive = (value) => isObject$1(value) ? reactive(value) : value;
+const toReadonly = (value) => isObject$1(value) ? readonly(value) : value;
 const toShallow = (value) => value;
 const getProto = (v) => Reflect.getPrototypeOf(v);
 function get$1(target, key, isReadonly = false, isShallow = false) {
@@ -420,7 +437,7 @@ function get$1(target, key, isReadonly = false, isShallow = false) {
     }
     !isReadonly && track(rawTarget, "get" /* GET */, rawKey);
     const { has } = getProto(rawTarget);
-    const wrap = isReadonly ? toReadonly : isShallow ? toShallow : toReactive;
+    const wrap = isShallow ? toShallow : isReadonly ? toReadonly : toReactive;
     if (has.call(rawTarget, key)) {
         return wrap(target.get(key));
     }
@@ -450,8 +467,8 @@ function add(value) {
     const target = toRaw(this);
     const proto = getProto(target);
     const hadKey = proto.has.call(target, value);
-    target.add(value);
     if (!hadKey) {
+        target.add(value);
         trigger(target, "add" /* ADD */, value, value);
     }
     return this;
@@ -473,7 +490,7 @@ function set$1(key, value) {
     if (!hadKey) {
         trigger(target, "add" /* ADD */, key, value);
     }
-    else if (hasChanged(value, oldValue)) {
+    else if (hasChanged$1(value, oldValue)) {
         trigger(target, "set" /* SET */, key, value, oldValue);
     }
     return this;
@@ -500,7 +517,7 @@ function deleteEntry(key) {
 function clear() {
     const target = toRaw(this);
     const hadItems = target.size !== 0;
-    const oldTarget =  isMap(target)
+    const oldTarget = isMap$1(target)
             ? new Map(target)
             : new Set(target)
         ;
@@ -516,7 +533,7 @@ function createForEach(isReadonly, isShallow) {
         const observed = this;
         const target = observed["__v_raw" /* RAW */];
         const rawTarget = toRaw(target);
-        const wrap = isReadonly ? toReadonly : isShallow ? toShallow : toReactive;
+        const wrap = isShallow ? toShallow : isReadonly ? toReadonly : toReactive;
         !isReadonly && track(rawTarget, "iterate" /* ITERATE */, ITERATE_KEY);
         return target.forEach((value, key) => {
             // important: make sure the callback is
@@ -530,11 +547,11 @@ function createIterableMethod(method, isReadonly, isShallow) {
     return function (...args) {
         const target = this["__v_raw" /* RAW */];
         const rawTarget = toRaw(target);
-        const targetIsMap = isMap(rawTarget);
+        const targetIsMap = isMap$1(rawTarget);
         const isPair = method === 'entries' || (method === Symbol.iterator && targetIsMap);
         const isKeyOnly = method === 'keys' && targetIsMap;
         const innerIterator = target[method](...args);
-        const wrap = isReadonly ? toReadonly : isShallow ? toShallow : toReactive;
+        const wrap = isShallow ? toShallow : isReadonly ? toReadonly : toReactive;
         !isReadonly &&
             track(rawTarget, "iterate" /* ITERATE */, isKeyOnly ? MAP_KEY_ITERATE_KEY : ITERATE_KEY);
         // return a wrapped iterator which returns observed versions of the
@@ -610,15 +627,34 @@ const readonlyInstrumentations = {
     clear: createReadonlyMethod("clear" /* CLEAR */),
     forEach: createForEach(true, false)
 };
+const shallowReadonlyInstrumentations = {
+    get(key) {
+        return get$1(this, key, true, true);
+    },
+    get size() {
+        return size(this, true);
+    },
+    has(key) {
+        return has$1.call(this, key, true);
+    },
+    add: createReadonlyMethod("add" /* ADD */),
+    set: createReadonlyMethod("set" /* SET */),
+    delete: createReadonlyMethod("delete" /* DELETE */),
+    clear: createReadonlyMethod("clear" /* CLEAR */),
+    forEach: createForEach(true, true)
+};
 const iteratorMethods = ['keys', 'values', 'entries', Symbol.iterator];
 iteratorMethods.forEach(method => {
     mutableInstrumentations[method] = createIterableMethod(method, false, false);
     readonlyInstrumentations[method] = createIterableMethod(method, true, false);
     shallowInstrumentations[method] = createIterableMethod(method, false, true);
+    shallowReadonlyInstrumentations[method] = createIterableMethod(method, true, true);
 });
 function createInstrumentationGetter(isReadonly, shallow) {
     const instrumentations = shallow
-        ? shallowInstrumentations
+        ? isReadonly
+            ? shallowReadonlyInstrumentations
+            : shallowInstrumentations
         : isReadonly
             ? readonlyInstrumentations
             : mutableInstrumentations;
@@ -646,6 +682,9 @@ const shallowCollectionHandlers = {
 const readonlyCollectionHandlers = {
     get: createInstrumentationGetter(true, false)
 };
+const shallowReadonlyCollectionHandlers = {
+    get: createInstrumentationGetter(true, true)
+};
 function checkIdentityKeys(target, has, key) {
     const rawKey = toRaw(key);
     if (rawKey !== key && has.call(target, rawKey)) {
@@ -659,7 +698,9 @@ function checkIdentityKeys(target, has, key) {
 }
 
 const reactiveMap = new WeakMap();
+const shallowReactiveMap = new WeakMap();
 const readonlyMap = new WeakMap();
+const shallowReadonlyMap = new WeakMap();
 function targetTypeMap(rawType) {
     switch (rawType) {
         case 'Object':
@@ -684,7 +725,7 @@ function reactive(target) {
     if (target && target["__v_isReadonly" /* IS_READONLY */]) {
         return target;
     }
-    return createReactiveObject(target, false, mutableHandlers, mutableCollectionHandlers);
+    return createReactiveObject(target, false, mutableHandlers, mutableCollectionHandlers, reactiveMap);
 }
 /**
  * Return a shallowly-reactive copy of the original object, where only the root
@@ -692,14 +733,14 @@ function reactive(target) {
  * root level).
  */
 function shallowReactive(target) {
-    return createReactiveObject(target, false, shallowReactiveHandlers, shallowCollectionHandlers);
+    return createReactiveObject(target, false, shallowReactiveHandlers, shallowCollectionHandlers, shallowReactiveMap);
 }
 /**
  * Creates a readonly copy of the original object. Note the returned copy is not
  * made reactive, but `readonly` can be called on an already reactive object.
  */
 function readonly(target) {
-    return createReactiveObject(target, true, readonlyHandlers, readonlyCollectionHandlers);
+    return createReactiveObject(target, true, readonlyHandlers, readonlyCollectionHandlers, readonlyMap);
 }
 /**
  * Returns a reactive-copy of the original object, where only the root level
@@ -708,10 +749,10 @@ function readonly(target) {
  * This is used for creating the props proxy object for stateful components.
  */
 function shallowReadonly(target) {
-    return createReactiveObject(target, true, shallowReadonlyHandlers, readonlyCollectionHandlers);
+    return createReactiveObject(target, true, shallowReadonlyHandlers, shallowReadonlyCollectionHandlers, shallowReadonlyMap);
 }
-function createReactiveObject(target, isReadonly, baseHandlers, collectionHandlers) {
-    if (!isObject(target)) {
+function createReactiveObject(target, isReadonly, baseHandlers, collectionHandlers, proxyMap) {
+    if (!isObject$1(target)) {
         {
             console.warn(`value cannot be made reactive: ${String(target)}`);
         }
@@ -724,7 +765,6 @@ function createReactiveObject(target, isReadonly, baseHandlers, collectionHandle
         return target;
     }
     // target already has corresponding Proxy
-    const proxyMap = isReadonly ? readonlyMap : reactiveMap;
     const existingProxy = proxyMap.get(target);
     if (existingProxy) {
         return existingProxy;
@@ -758,7 +798,7 @@ function markRaw(value) {
     return value;
 }
 
-const convert = (val) => isObject(val) ? reactive(val) : val;
+const convert = (val) => isObject$1(val) ? reactive(val) : val;
 function isRef(r) {
     return Boolean(r && r.__v_isRef === true);
 }
@@ -780,7 +820,7 @@ class RefImpl {
         return this._value;
     }
     set value(newVal) {
-        if (hasChanged(toRaw(newVal), this._rawValue)) {
+        if (hasChanged$1(toRaw(newVal), this._rawValue)) {
             this._rawValue = newVal;
             this._value = this._shallow ? newVal : convert(newVal);
             trigger(toRaw(this), "set" /* SET */, 'value', newVal);
@@ -794,7 +834,7 @@ function createRef(rawValue, shallow = false) {
     return new RefImpl(rawValue, shallow);
 }
 function triggerRef(ref) {
-    trigger(toRaw(ref), "set" /* SET */, 'value',  ref.value );
+    trigger(toRaw(ref), "set" /* SET */, 'value', ref.value );
 }
 function unref(ref) {
     return isRef(ref) ? ref.value : ref;
@@ -835,10 +875,10 @@ function customRef(factory) {
     return new CustomRefImpl(factory);
 }
 function toRefs(object) {
-    if ( !isProxy(object)) {
+    if (!isProxy(object)) {
         console.warn(`toRefs() expects a reactive object but received a plain one.`);
     }
-    const ret = isArray(object) ? new Array(object.length) : {};
+    const ret = isArray$1(object) ? new Array(object.length) : {};
     for (const key in object) {
         ret[key] = toRef(object, key);
     }
@@ -880,23 +920,25 @@ class ComputedRefImpl {
         this["__v_isReadonly" /* IS_READONLY */] = isReadonly;
     }
     get value() {
-        if (this._dirty) {
-            this._value = this.effect();
-            this._dirty = false;
+        // the computed ref may get wrapped by other proxies e.g. readonly() #3376
+        const self = toRaw(this);
+        if (self._dirty) {
+            self._value = this.effect();
+            self._dirty = false;
         }
-        track(toRaw(this), "get" /* GET */, 'value');
-        return this._value;
+        track(self, "get" /* GET */, 'value');
+        return self._value;
     }
     set value(newValue) {
         this._setter(newValue);
     }
 }
-function computed(getterOrOptions) {
+function computed$1(getterOrOptions) {
     let getter;
     let setter;
-    if (isFunction(getterOrOptions)) {
+    if (isFunction$1(getterOrOptions)) {
         getter = getterOrOptions;
-        setter =  () => {
+        setter = () => {
                 console.warn('Write operation failed: computed value is readonly');
             }
             ;
@@ -905,7 +947,7 @@ function computed(getterOrOptions) {
         getter = getterOrOptions.get;
         setter = getterOrOptions.set;
     }
-    return new ComputedRefImpl(getter, setter, isFunction(getterOrOptions) || !getterOrOptions.set);
+    return new ComputedRefImpl(getter, setter, isFunction$1(getterOrOptions) || !getterOrOptions.set);
 }
 
 let currentApp = null;
@@ -932,8 +974,8 @@ function recordInstanceBoundEffect(effect) {
         (currentInstance.__effects__ || (currentInstance.__effects__ = [])).push(effect);
     }
 }
-function computed$1(getterOrOptions) {
-    const c = computed(getterOrOptions);
+function computed(getterOrOptions) {
+    const c = computed$1(getterOrOptions);
     recordInstanceBoundEffect(c.effect);
     return c;
 }
@@ -1007,7 +1049,7 @@ function checkRecursiveUpdates(seen, fn) {
     }
 }
 
-const { isArray: isArray$1 } = Array;
+const { isArray } = Array;
 function getType(x) {
     return Object.prototype.toString.call(x).slice(8, -1);
 }
@@ -1015,23 +1057,23 @@ function isSimpleValue(x) {
     const simpleTypes = new Set(['undefined', 'boolean', 'number', 'string']);
     return x === null || simpleTypes.has(typeof x);
 }
-function isObject$1(x) {
+function isObject(x) {
     return x !== null && typeof x === 'object';
 }
 function isPlainObject(x) {
     return x !== null && getType(x) === 'Object';
 }
-function isFunction$1(x) {
+function isFunction(x) {
     return typeof x === 'function';
 }
-function isMap$1(x) {
+function isMap(x) {
     return getType(x) === 'Map';
 }
 function isSet(x) {
     return getType(x) === 'Set';
 }
 // Compare whether a value has changed, accounting for NaN.
-function hasChanged$1(value, oldValue) {
+function hasChanged(value, oldValue) {
     // eslint-disable-next-line no-self-compare
     return value !== oldValue && (value === value || oldValue === oldValue);
 }
@@ -1053,7 +1095,7 @@ function watchEffect(effect, options) {
 const INITIAL_WATCHER_VALUE = {};
 // Implementation
 function watch(source, cb, options) {
-    if ( !isFunction$1(cb)) {
+    if (!isFunction(cb)) {
         console.warn(`\`watch(fn, options?)\` signature has been moved to a separate API. ` +
             `Use \`watchEffect(fn, options?)\` instead. \`watch\` now only ` +
             `supports \`watch(source, cb, options?) signature.`);
@@ -1061,7 +1103,7 @@ function watch(source, cb, options) {
     return doWatch(source, cb, options);
 }
 function doWatch(source, cb, { immediate, deep, flush, onTrack, onTrigger } = {}) {
-    if ( !cb) {
+    if (!cb) {
         if (immediate !== undefined) {
             console.warn(`watch() "immediate" option is only respected when using the ` +
                 `watch(source, callback, options?) signature.`);
@@ -1086,7 +1128,7 @@ function doWatch(source, cb, { immediate, deep, flush, onTrack, onTrigger } = {}
         getter = () => source;
         deep = true;
     }
-    else if (isArray$1(source)) {
+    else if (isArray(source)) {
         getter = () => source.map((s) => {
             if (isRef(s)) {
                 return s.value;
@@ -1094,7 +1136,7 @@ function doWatch(source, cb, { immediate, deep, flush, onTrack, onTrigger } = {}
             if (isReactive(s)) {
                 return traverse(s);
             }
-            if (isFunction$1(s)) {
+            if (isFunction(s)) {
                 return s();
             }
             /* istanbul ignore else  */
@@ -1104,7 +1146,7 @@ function doWatch(source, cb, { immediate, deep, flush, onTrack, onTrigger } = {}
             return undefined;
         });
     }
-    else if (isFunction$1(source)) {
+    else if (isFunction(source)) {
         if (cb) {
             // Getter with cb
             getter = () => source();
@@ -1138,7 +1180,7 @@ function doWatch(source, cb, { immediate, deep, flush, onTrack, onTrigger } = {}
             fn();
         };
     };
-    let oldValue = isArray$1(source) ? [] : INITIAL_WATCHER_VALUE;
+    let oldValue = isArray(source) ? [] : INITIAL_WATCHER_VALUE;
     const job = () => {
         if (!runner.active) {
             return;
@@ -1146,7 +1188,7 @@ function doWatch(source, cb, { immediate, deep, flush, onTrack, onTrigger } = {}
         if (cb) {
             // Watch(source, cb)
             const newValue = runner();
-            if (deep || forceTrigger || hasChanged$1(newValue, oldValue)) {
+            if (deep || forceTrigger || hasChanged(newValue, oldValue)) {
                 // Cleanup before running cb again
                 if (cleanup) {
                     cleanup();
@@ -1202,19 +1244,19 @@ function doWatch(source, cb, { immediate, deep, flush, onTrack, onTrigger } = {}
     };
 }
 function traverse(value, seen = new Set()) {
-    if (!isObject$1(value) || seen.has(value)) {
+    if (!isObject(value) || seen.has(value)) {
         return value;
     }
     seen.add(value);
     if (isRef(value)) {
         traverse(value.value, seen);
     }
-    else if (isArray$1(value)) {
+    else if (isArray(value)) {
         for (let i = 0; i < value.length; i++) {
             traverse(value[i], seen);
         }
     }
-    else if (isSet(value) || isMap$1(value)) {
+    else if (isSet(value) || isMap(value)) {
         value.forEach((v) => {
             traverse(v, seen);
         });
@@ -1239,7 +1281,7 @@ function inject(key, defaultValue, treatDefaultAsFactory = false) {
         return provides[key];
     }
     if (arguments.length > 1) {
-        return treatDefaultAsFactory && isFunction$1(defaultValue)
+        return treatDefaultAsFactory && isFunction(defaultValue)
             ? defaultValue()
             : defaultValue;
     }
@@ -1252,7 +1294,7 @@ function inject(key, defaultValue, treatDefaultAsFactory = false) {
 function createApp(optionsOrSetup) {
     let setup;
     let options;
-    if (isFunction$1(optionsOrSetup)) {
+    if (isFunction(optionsOrSetup)) {
         setup = optionsOrSetup;
         options = {};
     }
@@ -1280,16 +1322,16 @@ function createApp(optionsOrSetup) {
             originOnLaunch.call(this, options);
         }
     };
-    options["onShow" /* ON_SHOW */] = createLifecycle(options, "onShow" /* ON_SHOW */);
-    options["onHide" /* ON_HIDE */] = createLifecycle(options, "onHide" /* ON_HIDE */);
-    options["onError" /* ON_ERROR */] = createLifecycle(options, "onError" /* ON_ERROR */);
-    options["onPageNotFound" /* ON_PAGE_NOT_FOUND */] = createLifecycle(options, "onPageNotFound" /* ON_PAGE_NOT_FOUND */);
-    options["onUnhandledRejection" /* ON_UNHANDLED_REJECTION */] = createLifecycle(options, "onUnhandledRejection" /* ON_UNHANDLED_REJECTION */);
-    options["onThemeChange" /* ON_THEME_CHANGE */] = createLifecycle(options, "onThemeChange" /* ON_THEME_CHANGE */);
+    options["onShow" /* ON_SHOW */] = createLifecycle$2(options, "onShow" /* ON_SHOW */);
+    options["onHide" /* ON_HIDE */] = createLifecycle$2(options, "onHide" /* ON_HIDE */);
+    options["onError" /* ON_ERROR */] = createLifecycle$2(options, "onError" /* ON_ERROR */);
+    options["onPageNotFound" /* ON_PAGE_NOT_FOUND */] = createLifecycle$2(options, "onPageNotFound" /* ON_PAGE_NOT_FOUND */);
+    options["onUnhandledRejection" /* ON_UNHANDLED_REJECTION */] = createLifecycle$2(options, "onUnhandledRejection" /* ON_UNHANDLED_REJECTION */);
+    options["onThemeChange" /* ON_THEME_CHANGE */] = createLifecycle$2(options, "onThemeChange" /* ON_THEME_CHANGE */);
     // eslint-disable-next-line new-cap
     App(options);
 }
-function createLifecycle(options, lifecycle) {
+function createLifecycle$2(options, lifecycle) {
     const originLifecycle = options[lifecycle];
     return function (...args) {
         const hooks = this[toHiddenField(lifecycle)];
@@ -1303,7 +1345,7 @@ function createLifecycle(options, lifecycle) {
 }
 
 function deepToRaw(x) {
-    if (isSimpleValue(x) || isFunction$1(x)) {
+    if (isSimpleValue(x) || isFunction(x)) {
         return x;
     }
     if (isRef(x)) {
@@ -1312,7 +1354,7 @@ function deepToRaw(x) {
     if (isProxy(x)) {
         return deepToRaw(toRaw(x));
     }
-    if (isArray$1(x)) {
+    if (isArray(x)) {
         return x.map((item) => deepToRaw(item));
     }
     if (isPlainObject(x)) {
@@ -1325,7 +1367,7 @@ function deepToRaw(x) {
     throw new TypeError(`${getType(x)} value is not supported`);
 }
 function deepWatch(key, value) {
-    if (!isObject$1(value)) {
+    if (!isObject(value)) {
         return;
     }
     watch(isRef(value) ? value : () => value, () => {
@@ -1344,7 +1386,7 @@ function definePage(optionsOrSetup, config) {
     };
     let setup;
     let options;
-    if (isFunction$1(optionsOrSetup)) {
+    if (isFunction(optionsOrSetup)) {
         setup = optionsOrSetup;
         options = {};
     }
@@ -1379,7 +1421,7 @@ function definePage(optionsOrSetup, config) {
         if (bindings !== undefined) {
             Object.keys(bindings).forEach((key) => {
                 const value = bindings[key];
-                if (isFunction$1(value)) {
+                if (isFunction(value)) {
                     this[key] = value;
                     return;
                 }
@@ -1480,7 +1522,7 @@ function defineComponent(optionsOrSetup, config) {
     let setup;
     let options;
     let properties = null;
-    if (isFunction$1(optionsOrSetup)) {
+    if (isFunction(optionsOrSetup)) {
         setup = optionsOrSetup;
         options = {};
     }
@@ -1527,12 +1569,12 @@ function defineComponent(optionsOrSetup, config) {
             clearAnimation: this.clearAnimation.bind(this),
             getOpenerEventChannel: this.getOpenerEventChannel.bind(this),
         };
-        const bindings = setup( shallowReadonly(this.__props__)
+        const bindings = setup(shallowReadonly(this.__props__)
             , context);
         if (bindings !== undefined) {
             Object.keys(bindings).forEach((key) => {
                 const value = bindings[key];
-                if (isFunction$1(value)) {
+                if (isFunction(value)) {
                     this[key] = value;
                     return;
                 }
@@ -1556,7 +1598,7 @@ function defineComponent(optionsOrSetup, config) {
     };
     const originReady = options.lifetimes["ready" /* READY */] ||
         options["ready" /* READY */];
-    options.lifetimes["ready" /* READY */] = createLifecycle$2(SpecialLifecycleMap["ready" /* READY */], originReady);
+    options.lifetimes["ready" /* READY */] = createLifecycle(SpecialLifecycleMap["ready" /* READY */], originReady);
     options.lifetimes["moved" /* MOVED */] = createComponentLifecycle(options, "moved" /* MOVED */);
     options.lifetimes["error" /* ERROR */] = createComponentLifecycle(options, "error" /* ERROR */);
     if (options.methods === undefined) {
@@ -1635,17 +1677,17 @@ function defineComponent(optionsOrSetup, config) {
 }
 function createComponentLifecycle(options, lifecycle) {
     const originLifecycle = options.lifetimes[lifecycle] || options[lifecycle];
-    return createLifecycle$2(lifecycle, originLifecycle);
+    return createLifecycle(lifecycle, originLifecycle);
 }
 function createPageLifecycle(options, lifecycle) {
     const originLifecycle = options.methods[lifecycle];
-    return createLifecycle$2(lifecycle, originLifecycle);
+    return createLifecycle(lifecycle, originLifecycle);
 }
 function createSpecialPageLifecycle(options, lifecycle) {
     const originLifecycle = options.pageLifetimes[SpecialLifecycleMap[lifecycle]];
-    return createLifecycle$2(lifecycle, originLifecycle);
+    return createLifecycle(lifecycle, originLifecycle);
 }
-function createLifecycle$2(lifecycle, originLifecycle) {
+function createLifecycle(lifecycle, originLifecycle) {
     const hiddenField = toHiddenField(lifecycle);
     return function (...args) {
         const hooks = this[hiddenField];
@@ -1800,7 +1842,7 @@ function injectHook(currentInstance, lifecycle, hook) {
     currentInstance[hiddenField].push(hook);
 }
 
-exports.computed = computed$1;
+exports.computed = computed;
 exports.createApp = createApp;
 exports.customRef = customRef;
 exports.defineComponent = defineComponent;

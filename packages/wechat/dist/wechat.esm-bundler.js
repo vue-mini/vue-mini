@@ -1,5 +1,5 @@
 /*!
- * vue-mini v0.2.1
+ * vue-mini v0.2.2
  * https://github.com/vue-mini/vue-mini
  * (c) 2019-present Yang Mingshan
  * @license MIT
@@ -379,16 +379,16 @@ function createApp(optionsOrSetup) {
             originOnLaunch.call(this, options);
         }
     };
-    options["onShow" /* ON_SHOW */] = createLifecycle(options, "onShow" /* ON_SHOW */);
-    options["onHide" /* ON_HIDE */] = createLifecycle(options, "onHide" /* ON_HIDE */);
-    options["onError" /* ON_ERROR */] = createLifecycle(options, "onError" /* ON_ERROR */);
-    options["onPageNotFound" /* ON_PAGE_NOT_FOUND */] = createLifecycle(options, "onPageNotFound" /* ON_PAGE_NOT_FOUND */);
-    options["onUnhandledRejection" /* ON_UNHANDLED_REJECTION */] = createLifecycle(options, "onUnhandledRejection" /* ON_UNHANDLED_REJECTION */);
-    options["onThemeChange" /* ON_THEME_CHANGE */] = createLifecycle(options, "onThemeChange" /* ON_THEME_CHANGE */);
+    options["onShow" /* ON_SHOW */] = createLifecycle$2(options, "onShow" /* ON_SHOW */);
+    options["onHide" /* ON_HIDE */] = createLifecycle$2(options, "onHide" /* ON_HIDE */);
+    options["onError" /* ON_ERROR */] = createLifecycle$2(options, "onError" /* ON_ERROR */);
+    options["onPageNotFound" /* ON_PAGE_NOT_FOUND */] = createLifecycle$2(options, "onPageNotFound" /* ON_PAGE_NOT_FOUND */);
+    options["onUnhandledRejection" /* ON_UNHANDLED_REJECTION */] = createLifecycle$2(options, "onUnhandledRejection" /* ON_UNHANDLED_REJECTION */);
+    options["onThemeChange" /* ON_THEME_CHANGE */] = createLifecycle$2(options, "onThemeChange" /* ON_THEME_CHANGE */);
     // eslint-disable-next-line new-cap
     App(options);
 }
-function createLifecycle(options, lifecycle) {
+function createLifecycle$2(options, lifecycle) {
     const originLifecycle = options[lifecycle];
     return function (...args) {
         const hooks = this[toHiddenField(lifecycle)];
@@ -656,7 +656,7 @@ function defineComponent(optionsOrSetup, config) {
     };
     const originReady = options.lifetimes["ready" /* READY */] ||
         options["ready" /* READY */];
-    options.lifetimes["ready" /* READY */] = createLifecycle$2(SpecialLifecycleMap["ready" /* READY */], originReady);
+    options.lifetimes["ready" /* READY */] = createLifecycle(SpecialLifecycleMap["ready" /* READY */], originReady);
     options.lifetimes["moved" /* MOVED */] = createComponentLifecycle(options, "moved" /* MOVED */);
     options.lifetimes["error" /* ERROR */] = createComponentLifecycle(options, "error" /* ERROR */);
     if (options.methods === undefined) {
@@ -735,17 +735,17 @@ function defineComponent(optionsOrSetup, config) {
 }
 function createComponentLifecycle(options, lifecycle) {
     const originLifecycle = options.lifetimes[lifecycle] || options[lifecycle];
-    return createLifecycle$2(lifecycle, originLifecycle);
+    return createLifecycle(lifecycle, originLifecycle);
 }
 function createPageLifecycle(options, lifecycle) {
     const originLifecycle = options.methods[lifecycle];
-    return createLifecycle$2(lifecycle, originLifecycle);
+    return createLifecycle(lifecycle, originLifecycle);
 }
 function createSpecialPageLifecycle(options, lifecycle) {
     const originLifecycle = options.pageLifetimes[SpecialLifecycleMap[lifecycle]];
-    return createLifecycle$2(lifecycle, originLifecycle);
+    return createLifecycle(lifecycle, originLifecycle);
 }
-function createLifecycle$2(lifecycle, originLifecycle) {
+function createLifecycle(lifecycle, originLifecycle) {
     const hiddenField = toHiddenField(lifecycle);
     return function (...args) {
         const hooks = this[hiddenField];

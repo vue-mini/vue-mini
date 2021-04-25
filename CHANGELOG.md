@@ -1,3 +1,9 @@
+# 0.2.2 (2021-04-25)
+
+### 依赖
+
+- @vue/reactivity 从 3.0.5 升至 3.0.11 ([62aadd7](https://github.com/vue-mini/vue-mini/commit/62aadd759cb20623d20bdb44854ed39801b8cb74))
+
 # 0.2.1 (2021-01-10)
 
 ### 依赖
