@@ -1117,12 +1117,12 @@
     "@vue/compiler-dom" "3.0.7"
     "@vue/shared" "3.0.7"
 
-"@vue/reactivity@3.0.5":
-  version "3.0.5"
-  resolved "https://registry.npm.taobao.org/@vue/reactivity/download/@vue/reactivity-3.0.5.tgz#e3789e4d523d845f9ae0b4d770e2b45594742fd2"
-  integrity sha1-43ieTVI9hF+a4LTXcOK0VZR0L9I=
+"@vue/reactivity@3.0.11":
+  version "3.0.11"
+  resolved "https://registry.nlark.com/@vue/reactivity/download/@vue/reactivity-3.0.11.tgz#07b588349fd05626b17f3500cbef7d4bdb4dbd0b"
+  integrity sha1-B7WINJ/QViaxfzUAy+99S9tNvQs=
   dependencies:
-    "@vue/shared" "3.0.5"
+    "@vue/shared" "3.0.11"
 
 "@vue/reactivity@3.0.7":
   version "3.0.7"
@@ -1156,10 +1156,10 @@
     "@vue/compiler-ssr" "3.0.7"
     "@vue/shared" "3.0.7"
 
-"@vue/shared@3.0.5":
-  version "3.0.5"
-  resolved "https://registry.npm.taobao.org/@vue/shared/download/@vue/shared-3.0.5.tgz#c131d88bd6713cc4d93b3bb1372edb1983225ff0"
-  integrity sha1-wTHYi9ZxPMTZOzuxNy7bGYMiX/A=
+"@vue/shared@3.0.11":
+  version "3.0.11"
+  resolved "https://registry.npm.taobao.org/@vue/shared/download/@vue/shared-3.0.11.tgz?cache=0&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2F%40vue%2Fshared%2Fdownload%2F%40vue%2Fshared-3.0.11.tgz#20d22dd0da7d358bb21c17f9bde8628152642c77"
+  integrity sha1-INIt0Np9NYuyHBf5vehigVJkLHc=
 
 "@vue/shared@3.0.7":
   version "3.0.7"
