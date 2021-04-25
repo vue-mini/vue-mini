@@ -3,6 +3,7 @@ import { isFunction } from './utils'
 const provides = Object.create(null)
 
 // @ts-expect-error
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export interface InjectionKey<T> extends Symbol {}
 
 export function provide<T>(key: InjectionKey<T> | string, value: T): void {

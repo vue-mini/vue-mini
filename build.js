@@ -137,6 +137,7 @@ async function build(target) {
 for (const pkg of fs.readdirSync('packages')) {
   const target = path.join('packages', pkg)
   if (!fs.statSync(target).isDirectory()) continue
+  // eslint-disable-next-line promise/prefer-await-to-then
   build(target).catch(() => {
     process.exitCode = 1
   })

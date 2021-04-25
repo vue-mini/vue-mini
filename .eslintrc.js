@@ -11,16 +11,16 @@ const { object, Function, Omit, ...types } = xoTs.rules[
 const config = {
   root: true,
   extends: [
-    'xo/esnext',
+    'xo',
     require.resolve('xo/config/plugins'),
     'plugin:prettier/recommended',
-    'prettier/unicorn',
+    'prettier',
   ],
   ignorePatterns: ['dist', 'coverage'],
   overrides: [
     {
       files: ['*.ts'],
-      extends: ['xo-typescript', 'prettier/@typescript-eslint'],
+      extends: ['xo-typescript', 'prettier'],
       parserOptions: {
         project: './tsconfig.json',
       },
@@ -34,6 +34,8 @@ const config = {
         'unicorn/prevent-abbreviations': 'off',
         '@typescript-eslint/prefer-for-of': 'off',
         '@typescript-eslint/prefer-includes': 'off',
+        '@typescript-eslint/no-unsafe-argument': 'off',
+        '@typescript-eslint/no-non-null-assertion': 'off',
         '@typescript-eslint/promise-function-async': 'off',
         '@typescript-eslint/prefer-nullish-coalescing': 'off',
         '@typescript-eslint/ban-types': [
