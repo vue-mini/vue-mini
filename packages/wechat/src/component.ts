@@ -1,4 +1,4 @@
-import { stop, shallowReactive, shallowReadonly } from '@vue/reactivity'
+import { stop, shallowReactive, shallowReadonly, isRef, isReactive } from '@vue/reactivity'
 import { PageLifecycle, Config } from './page'
 import { deepToRaw, deepWatch } from './shared'
 import { Bindings, ComponentInstance, setCurrentComponent } from './instance'
@@ -19,37 +19,37 @@ export type ComponentSetup<Props extends Record<string, any>> = (
 export type ComponentOptionsWithoutProps<
   Data extends WechatMiniprogram.Component.DataOption,
   Methods extends WechatMiniprogram.Component.MethodOption
-> = WechatMiniprogram.Component.Options<
-  Data,
-  WechatMiniprogram.Component.PropertyOption,
-  Methods
-> & { properties?: undefined } & {
-  // eslint-disable-next-line @typescript-eslint/ban-types
-  setup?: ComponentSetup<{}>
-}
+  > = WechatMiniprogram.Component.Options<
+    Data,
+    WechatMiniprogram.Component.PropertyOption,
+    Methods
+  > & { properties?: undefined } & {
+    // eslint-disable-next-line @typescript-eslint/ban-types
+    setup?: ComponentSetup<{}>
+  }
 
 export type ComponentOptionsWithProps<
   Props extends WechatMiniprogram.Component.PropertyOption,
   Data extends WechatMiniprogram.Component.DataOption,
   Methods extends WechatMiniprogram.Component.MethodOption
-> = WechatMiniprogram.Component.Options<Data, Props, Methods> & {
-  setup?: ComponentSetup<PropertyOptionToData<Props>>
-}
+  > = WechatMiniprogram.Component.Options<Data, Props, Methods> & {
+    setup?: ComponentSetup<PropertyOptionToData<Props>>
+  }
 
 /** * Temporary patch for https://github.com/wechat-miniprogram/api-typings/issues/97 ***/
 type PropertyOptionToData<
   T extends WechatMiniprogram.Component.PropertyOption
-> = {
-  [Name in keyof T]: PropertyToData<T[Name]>
-}
+  > = {
+    [Name in keyof T]: PropertyToData<T[Name]>
+  }
 type PropertyToData<
   T extends WechatMiniprogram.Component.AllProperty
-> = T extends WechatMiniprogram.Component.PropertyType
+  > = T extends WechatMiniprogram.Component.PropertyType
   ? WechatMiniprogram.Component.ValueType<T>
   : T extends WechatMiniprogram.Component.AllFullProperty
   ? T['optionalTypes'] extends OptionalTypes<infer Option>
-    ? WechatMiniprogram.Component.ValueType<Option | T['type']>
-    : WechatMiniprogram.Component.ValueType<T['type']>
+  ? WechatMiniprogram.Component.ValueType<Option | T['type']>
+  : WechatMiniprogram.Component.ValueType<T['type']>
   : never
 type OptionalTypes<T extends WechatMiniprogram.Component.PropertyType> = T[]
 /*************************************************************************************/
@@ -156,6 +156,7 @@ export function defineComponent(optionsOrSetup: any, config?: Config): string {
       clearAnimation: this.clearAnimation.bind(this),
       getOpenerEventChannel: this.getOpenerEventChannel.bind(this),
     }
+    const setDatas: Bindings = {}
     const bindings = setup(
       __DEV__
         ? shallowReadonly(this.__props__)
@@ -169,12 +170,14 @@ export function defineComponent(optionsOrSetup: any, config?: Config): string {
           this[key] = value
           return
         }
-
-        this.setData({ [key]: deepToRaw(value) })
-        deepWatch.call(this, key, value)
+        setDatas[key] = deepToRaw(value)
+        if (isRef(value) || isReactive(value)) {
+          this['__' + key] = value
+          deepWatch.call(this, key, value)
+        }
       })
     }
-
+    this.setData(setDatas)
     setCurrentComponent(null)
 
     if (originAttached !== undefined) {
