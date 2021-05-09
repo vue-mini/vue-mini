@@ -1,4 +1,4 @@
-import { stop } from '@vue/reactivity'
+import { stop, isRef, isReactive } from '@vue/reactivity'
 import { Bindings, PageInstance, setCurrentPage } from './instance'
 import { deepToRaw, deepWatch } from './shared'
 import { isFunction, toHiddenField } from './utils'
@@ -22,7 +22,7 @@ export type PageSetup = (
 export type PageOptions<
   Data extends WechatMiniprogram.Page.DataOption,
   Custom extends WechatMiniprogram.Page.CustomOption
-> = { setup?: PageSetup } & WechatMiniprogram.Page.Options<Data, Custom>
+  > = { setup?: PageSetup } & WechatMiniprogram.Page.Options<Data, Custom>
 export interface Config {
   listenPageScroll?: boolean
   canShareToOthers?: boolean
@@ -94,6 +94,7 @@ export function definePage(optionsOrSetup: any, config?: Config): void {
       clearAnimation: this.clearAnimation.bind(this),
       getOpenerEventChannel: this.getOpenerEventChannel.bind(this),
     }
+    const setDatas: Bindings = {}
     const bindings = setup(query, context)
     if (bindings !== undefined) {
       Object.keys(bindings).forEach((key) => {
@@ -102,12 +103,14 @@ export function definePage(optionsOrSetup: any, config?: Config): void {
           this[key] = value
           return
         }
-
-        this.setData({ [key]: deepToRaw(value) })
-        deepWatch.call(this, key, value)
+        setDatas[key] = deepToRaw(value)
+        if (isRef(value) || isReactive(value)) {
+          this['__' + key] = value
+          deepWatch.call(this, key, value)
+        }
       })
     }
-
+    this.setData(setDatas)
     setCurrentPage(null)
 
     if (originOnLoad !== undefined) {
