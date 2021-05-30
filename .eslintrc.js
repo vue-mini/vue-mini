@@ -1,12 +1,12 @@
+/* eslint-disable unicorn/prefer-module */
 'use strict'
 
 // eslint-disable-next-line import/no-extraneous-dependencies
 const xoTs = require('eslint-config-xo-typescript')
 
 const isProd = process.env.NODE_ENV === 'production'
-const { object, Function, Omit, ...types } = xoTs.rules[
-  '@typescript-eslint/ban-types'
-][1].types
+const { object, Function, Omit, ...types } =
+  xoTs.rules['@typescript-eslint/ban-types'][1].types
 
 const config = {
   root: true,
@@ -36,6 +36,10 @@ const config = {
         '@typescript-eslint/prefer-includes': 'off',
         '@typescript-eslint/no-unsafe-argument': 'off',
         '@typescript-eslint/no-non-null-assertion': 'off',
+        '@typescript-eslint/no-unsafe-assignment': 'off',
+        '@typescript-eslint/no-unsafe-call': 'off',
+        '@typescript-eslint/no-unsafe-member-access': 'off',
+        '@typescript-eslint/no-unsafe-return': 'off',
         '@typescript-eslint/promise-function-async': 'off',
         '@typescript-eslint/prefer-nullish-coalescing': 'off',
         '@typescript-eslint/ban-types': [

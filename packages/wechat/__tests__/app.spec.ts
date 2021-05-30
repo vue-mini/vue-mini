@@ -14,6 +14,7 @@ import {
 
 // Mocks
 declare global {
+  // eslint-disable-next-line @typescript-eslint/no-namespace
   namespace NodeJS {
     interface Global {
       App: (options: Record<string, any>) => void

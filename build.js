@@ -1,3 +1,4 @@
+/* eslint-disable unicorn/prefer-module */
 'use strict'
 
 const path = require('path')

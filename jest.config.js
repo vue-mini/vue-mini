@@ -1,3 +1,4 @@
+/* eslint-disable unicorn/prefer-module */
 'use strict'
 
 module.exports = {
@@ -10,5 +11,4 @@ module.exports = {
   // CoverageProvider: 'v8',
   collectCoverageFrom: ['packages/*/src/**/*.ts', '!packages/*/src/index.ts'],
   watchPathIgnorePatterns: ['/node_modules/'],
-  testEnvironment: 'node',
 }

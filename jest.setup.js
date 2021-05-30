@@ -23,9 +23,8 @@ expect.extend({
 
   toHaveBeenWarnedLast(received) {
     asserted.add(received)
-    const passed = warn.mock.calls[warn.mock.calls.length - 1][0].includes(
-      received
-    )
+    const passed =
+      warn.mock.calls[warn.mock.calls.length - 1][0].includes(received)
     if (passed) {
       return {
         pass: true,
