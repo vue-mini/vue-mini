@@ -1,6 +1,6 @@
 export interface SchedulerJob {
-  allowRecurse?: boolean
   (): void
+  allowRecurse?: boolean
 }
 
 let isFlushing = false
