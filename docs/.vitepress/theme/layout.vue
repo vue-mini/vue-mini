@@ -47,17 +47,11 @@
 
 <script setup lang="ts">
 import { ref, computed, watch, defineAsyncComponent } from 'vue'
-import {
-  useRoute,
-  useSiteData,
-  usePageData,
-  useSiteDataByRoute,
-} from 'vitepress/dist/client'
+import { useRoute, useData } from 'vitepress/dist/client'
 import {
   isSideBarEmpty,
   getSideBarConfig,
 } from 'vitepress/dist/client/theme-default/support/sideBar'
-import type { DefaultTheme } from 'vitepress/dist/client/theme-default/config'
 
 // components
 import NavBar from 'vitepress/dist/client/theme-default/components/NavBar.vue'
@@ -70,28 +64,21 @@ const Home = defineAsyncComponent(
 
 // generic state
 const route = useRoute()
-const siteData = useSiteData<DefaultTheme.Config>()
-const siteRouteData = useSiteDataByRoute()
-const theme = computed(() => siteData.value.themeConfig)
-const page = usePageData()
+const { site, theme, frontmatter } = useData()
 
 // custom layout
-const isCustomLayout = computed(() => !!route.data.frontmatter.customLayout)
+const isCustomLayout = computed(() => !!frontmatter.value.customLayout)
 // home
-const enableHome = computed(() => !!route.data.frontmatter.home)
+const enableHome = computed(() => !!frontmatter.value.home)
 
 // navbar
 const showNavbar = computed(() => {
-  const { themeConfig } = siteRouteData.value
-  const { frontmatter } = route.data
-  if (frontmatter.navbar === false || themeConfig.navbar === false) {
+  const themeConfig = theme.value
+  if (frontmatter.value.navbar === false || themeConfig.navbar === false) {
     return false
   }
   return (
-    siteData.value.title ||
-    themeConfig.logo ||
-    themeConfig.repo ||
-    themeConfig.nav
+    site.value.title || themeConfig.logo || themeConfig.repo || themeConfig.nav
   )
 })
 
@@ -99,16 +86,12 @@ const showNavbar = computed(() => {
 const openSideBar = ref(false)
 
 const showSidebar = computed(() => {
-  const { frontmatter } = route.data
-
-  if (frontmatter.home || frontmatter.sidebar === false) {
+  if (frontmatter.value.home || frontmatter.value.sidebar === false) {
     return false
   }
 
-  const { themeConfig } = siteRouteData.value
-
   return !isSideBarEmpty(
-    getSideBarConfig(themeConfig.sidebar, route.data.relativePath)
+    getSideBarConfig(theme.value.sidebar, route.data.relativePath)
   )
 })
 
