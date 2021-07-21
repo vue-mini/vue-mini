@@ -12,7 +12,7 @@ const config = {
   root: true,
   extends: [
     'xo',
-    require.resolve('xo/config/plugins'),
+    require.resolve('xo/config/plugins.cjs'),
     'plugin:prettier/recommended',
     'prettier',
   ],

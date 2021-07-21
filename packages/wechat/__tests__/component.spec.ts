@@ -25,16 +25,9 @@ import {
 } from '../src'
 
 // Mocks
-declare global {
-  // eslint-disable-next-line @typescript-eslint/no-namespace
-  namespace NodeJS {
-    interface Global {
-      Component: (options: Record<string, any>) => void
-    }
-  }
-}
 let component: Record<string, any>
-global.Component = (options) => {
+// @ts-expect-error
+global.Component = (options: Record<string, any>) => {
   component = {
     ...options,
     is: '',

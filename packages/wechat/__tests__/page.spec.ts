@@ -21,15 +21,8 @@ import {
 } from '../src'
 
 // Mocks
-declare global {
-  // eslint-disable-next-line @typescript-eslint/no-namespace
-  namespace NodeJS {
-    interface Global {
-      Page: (options: Record<string, any>) => void
-    }
-  }
-}
 let page: Record<string, any>
+// @ts-expect-error
 global.Page = (options: Record<string, any>) => {
   page = {
     ...options,

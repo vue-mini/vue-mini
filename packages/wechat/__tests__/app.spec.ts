@@ -13,15 +13,8 @@ import {
 } from '../src'
 
 // Mocks
-declare global {
-  // eslint-disable-next-line @typescript-eslint/no-namespace
-  namespace NodeJS {
-    interface Global {
-      App: (options: Record<string, any>) => void
-    }
-  }
-}
 let app: Record<string, any>
+// @ts-expect-error
 global.App = (options: Record<string, any>) => {
   app = options
 }

@@ -49,15 +49,17 @@ export const onPageScroll = (
   hook: (scroll: WechatMiniprogram.Page.IPageScrollOption) => unknown
 ): void => {
   const currentInstance = getCurrentInstance()
+  /* istanbul ignore else  */
   if (currentInstance) {
+    /* istanbul ignore else  */
     if (currentInstance.__listenPageScroll__) {
       injectHook(currentInstance, PageLifecycle.ON_PAGE_SCROLL, hook)
-    } /* istanbul ignore else  */ else if (__DEV__) {
+    } else if (__DEV__) {
       console.warn(
         'onPageScroll() hook only works when `listenPageScroll` is configured to true.'
       )
     }
-  } /* istanbul ignore else  */ else if (__DEV__) {
+  } else if (__DEV__) {
     console.warn(pageHookWarn)
   }
 }
@@ -68,23 +70,26 @@ export const onShareAppMessage = (
   ) => WechatMiniprogram.Page.ICustomShareContent
 ): void => {
   const currentInstance = getCurrentInstance()
+  /* istanbul ignore else  */
   if (currentInstance) {
+    /* istanbul ignore else  */
     if (
       currentInstance[PageLifecycle.ON_SHARE_APP_MESSAGE] &&
       currentInstance.__isInjectedShareToOthersHook__
     ) {
       const hiddenField = toHiddenField(PageLifecycle.ON_SHARE_APP_MESSAGE)
+      /* istanbul ignore else  */
       if (currentInstance[hiddenField] === undefined) {
         currentInstance[hiddenField] = hook
-      } /* istanbul ignore else  */ else if (__DEV__) {
+      } else if (__DEV__) {
         console.warn('onShareAppMessage() hook can only be called once.')
       }
-    } /* istanbul ignore else  */ else if (__DEV__) {
+    } else if (__DEV__) {
       console.warn(
         'onShareAppMessage() hook only works when `onShareAppMessage` option is not exist and `canShareToOthers` is configured to true.'
       )
     }
-  } /* istanbul ignore else  */ else if (__DEV__) {
+  } else if (__DEV__) {
     console.warn(pageHookWarn)
   }
 }
@@ -93,23 +98,26 @@ export const onShareTimeline = (
   hook: () => WechatMiniprogram.Page.ICustomTimelineContent
 ): void => {
   const currentInstance = getCurrentInstance()
+  /* istanbul ignore else  */
   if (currentInstance) {
+    /* istanbul ignore else  */
     if (
       currentInstance[PageLifecycle.ON_SHARE_TIMELINE] &&
       currentInstance.__isInjectedShareToTimelineHook__
     ) {
       const hiddenField = toHiddenField(PageLifecycle.ON_SHARE_TIMELINE)
+      /* istanbul ignore else  */
       if (currentInstance[hiddenField] === undefined) {
         currentInstance[hiddenField] = hook
-      } /* istanbul ignore else  */ else if (__DEV__) {
+      } else if (__DEV__) {
         console.warn('onShareTimeline() hook can only be called once.')
       }
-    } /* istanbul ignore else  */ else if (__DEV__) {
+    } else if (__DEV__) {
       console.warn(
         'onShareTimeline() hook only works when `onShareTimeline` option is not exist and `canShareToTimeline` is configured to true.'
       )
     }
-  } /* istanbul ignore else  */ else if (__DEV__) {
+  } else if (__DEV__) {
     console.warn(pageHookWarn)
   }
 }
@@ -120,29 +128,33 @@ export const onAddToFavorites = (
   ) => WechatMiniprogram.Page.IAddToFavoritesContent
 ): void => {
   const currentInstance = getCurrentInstance()
+  /* istanbul ignore else  */
   if (currentInstance) {
+    /* istanbul ignore else  */
     if (currentInstance.__isInjectedFavoritesHook__) {
       const hiddenField = toHiddenField(PageLifecycle.ON_ADD_TO_FAVORITES)
+      /* istanbul ignore else  */
       if (currentInstance[hiddenField] === undefined) {
         currentInstance[hiddenField] = hook
-      } /* istanbul ignore else  */ else if (__DEV__) {
+      } else if (__DEV__) {
         console.warn('onAddToFavorites() hook can only be called once.')
       }
-    } /* istanbul ignore else  */ else if (__DEV__) {
+    } else if (__DEV__) {
       console.warn(
         'onAddToFavorites() hook only works when `onAddToFavorites` option is not exist.'
       )
     }
-  } /* istanbul ignore else  */ else if (__DEV__) {
+  } else if (__DEV__) {
     console.warn(pageHookWarn)
   }
 }
 
 export const onReady = (hook: () => unknown): void => {
   const currentInstance = getCurrentInstance()
+  /* istanbul ignore else  */
   if (currentInstance) {
     injectHook(currentInstance, PageLifecycle.ON_READY, hook)
-  } /* istanbul ignore else  */ else if (__DEV__) {
+  } else if (__DEV__) {
     console.warn(
       'onReady() hook can only be called during execution of setup() in definePage() or defineComponent().'
     )
@@ -162,9 +174,10 @@ function createAppHook<T extends Function = () => unknown>(
   lifecycle: AppLifecycle
 ) {
   return (hook: T): void => {
+    /* istanbul ignore else  */
     if (currentApp) {
       injectHook(currentApp, lifecycle, hook)
-    } /* istanbul ignore else  */ else if (__DEV__) {
+    } else if (__DEV__) {
       console.warn(
         'App specific lifecycle injection APIs can only be used during execution of setup() in createApp().'
       )
@@ -177,9 +190,10 @@ function createPageHook<T extends Function = () => unknown>(
 ) {
   return (hook: T): void => {
     const currentInstance = getCurrentInstance()
+    /* istanbul ignore else  */
     if (currentInstance) {
       injectHook(currentInstance, lifecycle, hook)
-    } /* istanbul ignore else  */ else if (__DEV__) {
+    } else if (__DEV__) {
       console.warn(pageHookWarn)
     }
   }
@@ -189,9 +203,10 @@ function createComponentHook<T extends Function = () => unknown>(
   lifecycle: PageLifecycle.ON_LOAD | ComponentLifecycle
 ) {
   return (hook: T): void => {
+    /* istanbul ignore else  */
     if (currentComponent) {
       injectHook(currentComponent, lifecycle, hook)
-    } /* istanbul ignore else  */ else if (__DEV__) {
+    } else if (__DEV__) {
       console.warn(
         'Component specific lifecycle injection APIs can only be used during execution of setup() in defineComponent().'
       )
