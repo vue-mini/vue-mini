@@ -14,6 +14,7 @@ import { getCurrentInstance } from './instance'
 import {
   isArray,
   isObject,
+  isPlainObject,
   isFunction,
   hasChanged,
   remove,
@@ -318,6 +319,7 @@ function traverse(value: unknown, seen: Set<unknown> = new Set()): unknown {
   }
 
   seen.add(value)
+  /* istanbul ignore else  */
   if (isRef(value)) {
     traverse(value.value, seen)
   } else if (isArray(value)) {
@@ -328,10 +330,10 @@ function traverse(value: unknown, seen: Set<unknown> = new Set()): unknown {
     value.forEach((v: any) => {
       traverse(v, seen)
     })
-  } else {
+  } else if (isPlainObject(value)) {
     // eslint-disable-next-line guard-for-in
     for (const key in value) {
-      traverse((value as Record<any, any>)[key], seen)
+      traverse(value[key], seen)
     }
   }
 
