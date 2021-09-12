@@ -1,3 +1,4 @@
+import { effect, stop } from '@vue/reactivity'
 import { queueJob, nextTick } from '../src/scheduler'
 
 describe('scheduler', () => {
@@ -137,5 +138,29 @@ describe('scheduler', () => {
     queueJob(job)
     await nextTick()
     expect(count).toBe(1)
+  })
+
+  // #910
+  test('should not run stopped reactive effects', async () => {
+    const spy = jest.fn()
+
+    // Simulate parent component that toggles child
+    const job1 = () => {
+      stop(job2)
+    }
+
+    job1.id = 0 // Need the id to ensure job1 is sorted before job2
+
+    // simulate child that's triggered by the same reactive change that
+    // triggers its toggle
+    const job2 = effect(() => spy())
+    expect(spy).toHaveBeenCalledTimes(1)
+
+    queueJob(job1)
+    queueJob(job2)
+    await nextTick()
+
+    // Should not be called again
+    expect(spy).toHaveBeenCalledTimes(1)
   })
 })

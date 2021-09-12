@@ -260,7 +260,7 @@ function doWatch(
 
   let scheduler: ReactiveEffectOptions['scheduler']
   if (flush === 'sync') {
-    scheduler = job
+    scheduler = job as any // The scheduler function gets called directly
   } else {
     scheduler = () => {
       queueJob(job)

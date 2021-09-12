@@ -1,7 +1,6 @@
-export interface SchedulerJob {
-  (): void
-  allowRecurse?: boolean
-}
+import { ReactiveEffect } from '@vue/reactivity'
+
+export interface SchedulerJob extends Function, Partial<ReactiveEffect> {}
 
 let isFlushing = false
 let isFlushPending = false
@@ -59,12 +58,14 @@ function flushJobs(seen?: CountMap): void {
   try {
     for (flushIndex = 0; flushIndex < queue.length; flushIndex++) {
       const job = queue[flushIndex]
-      /* istanbul ignore if  */
-      if (__DEV__ && checkRecursiveUpdates(seen!, job)) {
-        continue
-      }
+      if (job.active !== false) {
+        /* istanbul ignore if  */
+        if (__DEV__ && checkRecursiveUpdates(seen!, job)) {
+          continue
+        }
 
-      job()
+        job()
+      }
     }
   } finally {
     flushIndex = 0
