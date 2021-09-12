@@ -160,6 +160,8 @@ function doWatch(
 
   let getter: () => any
   let forceTrigger = false
+  let isMultiSource = false
+
   if (isRef(source)) {
     getter = () => (source as Ref).value
     // @ts-expect-error
@@ -168,6 +170,8 @@ function doWatch(
     getter = () => source
     deep = true
   } else if (isArray(source)) {
+    isMultiSource = true
+    forceTrigger = source.some((s) => isReactive(s))
     getter = () =>
       source.map((s) => {
         if (isRef(s)) {
@@ -225,7 +229,7 @@ function doWatch(
     }
   }
 
-  let oldValue = isArray(source) ? [] : INITIAL_WATCHER_VALUE
+  let oldValue = isMultiSource ? [] : INITIAL_WATCHER_VALUE
   const job: SchedulerJob = () => {
     if (!runner.active) {
       return
@@ -234,7 +238,15 @@ function doWatch(
     if (cb) {
       // Watch(source, cb)
       const newValue = runner()
-      if (deep || forceTrigger || hasChanged(newValue, oldValue)) {
+      if (
+        deep ||
+        forceTrigger ||
+        (isMultiSource
+          ? (newValue as any[]).some((v, i) =>
+              hasChanged(v, (oldValue as any[])[i])
+            )
+          : hasChanged(newValue, oldValue))
+      ) {
         // Cleanup before running cb again
         if (cleanup) {
           cleanup()

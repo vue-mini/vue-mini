@@ -558,6 +558,30 @@ describe('watch', () => {
     expect(spy).toHaveBeenCalledTimes(1)
   })
 
+  test('watching sources: ref<any[]>', async () => {
+    const foo = ref([1])
+    const spy = jest.fn()
+    watch(foo, () => {
+      spy()
+    })
+    foo.value = [...foo.value]
+    await nextTick()
+    expect(spy).toBeCalledTimes(1)
+  })
+
+  test('watching multiple sources: computed', async () => {
+    let count = 0
+    const value = ref('1')
+    const plus = computed(() => Boolean(value.value))
+    watch([plus], () => {
+      count++
+    })
+    value.value = '2'
+    await nextTick()
+    expect(plus.value).toBe(true)
+    expect(count).toBe(0)
+  })
+
   /** Dividing line, the above tests is directly copy from vue.js **/
 
   it('warn when using old simple watch api', async () => {
