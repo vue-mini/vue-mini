@@ -6,6 +6,7 @@ import {
   ComputedRef,
   ReactiveEffectOptions,
   isReactive,
+  ReactiveFlags,
 } from '@vue/reactivity'
 import { queueJob, SchedulerJob } from './scheduler'
 import { recordInstanceBoundEffect } from './computed'
@@ -296,7 +297,11 @@ function doWatch(
 }
 
 function traverse(value: unknown, seen: Set<unknown> = new Set()): unknown {
-  if (!isObject(value) || seen.has(value)) {
+  if (
+    !isObject(value) ||
+    seen.has(value) ||
+    (value as any)[ReactiveFlags.SKIP]
+  ) {
     return value
   }
 
