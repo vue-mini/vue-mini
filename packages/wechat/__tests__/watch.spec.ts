@@ -600,4 +600,17 @@ describe('watch', () => {
     await nextTick()
     expect(spy).not.toBeCalled()
   })
+
+  it('should work with circular object', async () => {
+    const spy = jest.fn()
+    const obj = { count: 0 }
+    // @ts-expect-error
+    obj.self = obj
+    const source = reactive(obj)
+    watch(source, spy)
+
+    source.count = 1
+    await nextTick()
+    expect(spy).toBeCalledTimes(1)
+  })
 })

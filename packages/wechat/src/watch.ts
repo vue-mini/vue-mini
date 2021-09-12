@@ -309,12 +309,13 @@ function doWatch(
   }
 }
 
-function traverse(value: unknown, seen: Set<unknown> = new Set()): unknown {
-  if (
-    !isObject(value) ||
-    seen.has(value) ||
-    (value as any)[ReactiveFlags.SKIP]
-  ) {
+function traverse(value: unknown, seen?: Set<unknown>): unknown {
+  if (!isObject(value) || (value as any)[ReactiveFlags.SKIP]) {
+    return value
+  }
+
+  seen = seen || new Set()
+  if (seen.has(value)) {
     return value
   }
 
