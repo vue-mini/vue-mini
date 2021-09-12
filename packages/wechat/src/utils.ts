@@ -14,7 +14,7 @@ export function isObject(x: unknown): x is object {
 }
 
 export function isPlainObject(x: unknown): x is Record<string, unknown> {
-  return x !== null && getType(x) === 'Object'
+  return getType(x) === 'Object'
 }
 
 export function isFunction(x: unknown): x is Function {
