@@ -59,9 +59,9 @@ function flushJobs(seen?: CountMap): void {
   try {
     for (flushIndex = 0; flushIndex < queue.length; flushIndex++) {
       const job = queue[flushIndex]
-      /* istanbul ignore else  */
-      if (__DEV__) {
-        checkRecursiveUpdates(seen!, job)
+      /* istanbul ignore if  */
+      if (__DEV__ && checkRecursiveUpdates(seen!, job)) {
+        continue
       }
 
       job()
@@ -75,16 +75,18 @@ function flushJobs(seen?: CountMap): void {
   }
 }
 
-function checkRecursiveUpdates(seen: CountMap, fn: SchedulerJob): void {
+function checkRecursiveUpdates(seen: CountMap, fn: SchedulerJob): boolean {
   const count = seen.get(fn) || 0
   /* istanbul ignore if */
   if (count > RECURSION_LIMIT) {
-    throw new Error(
+    console.warn(
       `Maximum recursive updates exceeded. ` +
         `This means you have a reactive effect that is mutating its own ` +
         `dependencies and thus recursively triggering itself.`
     )
-  } else {
-    seen.set(fn, count + 1)
+    return true
   }
+
+  seen.set(fn, count + 1)
+  return false
 }
