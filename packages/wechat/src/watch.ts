@@ -164,9 +164,9 @@ function doWatch(
   let isMultiSource = false
 
   if (isRef(source)) {
-    getter = () => (source as Ref).value
+    getter = () => source.value
     // @ts-expect-error
-    forceTrigger = Boolean((source as Ref)._shallow)
+    forceTrigger = Boolean(source._shallow)
   } else if (isReactive(source)) {
     getter = () => source
     deep = true
