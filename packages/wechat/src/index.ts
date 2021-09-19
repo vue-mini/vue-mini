@@ -33,7 +33,7 @@ export {
   getCurrentScope,
   onScopeDispose,
 } from '@vue/reactivity'
-export { watch, watchEffect } from './watch'
+export { watch, watchEffect, watchPostEffect } from './watch'
 export { nextTick } from './scheduler'
 export { provide, inject } from './inject'
 export { createApp } from './app'

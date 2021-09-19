@@ -7,7 +7,15 @@ import {
   triggerRef,
   shallowRef,
 } from '@vue/reactivity'
-import { watch, watchEffect, reactive, computed, nextTick, ref } from '../src'
+import {
+  watch,
+  watchEffect,
+  watchPostEffect,
+  reactive,
+  computed,
+  nextTick,
+  ref,
+} from '../src'
 
 describe('watch', () => {
   it('effect', async () => {
@@ -583,6 +591,19 @@ describe('watch', () => {
   })
 
   /** Dividing line, the above tests is directly copy from vue.js **/
+
+  it('watchPostEffect', async () => {
+    const state = reactive({ count: 0 })
+    let dummy
+    watchPostEffect(() => {
+      dummy = state.count
+    })
+    expect(dummy).toBe(0)
+
+    state.count++
+    await nextTick()
+    expect(dummy).toBe(1)
+  })
 
   it('warn when using old simple watch api', async () => {
     const count = ref(0)
