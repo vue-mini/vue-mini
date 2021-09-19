@@ -1,4 +1,4 @@
-import { ReactiveEffect } from '@vue/reactivity'
+import { EffectScope } from '@vue/reactivity'
 
 export type Bindings = Record<string, any> | void
 
@@ -11,7 +11,7 @@ export type PageInstance = WechatMiniprogram.Page.InstanceProperties &
     __isInjectedShareToTimelineHook__?: () => true
     __isInjectedFavoritesHook__?: () => true
     __listenPageScroll__?: () => true
-    __effects__?: ReactiveEffect[]
+    __scope__: EffectScope
   }
 
 export type ComponentInstance = WechatMiniprogram.Component.InstanceProperties &
@@ -21,7 +21,7 @@ export type ComponentInstance = WechatMiniprogram.Component.InstanceProperties &
     __isInjectedShareToTimelineHook__?: () => true
     __isInjectedFavoritesHook__?: () => true
     __listenPageScroll__?: () => true
-    __effects__?: ReactiveEffect[]
+    __scope__: EffectScope
     __props__: undefined | Record<string, any>
   }
 
@@ -35,14 +35,38 @@ export function getCurrentInstance(): PageInstance | ComponentInstance | null {
   return currentPage || currentComponent
 }
 
-export function setCurrentApp(page: AppInstance | null): void {
+export function setCurrentApp(page: AppInstance): void {
   currentApp = page
 }
 
-export function setCurrentPage(page: PageInstance | null): void {
-  currentPage = page
+export function unsetCurrentApp(): void {
+  currentApp = null
 }
 
-export function setCurrentComponent(component: ComponentInstance | null): void {
+export function setCurrentPage(page: PageInstance): void {
+  currentPage = page
+  page.__scope__.on()
+}
+
+export function unsetCurrentPage(): void {
+  /* istanbul ignore else */
+  if (currentPage) {
+    currentPage.__scope__.off()
+  }
+
+  currentPage = null
+}
+
+export function setCurrentComponent(component: ComponentInstance): void {
   currentComponent = component
+  component.__scope__.on()
+}
+
+export function unsetCurrentComponent(): void {
+  /* istanbul ignore else */
+  if (currentComponent) {
+    currentComponent.__scope__.off()
+  }
+
+  currentComponent = null
 }

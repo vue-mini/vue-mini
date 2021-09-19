@@ -192,7 +192,7 @@ describe('component', () => {
       }
     })
     component.lifetimes.attached.call(component)
-    expect(component.__effects__.length).toBe(3)
+    expect(component.__scope__.effects.length).toBe(3)
 
     component.increment()
     component.lifetimes.detached.call(component)
@@ -223,7 +223,7 @@ describe('component', () => {
     expect(dummy!).toBe(0)
     expect(component.data.count).toBe(0)
     // The other is `count` sync watcher
-    expect(component.__effects__.length).toBe(2)
+    expect(component.__scope__.effects.length).toBe(2)
 
     component.increment()
     await nextTick()
@@ -236,7 +236,7 @@ describe('component', () => {
     await nextTick()
     expect(dummy!).toBe(1)
     expect(component.data.count).toBe(2)
-    expect(component.__effects__.length).toBe(1)
+    expect(component.__scope__.effects.length).toBe(1)
   })
 
   it('props', async () => {

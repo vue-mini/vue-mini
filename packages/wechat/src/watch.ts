@@ -9,7 +9,6 @@ import {
   EffectScheduler,
 } from '@vue/reactivity'
 import { queueJob, SchedulerJob } from './scheduler'
-import { recordInstanceBoundEffect } from './computed'
 import { getCurrentInstance } from './instance'
 import {
   isArray,
@@ -280,15 +279,15 @@ function doWatch(
     }
   }
 
-  const effect = new ReactiveEffect(getter, scheduler)
+  const instance = getCurrentInstance()
+  const scope = instance && instance.__scope__
+  const effect = new ReactiveEffect(getter, scheduler, scope)
 
   /* istanbul ignore else */
   if (__DEV__) {
     effect.onTrack = onTrack
     effect.onTrigger = onTrigger
   }
-
-  recordInstanceBoundEffect(effect)
 
   // Initial run
   if (cb) {
@@ -301,11 +300,10 @@ function doWatch(
     effect.run()
   }
 
-  const instance = getCurrentInstance()
   return () => {
     effect.stop()
-    if (instance) {
-      remove(instance.__effects__!, effect)
+    if (scope) {
+      remove(scope.effects, effect)
     }
   }
 }

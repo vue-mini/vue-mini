@@ -1,4 +1,9 @@
-import { Bindings, AppInstance, setCurrentApp } from './instance'
+import {
+  Bindings,
+  AppInstance,
+  setCurrentApp,
+  unsetCurrentApp,
+} from './instance'
 import { isFunction, toHiddenField } from './utils'
 
 export type AppSetup = (
@@ -57,7 +62,7 @@ export function createApp(optionsOrSetup: any): void {
       })
     }
 
-    setCurrentApp(null)
+    unsetCurrentApp()
 
     if (originOnLaunch !== undefined) {
       originOnLaunch.call(this, options)

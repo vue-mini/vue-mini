@@ -1,4 +1,10 @@
-import { Bindings, PageInstance, setCurrentPage } from './instance'
+import { EffectScope } from '@vue/reactivity'
+import {
+  Bindings,
+  PageInstance,
+  setCurrentPage,
+  unsetCurrentPage,
+} from './instance'
 import { deepToRaw, deepWatch } from './shared'
 import { isFunction, toHiddenField } from './utils'
 
@@ -78,6 +84,8 @@ export function definePage(optionsOrSetup: any, config?: Config): void {
 
   const originOnLoad = options[PageLifecycle.ON_LOAD]
   options[PageLifecycle.ON_LOAD] = function (this: PageInstance, query: Query) {
+    this.__scope__ = new EffectScope()
+
     setCurrentPage(this)
     const context: PageContext = {
       is: this.is,
@@ -107,7 +115,7 @@ export function definePage(optionsOrSetup: any, config?: Config): void {
       })
     }
 
-    setCurrentPage(null)
+    unsetCurrentPage()
 
     if (originOnLoad !== undefined) {
       originOnLoad.call(this, query)
@@ -118,11 +126,7 @@ export function definePage(optionsOrSetup: any, config?: Config): void {
   options[PageLifecycle.ON_UNLOAD] = function (this: PageInstance) {
     onUnload.call(this)
 
-    if (this.__effects__) {
-      this.__effects__.forEach((effect) => {
-        effect.stop()
-      })
-    }
+    this.__scope__.stop()
   }
 
   if (options[PageLifecycle.ON_PAGE_SCROLL] || config.listenPageScroll) {

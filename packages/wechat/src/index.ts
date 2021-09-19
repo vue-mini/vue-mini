@@ -2,6 +2,7 @@
 
 export {
   // Core
+  computed,
   reactive,
   ref,
   readonly,
@@ -22,8 +23,16 @@ export {
   shallowReadonly,
   markRaw,
   toRaw,
+  // Effect
+  effect,
+  stop,
+  ReactiveEffect,
+  // Effect scope
+  effectScope,
+  EffectScope,
+  getCurrentScope,
+  onScopeDispose,
 } from '@vue/reactivity'
-export { computed } from './computed'
 export { watch, watchEffect } from './watch'
 export { nextTick } from './scheduler'
 export { provide, inject } from './inject'
@@ -58,7 +67,6 @@ export {
 // Types -----------------------------------------------------------------------
 
 export {
-  ReactiveEffect,
   ReactiveEffectOptions,
   DebuggerEvent,
   TrackOpTypes,

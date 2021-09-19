@@ -1,7 +1,12 @@
-import { shallowReactive, shallowReadonly } from '@vue/reactivity'
+import { shallowReactive, shallowReadonly, EffectScope } from '@vue/reactivity'
 import { PageLifecycle, Config } from './page'
 import { deepToRaw, deepWatch } from './shared'
-import { Bindings, ComponentInstance, setCurrentComponent } from './instance'
+import {
+  Bindings,
+  ComponentInstance,
+  setCurrentComponent,
+  unsetCurrentComponent,
+} from './instance'
 import { isFunction, toHiddenField } from './utils'
 
 export type ComponentContext = WechatMiniprogram.Component.InstanceProperties &
@@ -128,6 +133,8 @@ export function defineComponent(optionsOrSetup: any, config?: Config): string {
   options.lifetimes[ComponentLifecycle.ATTACHED] = function (
     this: ComponentInstance
   ) {
+    this.__scope__ = new EffectScope()
+
     setCurrentComponent(this)
     const rawProps: Record<string, any> = {}
     if (properties) {
@@ -174,7 +181,7 @@ export function defineComponent(optionsOrSetup: any, config?: Config): string {
       })
     }
 
-    setCurrentComponent(null)
+    unsetCurrentComponent()
 
     if (originAttached !== undefined) {
       originAttached.call(this)
@@ -190,11 +197,7 @@ export function defineComponent(optionsOrSetup: any, config?: Config): string {
   ) {
     detached.call(this)
 
-    if (this.__effects__) {
-      this.__effects__.forEach((effect) => {
-        effect.stop()
-      })
-    }
+    this.__scope__.stop()
   }
 
   const originReady =
