@@ -11,6 +11,7 @@ import {
   watch,
   watchEffect,
   watchPostEffect,
+  watchSyncEffect,
   reactive,
   computed,
   nextTick,
@@ -602,6 +603,18 @@ describe('watch', () => {
 
     state.count++
     await nextTick()
+    expect(dummy).toBe(1)
+  })
+
+  it('watchSyncEffect', () => {
+    const state = reactive({ count: 0 })
+    let dummy
+    watchSyncEffect(() => {
+      dummy = state.count
+    })
+    expect(dummy).toBe(0)
+
+    state.count++
     expect(dummy).toBe(1)
   })
 
