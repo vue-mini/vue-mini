@@ -1,6 +1,7 @@
-import { ReactiveEffect } from '@vue/reactivity'
-
-export interface SchedulerJob extends Function, Partial<ReactiveEffect> {}
+export interface SchedulerJob extends Function {
+  active?: boolean
+  allowRecurse?: boolean
+}
 
 let isFlushing = false
 let isFlushPending = false

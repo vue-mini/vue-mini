@@ -1,4 +1,4 @@
-import { stop, shallowReactive, shallowReadonly } from '@vue/reactivity'
+import { shallowReactive, shallowReadonly } from '@vue/reactivity'
 import { PageLifecycle, Config } from './page'
 import { deepToRaw, deepWatch } from './shared'
 import { Bindings, ComponentInstance, setCurrentComponent } from './instance'
@@ -192,7 +192,7 @@ export function defineComponent(optionsOrSetup: any, config?: Config): string {
 
     if (this.__effects__) {
       this.__effects__.forEach((effect) => {
-        stop(effect)
+        effect.stop()
       })
     }
   }

@@ -1,4 +1,3 @@
-import { stop } from '@vue/reactivity'
 import { Bindings, PageInstance, setCurrentPage } from './instance'
 import { deepToRaw, deepWatch } from './shared'
 import { isFunction, toHiddenField } from './utils'
@@ -121,7 +120,7 @@ export function definePage(optionsOrSetup: any, config?: Config): void {
 
     if (this.__effects__) {
       this.__effects__.forEach((effect) => {
-        stop(effect)
+        effect.stop()
       })
     }
   }

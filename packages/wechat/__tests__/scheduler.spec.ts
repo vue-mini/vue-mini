@@ -1,4 +1,3 @@
-import { effect, stop } from '@vue/reactivity'
 import { queueJob, nextTick } from '../src/scheduler'
 
 describe('scheduler', () => {
@@ -146,21 +145,20 @@ describe('scheduler', () => {
 
     // Simulate parent component that toggles child
     const job1 = () => {
-      stop(job2)
+      // @ts-expect-error
+      job2.active = false
     }
 
-    job1.id = 0 // Need the id to ensure job1 is sorted before job2
-
-    // simulate child that's triggered by the same reactive change that
+    // Simulate child that's triggered by the same reactive change that
     // triggers its toggle
-    const job2 = effect(() => spy())
-    expect(spy).toHaveBeenCalledTimes(1)
+    const job2 = () => spy()
+    expect(spy).toHaveBeenCalledTimes(0)
 
     queueJob(job1)
     queueJob(job2)
     await nextTick()
 
-    // Should not be called again
-    expect(spy).toHaveBeenCalledTimes(1)
+    // Should not be called
+    expect(spy).toHaveBeenCalledTimes(0)
   })
 })

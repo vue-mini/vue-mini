@@ -1,12 +1,12 @@
 import {
-  effect,
-  stop,
   isRef,
   Ref,
   ComputedRef,
+  ReactiveEffect,
   ReactiveEffectOptions,
   isReactive,
   ReactiveFlags,
+  EffectScheduler,
 } from '@vue/reactivity'
 import { queueJob, SchedulerJob } from './scheduler'
 import { recordInstanceBoundEffect } from './computed'
@@ -225,20 +225,20 @@ function doWatch(
   let cleanup: () => void
   const onInvalidate: InvalidateCbRegistrator = (fn: () => void) => {
     // eslint-disable-next-line no-multi-assign
-    cleanup = runner.options.onStop = () => {
+    cleanup = effect.onStop = () => {
       fn()
     }
   }
 
   let oldValue = isMultiSource ? [] : INITIAL_WATCHER_VALUE
   const job: SchedulerJob = () => {
-    if (!runner.active) {
+    if (!effect.active) {
       return
     }
 
     if (cb) {
       // Watch(source, cb)
-      const newValue = runner()
+      const newValue = effect.run()
       if (
         deep ||
         forceTrigger ||
@@ -263,7 +263,7 @@ function doWatch(
       }
     } else {
       // WatchEffect
-      runner()
+      effect.run()
     }
   }
 
@@ -271,7 +271,7 @@ function doWatch(
   // it is allowed to self-trigger
   job.allowRecurse = Boolean(cb)
 
-  let scheduler: ReactiveEffectOptions['scheduler']
+  let scheduler: EffectScheduler
   if (flush === 'sync') {
     scheduler = job as any // The scheduler function gets called directly
   } else {
@@ -280,31 +280,32 @@ function doWatch(
     }
   }
 
-  const runner = effect(getter, {
-    lazy: true,
-    onTrack,
-    onTrigger,
-    scheduler,
-  })
+  const effect = new ReactiveEffect(getter, scheduler)
 
-  recordInstanceBoundEffect(runner)
+  /* istanbul ignore else */
+  if (__DEV__) {
+    effect.onTrack = onTrack
+    effect.onTrigger = onTrigger
+  }
+
+  recordInstanceBoundEffect(effect)
 
   // Initial run
   if (cb) {
     if (immediate) {
       job()
     } else {
-      oldValue = runner()
+      oldValue = effect.run()
     }
   } else {
-    runner()
+    effect.run()
   }
 
   const instance = getCurrentInstance()
   return () => {
-    stop(runner)
+    effect.stop()
     if (instance) {
-      remove(instance.__effects__!, runner)
+      remove(instance.__effects__!, effect)
     }
   }
 }
