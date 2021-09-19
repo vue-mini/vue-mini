@@ -290,9 +290,7 @@ function doWatch(
     }
   }
 
-  const instance = getCurrentInstance()
-  const scope = instance && instance.__scope__
-  const effect = new ReactiveEffect(getter, scheduler, scope)
+  const effect = new ReactiveEffect(getter, scheduler)
 
   /* istanbul ignore else */
   if (__DEV__) {
@@ -311,10 +309,11 @@ function doWatch(
     effect.run()
   }
 
+  const instance = getCurrentInstance()
   return () => {
     effect.stop()
-    if (scope) {
-      remove(scope.effects, effect)
+    if (instance && instance.__scope__) {
+      remove(instance.__scope__.effects, effect)
     }
   }
 }

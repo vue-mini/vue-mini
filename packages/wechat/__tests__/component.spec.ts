@@ -4,9 +4,11 @@ import {
   reactive,
   computed,
   readonly,
+  watch,
   watchEffect,
   nextTick,
   isReadonly,
+  effectScope,
   onReady,
   onMove,
   onDetach,
@@ -237,6 +239,20 @@ describe('component', () => {
     expect(dummy!).toBe(1)
     expect(component.data.count).toBe(2)
     expect(component.__scope__.effects.length).toBe(1)
+  })
+
+  it('watch should not register in owner component if created inside detached scope', () => {
+    defineComponent(() => {
+      effectScope(true).run(() => {
+        watch(
+          () => 1,
+          () => {}
+        )
+      })
+      return {}
+    })
+    component.lifetimes.attached.call(component)
+    expect(component.__scope__.effects.length).toBe(0)
   })
 
   it('props', async () => {

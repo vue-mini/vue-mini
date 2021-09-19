@@ -4,8 +4,10 @@ import {
   reactive,
   computed,
   readonly,
+  watch,
   watchEffect,
   nextTick,
+  effectScope,
   onReady,
   onShow,
   onHide,
@@ -227,6 +229,20 @@ describe('page', () => {
     expect(dummy!).toBe(1)
     expect(page.data.count).toBe(2)
     expect(page.__scope__.effects.length).toBe(1)
+  })
+
+  it('watch should not register in owner page if created inside detached scope', () => {
+    definePage(() => {
+      effectScope(true).run(() => {
+        watch(
+          () => 1,
+          () => {}
+        )
+      })
+      return {}
+    })
+    page.onLoad()
+    expect(page.__scope__.effects.length).toBe(0)
   })
 
   it('onLoad', () => {
