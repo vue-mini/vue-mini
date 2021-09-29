@@ -1,14 +1,21 @@
 /// <reference types="wechat-miniprogram" />
-import { ComputedGetter } from '@vue/reactivity';
+
+import { computed } from '@vue/reactivity';
 import { ComputedRef } from '@vue/reactivity';
 import { customRef } from '@vue/reactivity';
 import { DebuggerEvent } from '@vue/reactivity';
+import { DebuggerOptions } from '@vue/reactivity';
 import { DeepReadonly } from '@vue/reactivity';
+import { effect } from '@vue/reactivity';
+import { EffectScope } from '@vue/reactivity';
+import { effectScope } from '@vue/reactivity';
+import { getCurrentScope } from '@vue/reactivity';
 import { isProxy } from '@vue/reactivity';
 import { isReactive } from '@vue/reactivity';
 import { isReadonly } from '@vue/reactivity';
 import { isRef } from '@vue/reactivity';
 import { markRaw } from '@vue/reactivity';
+import { onScopeDispose } from '@vue/reactivity';
 import { proxyRefs } from '@vue/reactivity';
 import { reactive } from '@vue/reactivity';
 import { ReactiveEffect } from '@vue/reactivity';
@@ -20,7 +27,9 @@ import { shallowReactive } from '@vue/reactivity';
 import { shallowReadonly } from '@vue/reactivity';
 import { shallowRef } from '@vue/reactivity';
 import { ShallowUnwrapRef } from '@vue/reactivity';
+import { stop } from '@vue/reactivity';
 import { toRaw } from '@vue/reactivity';
+import { ToRef } from '@vue/reactivity';
 import { toRef } from '@vue/reactivity';
 import { ToRefs } from '@vue/reactivity';
 import { toRefs } from '@vue/reactivity';
@@ -54,9 +63,8 @@ export declare type ComponentOptionsWithProps<Props extends WechatMiniprogram.Co
 
 export declare type ComponentSetup<Props extends Record<string, any>> = (this: void, props: Readonly<Props>, context: ComponentContext) => Bindings;
 
-export declare function computed<T>(getter: ComputedGetter<T>): ComputedRef<T>;
+export { computed }
 
-export declare function computed<T>(options: WritableComputedOptions<T>): WritableComputedRef<T>;
 export { ComputedRef }
 
 export declare interface Config {
@@ -68,8 +76,13 @@ export declare interface Config {
 export declare function createApp(setup: AppSetup): void;
 
 export declare function createApp<T extends WechatMiniprogram.IAnyObject>(options: AppOptions<T>): void;
+
 export { customRef }
+
 export { DebuggerEvent }
+
+export { DebuggerOptions }
+
 export { DeepReadonly }
 
 export declare function defineComponent(setup: ComponentSetup<{}>, config?: Config): string;
@@ -82,6 +95,14 @@ export declare function definePage(setup: PageSetup, config?: Config): void;
 
 export declare function definePage<Data extends WechatMiniprogram.Page.DataOption, Custom extends WechatMiniprogram.Page.CustomOption>(options: PageOptions<Data, Custom>, config?: Config): void;
 
+export { effect }
+
+export { EffectScope }
+
+export { effectScope }
+
+export { getCurrentScope }
+
 export declare function inject<T>(key: InjectionKey<T> | string): T | undefined;
 
 export declare function inject<T>(key: InjectionKey<T> | string, defaultValue: T, treatDefaultAsFactory?: false): T;
@@ -92,14 +113,19 @@ export declare interface InjectionKey<T> extends Symbol {
 }
 
 declare type InvalidateCbRegistrator = (cb: () => void) => void;
+
 export { isProxy }
+
 export { isReactive }
+
 export { isReadonly }
+
 export { isRef }
 
 declare type MapSources<T, Immediate> = {
     [K in keyof T]: T[K] extends WatchSource<infer V> ? Immediate extends true ? V | undefined : V : T[K] extends object ? Immediate extends true ? T[K] | undefined : T[K] : never;
 };
+
 export { markRaw }
 
 declare type MultiWatchSources = Array<WatchSource<unknown> | object>;
@@ -136,6 +162,8 @@ export declare const onReady: (hook: () => unknown) => void;
 
 export declare const onResize: (hook: (resize: WechatMiniprogram.Page.IResizeOption) => unknown) => void;
 
+export { onScopeDispose }
+
 export declare const onShareAppMessage: (hook: (share: WechatMiniprogram.Page.IShareAppMessageOption) => WechatMiniprogram.Page.ICustomShareContent) => void;
 
 export declare const onShareTimeline: (hook: () => WechatMiniprogram.Page.ICustomTimelineContent) => void;
@@ -168,27 +196,51 @@ declare type PropertyOptionToData<T extends WechatMiniprogram.Component.Property
 declare type PropertyToData<T extends WechatMiniprogram.Component.AllProperty> = T extends WechatMiniprogram.Component.PropertyType ? WechatMiniprogram.Component.ValueType<T> : T extends WechatMiniprogram.Component.AllFullProperty ? T['optionalTypes'] extends OptionalTypes<infer Option> ? WechatMiniprogram.Component.ValueType<Option | T['type']> : WechatMiniprogram.Component.ValueType<T['type']> : never;
 
 export declare function provide<T>(key: InjectionKey<T> | string, value: T): void;
+
 export { proxyRefs }
 
 export declare type Query = Record<string, string | undefined>;
+
 export { reactive }
+
 export { ReactiveEffect }
+
 export { ReactiveEffectOptions }
+
 export { readonly }
+
 export { Ref }
+
 export { ref }
+
 export { shallowReactive }
+
 export { shallowReadonly }
+
 export { shallowRef }
+
 export { ShallowUnwrapRef }
+
+export { stop }
+
 export { toRaw }
+
+export { ToRef }
+
 export { toRef }
+
 export { ToRefs }
+
 export { toRefs }
+
 export { TrackOpTypes }
+
 export { TriggerOpTypes }
+
 export { triggerRef }
+
 export { unref }
+
 export { UnwrapRef }
 
 export declare function watch<T extends MultiWatchSources, Immediate extends Readonly<boolean> = false>(sources: [...T], cb: WatchCallback<MapSources<T, false>, MapSources<T, Immediate>>, options?: WatchOptions<Immediate>): WatchStopHandle;
@@ -210,16 +262,20 @@ export declare interface WatchOptions<Immediate = boolean> extends WatchOptionsB
     deep?: boolean;
 }
 
-export declare interface WatchOptionsBase {
+export declare interface WatchOptionsBase extends DebuggerOptions {
     flush?: 'pre' | 'post' | 'sync';
-    onTrack?: ReactiveEffectOptions['onTrack'];
-    onTrigger?: ReactiveEffectOptions['onTrigger'];
 }
+
+export declare function watchPostEffect(effect: WatchEffect, options?: DebuggerOptions): WatchStopHandle;
 
 export declare type WatchSource<T = any> = Ref<T> | ComputedRef<T> | (() => T);
 
 export declare type WatchStopHandle = () => void;
+
+export declare function watchSyncEffect(effect: WatchEffect, options?: DebuggerOptions): WatchStopHandle;
+
 export { WritableComputedOptions }
+
 export { WritableComputedRef }
 
 export { }

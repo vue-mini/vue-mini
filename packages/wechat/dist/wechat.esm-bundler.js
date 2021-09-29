@@ -4,38 +4,8 @@
  * (c) 2019-present Yang Mingshan
  * @license MIT
  */
-import { computed as computed$1, stop, isRef, isReactive, effect, isProxy, toRaw, shallowReactive, shallowReadonly } from '@vue/reactivity';
-export { customRef, isProxy, isReactive, isReadonly, isRef, markRaw, proxyRefs, reactive, readonly, ref, shallowReactive, shallowReadonly, shallowRef, toRaw, toRef, toRefs, triggerRef, unref } from '@vue/reactivity';
-
-let currentApp = null;
-let currentPage = null;
-let currentComponent = null;
-function getCurrentInstance() {
-    return currentPage || currentComponent;
-}
-function setCurrentApp(page) {
-    currentApp = page;
-}
-function setCurrentPage(page) {
-    currentPage = page;
-}
-function setCurrentComponent(component) {
-    currentComponent = component;
-}
-
-// Record effects created during a component's setup() so that they can be
-// stopped when the component unmounts
-function recordInstanceBoundEffect(effect) {
-    const currentInstance = getCurrentInstance();
-    if (currentInstance) {
-        (currentInstance.__effects__ || (currentInstance.__effects__ = [])).push(effect);
-    }
-}
-function computed(getterOrOptions) {
-    const c = computed$1(getterOrOptions);
-    recordInstanceBoundEffect(c.effect);
-    return c;
-}
+import { isRef, isReactive, ReactiveEffect, isProxy, toRaw, EffectScope, shallowReactive, shallowReadonly } from '@vue/reactivity';
+export { EffectScope, ReactiveEffect, computed, customRef, effect, effectScope, getCurrentScope, isProxy, isReactive, isReadonly, isRef, markRaw, onScopeDispose, proxyRefs, reactive, readonly, ref, shallowReactive, shallowReadonly, shallowRef, stop, toRaw, toRef, toRefs, triggerRef, unref } from '@vue/reactivity';
 
 let isFlushing = false;
 let isFlushPending = false;
@@ -76,14 +46,24 @@ function flushJobs(seen) {
     if ((process.env.NODE_ENV !== 'production')) {
         seen = seen || new Map();
     }
+    // Conditional usage of checkRecursiveUpdate must be determined out of
+    // try ... catch block since Rollup by default de-optimizes treeshaking
+    // inside try-catch. This can leave all warning code unshaked. Although
+    // they would get eventually shaken by a minifier like terser, some minifiers
+    // would fail to do that (e.g. https://github.com/evanw/esbuild/issues/1610)
+    const check = (process.env.NODE_ENV !== 'production')
+        ? (job) => checkRecursiveUpdates(seen, job)
+        : /* istanbul ignore next  */ () => { }; // eslint-disable-line @typescript-eslint/no-empty-function
     try {
         for (flushIndex = 0; flushIndex < queue.length; flushIndex++) {
             const job = queue[flushIndex];
-            /* istanbul ignore else  */
-            if ((process.env.NODE_ENV !== 'production')) {
-                checkRecursiveUpdates(seen, job);
+            if (job.active !== false) {
+                /* istanbul ignore if  */
+                if ((process.env.NODE_ENV !== 'production') && check(job)) {
+                    continue;
+                }
+                job();
             }
-            job();
         }
     }
     finally {
@@ -97,13 +77,48 @@ function checkRecursiveUpdates(seen, fn) {
     const count = seen.get(fn) || 0;
     /* istanbul ignore if */
     if (count > RECURSION_LIMIT) {
-        throw new Error(`Maximum recursive updates exceeded. ` +
+        console.warn(`Maximum recursive updates exceeded. ` +
             `This means you have a reactive effect that is mutating its own ` +
             `dependencies and thus recursively triggering itself.`);
+        return true;
     }
-    else {
-        seen.set(fn, count + 1);
+    seen.set(fn, count + 1);
+    return false;
+}
+
+let currentApp = null;
+let currentPage = null;
+let currentComponent = null;
+function getCurrentInstance() {
+    return currentPage || currentComponent;
+}
+function setCurrentApp(page) {
+    currentApp = page;
+}
+function unsetCurrentApp() {
+    currentApp = null;
+}
+function setCurrentPage(page) {
+    currentPage = page;
+    page.__scope__.on();
+}
+function unsetCurrentPage() {
+    /* istanbul ignore else */
+    if (currentPage) {
+        currentPage.__scope__.off();
     }
+    currentPage = null;
+}
+function setCurrentComponent(component) {
+    currentComponent = component;
+    component.__scope__.on();
+}
+function unsetCurrentComponent() {
+    /* istanbul ignore else */
+    if (currentComponent) {
+        currentComponent.__scope__.off();
+    }
+    currentComponent = null;
 }
 
 const { isArray } = Array;
@@ -118,7 +133,7 @@ function isObject(x) {
     return x !== null && typeof x === 'object';
 }
 function isPlainObject(x) {
-    return x !== null && getType(x) === 'Object';
+    return getType(x) === 'Object';
 }
 function isFunction(x) {
     return typeof x === 'function';
@@ -148,6 +163,16 @@ function toHiddenField(name) {
 function watchEffect(effect, options) {
     return doWatch(effect, null, options);
 }
+function watchPostEffect(effect, options) {
+    return doWatch(effect, null, ((process.env.NODE_ENV !== 'production')
+        ? Object.assign(options || {}, { flush: 'post' })
+        : /* istanbul ignore next */ { flush: 'post' }));
+}
+function watchSyncEffect(effect, options) {
+    return doWatch(effect, null, ((process.env.NODE_ENV !== 'production')
+        ? Object.assign(options || {}, { flush: 'sync' })
+        : /* istanbul ignore next */ { flush: 'sync' }));
+}
 // Initial value for watchers to trigger on undefined initial values
 const INITIAL_WATCHER_VALUE = {};
 // Implementation
@@ -176,6 +201,7 @@ function doWatch(source, cb, { immediate, deep, flush, onTrack, onTrigger } = {}
     };
     let getter;
     let forceTrigger = false;
+    let isMultiSource = false;
     if (isRef(source)) {
         getter = () => source.value;
         // @ts-expect-error
@@ -186,6 +212,8 @@ function doWatch(source, cb, { immediate, deep, flush, onTrack, onTrigger } = {}
         deep = true;
     }
     else if (isArray(source)) {
+        isMultiSource = true;
+        forceTrigger = source.some((s) => isReactive(s));
         getter = () => source.map((s) => {
             if (isRef(s)) {
                 return s.value;
@@ -233,19 +261,23 @@ function doWatch(source, cb, { immediate, deep, flush, onTrack, onTrigger } = {}
     let cleanup;
     const onInvalidate = (fn) => {
         // eslint-disable-next-line no-multi-assign
-        cleanup = runner.options.onStop = () => {
+        cleanup = effect.onStop = () => {
             fn();
         };
     };
-    let oldValue = isArray(source) ? [] : INITIAL_WATCHER_VALUE;
+    let oldValue = isMultiSource ? [] : INITIAL_WATCHER_VALUE;
     const job = () => {
-        if (!runner.active) {
+        if (!effect.active) {
             return;
         }
         if (cb) {
             // Watch(source, cb)
-            const newValue = runner();
-            if (deep || forceTrigger || hasChanged(newValue, oldValue)) {
+            const newValue = effect.run();
+            if (deep ||
+                forceTrigger ||
+                (isMultiSource
+                    ? newValue.some((v, i) => hasChanged(v, oldValue[i]))
+                    : hasChanged(newValue, oldValue))) {
                 // Cleanup before running cb again
                 if (cleanup) {
                     cleanup();
@@ -258,7 +290,7 @@ function doWatch(source, cb, { immediate, deep, flush, onTrack, onTrigger } = {}
         }
         else {
             // WatchEffect
-            runner();
+            effect.run();
         }
     };
     // Important: mark the job as a watcher callback so that scheduler knows
@@ -266,45 +298,49 @@ function doWatch(source, cb, { immediate, deep, flush, onTrack, onTrigger } = {}
     job.allowRecurse = Boolean(cb);
     let scheduler;
     if (flush === 'sync') {
-        scheduler = job;
+        scheduler = job; // The scheduler function gets called directly
     }
     else {
         scheduler = () => {
             queueJob(job);
         };
     }
-    const runner = effect(getter, {
-        lazy: true,
-        onTrack,
-        onTrigger,
-        scheduler,
-    });
-    recordInstanceBoundEffect(runner);
+    const effect = new ReactiveEffect(getter, scheduler);
+    /* istanbul ignore else */
+    if ((process.env.NODE_ENV !== 'production')) {
+        effect.onTrack = onTrack;
+        effect.onTrigger = onTrigger;
+    }
     // Initial run
     if (cb) {
         if (immediate) {
             job();
         }
         else {
-            oldValue = runner();
+            oldValue = effect.run();
         }
     }
     else {
-        runner();
+        effect.run();
     }
     const instance = getCurrentInstance();
     return () => {
-        stop(runner);
-        if (instance) {
-            remove(instance.__effects__, runner);
+        effect.stop();
+        if (instance && instance.__scope__) {
+            remove(instance.__scope__.effects, effect);
         }
     };
 }
-function traverse(value, seen = new Set()) {
-    if (!isObject(value) || seen.has(value)) {
+function traverse(value, seen) {
+    if (!isObject(value) || value["__v_skip" /* SKIP */]) {
+        return value;
+    }
+    seen = seen || new Set();
+    if (seen.has(value)) {
         return value;
     }
     seen.add(value);
+    /* istanbul ignore else  */
     if (isRef(value)) {
         traverse(value.value, seen);
     }
@@ -318,7 +354,7 @@ function traverse(value, seen = new Set()) {
             traverse(v, seen);
         });
     }
-    else {
+    else if (isPlainObject(value)) {
         // eslint-disable-next-line guard-for-in
         for (const key in value) {
             traverse(value[key], seen);
@@ -374,7 +410,7 @@ function createApp(optionsOrSetup) {
                 this[key] = bindings[key];
             });
         }
-        setCurrentApp(null);
+        unsetCurrentApp();
         if (originOnLaunch !== undefined) {
             originOnLaunch.call(this, options);
         }
@@ -459,6 +495,7 @@ function definePage(optionsOrSetup, config) {
     }
     const originOnLoad = options["onLoad" /* ON_LOAD */];
     options["onLoad" /* ON_LOAD */] = function (query) {
+        this.__scope__ = new EffectScope();
         setCurrentPage(this);
         const context = {
             is: this.is,
@@ -486,7 +523,7 @@ function definePage(optionsOrSetup, config) {
                 deepWatch.call(this, key, value);
             });
         }
-        setCurrentPage(null);
+        unsetCurrentPage();
         if (originOnLoad !== undefined) {
             originOnLoad.call(this, query);
         }
@@ -494,11 +531,7 @@ function definePage(optionsOrSetup, config) {
     const onUnload = createLifecycle$1(options, "onUnload" /* ON_UNLOAD */);
     options["onUnload" /* ON_UNLOAD */] = function () {
         onUnload.call(this);
-        if (this.__effects__) {
-            this.__effects__.forEach((effect) => {
-                stop(effect);
-            });
-        }
+        this.__scope__.stop();
     };
     if (options["onPageScroll" /* ON_PAGE_SCROLL */] || config.listenPageScroll) {
         options["onPageScroll" /* ON_PAGE_SCROLL */] = createLifecycle$1(options, "onPageScroll" /* ON_PAGE_SCROLL */);
@@ -601,6 +634,7 @@ function defineComponent(optionsOrSetup, config) {
     const originAttached = options.lifetimes["attached" /* ATTACHED */] ||
         options["attached" /* ATTACHED */];
     options.lifetimes["attached" /* ATTACHED */] = function () {
+        this.__scope__ = new EffectScope();
         setCurrentComponent(this);
         const rawProps = {};
         if (properties) {
@@ -640,7 +674,7 @@ function defineComponent(optionsOrSetup, config) {
                 deepWatch.call(this, key, value);
             });
         }
-        setCurrentComponent(null);
+        unsetCurrentComponent();
         if (originAttached !== undefined) {
             originAttached.call(this);
         }
@@ -648,11 +682,7 @@ function defineComponent(optionsOrSetup, config) {
     const detached = createComponentLifecycle(options, "detached" /* DETACHED */);
     options.lifetimes["detached" /* DETACHED */] = function () {
         detached.call(this);
-        if (this.__effects__) {
-            this.__effects__.forEach((effect) => {
-                stop(effect);
-            });
-        }
+        this.__scope__.stop();
     };
     const originReady = options.lifetimes["ready" /* READY */] ||
         options["ready" /* READY */];
@@ -710,9 +740,12 @@ function defineComponent(optionsOrSetup, config) {
     if (options.pageLifetimes === undefined) {
         options.pageLifetimes = {};
     }
-    options.pageLifetimes[SpecialLifecycleMap["onShow" /* ON_SHOW */]] = createSpecialPageLifecycle(options, "onShow" /* ON_SHOW */);
-    options.pageLifetimes[SpecialLifecycleMap["onHide" /* ON_HIDE */]] = createSpecialPageLifecycle(options, "onHide" /* ON_HIDE */);
-    options.pageLifetimes[SpecialLifecycleMap["onResize" /* ON_RESIZE */]] = createSpecialPageLifecycle(options, "onResize" /* ON_RESIZE */);
+    options.pageLifetimes[SpecialLifecycleMap["onShow" /* ON_SHOW */]] =
+        createSpecialPageLifecycle(options, "onShow" /* ON_SHOW */);
+    options.pageLifetimes[SpecialLifecycleMap["onHide" /* ON_HIDE */]] =
+        createSpecialPageLifecycle(options, "onHide" /* ON_HIDE */);
+    options.pageLifetimes[SpecialLifecycleMap["onResize" /* ON_RESIZE */]] =
+        createSpecialPageLifecycle(options, "onResize" /* ON_RESIZE */);
     if (properties) {
         if (options.observers === undefined) {
             options.observers = {};
@@ -774,85 +807,97 @@ const onResize = createPageHook("onResize" /* ON_RESIZE */);
 const onTabItemTap = createPageHook("onTabItemTap" /* ON_TAB_ITEM_TAP */);
 const onPageScroll = (hook) => {
     const currentInstance = getCurrentInstance();
+    /* istanbul ignore else  */
     if (currentInstance) {
+        /* istanbul ignore else  */
         if (currentInstance.__listenPageScroll__) {
             injectHook(currentInstance, "onPageScroll" /* ON_PAGE_SCROLL */, hook);
-        } /* istanbul ignore else  */
+        }
         else if ((process.env.NODE_ENV !== 'production')) {
             console.warn('onPageScroll() hook only works when `listenPageScroll` is configured to true.');
         }
-    } /* istanbul ignore else  */
+    }
     else if ((process.env.NODE_ENV !== 'production')) {
         console.warn(pageHookWarn);
     }
 };
 const onShareAppMessage = (hook) => {
     const currentInstance = getCurrentInstance();
+    /* istanbul ignore else  */
     if (currentInstance) {
+        /* istanbul ignore else  */
         if (currentInstance["onShareAppMessage" /* ON_SHARE_APP_MESSAGE */] &&
             currentInstance.__isInjectedShareToOthersHook__) {
             const hiddenField = toHiddenField("onShareAppMessage" /* ON_SHARE_APP_MESSAGE */);
+            /* istanbul ignore else  */
             if (currentInstance[hiddenField] === undefined) {
                 currentInstance[hiddenField] = hook;
-            } /* istanbul ignore else  */
+            }
             else if ((process.env.NODE_ENV !== 'production')) {
                 console.warn('onShareAppMessage() hook can only be called once.');
             }
-        } /* istanbul ignore else  */
+        }
         else if ((process.env.NODE_ENV !== 'production')) {
             console.warn('onShareAppMessage() hook only works when `onShareAppMessage` option is not exist and `canShareToOthers` is configured to true.');
         }
-    } /* istanbul ignore else  */
+    }
     else if ((process.env.NODE_ENV !== 'production')) {
         console.warn(pageHookWarn);
     }
 };
 const onShareTimeline = (hook) => {
     const currentInstance = getCurrentInstance();
+    /* istanbul ignore else  */
     if (currentInstance) {
+        /* istanbul ignore else  */
         if (currentInstance["onShareTimeline" /* ON_SHARE_TIMELINE */] &&
             currentInstance.__isInjectedShareToTimelineHook__) {
             const hiddenField = toHiddenField("onShareTimeline" /* ON_SHARE_TIMELINE */);
+            /* istanbul ignore else  */
             if (currentInstance[hiddenField] === undefined) {
                 currentInstance[hiddenField] = hook;
-            } /* istanbul ignore else  */
+            }
             else if ((process.env.NODE_ENV !== 'production')) {
                 console.warn('onShareTimeline() hook can only be called once.');
             }
-        } /* istanbul ignore else  */
+        }
         else if ((process.env.NODE_ENV !== 'production')) {
             console.warn('onShareTimeline() hook only works when `onShareTimeline` option is not exist and `canShareToTimeline` is configured to true.');
         }
-    } /* istanbul ignore else  */
+    }
     else if ((process.env.NODE_ENV !== 'production')) {
         console.warn(pageHookWarn);
     }
 };
 const onAddToFavorites = (hook) => {
     const currentInstance = getCurrentInstance();
+    /* istanbul ignore else  */
     if (currentInstance) {
+        /* istanbul ignore else  */
         if (currentInstance.__isInjectedFavoritesHook__) {
             const hiddenField = toHiddenField("onAddToFavorites" /* ON_ADD_TO_FAVORITES */);
+            /* istanbul ignore else  */
             if (currentInstance[hiddenField] === undefined) {
                 currentInstance[hiddenField] = hook;
-            } /* istanbul ignore else  */
+            }
             else if ((process.env.NODE_ENV !== 'production')) {
                 console.warn('onAddToFavorites() hook can only be called once.');
             }
-        } /* istanbul ignore else  */
+        }
         else if ((process.env.NODE_ENV !== 'production')) {
             console.warn('onAddToFavorites() hook only works when `onAddToFavorites` option is not exist.');
         }
-    } /* istanbul ignore else  */
+    }
     else if ((process.env.NODE_ENV !== 'production')) {
         console.warn(pageHookWarn);
     }
 };
 const onReady = (hook) => {
     const currentInstance = getCurrentInstance();
+    /* istanbul ignore else  */
     if (currentInstance) {
         injectHook(currentInstance, "onReady" /* ON_READY */, hook);
-    } /* istanbul ignore else  */
+    }
     else if ((process.env.NODE_ENV !== 'production')) {
         console.warn('onReady() hook can only be called during execution of setup() in definePage() or defineComponent().');
     }
@@ -863,9 +908,10 @@ const onDetach = createComponentHook("detached" /* DETACHED */);
 const onError = createComponentHook("error" /* ERROR */);
 function createAppHook(lifecycle) {
     return (hook) => {
+        /* istanbul ignore else  */
         if (currentApp) {
             injectHook(currentApp, lifecycle, hook);
-        } /* istanbul ignore else  */
+        }
         else if ((process.env.NODE_ENV !== 'production')) {
             console.warn('App specific lifecycle injection APIs can only be used during execution of setup() in createApp().');
         }
@@ -874,9 +920,10 @@ function createAppHook(lifecycle) {
 function createPageHook(lifecycle) {
     return (hook) => {
         const currentInstance = getCurrentInstance();
+        /* istanbul ignore else  */
         if (currentInstance) {
             injectHook(currentInstance, lifecycle, hook);
-        } /* istanbul ignore else  */
+        }
         else if ((process.env.NODE_ENV !== 'production')) {
             console.warn(pageHookWarn);
         }
@@ -884,9 +931,10 @@ function createPageHook(lifecycle) {
 }
 function createComponentHook(lifecycle) {
     return (hook) => {
+        /* istanbul ignore else  */
         if (currentComponent) {
             injectHook(currentComponent, lifecycle, hook);
-        } /* istanbul ignore else  */
+        }
         else if ((process.env.NODE_ENV !== 'production')) {
             console.warn('Component specific lifecycle injection APIs can only be used during execution of setup() in defineComponent().');
         }
@@ -900,4 +948,4 @@ function injectHook(currentInstance, lifecycle, hook) {
     currentInstance[hiddenField].push(hook);
 }
 
-export { computed, createApp, defineComponent, definePage, inject, nextTick, onAddToFavorites, onAppError, onAppHide, onAppShow, onDetach, onError, onHide, onLoad, onMove, onPageNotFound, onPageScroll, onPullDownRefresh, onReachBottom, onReady, onResize, onShareAppMessage, onShareTimeline, onShow, onTabItemTap, onThemeChange, onUnhandledRejection, onUnload, provide, watch, watchEffect };
+export { createApp, defineComponent, definePage, inject, nextTick, onAddToFavorites, onAppError, onAppHide, onAppShow, onDetach, onError, onHide, onLoad, onMove, onPageNotFound, onPageScroll, onPullDownRefresh, onReachBottom, onReady, onResize, onShareAppMessage, onShareTimeline, onShow, onTabItemTap, onThemeChange, onUnhandledRejection, onUnload, provide, watch, watchEffect, watchPostEffect, watchSyncEffect };

@@ -1,3 +1,26 @@
+# 0.3.0 (2021-09-29)
+
+### 依赖
+
+- **@vue/reactivity:** 从 3.0.11 升至 3.2.19，详情请看 [Vue 更新日志](https://github.com/vuejs/vue-next/blob/master/CHANGELOG.md) ([ed01c0d](https://github.com/vue-mini/vue-mini/commit/ed01c0de493b3faf6a03b374aa3e6c169e861a3b), [297d36c](https://github.com/vue-mini/vue-mini/commit/297d36c53806600b7d4659ff8d038cdff7781287), [fd89429](https://github.com/vue-mini/vue-mini/commit/fd894297cd03359b01fff4e710dfd6f9e2bff228))
+
+### 特性
+
+- **reactivity:** 新增 effectScope API ([fb82da3](https://github.com/vue-mini/vue-mini/commit/fb82da34b8977dbbe06a4b3ba28339e8279a9898))
+- **watch:** 新增 watchPostEffect，与 watchEffect 效果相同，仅仅是为了与 Vue 保持 API 一致 ([32a6e2a](https://github.com/vue-mini/vue-mini/commit/32a6e2a23e418058cb1bf800687d092b2d8a5525))
+- **watch:** 新增 watchSyncEffect ([1711129](https://github.com/vue-mini/vue-mini/commit/17111298cdf250de40c3a922a8464b6d581dec39))
+
+### 性能优化
+
+- **reactivity:** 改善 reactive effect 内存使用 ([6076e6f](https://github.com/vue-mini/vue-mini/commit/6076e6ff72502ce97196b5abc0782c2857d74417))
+
+### Bug 修复
+
+- **watch:** 避免遍历标记为非响应式的对象 ([e3646c3](https://github.com/vue-mini/vue-mini/commit/e3646c3ea71a9b5304b729f3e0e980ebe48e47ec))
+- **computed:** 确保 computed 始终返回值 ([8a897e4](https://github.com/vue-mini/vue-mini/commit/8a897e48c709ba6b7046b89b8ff4932c40d4a054))
+- **watch:** 观察多值时，任意值变化才触发 ([f27021b](https://github.com/vue-mini/vue-mini/commit/f27021b099dd3f51cc599550632de498274a537f))
+- **watch:** 避免遍历复杂对象 ([cf061c4](https://github.com/vue-mini/vue-mini/commit/cf061c49955d95e1060bb8ae633280e4c54a895e))
+
 # 0.2.2 (2021-04-25)
 
 ### 依赖
