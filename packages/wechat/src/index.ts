@@ -67,21 +67,22 @@ export {
 // Types -----------------------------------------------------------------------
 
 export {
+  Ref,
+  ToRef,
+  ToRefs,
   ReactiveEffectOptions,
   DebuggerEvent,
+  DebuggerOptions,
   TrackOpTypes,
   TriggerOpTypes,
-  Ref,
   ComputedRef,
   WritableComputedRef,
   UnwrapRef,
   ShallowUnwrapRef,
   WritableComputedOptions,
-  ToRefs,
   DeepReadonly,
 } from '@vue/reactivity'
 export {
-  // Types
   WatchEffect,
   WatchOptions,
   WatchOptionsBase,
