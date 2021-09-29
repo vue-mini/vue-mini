@@ -1,6 +1,7 @@
 /* eslint-disable unicorn/prefer-module */
 'use strict'
 
+const process = require('process')
 const fs = require('fs')
 const path = require('path')
 const execa = require('execa')

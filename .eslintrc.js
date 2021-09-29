@@ -1,6 +1,7 @@
 /* eslint-disable unicorn/prefer-module */
 'use strict'
 
+const process = require('process')
 // eslint-disable-next-line import/no-extraneous-dependencies
 const xoTs = require('eslint-config-xo-typescript')
 
@@ -43,6 +44,7 @@ const config = {
         '@typescript-eslint/promise-function-async': 'off',
         '@typescript-eslint/prefer-nullish-coalescing': 'off',
         '@typescript-eslint/prefer-optional-chain': 'off',
+        '@typescript-eslint/ban-ts-comment': 'off',
         '@typescript-eslint/ban-types': [
           'error',
           { extendDefaults: false, types },

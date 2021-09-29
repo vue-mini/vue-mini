@@ -1,6 +1,7 @@
 /* eslint-disable unicorn/prefer-module */
 'use strict'
 
+const process = require('process')
 const path = require('path')
 const fs = require('fs-extra')
 const rollup = require('rollup')
