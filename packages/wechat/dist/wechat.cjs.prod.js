@@ -1,5 +1,5 @@
 /*!
- * vue-mini v0.2.2
+ * vue-mini v0.3.0
  * https://github.com/vue-mini/vue-mini
  * (c) 2019-present Yang Mingshan
  * @license MIT
