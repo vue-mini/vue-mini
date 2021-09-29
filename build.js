@@ -63,7 +63,7 @@ async function generateCode({
           },
         }),
       typescript(),
-      replace(replaces),
+      replace({ values: replaces, preventAssignment: true }),
       resolve(),
     ].filter(Boolean),
   })
