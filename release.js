@@ -1,4 +1,3 @@
-/* eslint-disable unicorn/prefer-module */
 'use strict'
 
 const process = require('process')
@@ -20,7 +19,7 @@ function run(bin, args, options) {
       const target = path.resolve('packages', pkg)
       if (!fs.statSync(target).isDirectory()) continue
       const { version } = require(path.join(target, 'package.json'))
-      // eslint-disable-next-line no-await-in-loop
+
       await run(
         'yarn',
         [

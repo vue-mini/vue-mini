@@ -43,7 +43,7 @@ expect.extend({
   toHaveBeenWarnedTimes(received, n) {
     asserted.add(received)
     let found = 0
-    // eslint-disable-next-line unicorn/no-array-for-each
+
     warn.mock.calls.forEach((args) => {
       if (args[0].includes(received)) {
         found++

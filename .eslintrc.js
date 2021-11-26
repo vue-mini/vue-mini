@@ -1,8 +1,6 @@
-/* eslint-disable unicorn/prefer-module */
 'use strict'
 
 const process = require('process')
-// eslint-disable-next-line import/no-extraneous-dependencies
 const xoTs = require('eslint-config-xo-typescript')
 
 const isProd = process.env.NODE_ENV === 'production'
@@ -17,7 +15,7 @@ const config = {
     'plugin:prettier/recommended',
     'prettier',
   ],
-  ignorePatterns: ['dist', 'coverage'],
+  ignorePatterns: ['dist', 'coverage', '/*.js'],
   overrides: [
     {
       files: ['*.ts'],
