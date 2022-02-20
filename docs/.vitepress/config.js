@@ -39,6 +39,10 @@ module.exports = {
             { text: '比较', link: '/guide/comparisons' },
           ],
         },
+        {
+          text: '赞助',
+          link: '/guide/sponsor',
+        },
       ],
     },
   },

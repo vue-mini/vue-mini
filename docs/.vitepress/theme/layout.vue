@@ -1,5 +1,7 @@
 <template>
   <div class="theme" :class="pageClasses">
+    <div class="banner">请考虑<a href="/guide/sponsor.html">赞助作者</a>！</div>
+
     <NavBar v-if="showNavbar" @toggle="toggleSidebar" />
 
     <SideBar :open="openSideBar">
@@ -118,6 +120,34 @@ const pageClasses = computed(() => {
 </script>
 
 <style>
+#app {
+  padding-top: 24px;
+}
+
+.theme .nav-bar {
+  top: 24px;
+}
+
+.banner {
+  position: fixed;
+  z-index: var(--z-index-navbar);
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 24px;
+  line-height: 24px;
+  text-align: center;
+  font-size: 12px;
+  font-weight: 600;
+  color: #fff;
+  background-color: var(--c-brand);
+}
+
+.banner a {
+  color: #fff;
+  text-decoration: underline;
+}
+
 #ads-container {
   margin: 0 auto;
 }
@@ -141,6 +171,29 @@ const pageClasses = computed(() => {
     position: fixed;
     right: 1.5rem;
     bottom: 1rem;
+  }
+}
+
+.qrcode {
+  display: flex;
+  justify-content: space-between;
+}
+
+.qrcode img {
+  width: 40%;
+}
+
+@media (max-width: 420px) {
+  .qrcode {
+    flex-direction: column;
+  }
+
+  .qrcode img {
+    width: 100%;
+  }
+
+  .qrcode img + img {
+    margin-top: 1rem;
   }
 }
 </style>
