@@ -1,14 +1,10 @@
-import {
-  Bindings,
-  AppInstance,
-  setCurrentApp,
-  unsetCurrentApp,
-} from './instance'
+import type { Bindings, AppInstance } from './instance'
+import { setCurrentApp, unsetCurrentApp } from './instance'
 import { isFunction, toHiddenField } from './utils'
 
 export type AppSetup = (
   this: void,
-  options: WechatMiniprogram.App.LaunchShowOption
+  options: WechatMiniprogram.App.LaunchShowOption,
 ) => Bindings
 export type AppOptions<T extends WechatMiniprogram.IAnyObject> = {
   setup?: AppSetup
@@ -28,7 +24,7 @@ export const enum AppLifecycle {
 export function createApp(setup: AppSetup): void
 
 export function createApp<T extends WechatMiniprogram.IAnyObject>(
-  options: AppOptions<T>
+  options: AppOptions<T>,
 ): void
 
 export function createApp(optionsOrSetup: any): void {
@@ -52,7 +48,7 @@ export function createApp(optionsOrSetup: any): void {
   const originOnLaunch = options[AppLifecycle.ON_LAUNCH]
   options[AppLifecycle.ON_LAUNCH] = function (
     this: AppInstance,
-    options: WechatMiniprogram.App.LaunchShowOption
+    options: WechatMiniprogram.App.LaunchShowOption,
   ) {
     setCurrentApp(this)
     const bindings = setup(options)
@@ -73,19 +69,19 @@ export function createApp(optionsOrSetup: any): void {
   options[AppLifecycle.ON_HIDE] = createLifecycle(options, AppLifecycle.ON_HIDE)
   options[AppLifecycle.ON_ERROR] = createLifecycle(
     options,
-    AppLifecycle.ON_ERROR
+    AppLifecycle.ON_ERROR,
   )
   options[AppLifecycle.ON_PAGE_NOT_FOUND] = createLifecycle(
     options,
-    AppLifecycle.ON_PAGE_NOT_FOUND
+    AppLifecycle.ON_PAGE_NOT_FOUND,
   )
   options[AppLifecycle.ON_UNHANDLED_REJECTION] = createLifecycle(
     options,
-    AppLifecycle.ON_UNHANDLED_REJECTION
+    AppLifecycle.ON_UNHANDLED_REJECTION,
   )
   options[AppLifecycle.ON_THEME_CHANGE] = createLifecycle(
     options,
-    AppLifecycle.ON_THEME_CHANGE
+    AppLifecycle.ON_THEME_CHANGE,
   )
 
   // eslint-disable-next-line new-cap
@@ -94,7 +90,7 @@ export function createApp(optionsOrSetup: any): void {
 
 function createLifecycle(
   options: Options,
-  lifecycle: AppLifecycle
+  lifecycle: AppLifecycle,
 ): (...args: any[]) => void {
   const originLifecycle = options[lifecycle] as Function
   return function (this: AppInstance, ...args: any[]) {

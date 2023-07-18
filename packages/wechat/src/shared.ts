@@ -43,7 +43,7 @@ export function deepWatch(
     'setData'
   >,
   key: string,
-  value: unknown
+  value: unknown,
 ): void {
   if (!isObject(value)) {
     return
@@ -56,6 +56,6 @@ export function deepWatch(
     },
     {
       deep: true,
-    }
+    },
   )
 }

@@ -246,7 +246,7 @@ describe('component', () => {
       effectScope(true).run(() => {
         watch(
           () => 1,
-          () => {}
+          () => {},
         )
       })
       return {}
@@ -587,7 +587,7 @@ describe('component', () => {
       () => {
         onPageScroll(injectedFn)
       },
-      { listenPageScroll: true }
+      { listenPageScroll: true },
     )
     component.__listenPageScroll__ = component.methods.__listenPageScroll__
     component.lifetimes.attached.call(component)
@@ -629,7 +629,7 @@ describe('component', () => {
         onShareAppMessage(() => ({}))
         onShareAppMessage(() => ({}))
       },
-      { canShareToOthers: true }
+      { canShareToOthers: true },
     )
     component.onShareAppMessage = component.methods.onShareAppMessage
     component.__isInjectedShareToOthersHook__ =
@@ -643,7 +643,7 @@ describe('component', () => {
       () => {
         onShareAppMessage(fn)
       },
-      { canShareToOthers: true }
+      { canShareToOthers: true },
     )
     component.onShareAppMessage = component.methods.onShareAppMessage
     component.__isInjectedShareToOthersHook__ =
@@ -651,7 +651,7 @@ describe('component', () => {
     component.lifetimes.attached.call(component)
     const shareContent = component.methods.onShareAppMessage.call(
       component,
-      arg
+      arg,
     )
     expect(fn).toBeCalledWith(arg)
     expect(shareContent).toEqual({ title: 'test' })
@@ -697,7 +697,7 @@ describe('component', () => {
         onShareTimeline(() => ({}))
         onShareTimeline(() => ({}))
       },
-      { canShareToTimeline: true }
+      { canShareToTimeline: true },
     )
     component.onShareTimeline = component.methods.onShareTimeline
     component.__isInjectedShareToTimelineHook__ =
@@ -710,7 +710,7 @@ describe('component', () => {
       () => {
         onShareTimeline(fn)
       },
-      { canShareToTimeline: true }
+      { canShareToTimeline: true },
     )
     component.onShareTimeline = component.methods.onShareTimeline
     component.__isInjectedShareToTimelineHook__ =
@@ -765,7 +765,7 @@ describe('component', () => {
     component.lifetimes.attached.call(component)
     const favoritesContent = component.methods.onAddToFavorites.call(
       component,
-      arg
+      arg,
     )
     expect(fn).toBeCalledWith(arg)
     expect(favoritesContent).toEqual({ title: 'test' })

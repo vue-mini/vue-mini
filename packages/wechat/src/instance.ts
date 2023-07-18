@@ -1,4 +1,4 @@
-import { EffectScope } from '@vue/reactivity'
+import type { EffectScope } from '@vue/reactivity'
 
 export type Bindings = Record<string, any> | void
 

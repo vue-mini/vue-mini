@@ -66,7 +66,7 @@ export {
 
 // Types -----------------------------------------------------------------------
 
-export {
+export type {
   Ref,
   ToRef,
   ToRefs,
@@ -82,7 +82,7 @@ export {
   WritableComputedOptions,
   DeepReadonly,
 } from '@vue/reactivity'
-export {
+export type {
   WatchEffect,
   WatchOptions,
   WatchOptionsBase,
@@ -90,11 +90,11 @@ export {
   WatchSource,
   WatchStopHandle,
 } from './watch'
-export { InjectionKey } from './inject'
-export { Bindings } from './instance'
-export { AppSetup, AppOptions } from './app'
-export { Query, PageContext, PageSetup, PageOptions, Config } from './page'
-export {
+export type { InjectionKey } from './inject'
+export type { Bindings } from './instance'
+export type { AppSetup, AppOptions } from './app'
+export type { Query, PageContext, PageSetup, PageOptions, Config } from './page'
+export type {
   ComponentContext,
   ComponentSetup,
   ComponentOptionsWithoutProps,

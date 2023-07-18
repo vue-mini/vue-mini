@@ -1,13 +1,13 @@
 /* eslint-disable unicorn/prefer-module */
 'use strict'
 
-const process = require('process')
-const path = require('path')
+const process = require('node:process')
+const path = require('node:path')
 const fs = require('fs-extra')
 const rollup = require('rollup')
-const replace = require('@rollup/plugin-replace')
-const { terser } = require('rollup-plugin-terser')
-const typescript = require('@rollup/plugin-typescript')
+const { default: replace } = require('@rollup/plugin-replace')
+const { default: terser } = require('@rollup/plugin-terser')
+const { default: typescript } = require('@rollup/plugin-typescript')
 const { default: resolve } = require('@rollup/plugin-node-resolve')
 const { Extractor, ExtractorConfig } = require('@microsoft/api-extractor')
 
@@ -81,7 +81,7 @@ async function build(target) {
   await generateDeclaration(target)
 
   const extractorConfig = ExtractorConfig.loadFileAndPrepare(
-    path.join(target, 'api-extractor.json')
+    path.join(target, 'api-extractor.json'),
   )
   const extractorResult = Extractor.invoke(extractorConfig, {
     localBuild: true,
@@ -93,7 +93,7 @@ async function build(target) {
   } else {
     console.error(
       `API Extractor completed with ${extractorResult.errorCount} errors` +
-        ` and ${extractorResult.warningCount} warnings`
+        ` and ${extractorResult.warningCount} warnings`,
     )
     process.exitCode = 1
   }
@@ -139,7 +139,7 @@ async function build(target) {
 for (const pkg of fs.readdirSync('packages')) {
   const target = path.join('packages', pkg)
   if (!fs.statSync(target).isDirectory()) continue
-  // eslint-disable-next-line promise/prefer-await-to-then
+  // eslint-disable-next-line unicorn/prefer-top-level-await
   build(target).catch(() => {
     process.exitCode = 1
   })

@@ -23,8 +23,7 @@ expect.extend({
 
   toHaveBeenWarnedLast(received) {
     asserted.add(received)
-    const passed =
-      warn.mock.calls[warn.mock.calls.length - 1][0].includes(received)
+    const passed = warn.mock.calls.at(-1)[0].includes(received)
     if (passed) {
       return {
         pass: true,
@@ -87,8 +86,8 @@ afterEach(() => {
   if (nonAssertedWarnings.length > 0) {
     throw new Error(
       `test case threw unexpected warnings:\n - ${nonAssertedWarnings.join(
-        '\n - '
-      )}`
+        '\n - ',
+      )}`,
     )
   }
 })

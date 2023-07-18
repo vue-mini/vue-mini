@@ -1,14 +1,17 @@
-import {
-  isRef,
+import type {
   Ref,
   ComputedRef,
-  ReactiveEffect,
-  isReactive,
-  ReactiveFlags,
   EffectScheduler,
   DebuggerOptions,
 } from '@vue/reactivity'
-import { queueJob, SchedulerJob } from './scheduler'
+import {
+  isRef,
+  ReactiveEffect,
+  isReactive,
+  ReactiveFlags,
+} from '@vue/reactivity'
+import type { SchedulerJob } from './scheduler'
+import { queueJob } from './scheduler'
 import { getCurrentInstance } from './instance'
 import {
   isArray,
@@ -28,7 +31,7 @@ export type WatchSource<T = any> = Ref<T> | ComputedRef<T> | (() => T)
 export type WatchCallback<V = any, OV = any> = (
   value: V,
   oldValue: OV,
-  onInvalidate: InvalidateCbRegistrator
+  onInvalidate: InvalidateCbRegistrator,
 ) => any
 
 type MapSources<T, Immediate> = {
@@ -59,34 +62,34 @@ export type WatchStopHandle = () => void
 // Simple effect.
 export function watchEffect(
   effect: WatchEffect,
-  options?: WatchOptionsBase
+  options?: WatchOptionsBase,
 ): WatchStopHandle {
   return doWatch(effect, null, options)
 }
 
 export function watchPostEffect(
   effect: WatchEffect,
-  options?: DebuggerOptions
+  options?: DebuggerOptions,
 ) {
   return doWatch(
     effect,
     null,
     (__DEV__
       ? Object.assign(options || {}, { flush: 'post' })
-      : /* istanbul ignore next */ { flush: 'post' }) as WatchOptionsBase
+      : /* istanbul ignore next */ { flush: 'post' }) as WatchOptionsBase,
   )
 }
 
 export function watchSyncEffect(
   effect: WatchEffect,
-  options?: DebuggerOptions
+  options?: DebuggerOptions,
 ) {
   return doWatch(
     effect,
     null,
     (__DEV__
       ? Object.assign(options || {}, { flush: 'sync' })
-      : /* istanbul ignore next */ { flush: 'sync' }) as WatchOptionsBase
+      : /* istanbul ignore next */ { flush: 'sync' }) as WatchOptionsBase,
   )
 }
 
@@ -98,11 +101,11 @@ type MultiWatchSources = Array<WatchSource<unknown> | object>
 // Overload: array of multiple sources + cb
 export function watch<
   T extends MultiWatchSources,
-  Immediate extends Readonly<boolean> = false
+  Immediate extends Readonly<boolean> = false,
 >(
   sources: [...T],
   cb: WatchCallback<MapSources<T, false>, MapSources<T, Immediate>>,
-  options?: WatchOptions<Immediate>
+  options?: WatchOptions<Immediate>,
 ): WatchStopHandle
 
 // Overload: multiple sources w/ `as const`
@@ -110,42 +113,41 @@ export function watch<
 // somehow [...T] breaks when the type is readonly
 export function watch<
   T extends Readonly<MultiWatchSources>,
-  Immediate extends Readonly<boolean> = false
+  Immediate extends Readonly<boolean> = false,
 >(
-  // eslint-disable-next-line @typescript-eslint/unified-signatures
   source: T,
   cb: WatchCallback<MapSources<T, false>, MapSources<T, Immediate>>,
-  options?: WatchOptions<Immediate>
+  options?: WatchOptions<Immediate>,
 ): WatchStopHandle
 
 // Overload: single source + cb
 export function watch<T, Immediate extends Readonly<boolean> = false>(
   source: WatchSource<T>,
   cb: WatchCallback<T, Immediate extends true ? T | undefined : T>,
-  options?: WatchOptions<Immediate>
+  options?: WatchOptions<Immediate>,
 ): WatchStopHandle
 
 // Overload: watching reactive object w/ cb
 export function watch<
   T extends object,
-  Immediate extends Readonly<boolean> = false
+  Immediate extends Readonly<boolean> = false,
 >(
   source: T,
   cb: WatchCallback<T, Immediate extends true ? T | undefined : T>,
-  options?: WatchOptions<Immediate>
+  options?: WatchOptions<Immediate>,
 ): WatchStopHandle
 
 // Implementation
 export function watch<T = any, Immediate extends Readonly<boolean> = false>(
   source: T | WatchSource<T>,
   cb: any,
-  options?: WatchOptions<Immediate>
+  options?: WatchOptions<Immediate>,
 ): WatchStopHandle {
   if (__DEV__ && !isFunction(cb)) {
     console.warn(
       `\`watch(fn, options?)\` signature has been moved to a separate API. ` +
         `Use \`watchEffect(fn, options?)\` instead. \`watch\` now only ` +
-        `supports \`watch(source, cb, options?) signature.`
+        `supports \`watch(source, cb, options?) signature.`,
     )
   }
 
@@ -155,20 +157,20 @@ export function watch<T = any, Immediate extends Readonly<boolean> = false>(
 function doWatch(
   source: WatchSource | WatchSource[] | WatchEffect | object,
   cb: WatchCallback | null,
-  { immediate, deep, flush, onTrack, onTrigger }: WatchOptions = {}
+  { immediate, deep, flush, onTrack, onTrigger }: WatchOptions = {},
 ): WatchStopHandle {
   if (__DEV__ && !cb) {
     if (immediate !== undefined) {
       console.warn(
         `watch() "immediate" option is only respected when using the ` +
-          `watch(source, callback, options?) signature.`
+          `watch(source, callback, options?) signature.`,
       )
     }
 
     if (deep !== undefined) {
       console.warn(
         `watch() "deep" option is only respected when using the ` +
-          `watch(source, callback, options?) signature.`
+          `watch(source, callback, options?) signature.`,
       )
     }
   }
@@ -178,7 +180,7 @@ function doWatch(
       `Invalid watch source:`,
       s,
       `A watch source can only be a getter/effect function, a ref, ` +
-        `a reactive object, or an array of these types.`
+        `a reactive object, or an array of these types.`,
     )
   }
 
@@ -267,7 +269,7 @@ function doWatch(
         forceTrigger ||
         (isMultiSource
           ? (newValue as any[]).some((v, i) =>
-              hasChanged(v, (oldValue as any[])[i])
+              hasChanged(v, (oldValue as any[])[i]),
             )
           : hasChanged(newValue, oldValue))
       ) {
@@ -280,7 +282,7 @@ function doWatch(
           newValue,
           // Pass undefined as the old value when it's changed for the first time
           oldValue === INITIAL_WATCHER_VALUE ? undefined : oldValue,
-          onInvalidate
+          onInvalidate,
         )
         oldValue = newValue
       }

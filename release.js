@@ -1,15 +1,16 @@
 /* eslint-disable unicorn/prefer-module */
 'use strict'
 
-const process = require('process')
-const fs = require('fs')
-const path = require('path')
+const process = require('node:process')
+const fs = require('node:fs')
+const path = require('node:path')
 const execa = require('execa')
 
 function run(bin, args, options) {
   return execa(bin, args, { stdio: 'inherit', ...options })
 }
 
+// eslint-disable-next-line unicorn/prefer-top-level-await
 ;(async () => {
   try {
     await run('yarn', ['lint'])
@@ -32,7 +33,7 @@ function run(bin, args, options) {
           '--access',
           'public',
         ],
-        { cwd: target }
+        { cwd: target },
       )
     }
   } catch {

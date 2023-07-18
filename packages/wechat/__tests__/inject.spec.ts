@@ -1,13 +1,5 @@
-import {
-  provide,
-  inject,
-  InjectionKey,
-  ref,
-  nextTick,
-  Ref,
-  readonly,
-  reactive,
-} from '../src'
+import type { InjectionKey, Ref } from '../src'
+import { provide, inject, ref, nextTick, readonly, reactive } from '../src'
 
 // Reference: https://vue-composition-api-rfc.netlify.com/api.html#provide-inject
 
@@ -80,7 +72,7 @@ describe('provide/inject', () => {
     injectedCount.value++
     expect(injectedCount.value).toBe(1)
     expect(
-      `Set operation on key "value" failed: target is readonly`
+      `Set operation on key "value" failed: target is readonly`,
     ).toHaveBeenWarned()
 
     // Source mutation should still work
@@ -110,7 +102,7 @@ describe('provide/inject', () => {
     state.count++
     expect(state.count).toBe(1)
     expect(
-      `Set operation on key "count" failed: target is readonly`
+      `Set operation on key "count" failed: target is readonly`,
     ).toHaveBeenWarned()
 
     rootState.count++

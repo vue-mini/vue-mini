@@ -236,7 +236,7 @@ describe('page', () => {
       effectScope(true).run(() => {
         watch(
           () => 1,
-          () => {}
+          () => {},
         )
       })
       return {}
@@ -440,7 +440,7 @@ describe('page', () => {
       () => {
         onPageScroll(injectedFn)
       },
-      { listenPageScroll: true }
+      { listenPageScroll: true },
     )
     page.onLoad()
     page.onPageScroll(arg)
@@ -473,7 +473,7 @@ describe('page', () => {
         onShareAppMessage(() => ({}))
         onShareAppMessage(() => ({}))
       },
-      { canShareToOthers: true }
+      { canShareToOthers: true },
     )
     page.onLoad()
     expect('onShareAppMessage() hook can only').toHaveBeenWarned()
@@ -484,7 +484,7 @@ describe('page', () => {
       () => {
         onShareAppMessage(fn)
       },
-      { canShareToOthers: true }
+      { canShareToOthers: true },
     )
     page.onLoad()
     const shareContent = page.onShareAppMessage(arg)
@@ -524,7 +524,7 @@ describe('page', () => {
         onShareTimeline(() => ({}))
         onShareTimeline(() => ({}))
       },
-      { canShareToTimeline: true }
+      { canShareToTimeline: true },
     )
     page.onLoad()
     expect('onShareTimeline() hook can only').toHaveBeenWarned()
@@ -534,7 +534,7 @@ describe('page', () => {
       () => {
         onShareTimeline(fn)
       },
-      { canShareToTimeline: true }
+      { canShareToTimeline: true },
     )
     page.onLoad()
     const shareContent = page.onShareTimeline()

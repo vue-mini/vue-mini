@@ -1,10 +1,6 @@
 import { EffectScope } from '@vue/reactivity'
-import {
-  Bindings,
-  PageInstance,
-  setCurrentPage,
-  unsetCurrentPage,
-} from './instance'
+import type { Bindings, PageInstance } from './instance'
+import { setCurrentPage, unsetCurrentPage } from './instance'
 import { deepToRaw, deepWatch } from './shared'
 import { isFunction, toHiddenField } from './utils'
 
@@ -22,11 +18,11 @@ export type PageContext = WechatMiniprogram.Page.InstanceProperties &
 export type PageSetup = (
   this: void,
   query: Query,
-  context: PageContext
+  context: PageContext,
 ) => Bindings
 export type PageOptions<
   Data extends WechatMiniprogram.Page.DataOption,
-  Custom extends WechatMiniprogram.Page.CustomOption
+  Custom extends WechatMiniprogram.Page.CustomOption,
 > = { setup?: PageSetup } & WechatMiniprogram.Page.Options<Data, Custom>
 export interface Config {
   listenPageScroll?: boolean
@@ -55,7 +51,7 @@ export function definePage(setup: PageSetup, config?: Config): void
 
 export function definePage<
   Data extends WechatMiniprogram.Page.DataOption,
-  Custom extends WechatMiniprogram.Page.CustomOption
+  Custom extends WechatMiniprogram.Page.CustomOption,
 >(options: PageOptions<Data, Custom>, config?: Config): void
 
 export function definePage(optionsOrSetup: any, config?: Config): void {
@@ -132,7 +128,7 @@ export function definePage(optionsOrSetup: any, config?: Config): void {
   if (options[PageLifecycle.ON_PAGE_SCROLL] || config.listenPageScroll) {
     options[PageLifecycle.ON_PAGE_SCROLL] = createLifecycle(
       options,
-      PageLifecycle.ON_PAGE_SCROLL
+      PageLifecycle.ON_PAGE_SCROLL,
     )
     /* istanbul ignore next */
     options.__listenPageScroll__ = () => true
@@ -144,10 +140,10 @@ export function definePage(optionsOrSetup: any, config?: Config): void {
   ) {
     options[PageLifecycle.ON_SHARE_APP_MESSAGE] = function (
       this: PageInstance,
-      share: WechatMiniprogram.Page.IShareAppMessageOption
+      share: WechatMiniprogram.Page.IShareAppMessageOption,
     ): WechatMiniprogram.Page.ICustomShareContent {
       const hook = this[toHiddenField(PageLifecycle.ON_SHARE_APP_MESSAGE)] as (
-        share: WechatMiniprogram.Page.IShareAppMessageOption
+        share: WechatMiniprogram.Page.IShareAppMessageOption,
       ) => WechatMiniprogram.Page.ICustomShareContent
       if (hook) {
         return hook(share)
@@ -165,7 +161,7 @@ export function definePage(optionsOrSetup: any, config?: Config): void {
     config.canShareToTimeline
   ) {
     options[PageLifecycle.ON_SHARE_TIMELINE] = function (
-      this: PageInstance
+      this: PageInstance,
     ): WechatMiniprogram.Page.ICustomTimelineContent {
       const hook = this[
         toHiddenField(PageLifecycle.ON_SHARE_TIMELINE)
@@ -184,10 +180,10 @@ export function definePage(optionsOrSetup: any, config?: Config): void {
   if (options[PageLifecycle.ON_ADD_TO_FAVORITES] === undefined) {
     options[PageLifecycle.ON_ADD_TO_FAVORITES] = function (
       this: PageInstance,
-      favorites: WechatMiniprogram.Page.IAddToFavoritesOption
+      favorites: WechatMiniprogram.Page.IAddToFavoritesOption,
     ): WechatMiniprogram.Page.IAddToFavoritesContent {
       const hook = this[toHiddenField(PageLifecycle.ON_ADD_TO_FAVORITES)] as (
-        favorites: WechatMiniprogram.Page.IAddToFavoritesOption
+        favorites: WechatMiniprogram.Page.IAddToFavoritesOption,
       ) => WechatMiniprogram.Page.IAddToFavoritesContent
       if (hook) {
         return hook(favorites)
@@ -202,31 +198,31 @@ export function definePage(optionsOrSetup: any, config?: Config): void {
 
   options[PageLifecycle.ON_SHOW] = createLifecycle(
     options,
-    PageLifecycle.ON_SHOW
+    PageLifecycle.ON_SHOW,
   )
   options[PageLifecycle.ON_READY] = createLifecycle(
     options,
-    PageLifecycle.ON_READY
+    PageLifecycle.ON_READY,
   )
   options[PageLifecycle.ON_HIDE] = createLifecycle(
     options,
-    PageLifecycle.ON_HIDE
+    PageLifecycle.ON_HIDE,
   )
   options[PageLifecycle.ON_PULL_DOWN_REFRESH] = createLifecycle(
     options,
-    PageLifecycle.ON_PULL_DOWN_REFRESH
+    PageLifecycle.ON_PULL_DOWN_REFRESH,
   )
   options[PageLifecycle.ON_REACH_BOTTOM] = createLifecycle(
     options,
-    PageLifecycle.ON_REACH_BOTTOM
+    PageLifecycle.ON_REACH_BOTTOM,
   )
   options[PageLifecycle.ON_RESIZE] = createLifecycle(
     options,
-    PageLifecycle.ON_RESIZE
+    PageLifecycle.ON_RESIZE,
   )
   options[PageLifecycle.ON_TAB_ITEM_TAP] = createLifecycle(
     options,
-    PageLifecycle.ON_TAB_ITEM_TAP
+    PageLifecycle.ON_TAB_ITEM_TAP,
   )
 
   // eslint-disable-next-line new-cap
@@ -235,7 +231,7 @@ export function definePage(optionsOrSetup: any, config?: Config): void {
 
 function createLifecycle(
   options: Options,
-  lifecycle: PageLifecycle
+  lifecycle: PageLifecycle,
 ): (...args: any[]) => void {
   const originLifecycle = options[lifecycle] as Function
   return function (this: PageInstance, ...args: any[]) {

@@ -1,12 +1,9 @@
 import { shallowReactive, shallowReadonly, EffectScope } from '@vue/reactivity'
-import { PageLifecycle, Config } from './page'
+import type { Config } from './page'
+import { PageLifecycle } from './page'
 import { deepToRaw, deepWatch } from './shared'
-import {
-  Bindings,
-  ComponentInstance,
-  setCurrentComponent,
-  unsetCurrentComponent,
-} from './instance'
+import type { Bindings, ComponentInstance } from './instance'
+import { setCurrentComponent, unsetCurrentComponent } from './instance'
 import { isFunction, toHiddenField } from './utils'
 
 export type ComponentContext = WechatMiniprogram.Component.InstanceProperties &
@@ -18,12 +15,12 @@ export type ComponentContext = WechatMiniprogram.Component.InstanceProperties &
 export type ComponentSetup<Props extends Record<string, any>> = (
   this: void,
   props: Readonly<Props>,
-  context: ComponentContext
+  context: ComponentContext,
 ) => Bindings
 
 export type ComponentOptionsWithoutProps<
   Data extends WechatMiniprogram.Component.DataOption,
-  Methods extends WechatMiniprogram.Component.MethodOption
+  Methods extends WechatMiniprogram.Component.MethodOption,
 > = WechatMiniprogram.Component.Options<
   Data,
   WechatMiniprogram.Component.PropertyOption,
@@ -36,14 +33,14 @@ export type ComponentOptionsWithoutProps<
 export type ComponentOptionsWithProps<
   Props extends WechatMiniprogram.Component.PropertyOption,
   Data extends WechatMiniprogram.Component.DataOption,
-  Methods extends WechatMiniprogram.Component.MethodOption
+  Methods extends WechatMiniprogram.Component.MethodOption,
 > = WechatMiniprogram.Component.Options<Data, Props, Methods> & {
   setup?: ComponentSetup<PropertyOptionToData<Props>>
 }
 
 /** * Temporary patch for https://github.com/wechat-miniprogram/api-typings/issues/97 ***/
 type PropertyOptionToData<
-  T extends WechatMiniprogram.Component.PropertyOption
+  T extends WechatMiniprogram.Component.PropertyOption,
 > = {
   [Name in keyof T]: PropertyToData<T[Name]>
 }
@@ -78,21 +75,21 @@ const SpecialLifecycleMap = {
 export function defineComponent(
   // eslint-disable-next-line @typescript-eslint/ban-types
   setup: ComponentSetup<{}>,
-  config?: Config
+  config?: Config,
 ): string
 
 export function defineComponent<
   Data extends WechatMiniprogram.Component.DataOption,
-  Methods extends WechatMiniprogram.Component.MethodOption
+  Methods extends WechatMiniprogram.Component.MethodOption,
 >(options: ComponentOptionsWithoutProps<Data, Methods>, config?: Config): string
 
 export function defineComponent<
   Props extends WechatMiniprogram.Component.PropertyOption,
   Data extends WechatMiniprogram.Component.DataOption,
-  Methods extends WechatMiniprogram.Component.MethodOption
+  Methods extends WechatMiniprogram.Component.MethodOption,
 >(
   options: ComponentOptionsWithProps<Props, Data, Methods>,
-  config?: Config
+  config?: Config,
 ): string
 
 export function defineComponent(optionsOrSetup: any, config?: Config): string {
@@ -131,7 +128,7 @@ export function defineComponent(optionsOrSetup: any, config?: Config): string {
     options.lifetimes[ComponentLifecycle.ATTACHED] ||
     options[ComponentLifecycle.ATTACHED]
   options.lifetimes[ComponentLifecycle.ATTACHED] = function (
-    this: ComponentInstance
+    this: ComponentInstance,
   ) {
     this.__scope__ = new EffectScope()
 
@@ -166,7 +163,7 @@ export function defineComponent(optionsOrSetup: any, config?: Config): string {
       __DEV__
         ? shallowReadonly(this.__props__)
         : /* istanbul ignore next */ this.__props__,
-      context
+      context,
     )
     if (bindings !== undefined) {
       Object.keys(bindings).forEach((key) => {
@@ -190,10 +187,10 @@ export function defineComponent(optionsOrSetup: any, config?: Config): string {
 
   const detached = createComponentLifecycle(
     options,
-    ComponentLifecycle.DETACHED
+    ComponentLifecycle.DETACHED,
   )
   options.lifetimes[ComponentLifecycle.DETACHED] = function (
-    this: ComponentInstance
+    this: ComponentInstance,
   ) {
     detached.call(this)
 
@@ -205,15 +202,15 @@ export function defineComponent(optionsOrSetup: any, config?: Config): string {
     options[ComponentLifecycle.READY]
   options.lifetimes[ComponentLifecycle.READY] = createLifecycle(
     SpecialLifecycleMap[ComponentLifecycle.READY],
-    originReady
+    originReady,
   )
   options.lifetimes[ComponentLifecycle.MOVED] = createComponentLifecycle(
     options,
-    ComponentLifecycle.MOVED
+    ComponentLifecycle.MOVED,
   )
   options.lifetimes[ComponentLifecycle.ERROR] = createComponentLifecycle(
     options,
-    ComponentLifecycle.ERROR
+    ComponentLifecycle.ERROR,
   )
 
   if (options.methods === undefined) {
@@ -226,7 +223,7 @@ export function defineComponent(optionsOrSetup: any, config?: Config): string {
   ) {
     options.methods[PageLifecycle.ON_PAGE_SCROLL] = createPageLifecycle(
       options,
-      PageLifecycle.ON_PAGE_SCROLL
+      PageLifecycle.ON_PAGE_SCROLL,
     )
     /* istanbul ignore next */
     options.methods.__listenPageScroll__ = () => true
@@ -238,10 +235,10 @@ export function defineComponent(optionsOrSetup: any, config?: Config): string {
   ) {
     options.methods[PageLifecycle.ON_SHARE_APP_MESSAGE] = function (
       this: ComponentInstance,
-      share: WechatMiniprogram.Page.IShareAppMessageOption
+      share: WechatMiniprogram.Page.IShareAppMessageOption,
     ): WechatMiniprogram.Page.ICustomShareContent {
       const hook = this[toHiddenField(PageLifecycle.ON_SHARE_APP_MESSAGE)] as (
-        share: WechatMiniprogram.Page.IShareAppMessageOption
+        share: WechatMiniprogram.Page.IShareAppMessageOption,
       ) => WechatMiniprogram.Page.ICustomShareContent
       if (hook) {
         return hook(share)
@@ -259,7 +256,7 @@ export function defineComponent(optionsOrSetup: any, config?: Config): string {
     config.canShareToTimeline
   ) {
     options.methods[PageLifecycle.ON_SHARE_TIMELINE] = function (
-      this: ComponentInstance
+      this: ComponentInstance,
     ): WechatMiniprogram.Page.ICustomTimelineContent {
       const hook = this[
         toHiddenField(PageLifecycle.ON_SHARE_TIMELINE)
@@ -278,10 +275,10 @@ export function defineComponent(optionsOrSetup: any, config?: Config): string {
   if (options.methods[PageLifecycle.ON_ADD_TO_FAVORITES] === undefined) {
     options.methods[PageLifecycle.ON_ADD_TO_FAVORITES] = function (
       this: ComponentInstance,
-      favorites: WechatMiniprogram.Page.IAddToFavoritesOption
+      favorites: WechatMiniprogram.Page.IAddToFavoritesOption,
     ): WechatMiniprogram.Page.IAddToFavoritesContent {
       const hook = this[toHiddenField(PageLifecycle.ON_ADD_TO_FAVORITES)] as (
-        avorites: WechatMiniprogram.Page.IAddToFavoritesOption
+        avorites: WechatMiniprogram.Page.IAddToFavoritesOption,
       ) => WechatMiniprogram.Page.IAddToFavoritesContent
       if (hook) {
         return hook(favorites)
@@ -296,19 +293,19 @@ export function defineComponent(optionsOrSetup: any, config?: Config): string {
 
   options.methods[PageLifecycle.ON_LOAD] = createPageLifecycle(
     options,
-    PageLifecycle.ON_LOAD
+    PageLifecycle.ON_LOAD,
   )
   options.methods[PageLifecycle.ON_PULL_DOWN_REFRESH] = createPageLifecycle(
     options,
-    PageLifecycle.ON_PULL_DOWN_REFRESH
+    PageLifecycle.ON_PULL_DOWN_REFRESH,
   )
   options.methods[PageLifecycle.ON_REACH_BOTTOM] = createPageLifecycle(
     options,
-    PageLifecycle.ON_REACH_BOTTOM
+    PageLifecycle.ON_REACH_BOTTOM,
   )
   options.methods[PageLifecycle.ON_TAB_ITEM_TAP] = createPageLifecycle(
     options,
-    PageLifecycle.ON_TAB_ITEM_TAP
+    PageLifecycle.ON_TAB_ITEM_TAP,
   )
 
   if (options.pageLifetimes === undefined) {
@@ -331,7 +328,7 @@ export function defineComponent(optionsOrSetup: any, config?: Config): string {
       const originObserver = options.observers[property]
       options.observers[property] = function (
         this: ComponentInstance,
-        value: any
+        value: any,
       ) {
         // Observer executes before attached
         if (this.__props__) {
@@ -351,7 +348,7 @@ export function defineComponent(optionsOrSetup: any, config?: Config): string {
 
 function createComponentLifecycle(
   options: Options,
-  lifecycle: ComponentLifecycle
+  lifecycle: ComponentLifecycle,
 ): (...args: any[]) => void {
   const originLifecycle = options.lifetimes[lifecycle] || options[lifecycle]
   return createLifecycle(lifecycle, originLifecycle)
@@ -359,7 +356,7 @@ function createComponentLifecycle(
 
 function createPageLifecycle(
   options: Options,
-  lifecycle: PageLifecycle
+  lifecycle: PageLifecycle,
 ): (...args: any[]) => void {
   const originLifecycle = options.methods[lifecycle]
   return createLifecycle(lifecycle, originLifecycle)
@@ -370,7 +367,7 @@ function createSpecialPageLifecycle(
   lifecycle:
     | PageLifecycle.ON_SHOW
     | PageLifecycle.ON_HIDE
-    | PageLifecycle.ON_RESIZE
+    | PageLifecycle.ON_RESIZE,
 ): (...args: any[]) => void {
   const originLifecycle = options.pageLifetimes[SpecialLifecycleMap[lifecycle]]
   return createLifecycle(lifecycle, originLifecycle)
@@ -378,7 +375,7 @@ function createSpecialPageLifecycle(
 
 function createLifecycle(
   lifecycle: ComponentLifecycle | PageLifecycle,
-  originLifecycle: Function | undefined
+  originLifecycle: Function | undefined,
 ): (...args: any[]) => void {
   const hiddenField = toHiddenField(lifecycle)
   return function (this: ComponentInstance, ...args: any[]) {

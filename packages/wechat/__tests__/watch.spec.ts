@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-expressions */
+import type { DebuggerEvent } from '@vue/reactivity'
 import {
   ITERATE_KEY,
-  DebuggerEvent,
   TrackOpTypes,
   TriggerOpTypes,
   triggerRef,
@@ -44,7 +44,7 @@ describe('watch', () => {
         if (prevCount) {
           prevCount + 1
         }
-      }
+      },
     )
     state.count++
     await nextTick()
@@ -119,7 +119,7 @@ describe('watch', () => {
       },
       {
         deep: true,
-      }
+      },
     )
     count.value++
     await nextTick()
@@ -233,7 +233,7 @@ describe('watch', () => {
       () => state.count,
       (count) => {
         dummy = count
-      }
+      },
     )
 
     state.count++
@@ -313,7 +313,7 @@ describe('watch', () => {
           state.set.has(1),
         ]
       },
-      { deep: true }
+      { deep: true },
     )
 
     state.nested.count++
@@ -347,7 +347,7 @@ describe('watch', () => {
       (state) => {
         dummy = [state[0].value, state[1].value]
       },
-      { deep: true }
+      { deep: true },
     )
 
     count.value++
@@ -398,7 +398,7 @@ describe('watch', () => {
         dummy = count.value
       },
       // @ts-expect-error
-      { immediate: false }
+      { immediate: false },
     )
     expect(dummy).toBe(0)
     expect(`"immediate" option is only respected`).toHaveBeenWarned()
@@ -417,7 +417,7 @@ describe('watch', () => {
         return arr
       },
       // @ts-expect-error
-      { deep: true }
+      { deep: true },
     )
     expect(spy).toHaveBeenCalledTimes(1)
     ;(arr.value[1] as number[])[0] = 3
@@ -437,7 +437,7 @@ describe('watch', () => {
       () => {
         dummy = [obj.foo, 'bar' in obj, Object.keys(obj)]
       },
-      { onTrack }
+      { onTrack },
     )
     await nextTick()
     expect(dummy).toEqual([1, true, ['foo', 'bar']])
@@ -472,7 +472,7 @@ describe('watch', () => {
       () => {
         dummy = obj.foo
       },
-      { onTrigger }
+      { onTrigger },
     )
     await nextTick()
     expect(dummy).toBe(1)
@@ -511,7 +511,7 @@ describe('watch', () => {
       },
       {
         flush: 'sync',
-      }
+      },
     )
 
     expect(calls).toBe(0)

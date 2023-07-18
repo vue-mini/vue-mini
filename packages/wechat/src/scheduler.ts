@@ -17,7 +17,6 @@ type CountMap = Map<SchedulerJob, number>
 
 export function nextTick(fn?: () => void): Promise<void> {
   const p = currentFlushPromise || resolvedPromise
-  // eslint-disable-next-line promise/prefer-await-to-then
   return fn ? p.then(fn) : p
 }
 
@@ -32,7 +31,7 @@ export function queueJob(job: SchedulerJob) {
     queue.length === 0 ||
     !queue.includes(
       job,
-      isFlushing && job.allowRecurse ? flushIndex + 1 : flushIndex
+      isFlushing && job.allowRecurse ? flushIndex + 1 : flushIndex,
     )
   ) {
     queue.push(job)
@@ -43,7 +42,6 @@ export function queueJob(job: SchedulerJob) {
 function queueFlush(): void {
   if (!isFlushing && !isFlushPending) {
     isFlushPending = true
-    // eslint-disable-next-line promise/prefer-await-to-then
     currentFlushPromise = resolvedPromise.then(flushJobs)
   }
 }
@@ -93,7 +91,7 @@ function checkRecursiveUpdates(seen: CountMap, fn: SchedulerJob): boolean {
     console.warn(
       `Maximum recursive updates exceeded. ` +
         `This means you have a reactive effect that is mutating its own ` +
-        `dependencies and thus recursively triggering itself.`
+        `dependencies and thus recursively triggering itself.`,
     )
     return true
   }
