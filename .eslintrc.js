@@ -30,7 +30,6 @@ const config = {
       },
       rules: {
         'import/extensions': ['error', 'never'],
-        'import/named': 'off',
         'import/no-mutable-exports': 'off',
         'unicorn/no-for-loop': 'off',
         'unicorn/import-style': 'off',
