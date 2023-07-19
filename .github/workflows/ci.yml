@@ -15,4 +15,6 @@ jobs:
       - run: yarn lint
       - run: yarn type
       - run: yarn test --coverage
-      - run: yarn codecov -t $CODECOV_TOKEN
+      - uses: codecov/codecov-action@v3
+        with:
+          token: $CODECOV_TOKEN
