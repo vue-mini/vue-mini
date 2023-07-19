@@ -1,8 +1,5 @@
 name: CI
 on: push
-env:
-  ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
-  CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
 jobs:
   run:
     runs-on: ubuntu-latest
@@ -16,5 +13,3 @@ jobs:
       - run: yarn type
       - run: yarn test --coverage
       - uses: codecov/codecov-action@v3
-        with:
-          token: $CODECOV_TOKEN
