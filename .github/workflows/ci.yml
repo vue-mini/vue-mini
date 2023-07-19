@@ -8,8 +8,8 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: 20.x
-      - run: yarn install
-      - run: yarn lint
-      - run: yarn type
-      - run: yarn test --coverage
+      - run: pnpm install
+      - run: pnpm lint
+      - run: pnpm type
+      - run: pnpm test --coverage
       - uses: codecov/codecov-action@v3
