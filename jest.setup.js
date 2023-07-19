@@ -77,11 +77,12 @@ afterEach(() => {
   const assertedArray = [...asserted]
   const nonAssertedWarnings = warn.mock.calls
     .map((args) => args[0])
-    .filter((received) => {
-      return !assertedArray.some((assertedMessage) => {
-        return received.includes(assertedMessage)
-      })
-    })
+    .filter(
+      (received) =>
+        !assertedArray.some((assertedMessage) =>
+          received.includes(assertedMessage),
+        ),
+    )
   warn.mockRestore()
   if (nonAssertedWarnings.length > 0) {
     throw new Error(

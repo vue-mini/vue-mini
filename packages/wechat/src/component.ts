@@ -26,7 +26,6 @@ export type ComponentOptionsWithoutProps<
   WechatMiniprogram.Component.PropertyOption,
   Methods
 > & { properties?: undefined } & {
-  // eslint-disable-next-line @typescript-eslint/ban-types
   setup?: ComponentSetup<{}>
 }
 
@@ -73,7 +72,6 @@ const SpecialLifecycleMap = {
 }
 
 export function defineComponent(
-  // eslint-disable-next-line @typescript-eslint/ban-types
   setup: ComponentSetup<{}>,
   config?: Config,
 ): string

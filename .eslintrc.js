@@ -1,25 +1,9 @@
 /* eslint-disable unicorn/prefer-module */
 'use strict'
 
-const process = require('node:process')
-// eslint-disable-next-line import/no-extraneous-dependencies
-const xoTs = require('eslint-config-xo-typescript')
-
-const isProd = process.env.NODE_ENV === 'production'
-const {
-  object,
-  Function,
-  null: n,
-  ...types
-} = xoTs.rules['@typescript-eslint/ban-types'][1].types
-
-const config = {
+module.exports = {
   root: true,
-  extends: [
-    'xo',
-    require.resolve('xo/config/plugins.cjs'),
-    'plugin:prettier/recommended',
-  ],
+  extends: ['xo', require.resolve('xo/config/plugins.cjs'), 'prettier'],
   ignorePatterns: ['dist', 'coverage'],
   overrides: [
     {
@@ -51,10 +35,7 @@ const config = {
         '@typescript-eslint/prefer-nullish-coalescing': 'off',
         '@typescript-eslint/prefer-optional-chain': 'off',
         '@typescript-eslint/ban-ts-comment': 'off',
-        '@typescript-eslint/ban-types': [
-          'error',
-          { extendDefaults: false, types },
-        ],
+        '@typescript-eslint/ban-types': 'off',
       },
     },
   ],
@@ -65,22 +46,3 @@ const config = {
     __DEV__: 'readonly',
   },
 }
-
-if (!isProd) {
-  config.rules = {
-    'eslint-comments/no-unused-disable': 'off',
-  }
-  config.extends = [
-    ...config.extends,
-    'silent',
-    'silent/import',
-    'silent/prettier',
-    'silent/unicorn',
-  ]
-  config.overrides[0].extends = [
-    ...config.overrides[0].extends,
-    'silent/@typescript-eslint',
-  ]
-}
-
-module.exports = config

@@ -3,7 +3,7 @@
   "author": "Yang Mingshan <y.mingshan3@gmail.com>",
   "license": "MIT",
   "scripts": {
-    "lint": "cross-env NODE_ENV=production eslint --ext .js,.ts .",
+    "lint": "eslint --ext .js,.ts .",
     "type": "tsc --noEmit",
     "test": "jest",
     "build": "node build.js",
@@ -22,8 +22,6 @@
     "@types/jest": "^29.5.3",
     "@types/wechat-miniprogram": "^3.4.1",
     "@vue/reactivity": "3.2.19",
-    "cross-env": "^7.0.3",
-    "eslint-config-silent": "^0.30.0",
     "execa": "^5.0.0",
     "fs-extra": "^11.1.1",
     "husky": "^8.0.3",
