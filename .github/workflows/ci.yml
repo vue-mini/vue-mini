@@ -8,6 +8,8 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: 20.x
+      - run: corepack enable
+      - run: pnpm -v
       - run: pnpm install
       - run: pnpm lint
       - run: pnpm type
