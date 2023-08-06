@@ -20,10 +20,10 @@ export const onPageNotFound = createAppHook<
   (options: WechatMiniprogram.App.PageNotFoundOption) => unknown
 >(AppLifecycle.ON_PAGE_NOT_FOUND)
 export const onUnhandledRejection = createAppHook<
-  (options: WechatMiniprogram.OnUnhandledRejectionCallbackResult) => unknown
+  (options: WechatMiniprogram.OnUnhandledRejectionListenerResult) => unknown
 >(AppLifecycle.ON_UNHANDLED_REJECTION)
 export const onThemeChange = createAppHook<
-  (options: WechatMiniprogram.OnThemeChangeCallbackResult) => unknown
+  (options: WechatMiniprogram.OnThemeChangeListenerResult) => unknown
 >(AppLifecycle.ON_THEME_CHANGE)
 
 export const onShow = createPageHook(PageLifecycle.ON_SHOW)

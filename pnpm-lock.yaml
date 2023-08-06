@@ -23,9 +23,6 @@ devDependencies:
   '@types/jest':
     specifier: ^29.5.3
     version: 29.5.3
-  '@types/wechat-miniprogram':
-    specifier: ^3.4.1
-    version: 3.4.1
   '@vue/reactivity':
     specifier: 3.2.19
     version: 3.2.19
@@ -44,6 +41,9 @@ devDependencies:
   lint-staged:
     specifier: ^13.2.3
     version: 13.2.3
+  miniprogram-api-typings:
+    specifier: ^3.10.0
+    version: 3.10.0
   rollup:
     specifier: ^3.26.3
     version: 3.26.3
@@ -1179,10 +1179,6 @@ packages:
 
   /@types/stack-utils@2.0.1:
     resolution: {integrity: sha512-Hl219/BT5fLAaz6NDkSuhzasy49dwQS/DSdu4MdggFB8zcXv7vflBI3xp7FEmkmdDkBUI2bPUNeMttp2knYdxw==}
-    dev: true
-
-  /@types/wechat-miniprogram@3.4.1:
-    resolution: {integrity: sha512-szbuYR32VotxNQNQ4YyQ6Ob3ya0tLY0zpf/xvi6DF8Oqb+0Y+5CL5BpxS+4wBSJvlu3VfSXhjxZ0ze1a3l16Pw==}
     dev: true
 
   /@types/yargs-parser@21.0.0:
@@ -4413,6 +4409,10 @@ packages:
 
   /minimist@1.2.8:
     resolution: {integrity: sha512-2yyAR8qBkN3YuheJanUpWC5U3bb5osDywNB8RzDVlDwDHbocAJveqqj1u8+SVD7jkWT4yvsHCpWqqWqAxb0zCA==}
+    dev: true
+
+  /miniprogram-api-typings@3.10.0:
+    resolution: {integrity: sha512-pvGZmj9uamahlqfPj1bwn5Cd/bjImc5ehyAha/QfA9limG6HO9Plj/yROfSChK6J6+VUoVB9cnNthx4XuI0T2Q==}
     dev: true
 
   /ms@2.1.2:

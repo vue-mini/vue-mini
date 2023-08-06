@@ -156,6 +156,8 @@ export function defineComponent(optionsOrSetup: any, config?: Config): string {
       animate: this.animate.bind(this),
       clearAnimation: this.clearAnimation.bind(this),
       getOpenerEventChannel: this.getOpenerEventChannel.bind(this),
+      setUpdatePerformanceListener:
+        this.setUpdatePerformanceListener.bind(this),
     }
     const bindings = setup(
       __DEV__

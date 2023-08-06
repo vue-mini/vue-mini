@@ -96,6 +96,8 @@ export function definePage(optionsOrSetup: any, config?: Config): void {
       animate: this.animate.bind(this),
       clearAnimation: this.clearAnimation.bind(this),
       getOpenerEventChannel: this.getOpenerEventChannel.bind(this),
+      setUpdatePerformanceListener:
+        this.setUpdatePerformanceListener.bind(this),
     }
     const bindings = setup(query, context)
     if (bindings !== undefined) {
