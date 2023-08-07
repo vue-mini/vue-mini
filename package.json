@@ -1,7 +1,6 @@
 {
+  "private": true,
   "version": "0.3.0",
-  "author": "Yang Mingshan <y.mingshan3@gmail.com>",
-  "license": "MIT",
   "scripts": {
     "lint": "eslint --ext .js,.ts .",
     "type": "tsc --noEmit",
@@ -10,7 +9,7 @@
     "docs:dev": "vitepress dev docs",
     "docs:build": "vitepress build docs",
     "docs:serve": "vitepress serve docs",
-    "release": "node release.js",
+    "release": "node release.mjs",
     "prepare": "husky install"
   },
   "devDependencies": {
@@ -20,13 +19,11 @@
     "@rollup/plugin-terser": "^0.4.3",
     "@rollup/plugin-typescript": "^11.1.2",
     "@types/jest": "^29.5.3",
-    "@vue/reactivity": "3.2.19",
-    "execa": "^5.1.1",
+    "execa": "^7.2.0",
     "fs-extra": "^11.1.1",
     "husky": "^8.0.3",
     "jest": "^29.6.1",
     "lint-staged": "^13.2.3",
-    "miniprogram-api-typings": "^3.10.0",
     "rollup": "^3.26.3",
     "ts-jest": "^29.1.1",
     "typescript": "^5.1.6",

@@ -1,3 +1,6 @@
+// eslint-disable-next-line import/no-unassigned-import
+import 'miniprogram-api-typings'
+
 // Public API ------------------------------------------------------------------
 
 export {

@@ -2,7 +2,9 @@
 'use strict'
 
 module.exports = {
-  preset: 'ts-jest',
+  transform: {
+    '^.+\\.ts$': ['ts-jest', { diagnostics: false }],
+  },
   setupFilesAfterEnv: ['./jest.setup.js'],
   globals: {
     __DEV__: true,

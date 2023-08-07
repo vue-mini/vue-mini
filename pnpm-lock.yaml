@@ -4,61 +4,67 @@ settings:
   autoInstallPeers: false
   excludeLinksFromLockfile: false
 
-devDependencies:
-  '@microsoft/api-extractor':
-    specifier: ^7.36.3
-    version: 7.36.3
-  '@rollup/plugin-node-resolve':
-    specifier: ^15.1.0
-    version: 15.1.0(rollup@3.26.3)
-  '@rollup/plugin-replace':
-    specifier: ^5.0.2
-    version: 5.0.2(rollup@3.26.3)
-  '@rollup/plugin-terser':
-    specifier: ^0.4.3
-    version: 0.4.3(rollup@3.26.3)
-  '@rollup/plugin-typescript':
-    specifier: ^11.1.2
-    version: 11.1.2(rollup@3.26.3)(typescript@5.1.6)
-  '@types/jest':
-    specifier: ^29.5.3
-    version: 29.5.3
-  '@vue/reactivity':
-    specifier: 3.2.19
-    version: 3.2.19
-  execa:
-    specifier: ^5.1.1
-    version: 5.1.1
-  fs-extra:
-    specifier: ^11.1.1
-    version: 11.1.1
-  husky:
-    specifier: ^8.0.3
-    version: 8.0.3
-  jest:
-    specifier: ^29.6.1
-    version: 29.6.1
-  lint-staged:
-    specifier: ^13.2.3
-    version: 13.2.3
-  miniprogram-api-typings:
-    specifier: ^3.10.0
-    version: 3.10.0
-  rollup:
-    specifier: ^3.26.3
-    version: 3.26.3
-  ts-jest:
-    specifier: ^29.1.1
-    version: 29.1.1(jest@29.6.1)(typescript@5.1.6)
-  typescript:
-    specifier: ^5.1.6
-    version: 5.1.6
-  vitepress:
-    specifier: ^0.19.2
-    version: 0.19.2
-  xo:
-    specifier: ^0.55.0
-    version: 0.55.0
+importers:
+
+  .:
+    devDependencies:
+      '@microsoft/api-extractor':
+        specifier: ^7.36.3
+        version: 7.36.3
+      '@rollup/plugin-node-resolve':
+        specifier: ^15.1.0
+        version: 15.1.0(rollup@3.26.3)
+      '@rollup/plugin-replace':
+        specifier: ^5.0.2
+        version: 5.0.2(rollup@3.26.3)
+      '@rollup/plugin-terser':
+        specifier: ^0.4.3
+        version: 0.4.3(rollup@3.26.3)
+      '@rollup/plugin-typescript':
+        specifier: ^11.1.2
+        version: 11.1.2(rollup@3.26.3)(typescript@5.1.6)
+      '@types/jest':
+        specifier: ^29.5.3
+        version: 29.5.3
+      execa:
+        specifier: ^7.2.0
+        version: 7.2.0
+      fs-extra:
+        specifier: ^11.1.1
+        version: 11.1.1
+      husky:
+        specifier: ^8.0.3
+        version: 8.0.3
+      jest:
+        specifier: ^29.6.1
+        version: 29.6.1
+      lint-staged:
+        specifier: ^13.2.3
+        version: 13.2.3
+      rollup:
+        specifier: ^3.26.3
+        version: 3.26.3
+      ts-jest:
+        specifier: ^29.1.1
+        version: 29.1.1(jest@29.6.1)(typescript@5.1.6)
+      typescript:
+        specifier: ^5.1.6
+        version: 5.1.6
+      vitepress:
+        specifier: ^0.19.2
+        version: 0.19.2
+      xo:
+        specifier: ^0.55.0
+        version: 0.55.0
+
+  packages/wechat:
+    dependencies:
+      '@vue/reactivity':
+        specifier: 3.2.19
+        version: 3.2.19
+      miniprogram-api-typings:
+        specifier: ^3.10.0
+        version: 3.10.0
 
 packages:
 
@@ -1384,7 +1390,7 @@ packages:
     resolution: {integrity: sha512-FtachoYs2SnyrWup5UikP54xDX6ZJ1s5VgHcJp4rkGoutU3Ry61jhs+nCX7J64zjX992Mh9gGUC0LqTs8q9vCA==}
     dependencies:
       '@vue/shared': 3.2.19
-    dev: true
+    dev: false
 
   /@vue/reactivity@3.3.4:
     resolution: {integrity: sha512-kLTDLwd0B1jG08NBF3R5rqULtv/f8x3rOFByTDz4J53ttIQEDmALqKqXY0J+XQeN0aV2FBxY8nJDf88yvOPAqQ==}
@@ -1419,7 +1425,7 @@ packages:
 
   /@vue/shared@3.2.19:
     resolution: {integrity: sha512-Knqhx7WieLdVgwCAZgTVrDCXZ50uItuecLh9JdLC8O+a5ayaSyIQYveUK3hCRNC7ws5zalHmZwfdLMGaS8r4Ew==}
-    dev: true
+    dev: false
 
   /@vue/shared@3.3.4:
     resolution: {integrity: sha512-7OjdcV8vQ74eiz1TZLzZP4JwqM5fA94K6yntPS5Z25r9HDuGNzaGdgvwKYq6S+MxwF0TFRwe50fIR/MYnakdkQ==}
@@ -2045,7 +2051,7 @@ packages:
     dependencies:
       bundle-name: 3.0.0
       default-browser-id: 3.0.0
-      execa: 7.1.1
+      execa: 7.2.0
       titleize: 3.0.0
     dev: true
 
@@ -2846,8 +2852,8 @@ packages:
       strip-final-newline: 2.0.0
     dev: true
 
-  /execa@7.1.1:
-    resolution: {integrity: sha512-wH0eMf/UXckdUYnO21+HDztteVv05rq2GXksxT4fCGeHkBhw1DROXh40wcjMcRqDOWE7iPJ4n3M7e2+YFP+76Q==}
+  /execa@7.2.0:
+    resolution: {integrity: sha512-UduyVP7TLB5IcAQl+OzLyLcS/l32W/GLg+AhHJ+ow40FOk2U3SAllPwR44v4vmdFwIWqpdwxxpQbF1n5ta9seA==}
     engines: {node: ^14.18.0 || ^16.14.0 || >=18.0.0}
     dependencies:
       cross-spawn: 7.0.3
@@ -4179,7 +4185,7 @@ packages:
       cli-truncate: 3.1.0
       commander: 10.0.1
       debug: 4.3.4
-      execa: 7.1.1
+      execa: 7.2.0
       lilconfig: 2.1.0
       listr2: 5.0.8
       micromatch: 4.0.5
@@ -4413,7 +4419,7 @@ packages:
 
   /miniprogram-api-typings@3.10.0:
     resolution: {integrity: sha512-pvGZmj9uamahlqfPj1bwn5Cd/bjImc5ehyAha/QfA9limG6HO9Plj/yROfSChK6J6+VUoVB9cnNthx4XuI0T2Q==}
-    dev: true
+    dev: false
 
   /ms@2.1.2:
     resolution: {integrity: sha512-sGkPx+VjMtmA6MX27oA4FBFELFCZZ4S4XqeGOXCv68tT+jb3vk/RyaKWP0PTKyWtmLSM0b+adUTEvbs1PEaH2w==}
