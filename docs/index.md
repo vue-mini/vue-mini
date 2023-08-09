@@ -1,17 +1,56 @@
 ---
-home: true
-heroImage: /logo.png
-heroAlt: Logo image
-heroText: Vue Mini
-tagline: 像写 Vue 3 一样写小程序
-actionText: 起步 →
-actionLink: /guide/
+layout: home
+
+title: Vue Mini
+titleTemplate: 基于 Vue 3 的小程序框架
+
+hero:
+  name: Vue Mini
+  text: 基于 Vue 3 的小程序框架
+  tagline: 简单，强大，高性能。助你准时下班的小程序框架。
+  image:
+    src: /logo-with-shadow.png
+    alt: Vue Mini
+  actions:
+    - theme: brand
+      text: 开始
+      link: /guide/
+    - theme: alt
+      text: 在 GitHub 上查看
+      link: https://github.com/vue-mini/vue-mini
+
 features:
-  - title: 响应式
-    details: 基于 @vue/reactivity 的响应式能力，不再需要 setData。
-  - title: 渐进式
+  - icon: 📝
+    title: 响应式
+    details: 只需要更改数据，视图便会自动更新，不再需要 setData。
+  - icon: 🧩
+    title: 组合式
+    details: 组合式 API 赋予你最灵活的代码编写方式，以及最强大的代码抽象能力。
+  - icon: 👣
+    title: 渐进式
     details: 与小程序原生语法完全兼容，你可以渐进的采用，无需大规模重写。
-  - title: 小巧
+  - icon: 🤏
+    title: 小巧
     details: Minify 后仅 18KB，不会占用你宝贵的小程序尺寸。
-footer: MIT Licensed | Copyright © 2019-present Yang Mingshan
 ---
+
+<style>
+:root {
+  --vp-home-hero-name-color: transparent;
+  --vp-home-hero-name-background: -webkit-linear-gradient(315deg, #42d392 25%, #647eff);
+  --vp-home-hero-image-background-image: linear-gradient(0deg, #42d39280 50%, #34485e80);
+  --vp-home-hero-image-filter: blur(40px);
+}
+
+@media (min-width: 640px) {
+  :root {
+    --vp-home-hero-image-filter: blur(56px);
+  }
+}
+
+@media (min-width: 960px) {
+  :root {
+    --vp-home-hero-image-filter: blur(72px);
+  }
+}
+</style>

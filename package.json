@@ -8,7 +8,7 @@
     "build": "node build.js",
     "docs:dev": "vitepress dev docs",
     "docs:build": "vitepress build docs",
-    "docs:serve": "vitepress serve docs",
+    "docs:preview": "vitepress preview docs",
     "release": "node release.mjs",
     "prepare": "husky install"
   },
@@ -27,7 +27,16 @@
     "rollup": "^3.27.2",
     "ts-jest": "^29.1.1",
     "typescript": "^5.1.6",
-    "vitepress": "^0.19.2",
+    "vitepress": "^1.0.0-rc.4",
     "xo": "^0.55.1"
+  },
+  "pnpm": {
+    "peerDependencyRules": {
+      "ignoreMissing": [
+        "@algolia/client-search",
+        "search-insights",
+        "webpack"
+      ]
+    }
   }
 }

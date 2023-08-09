@@ -4,5 +4,7 @@ coverage
 dist
 !packages/*/dist
 temp
+docs/.vitepress/dist
+docs/.vitepress/cache
 *.log*
 .vscode
