@@ -9,10 +9,7 @@ const { default: replace } = require('@rollup/plugin-replace')
 const { default: terser } = require('@rollup/plugin-terser')
 const { default: typescript } = require('@rollup/plugin-typescript')
 const { default: resolve } = require('@rollup/plugin-node-resolve')
-const { Extractor, ExtractorConfig } = require('@microsoft/api-extractor')
-
-const input = 'src/index.ts'
-const external = ['@vue/reactivity']
+const { default: dts } = require('rollup-plugin-dts')
 
 function getBanner(version) {
   return `/*!
@@ -25,14 +22,14 @@ function getBanner(version) {
 
 async function generateDeclaration(target) {
   const bundle = await rollup.rollup({
-    input: path.join(target, input),
-    external,
+    input: path.join(target, 'src', 'index.ts'),
+    external: ['miniprogram-api-typings', '@vue/reactivity'],
     plugins: [
       typescript({
-        rootDir: target,
-        declaration: true,
-        declarationMap: true,
-        declarationDir: path.join(target, 'dist'),
+        compilerOptions: {
+          declaration: true,
+          declarationDir: path.join(target, 'dist'),
+        },
       }),
     ],
   })
@@ -40,6 +37,19 @@ async function generateDeclaration(target) {
     dir: path.join(target, 'dist'),
     format: 'es',
   })
+
+  const dtsBundle = await rollup.rollup({
+    input: path.join(target, 'dist', 'src', 'index.d.ts'),
+    plugins: [dts()],
+  })
+  await dtsBundle.write({
+    file: path.join(target, 'dist', 'wechat.d.ts'),
+    format: 'es',
+  })
+
+  await fs.remove(path.join(target, 'dist', 'src'))
+  await fs.remove(path.join(target, 'dist', 'index.js'))
+  await fs.remove(path.join(target, 'dist', '__tests__'))
 }
 
 async function generateCode({
@@ -51,7 +61,7 @@ async function generateCode({
   format,
 }) {
   const bundle = await rollup.rollup({
-    input: path.join(target, input),
+    input: path.join(target, 'src', 'index.ts'),
     external,
     plugins: [
       minify &&
@@ -80,28 +90,6 @@ async function build(target) {
 
   await generateDeclaration(target)
 
-  const extractorConfig = ExtractorConfig.loadFileAndPrepare(
-    path.join(target, 'api-extractor.json'),
-  )
-  const extractorResult = Extractor.invoke(extractorConfig, {
-    localBuild: true,
-    showVerboseMessages: true,
-  })
-
-  if (extractorResult.succeeded) {
-    console.log(`API Extractor completed successfully`)
-  } else {
-    console.error(
-      `API Extractor completed with ${extractorResult.errorCount} errors` +
-        ` and ${extractorResult.warningCount} warnings`,
-    )
-    process.exitCode = 1
-  }
-
-  await fs.remove(path.join(target, 'dist', 'src'))
-  await fs.remove(path.join(target, 'dist', 'index.js'))
-  await fs.remove(path.join(target, 'dist', '__tests__'))
-
   await generateCode({
     target,
     minify: false,
@@ -127,7 +115,7 @@ async function build(target) {
   await generateCode({
     target,
     minify: false,
-    external,
+    external: ['@vue/reactivity'],
     replaces: {
       __DEV__: `(process.env.NODE_ENV !== 'production')`,
     },
