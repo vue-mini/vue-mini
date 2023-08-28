@@ -126,7 +126,7 @@ definePage(
   },
   {
     listenPageScroll: true, // 默认为 false
-  }
+  },
 )
 ```
 
@@ -173,7 +173,7 @@ definePage(
   },
   {
     canShareToOthers: true, // 默认为 false
-  }
+  },
 )
 ```
 
@@ -202,7 +202,7 @@ definePage(
   },
   {
     canShareToTimeline: true, // 默认为 false
-  }
+  },
 )
 ```
 

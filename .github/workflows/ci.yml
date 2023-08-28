@@ -11,6 +11,7 @@ jobs:
       - run: corepack enable
       - run: pnpm -v
       - run: pnpm install
+      - run: pnpm format
       - run: pnpm lint
       - run: pnpm type
       - run: pnpm test -- --coverage

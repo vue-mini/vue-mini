@@ -2,6 +2,7 @@
   "private": true,
   "version": "0.3.0",
   "scripts": {
+    "format": "prettier --check \"**/*.{js,ts,md}\"",
     "lint": "eslint --ext .js,.ts .",
     "type": "tsc --noEmit",
     "test": "jest",
