@@ -98,6 +98,8 @@ export function definePage(optionsOrSetup: any, config?: Config): void {
       getOpenerEventChannel: this.getOpenerEventChannel.bind(this),
       setUpdatePerformanceListener:
         this.setUpdatePerformanceListener.bind(this),
+      getPassiveEvent: this.getPassiveEvent.bind(this),
+      setPassiveEvent: this.setPassiveEvent.bind(this),
     }
     const bindings = setup(query, context)
     if (bindings !== undefined) {

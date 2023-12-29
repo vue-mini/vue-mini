@@ -158,6 +158,8 @@ export function defineComponent(optionsOrSetup: any, config?: Config): string {
       getOpenerEventChannel: this.getOpenerEventChannel.bind(this),
       setUpdatePerformanceListener:
         this.setUpdatePerformanceListener.bind(this),
+      getPassiveEvent: this.getPassiveEvent.bind(this),
+      setPassiveEvent: this.setPassiveEvent.bind(this),
     }
     const bindings = setup(
       __DEV__ ?

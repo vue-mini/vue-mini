@@ -49,6 +49,8 @@ global.Component = (options: Record<string, any>) => {
     clearAnimation() {},
     getOpenerEventChannel() {},
     setUpdatePerformanceListener() {},
+    getPassiveEvent() {},
+    setPassiveEvent() {},
     setData(data: Record<string, unknown>) {
       this.data = this.data || {}
       Object.keys(data).forEach((key) => {
