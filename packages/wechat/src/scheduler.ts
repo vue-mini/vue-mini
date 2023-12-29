@@ -59,8 +59,9 @@ function flushJobs(seen?: CountMap): void {
   // inside try-catch. This can leave all warning code unshaked. Although
   // they would get eventually shaken by a minifier like terser, some minifiers
   // would fail to do that (e.g. https://github.com/evanw/esbuild/issues/1610)
-  const check = __DEV__
-    ? (job: SchedulerJob) => checkRecursiveUpdates(seen!, job)
+  const check =
+    __DEV__ ?
+      (job: SchedulerJob) => checkRecursiveUpdates(seen!, job)
     : /* istanbul ignore next  */ () => {} // eslint-disable-line @typescript-eslint/no-empty-function
 
   try {

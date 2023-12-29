@@ -44,13 +44,13 @@ type PropertyOptionToData<
   [Name in keyof T]: PropertyToData<T[Name]>
 }
 type PropertyToData<T extends WechatMiniprogram.Component.AllProperty> =
-  T extends WechatMiniprogram.Component.PropertyType
-    ? WechatMiniprogram.Component.ValueType<T>
-    : T extends WechatMiniprogram.Component.AllFullProperty
-    ? T['optionalTypes'] extends OptionalTypes<infer Option>
-      ? WechatMiniprogram.Component.ValueType<Option | T['type']>
-      : WechatMiniprogram.Component.ValueType<T['type']>
-    : never
+  T extends WechatMiniprogram.Component.PropertyType ?
+    WechatMiniprogram.Component.ValueType<T>
+  : T extends WechatMiniprogram.Component.AllFullProperty ?
+    T['optionalTypes'] extends OptionalTypes<infer Option> ?
+      WechatMiniprogram.Component.ValueType<Option | T['type']>
+    : WechatMiniprogram.Component.ValueType<T['type']>
+  : never
 type OptionalTypes<T extends WechatMiniprogram.Component.PropertyType> = T[]
 /*************************************************************************************/
 
@@ -160,9 +160,9 @@ export function defineComponent(optionsOrSetup: any, config?: Config): string {
         this.setUpdatePerformanceListener.bind(this),
     }
     const bindings = setup(
-      __DEV__
-        ? shallowReadonly(this.__props__)
-        : /* istanbul ignore next */ this.__props__,
+      __DEV__ ?
+        shallowReadonly(this.__props__)
+      : /* istanbul ignore next */ this.__props__,
       context,
     )
     if (bindings !== undefined) {

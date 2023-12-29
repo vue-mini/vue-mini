@@ -35,15 +35,15 @@ export type WatchCallback<V = any, OV = any> = (
 ) => any
 
 type MapSources<T, Immediate> = {
-  [K in keyof T]: T[K] extends WatchSource<infer V>
-    ? Immediate extends true
-      ? V | undefined
-      : V
-    : T[K] extends object
-    ? Immediate extends true
-      ? T[K] | undefined
-      : T[K]
-    : never
+  [K in keyof T]: T[K] extends WatchSource<infer V> ?
+    Immediate extends true ?
+      V | undefined
+    : V
+  : T[K] extends object ?
+    Immediate extends true ?
+      T[K] | undefined
+    : T[K]
+  : never
 }
 
 type InvalidateCbRegistrator = (cb: () => void) => void
@@ -74,9 +74,9 @@ export function watchPostEffect(
   return doWatch(
     effect,
     null,
-    (__DEV__
-      ? Object.assign(options || {}, { flush: 'post' })
-      : /* istanbul ignore next */ { flush: 'post' }) as WatchOptionsBase,
+    (__DEV__ ?
+      Object.assign(options || {}, { flush: 'post' })
+    : /* istanbul ignore next */ { flush: 'post' }) as WatchOptionsBase,
   )
 }
 
@@ -87,9 +87,9 @@ export function watchSyncEffect(
   return doWatch(
     effect,
     null,
-    (__DEV__
-      ? Object.assign(options || {}, { flush: 'sync' })
-      : /* istanbul ignore next */ { flush: 'sync' }) as WatchOptionsBase,
+    (__DEV__ ?
+      Object.assign(options || {}, { flush: 'sync' })
+    : /* istanbul ignore next */ { flush: 'sync' }) as WatchOptionsBase,
   )
 }
 
@@ -267,11 +267,11 @@ function doWatch(
       if (
         deep ||
         forceTrigger ||
-        (isMultiSource
-          ? (newValue as any[]).some((v, i) =>
-              hasChanged(v, (oldValue as any[])[i]),
-            )
-          : hasChanged(newValue, oldValue))
+        (isMultiSource ?
+          (newValue as any[]).some((v, i) =>
+            hasChanged(v, (oldValue as any[])[i]),
+          )
+        : hasChanged(newValue, oldValue))
       ) {
         // Cleanup before running cb again
         if (cleanup) {

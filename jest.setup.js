@@ -15,9 +15,9 @@ expect.extend({
       pass: false,
       message: () =>
         `expected "${received}" to have been warned` +
-        (msgs.length > 0
-          ? `.\n\nActual messages:\n\n - ${msgs}`
-          : ` but no warning was recorded.`),
+        (msgs.length > 0 ?
+          `.\n\nActual messages:\n\n - ${msgs}`
+        : ` but no warning was recorded.`),
     }
   },
 

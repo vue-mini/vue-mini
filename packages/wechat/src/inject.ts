@@ -32,8 +32,7 @@ export function inject(
   }
 
   if (arguments.length > 1) {
-    return treatDefaultAsFactory && isFunction(defaultValue)
-      ? defaultValue()
+    return treatDefaultAsFactory && isFunction(defaultValue) ? defaultValue()
       : defaultValue
   }
 
