@@ -56,7 +56,7 @@ type OptionalTypes<T extends WechatMiniprogram.Component.PropertyType> = T[]
 
 type Options = Record<string, any>
 
-export const enum ComponentLifecycle {
+export enum ComponentLifecycle {
   ATTACHED = 'attached',
   READY = 'ready',
   MOVED = 'moved',

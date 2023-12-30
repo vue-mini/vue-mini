@@ -11,7 +11,7 @@ export type AppOptions<T extends WechatMiniprogram.IAnyObject> = {
 } & WechatMiniprogram.App.Options<T>
 type Options = Record<string, any>
 
-export const enum AppLifecycle {
+export enum AppLifecycle {
   ON_LAUNCH = 'onLaunch',
   ON_SHOW = 'onShow',
   ON_HIDE = 'onHide',

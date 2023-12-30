@@ -31,7 +31,7 @@ export interface Config {
 }
 type Options = Record<string, any>
 
-export const enum PageLifecycle {
+export enum PageLifecycle {
   ON_LOAD = 'onLoad',
   ON_SHOW = 'onShow',
   ON_READY = 'onReady',
