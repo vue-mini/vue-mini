@@ -1,10 +1,11 @@
 /* eslint-disable @typescript-eslint/no-unused-expressions */
-import type { DebuggerEvent } from '@vue/reactivity'
+import type { DebuggerEvent, ShallowRef } from '@vue/reactivity'
 import {
   ITERATE_KEY,
   TrackOpTypes,
   TriggerOpTypes,
   triggerRef,
+  shallowReactive,
   shallowRef,
 } from '@vue/reactivity'
 import {
@@ -137,6 +138,59 @@ describe('watch', () => {
     src.count++
     await nextTick()
     expect(dummy).toBe(1)
+  })
+
+  it('directly watching reactive object with explicit deep: false', async () => {
+    const src = reactive({
+      state: {
+        count: 0,
+      },
+    })
+    let dummy
+    watch(
+      src,
+      ({ state }) => {
+        dummy = state?.count
+      },
+      {
+        deep: false,
+      },
+    )
+
+    // Nested should not trigger
+    src.state.count++
+    await nextTick()
+    expect(dummy).toBe(undefined)
+
+    // Root level should trigger
+    src.state = { count: 1 }
+    await nextTick()
+    expect(dummy).toBe(1)
+  })
+
+  // #9916
+  it('directly watching shallow reactive array', async () => {
+    class Foo {
+      prop1: ShallowRef<string> = shallowRef('')
+      prop2 = ''
+    }
+
+    const obj1 = new Foo()
+    const obj2 = new Foo()
+
+    const collection = shallowReactive([obj1, obj2])
+    const cb = jest.fn()
+    watch(collection, cb)
+
+    collection[0].prop1.value = 'foo'
+    await nextTick()
+    // Should not trigger
+    expect(cb).toBeCalledTimes(0)
+
+    collection.push(new Foo())
+    await nextTick()
+    // Should trigger on array self mutation
+    expect(cb).toBeCalledTimes(1)
   })
 
   it('watching multiple sources', async () => {
@@ -769,5 +823,58 @@ describe('watch', () => {
     count.value++
     await nextTick()
     expect(dummy).toBe(1)
+  })
+
+  it('watching multiple sources: reactive object with explicit deep: false', async () => {
+    const src = reactive({
+      state: {
+        count: 0,
+      },
+    })
+    let dummy
+    watch(
+      [src],
+      ([{ state }]) => {
+        dummy = state?.count
+      },
+      {
+        deep: false,
+      },
+    )
+
+    // Nested should not trigger
+    src.state.count++
+    await nextTick()
+    expect(dummy).toBe(undefined)
+
+    // Root level should trigger
+    src.state = { count: 1 }
+    await nextTick()
+    expect(dummy).toBe(1)
+  })
+
+  // #9916
+  it('watching multiple sources: shallow reactive array', async () => {
+    class Foo {
+      prop1: ShallowRef<string> = shallowRef('')
+      prop2 = ''
+    }
+
+    const obj1 = new Foo()
+    const obj2 = new Foo()
+
+    const collection = shallowReactive([obj1, obj2])
+    const cb = jest.fn()
+    watch([collection], cb)
+
+    collection[0].prop1.value = 'foo'
+    await nextTick()
+    // Should not trigger
+    expect(cb).toBeCalledTimes(0)
+
+    collection.push(new Foo())
+    await nextTick()
+    // Should trigger on array self mutation
+    expect(cb).toBeCalledTimes(1)
   })
 })
