@@ -5,7 +5,10 @@ const provides = Object.create(null)
 // @ts-expect-error
 export interface InjectionKey<T> extends Symbol {}
 
-export function provide<T>(key: InjectionKey<T> | string, value: T): void {
+export function provide<T, K = InjectionKey<T> | string>(
+  key: K,
+  value: K extends InjectionKey<infer V> ? V : T,
+): void {
   // TS doesn't allow symbol as index type
   provides[key as string] = value
 }

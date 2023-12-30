@@ -1,4 +1,9 @@
+// eslint-disable-next-line @typescript-eslint/no-empty-function
+export const NOOP = () => {}
+
 export const { isArray } = Array
+
+export const extend = Object.assign
 
 export function getType(x: unknown): string {
   return Object.prototype.toString.call(x).slice(8, -1)

@@ -160,4 +160,14 @@ describe('scheduler', () => {
     // Should not be called
     expect(spy).toHaveBeenCalledTimes(0)
   })
+
+  test('nextTick should return promise', async () => {
+    const fn = jest.fn(() => 1)
+
+    const p = nextTick(fn)
+
+    expect(p).toBeInstanceOf(Promise)
+    expect(await p).toBe(1)
+    expect(fn).toHaveBeenCalledTimes(1)
+  })
 })

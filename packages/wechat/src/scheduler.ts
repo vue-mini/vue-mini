@@ -1,3 +1,5 @@
+import { NOOP } from './utils'
+
 export interface SchedulerJob extends Function {
   active?: boolean
   allowRecurse?: boolean
@@ -9,13 +11,14 @@ let isFlushPending = false
 const queue: SchedulerJob[] = []
 let flushIndex = 0
 
-const resolvedPromise: Promise<any> = Promise.resolve()
+// eslint-disable-next-line spaced-comment
+const resolvedPromise = /*#__PURE__*/ Promise.resolve() as Promise<any>
 let currentFlushPromise: Promise<void> | null = null
 
 const RECURSION_LIMIT = 100
 type CountMap = Map<SchedulerJob, number>
 
-export function nextTick(fn?: () => void): Promise<void> {
+export function nextTick<R = void>(fn?: () => R): Promise<Awaited<R>> {
   const p = currentFlushPromise || resolvedPromise
   return fn ? p.then(fn) : p
 }
@@ -62,7 +65,7 @@ function flushJobs(seen?: CountMap): void {
   const check =
     __DEV__ ?
       (job: SchedulerJob) => checkRecursiveUpdates(seen!, job)
-    : /* istanbul ignore next  */ () => {} // eslint-disable-line @typescript-eslint/no-empty-function
+    : /* istanbul ignore next  */ NOOP
 
   try {
     for (flushIndex = 0; flushIndex < queue.length; flushIndex++) {

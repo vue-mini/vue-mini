@@ -6,6 +6,7 @@ import type {
 } from '@vue/reactivity'
 import {
   isRef,
+  isShallow,
   ReactiveEffect,
   isReactive,
   ReactiveFlags,
@@ -14,6 +15,8 @@ import type { SchedulerJob } from './scheduler'
 import { queueJob } from './scheduler'
 import { getCurrentInstance } from './instance'
 import {
+  NOOP,
+  extend,
   isArray,
   isObject,
   isPlainObject,
@@ -24,14 +27,14 @@ import {
   isSet,
 } from './utils'
 
-export type WatchEffect = (onInvalidate: InvalidateCbRegistrator) => void
+export type WatchEffect = (onCleanup: OnCleanup) => void
 
 export type WatchSource<T = any> = Ref<T> | ComputedRef<T> | (() => T)
 
 export type WatchCallback<V = any, OV = any> = (
   value: V,
   oldValue: OV,
-  onInvalidate: InvalidateCbRegistrator,
+  onCleanup: OnCleanup,
 ) => any
 
 type MapSources<T, Immediate> = {
@@ -46,7 +49,7 @@ type MapSources<T, Immediate> = {
   : never
 }
 
-type InvalidateCbRegistrator = (cb: () => void) => void
+type OnCleanup = (cleanupFn: () => void) => void
 
 export interface WatchOptionsBase extends DebuggerOptions {
   flush?: 'pre' | 'post' | 'sync'
@@ -55,6 +58,7 @@ export interface WatchOptionsBase extends DebuggerOptions {
 export interface WatchOptions<Immediate = boolean> extends WatchOptionsBase {
   immediate?: Immediate
   deep?: boolean
+  once?: boolean
 }
 
 export type WatchStopHandle = () => void
@@ -74,9 +78,9 @@ export function watchPostEffect(
   return doWatch(
     effect,
     null,
-    (__DEV__ ?
-      Object.assign(options || {}, { flush: 'post' })
-    : /* istanbul ignore next */ { flush: 'post' }) as WatchOptionsBase,
+    __DEV__ ?
+      extend({}, options as any, { flush: 'post' })
+    : /* istanbul ignore next */ { flush: 'post' },
   )
 }
 
@@ -87,9 +91,9 @@ export function watchSyncEffect(
   return doWatch(
     effect,
     null,
-    (__DEV__ ?
-      Object.assign(options || {}, { flush: 'sync' })
-    : /* istanbul ignore next */ { flush: 'sync' }) as WatchOptionsBase,
+    __DEV__ ?
+      extend({}, options as any, { flush: 'sync' })
+    : /* istanbul ignore next */ { flush: 'sync' },
   )
 }
 
@@ -97,6 +101,13 @@ export function watchSyncEffect(
 const INITIAL_WATCHER_VALUE = {}
 
 type MultiWatchSources = Array<WatchSource<unknown> | object>
+
+// Overload: single source + cb
+export function watch<T, Immediate extends Readonly<boolean> = false>(
+  source: WatchSource<T>,
+  cb: WatchCallback<T, Immediate extends true ? T | undefined : T>,
+  options?: WatchOptions<Immediate>,
+): WatchStopHandle
 
 // Overload: array of multiple sources + cb
 export function watch<
@@ -117,13 +128,6 @@ export function watch<
 >(
   source: T,
   cb: WatchCallback<MapSources<T, false>, MapSources<T, Immediate>>,
-  options?: WatchOptions<Immediate>,
-): WatchStopHandle
-
-// Overload: single source + cb
-export function watch<T, Immediate extends Readonly<boolean> = false>(
-  source: WatchSource<T>,
-  cb: WatchCallback<T, Immediate extends true ? T | undefined : T>,
   options?: WatchOptions<Immediate>,
 ): WatchStopHandle
 
@@ -154,11 +158,20 @@ export function watch<T = any, Immediate extends Readonly<boolean> = false>(
   return doWatch(source as any, cb, options)
 }
 
+// eslint-disable-next-line complexity
 function doWatch(
   source: WatchSource | WatchSource[] | WatchEffect | object,
   cb: WatchCallback | null,
-  { immediate, deep, flush, onTrack, onTrigger }: WatchOptions = {},
+  { immediate, deep, flush, once, onTrack, onTrigger }: WatchOptions = {},
 ): WatchStopHandle {
+  if (cb && once) {
+    const _cb = cb
+    cb = (...args) => {
+      _cb(...args)
+      unwatch()
+    }
+  }
+
   if (__DEV__ && !cb) {
     if (immediate !== undefined) {
       console.warn(
@@ -170,6 +183,13 @@ function doWatch(
     if (deep !== undefined) {
       console.warn(
         `watch() "deep" option is only respected when using the ` +
+          `watch(source, callback, options?) signature.`,
+      )
+    }
+
+    if (once !== undefined) {
+      console.warn(
+        `watch() "once" option is only respected when using the ` +
           `watch(source, callback, options?) signature.`,
       )
     }
@@ -190,14 +210,13 @@ function doWatch(
 
   if (isRef(source)) {
     getter = () => source.value
-    // @ts-expect-error
-    forceTrigger = Boolean(source._shallow)
+    forceTrigger = isShallow(source)
   } else if (isReactive(source)) {
     getter = () => source
     deep = true
   } else if (isArray(source)) {
     isMultiSource = true
-    forceTrigger = source.some((s) => isReactive(s))
+    forceTrigger = source.some((s) => isReactive(s) || isShallow(s))
     getter = () =>
       source.map((s) => {
         if (isRef(s)) {
@@ -230,12 +249,11 @@ function doWatch(
           cleanup()
         }
 
-        return source(onInvalidate)
+        return source(onCleanup)
       }
     }
   } else {
-    // eslint-disable-next-line @typescript-eslint/no-empty-function
-    getter = () => {}
+    getter = NOOP
     /* istanbul ignore else  */
     if (__DEV__) {
       warnInvalidSource(source)
@@ -247,17 +265,22 @@ function doWatch(
     getter = () => traverse(baseGetter())
   }
 
-  let cleanup: () => void
-  const onInvalidate: InvalidateCbRegistrator = (fn: () => void) => {
+  let cleanup: (() => void) | undefined
+  const onCleanup: OnCleanup = (fn: () => void) => {
     // eslint-disable-next-line no-multi-assign
     cleanup = effect.onStop = () => {
       fn()
+      // eslint-disable-next-line no-multi-assign
+      cleanup = effect.onStop = undefined
     }
   }
 
-  let oldValue = isMultiSource ? [] : INITIAL_WATCHER_VALUE
+  let oldValue: any =
+    isMultiSource ?
+      Array.from({ length: (source as []).length }).fill(INITIAL_WATCHER_VALUE)
+    : INITIAL_WATCHER_VALUE
   const job: SchedulerJob = () => {
-    if (!effect.active) {
+    if (!effect.active || !effect.dirty) {
       return
     }
 
@@ -268,9 +291,7 @@ function doWatch(
         deep ||
         forceTrigger ||
         (isMultiSource ?
-          (newValue as any[]).some((v, i) =>
-            hasChanged(v, (oldValue as any[])[i]),
-          )
+          (newValue as any[]).some((v, i) => hasChanged(v, oldValue[i]))
         : hasChanged(newValue, oldValue))
       ) {
         // Cleanup before running cb again
@@ -281,8 +302,10 @@ function doWatch(
         cb(
           newValue,
           // Pass undefined as the old value when it's changed for the first time
-          oldValue === INITIAL_WATCHER_VALUE ? undefined : oldValue,
-          onInvalidate,
+          oldValue === INITIAL_WATCHER_VALUE ? undefined
+          : isMultiSource && oldValue[0] === INITIAL_WATCHER_VALUE ? []
+          : oldValue,
+          onCleanup,
         )
         oldValue = newValue
       }
@@ -305,7 +328,16 @@ function doWatch(
     }
   }
 
-  const effect = new ReactiveEffect(getter, scheduler)
+  const effect = new ReactiveEffect(getter, NOOP, scheduler)
+
+  const instance = getCurrentInstance()
+  const unwatch = () => {
+    effect.stop()
+    if (instance && instance.__scope__) {
+      // @ts-expect-error
+      remove(instance.__scope__.effects, effect)
+    }
+  }
 
   /* istanbul ignore else */
   if (__DEV__) {
@@ -324,13 +356,7 @@ function doWatch(
     effect.run()
   }
 
-  const instance = getCurrentInstance()
-  return () => {
-    effect.stop()
-    if (instance && instance.__scope__) {
-      remove(instance.__scope__.effects, effect)
-    }
-  }
+  return unwatch
 }
 
 function traverse(value: unknown, seen?: Set<unknown>): unknown {

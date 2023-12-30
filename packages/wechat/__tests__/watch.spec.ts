@@ -163,6 +163,23 @@ describe('watch', () => {
     ])
   })
 
+  it('watching multiple sources: undefined initial values and immediate: true', async () => {
+    const a = ref()
+    const b = ref()
+    let called = false
+    watch(
+      [a, b],
+      ([newA, newB], [oldA, oldB]) => {
+        called = true
+        expect([newA, newB]).toMatchObject([undefined, undefined])
+        expect([oldA, oldB]).toMatchObject([undefined, undefined])
+      },
+      { immediate: true },
+    )
+    await nextTick()
+    expect(called).toBe(true)
+  })
+
   it('watching multiple sources: readonly array', async () => {
     const state = reactive({ count: 1 })
     const status = ref(false)
@@ -376,7 +393,7 @@ describe('watch', () => {
     const state = ref()
     const spy = jest.fn()
     watch(() => state.value, spy, { immediate: true })
-    expect(spy).toHaveBeenCalled()
+    expect(spy).toHaveBeenCalledWith(undefined, undefined, expect.any(Function))
     state.value = 3
     await nextTick()
     expect(spy).toHaveBeenCalledTimes(2)
@@ -543,6 +560,21 @@ describe('watch', () => {
     expect(sideEffect).toBe(2)
   })
 
+  test('should force trigger on triggerRef when watching multiple sources: shallow ref array', async () => {
+    const v = shallowRef([] as any)
+    const spy = jest.fn()
+    watch([v], () => {
+      spy()
+    })
+
+    v.value.push(1)
+    triggerRef(v)
+
+    await nextTick()
+    // Should trigger now
+    expect(spy).toHaveBeenCalledTimes(1)
+  })
+
   test('watchEffect should not recursively trigger itself', async () => {
     const spy = jest.fn()
     const price = ref(10)
@@ -589,6 +621,79 @@ describe('watch', () => {
     await nextTick()
     expect(plus.value).toBe(true)
     expect(count).toBe(0)
+  })
+
+  const options = [
+    { name: 'only trigger once watch' },
+    {
+      deep: true,
+      name: 'only trigger once watch with deep',
+    },
+    {
+      flush: 'sync',
+      name: 'only trigger once watch with flush: sync',
+    },
+    {
+      flush: 'pre',
+      name: 'only trigger once watch with flush: pre',
+    },
+    {
+      immediate: true,
+      name: 'only trigger once watch with immediate',
+    },
+  ] as const
+  test.each(options)('$name', async (option) => {
+    const count = ref(0)
+    const cb = jest.fn()
+
+    watch(count, cb, { once: true, ...option })
+
+    count.value++
+    await nextTick()
+
+    expect(count.value).toBe(1)
+    expect(cb).toHaveBeenCalledTimes(1)
+
+    count.value++
+    await nextTick()
+
+    expect(count.value).toBe(2)
+    expect(cb).toHaveBeenCalledTimes(1)
+  })
+
+  test('OnCleanup also needs to be cleaned', async () => {
+    const spy1 = jest.fn()
+    const spy2 = jest.fn()
+    const num = ref(0)
+
+    watch(num, (value, _, onCleanup) => {
+      if (value > 1) {
+        return
+      }
+
+      spy1()
+      onCleanup(() => {
+        // OnCleanup also needs to be cleaned
+        spy2()
+      })
+    })
+
+    num.value++
+    await nextTick()
+    expect(spy1).toHaveBeenCalledTimes(1)
+    expect(spy2).toHaveBeenCalledTimes(0)
+
+    num.value++
+    await nextTick()
+
+    expect(spy1).toHaveBeenCalledTimes(1)
+    expect(spy2).toHaveBeenCalledTimes(1)
+
+    num.value++
+    await nextTick()
+    // Would not be calld when value>1
+    expect(spy1).toHaveBeenCalledTimes(1)
+    expect(spy2).toHaveBeenCalledTimes(1)
   })
 
   /** Dividing line, the above tests is directly copy from vue.js **/
@@ -646,5 +751,23 @@ describe('watch', () => {
     source.count = 1
     await nextTick()
     expect(spy).toBeCalledTimes(1)
+  })
+
+  it('warn and not respect once option when using effect', async () => {
+    const count = ref(0)
+    let dummy
+    watchEffect(
+      () => {
+        dummy = count.value
+      },
+      // @ts-expect-error
+      { once: true },
+    )
+    expect(dummy).toBe(0)
+    expect(`"once" option is only respected`).toHaveBeenWarned()
+
+    count.value++
+    await nextTick()
+    expect(dummy).toBe(1)
   })
 })

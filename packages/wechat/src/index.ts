@@ -1,7 +1,7 @@
 // eslint-disable-next-line import/no-unassigned-import
 import 'miniprogram-api-typings'
 
-// Public API ------------------------------------------------------------------
+// Core API ------------------------------------------------------------------
 
 export {
   // Core
@@ -14,10 +14,12 @@ export {
   proxyRefs,
   isRef,
   toRef,
+  toValue,
   toRefs,
   isProxy,
   isReactive,
   isReadonly,
+  isShallow,
   // Advanced
   customRef,
   triggerRef,
@@ -69,21 +71,33 @@ export {
 
 // Types -----------------------------------------------------------------------
 
+export { TrackOpTypes, TriggerOpTypes } from '@vue/reactivity'
 export type {
   Ref,
+  MaybeRef,
+  MaybeRefOrGetter,
   ToRef,
   ToRefs,
-  ReactiveEffectOptions,
-  DebuggerEvent,
-  DebuggerOptions,
-  TrackOpTypes,
-  TriggerOpTypes,
+  UnwrapRef,
+  ShallowRef,
+  ShallowUnwrapRef,
+  CustomRefFactory,
+  ReactiveFlags,
+  DeepReadonly,
+  ShallowReactive,
+  UnwrapNestedRefs,
   ComputedRef,
   WritableComputedRef,
-  UnwrapRef,
-  ShallowUnwrapRef,
   WritableComputedOptions,
-  DeepReadonly,
+  ComputedGetter,
+  ComputedSetter,
+  ReactiveEffectRunner,
+  ReactiveEffectOptions,
+  EffectScheduler,
+  DebuggerOptions,
+  DebuggerEvent,
+  DebuggerEventExtraInfo,
+  Raw,
 } from '@vue/reactivity'
 export type {
   WatchEffect,
