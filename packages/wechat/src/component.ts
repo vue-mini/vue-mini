@@ -4,7 +4,7 @@ import { PageLifecycle } from './page'
 import { deepToRaw, deepWatch } from './shared'
 import type { Bindings, ComponentInstance } from './instance'
 import { setCurrentComponent, unsetCurrentComponent } from './instance'
-import { isFunction, toHiddenField } from './utils'
+import { extend, exclude, isFunction, toHiddenField } from './utils'
 
 export type ComponentContext = WechatMiniprogram.Component.InstanceProperties &
   Omit<
@@ -91,12 +91,14 @@ export function defineComponent<
 ): string
 
 export function defineComponent(optionsOrSetup: any, config?: Config): string {
-  config = {
-    listenPageScroll: false,
-    canShareToOthers: false,
-    canShareToTimeline: false,
-    ...config,
-  }
+  config = extend(
+    {
+      listenPageScroll: false,
+      canShareToOthers: false,
+      canShareToTimeline: false,
+    },
+    config,
+  )
   let setup: ComponentSetup<Record<string, any>>
   let options: Options
   let properties: string[] | null = null
@@ -109,9 +111,8 @@ export function defineComponent(optionsOrSetup: any, config?: Config): string {
       return Component(optionsOrSetup)
     }
 
-    const { setup: setupOption, ...restOptions } = optionsOrSetup
-    setup = setupOption
-    options = restOptions
+    setup = optionsOrSetup.setup
+    options = exclude(optionsOrSetup, ['setup'])
 
     if (options.properties) {
       properties = Object.keys(options.properties)

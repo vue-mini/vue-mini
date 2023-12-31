@@ -2,7 +2,7 @@ import { EffectScope } from '@vue/reactivity'
 import type { Bindings, PageInstance } from './instance'
 import { setCurrentPage, unsetCurrentPage } from './instance'
 import { deepToRaw, deepWatch } from './shared'
-import { isFunction, toHiddenField } from './utils'
+import { extend, exclude, isFunction, toHiddenField } from './utils'
 
 export type Query = Record<string, string | undefined>
 export type PageContext = WechatMiniprogram.Page.InstanceProperties &
@@ -55,12 +55,14 @@ export function definePage<
 >(options: PageOptions<Data, Custom>, config?: Config): void
 
 export function definePage(optionsOrSetup: any, config?: Config): void {
-  config = {
-    listenPageScroll: false,
-    canShareToOthers: false,
-    canShareToTimeline: false,
-    ...config,
-  }
+  config = extend(
+    {
+      listenPageScroll: false,
+      canShareToOthers: false,
+      canShareToTimeline: false,
+    },
+    config,
+  )
   let setup: PageSetup
   let options: Options
   if (isFunction(optionsOrSetup)) {
@@ -73,9 +75,8 @@ export function definePage(optionsOrSetup: any, config?: Config): void {
       return
     }
 
-    const { setup: setupOption, ...restOptions } = optionsOrSetup
-    setup = setupOption
-    options = restOptions
+    setup = optionsOrSetup.setup
+    options = exclude(optionsOrSetup, ['setup'])
   }
 
   const originOnLoad = options[PageLifecycle.ON_LOAD]

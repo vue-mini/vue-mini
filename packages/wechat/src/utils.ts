@@ -5,6 +5,19 @@ export const { isArray } = Array
 
 export const extend = Object.assign
 
+export function exclude<T extends Record<string, unknown>, K extends keyof T>(
+  obj: T,
+  keys: K[],
+): Omit<T, K> {
+  const ret: Record<string, unknown> = {}
+  Object.keys(obj).forEach((key) => {
+    if (!keys.includes(key as K)) {
+      ret[key] = obj[key]
+    }
+  })
+  return ret as Omit<T, K>
+}
+
 export function getType(x: unknown): string {
   return Object.prototype.toString.call(x).slice(8, -1)
 }

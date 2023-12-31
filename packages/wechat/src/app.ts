@@ -1,6 +1,6 @@
 import type { Bindings, AppInstance } from './instance'
 import { setCurrentApp, unsetCurrentApp } from './instance'
-import { isFunction, toHiddenField } from './utils'
+import { exclude, isFunction, toHiddenField } from './utils'
 
 export type AppSetup = (
   this: void,
@@ -40,9 +40,8 @@ export function createApp(optionsOrSetup: any): void {
       return
     }
 
-    const { setup: setupOption, ...restOptions } = optionsOrSetup
-    setup = setupOption
-    options = restOptions
+    setup = optionsOrSetup.setup
+    options = exclude(optionsOrSetup, ['setup'])
   }
 
   const originOnLaunch = options[AppLifecycle.ON_LAUNCH]
