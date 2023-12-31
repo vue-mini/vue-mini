@@ -1,8 +1,39 @@
+# 1.0.0-beta.1 (2023-12-31)
+
+## 🎉 新年快乐 🎉
+
+### 依赖
+
+- **@vue/reactivity:** 从 3.2.19 升至 3.4.3，详情请看 [Vue 更新日志](https://github.com/vuejs/vue-next/blob/main/CHANGELOG.md)
+
+### 特性
+
+- 新增 `isShallow` API
+- 新增 `toValue` API
+- 页面及组件 Context 新增 `setUpdatePerformanceListener` `getPassiveEvent` `setPassiveEvent` API
+
+### 性能优化
+
+- 响应式系统性能大幅提升，详情请看 [Announcing Vue 3.4](https://blog.vuejs.org/posts/vue-3-4#more-efficient-reactivity-system)
+
+### Bug 修复
+
+- 修复了一些响应式系统 Bug
+- 修复了兼容性问题，现在代码输出严格为 ES2016
+
+### 其他
+
+- 不再使用 `const enum`，以兼容 TS 的 `isolatedModules: true` 模式
+
+### 破坏性变更
+
+- 微信小程序基础库版本最低要求提升为 v3.0.0
+
 # 0.3.0 (2021-09-29)
 
 ### 依赖
 
-- **@vue/reactivity:** 从 3.0.11 升至 3.2.19，详情请看 [Vue 更新日志](https://github.com/vuejs/vue-next/blob/master/CHANGELOG.md) ([ed01c0d](https://github.com/vue-mini/vue-mini/commit/ed01c0de493b3faf6a03b374aa3e6c169e861a3b), [297d36c](https://github.com/vue-mini/vue-mini/commit/297d36c53806600b7d4659ff8d038cdff7781287), [fd89429](https://github.com/vue-mini/vue-mini/commit/fd894297cd03359b01fff4e710dfd6f9e2bff228))
+- **@vue/reactivity:** 从 3.0.11 升至 3.2.19，详情请看 [Vue 更新日志](https://github.com/vuejs/vue-next/blob/main/CHANGELOG.md) ([ed01c0d](https://github.com/vue-mini/vue-mini/commit/ed01c0de493b3faf6a03b374aa3e6c169e861a3b), [297d36c](https://github.com/vue-mini/vue-mini/commit/297d36c53806600b7d4659ff8d038cdff7781287), [fd89429](https://github.com/vue-mini/vue-mini/commit/fd894297cd03359b01fff4e710dfd6f9e2bff228))
 
 ### 特性
 

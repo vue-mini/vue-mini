@@ -1,6 +1,6 @@
 {
   "private": true,
-  "version": "0.3.0",
+  "version": "1.0.0-beta.1",
   "scripts": {
     "format": "prettier --check \"**/*.{js,ts,md}\"",
     "lint": "eslint --ext .js,.ts .",
