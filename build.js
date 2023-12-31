@@ -26,6 +26,7 @@ async function generateDeclaration(target) {
     external: ['miniprogram-api-typings', '@vue/reactivity'],
     plugins: [
       typescript({
+        tsconfig: 'tsconfig.build.json',
         compilerOptions: {
           declaration: true,
           declarationDir: path.join(target, 'dist'),
@@ -39,7 +40,7 @@ async function generateDeclaration(target) {
   })
 
   const dtsBundle = await rollup.rollup({
-    input: path.join(target, 'dist', 'src', 'index.d.ts'),
+    input: path.join(target, 'dist', 'index.d.ts'),
     plugins: [dts()],
   })
   await dtsBundle.write({
@@ -47,9 +48,13 @@ async function generateDeclaration(target) {
     format: 'es',
   })
 
-  await fs.remove(path.join(target, 'dist', 'src'))
-  await fs.remove(path.join(target, 'dist', 'index.js'))
-  await fs.remove(path.join(target, 'dist', '__tests__'))
+  const removals = []
+  for (const file of await fs.readdirSync(path.join(target, 'dist'))) {
+    if (file === 'wechat.d.ts') continue
+    removals.push(fs.remove(path.join(target, 'dist', file)))
+  }
+
+  await Promise.all(removals)
 }
 
 async function generateCode({
@@ -67,12 +72,12 @@ async function generateCode({
       minify &&
         terser({
           compress: {
-            ecma: 2015,
+            ecma: 2016,
             // eslint-disable-next-line camelcase
             pure_getters: true,
           },
         }),
-      typescript(),
+      typescript({ tsconfig: 'tsconfig.build.json' }),
       replace({ values: replaces, preventAssignment: true }),
       resolve(),
     ].filter(Boolean),
