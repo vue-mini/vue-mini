@@ -1,15 +1,11 @@
-/* eslint-disable unicorn/prefer-module */
-'use strict'
-
-const process = require('node:process')
-const path = require('node:path')
-const fs = require('fs-extra')
-const rollup = require('rollup')
-const { default: replace } = require('@rollup/plugin-replace')
-const { default: terser } = require('@rollup/plugin-terser')
-const { default: typescript } = require('@rollup/plugin-typescript')
-const { default: resolve } = require('@rollup/plugin-node-resolve')
-const { default: dts } = require('rollup-plugin-dts')
+import path from 'node:path'
+import fs from 'fs-extra'
+import { rollup } from 'rollup'
+import replace from '@rollup/plugin-replace'
+import terser from '@rollup/plugin-terser'
+import typescript from '@rollup/plugin-typescript'
+import resolve from '@rollup/plugin-node-resolve'
+import dts from 'rollup-plugin-dts'
 
 function getBanner(version) {
   return `/*!
@@ -21,7 +17,7 @@ function getBanner(version) {
 }
 
 async function generateDeclaration(target) {
-  const bundle = await rollup.rollup({
+  const bundle = await rollup({
     input: path.join(target, 'src', 'index.ts'),
     external: ['miniprogram-api-typings', '@vue/reactivity'],
     plugins: [
@@ -39,7 +35,7 @@ async function generateDeclaration(target) {
     format: 'es',
   })
 
-  const dtsBundle = await rollup.rollup({
+  const dtsBundle = await rollup({
     input: path.join(target, 'dist', 'index.d.ts'),
     plugins: [dts()],
   })
@@ -65,7 +61,7 @@ async function generateCode({
   fileName,
   format,
 }) {
-  const bundle = await rollup.rollup({
+  const bundle = await rollup({
     input: path.join(target, 'src', 'index.ts'),
     external,
     plugins: [
@@ -82,7 +78,9 @@ async function generateCode({
       resolve(),
     ].filter(Boolean),
   })
-  const { version } = require(path.resolve(target, 'package.json'))
+  const { version } = JSON.parse(
+    await fs.readFile(path.resolve(target, 'package.json'), 'utf8'),
+  )
   await bundle.write({
     file: path.join(target, 'dist', fileName),
     banner: getBanner(version),
@@ -132,8 +130,6 @@ async function build(target) {
 for (const pkg of fs.readdirSync('packages')) {
   const target = path.join('packages', pkg)
   if (!fs.statSync(target).isDirectory()) continue
-  // eslint-disable-next-line unicorn/prefer-top-level-await
-  build(target).catch(() => {
-    process.exitCode = 1
-  })
+  // eslint-disable-next-line no-await-in-loop
+  await build(target)
 }

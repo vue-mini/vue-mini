@@ -1,16 +1,17 @@
 {
   "private": true,
   "version": "1.0.0-beta.1",
+  "type": "module",
   "scripts": {
-    "format": "prettier --check \"**/*.{js,ts,md}\"",
-    "lint": "eslint --ext .js,.ts .",
+    "format": "prettier --check \"**/*.{js,cjs,ts,md}\"",
+    "lint": "eslint --ext .js,.cjs,.ts .",
     "type": "tsc --noEmit",
     "test": "vitest",
     "build": "node build.js",
     "docs:dev": "vitepress dev docs",
     "docs:build": "vitepress build docs",
     "docs:preview": "vitepress preview docs",
-    "release": "node release.mjs",
+    "release": "node release.js",
     "prepare": "husky install"
   },
   "devDependencies": {
