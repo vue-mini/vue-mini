@@ -44,9 +44,9 @@ export const onPageScroll = (
   hook: (scroll: WechatMiniprogram.Page.IPageScrollOption) => unknown,
 ): void => {
   const currentInstance = getCurrentInstance()
-  /* istanbul ignore else  */
+  /* istanbul ignore else -- @preserve  */
   if (currentInstance) {
-    /* istanbul ignore else  */
+    /* istanbul ignore else -- @preserve   */
     if (currentInstance.__listenPageScroll__) {
       injectHook(currentInstance, PageLifecycle.ON_PAGE_SCROLL, hook)
     } else if (__DEV__) {
@@ -65,15 +65,15 @@ export const onShareAppMessage = (
   ) => WechatMiniprogram.Page.ICustomShareContent,
 ): void => {
   const currentInstance = getCurrentInstance()
-  /* istanbul ignore else  */
+  /* istanbul ignore else -- @preserve  */
   if (currentInstance) {
-    /* istanbul ignore else  */
+    /* istanbul ignore else -- @preserve  */
     if (
       currentInstance[PageLifecycle.ON_SHARE_APP_MESSAGE] &&
       currentInstance.__isInjectedShareToOthersHook__
     ) {
       const hiddenField = toHiddenField(PageLifecycle.ON_SHARE_APP_MESSAGE)
-      /* istanbul ignore else  */
+      /* istanbul ignore else -- @preserve  */
       if (currentInstance[hiddenField] === undefined) {
         currentInstance[hiddenField] = hook
       } else if (__DEV__) {
@@ -93,15 +93,15 @@ export const onShareTimeline = (
   hook: () => WechatMiniprogram.Page.ICustomTimelineContent,
 ): void => {
   const currentInstance = getCurrentInstance()
-  /* istanbul ignore else  */
+  /* istanbul ignore else -- @preserve  */
   if (currentInstance) {
-    /* istanbul ignore else  */
+    /* istanbul ignore else -- @preserve  */
     if (
       currentInstance[PageLifecycle.ON_SHARE_TIMELINE] &&
       currentInstance.__isInjectedShareToTimelineHook__
     ) {
       const hiddenField = toHiddenField(PageLifecycle.ON_SHARE_TIMELINE)
-      /* istanbul ignore else  */
+      /* istanbul ignore else -- @preserve  */
       if (currentInstance[hiddenField] === undefined) {
         currentInstance[hiddenField] = hook
       } else if (__DEV__) {
@@ -123,12 +123,12 @@ export const onAddToFavorites = (
   ) => WechatMiniprogram.Page.IAddToFavoritesContent,
 ): void => {
   const currentInstance = getCurrentInstance()
-  /* istanbul ignore else  */
+  /* istanbul ignore else -- @preserve  */
   if (currentInstance) {
-    /* istanbul ignore else  */
+    /* istanbul ignore else -- @preserve  */
     if (currentInstance.__isInjectedFavoritesHook__) {
       const hiddenField = toHiddenField(PageLifecycle.ON_ADD_TO_FAVORITES)
-      /* istanbul ignore else  */
+      /* istanbul ignore else -- @preserve  */
       if (currentInstance[hiddenField] === undefined) {
         currentInstance[hiddenField] = hook
       } else if (__DEV__) {
@@ -146,7 +146,7 @@ export const onAddToFavorites = (
 
 export const onReady = (hook: () => unknown): void => {
   const currentInstance = getCurrentInstance()
-  /* istanbul ignore else  */
+  /* istanbul ignore else -- @preserve  */
   if (currentInstance) {
     injectHook(currentInstance, PageLifecycle.ON_READY, hook)
   } else if (__DEV__) {
@@ -169,7 +169,7 @@ function createAppHook<T extends Function = () => unknown>(
   lifecycle: AppLifecycle,
 ) {
   return (hook: T): void => {
-    /* istanbul ignore else  */
+    /* istanbul ignore else -- @preserve  */
     if (currentApp) {
       injectHook(currentApp, lifecycle, hook)
     } else if (__DEV__) {
@@ -185,7 +185,7 @@ function createPageHook<T extends Function = () => unknown>(
 ) {
   return (hook: T): void => {
     const currentInstance = getCurrentInstance()
-    /* istanbul ignore else  */
+    /* istanbul ignore else -- @preserve  */
     if (currentInstance) {
       injectHook(currentInstance, lifecycle, hook)
     } else if (__DEV__) {
@@ -198,7 +198,7 @@ function createComponentHook<T extends Function = () => unknown>(
   lifecycle: PageLifecycle.ON_LOAD | ComponentLifecycle,
 ) {
   return (hook: T): void => {
-    /* istanbul ignore else  */
+    /* istanbul ignore else -- @preserve  */
     if (currentComponent) {
       injectHook(currentComponent, lifecycle, hook)
     } else if (__DEV__) {

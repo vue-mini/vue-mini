@@ -250,8 +250,8 @@ describe('page', () => {
 
   it('onLoad', () => {
     const arg = {}
-    const onLoad = jest.fn()
-    const setup = jest.fn((query, context) => {
+    const onLoad = vi.fn()
+    const setup = vi.fn((query, context) => {
       expect(query).toBe(arg)
       expect(context.is).toBe('')
       expect(context.getOpenerEventChannel).toBeInstanceOf(Function)
@@ -266,9 +266,9 @@ describe('page', () => {
     onReady(() => {})
     expect('onReady() hook can only').toHaveBeenWarned()
 
-    const fn = jest.fn()
-    const injectedFn1 = jest.fn()
-    const injectedFn2 = jest.fn()
+    const fn = vi.fn()
+    const injectedFn1 = vi.fn()
+    const injectedFn2 = vi.fn()
     definePage({
       onReady: fn,
       setup() {
@@ -284,9 +284,9 @@ describe('page', () => {
   })
 
   it('onShow', () => {
-    const fn = jest.fn()
-    const injectedFn1 = jest.fn()
-    const injectedFn2 = jest.fn()
+    const fn = vi.fn()
+    const injectedFn1 = vi.fn()
+    const injectedFn2 = vi.fn()
     definePage({
       onShow: fn,
       setup() {
@@ -302,9 +302,9 @@ describe('page', () => {
   })
 
   it('onHide', () => {
-    const fn = jest.fn()
-    const injectedFn1 = jest.fn()
-    const injectedFn2 = jest.fn()
+    const fn = vi.fn()
+    const injectedFn1 = vi.fn()
+    const injectedFn2 = vi.fn()
     definePage({
       onHide: fn,
       setup() {
@@ -320,9 +320,9 @@ describe('page', () => {
   })
 
   it('onUnload', async () => {
-    const fn = jest.fn()
-    const injectedFn1 = jest.fn()
-    const injectedFn2 = jest.fn()
+    const fn = vi.fn()
+    const injectedFn1 = vi.fn()
+    const injectedFn2 = vi.fn()
     definePage({
       onUnload: fn,
       setup() {
@@ -338,9 +338,9 @@ describe('page', () => {
   })
 
   it('onPullDownRefresh', () => {
-    const fn = jest.fn()
-    const injectedFn1 = jest.fn()
-    const injectedFn2 = jest.fn()
+    const fn = vi.fn()
+    const injectedFn1 = vi.fn()
+    const injectedFn2 = vi.fn()
     definePage({
       onPullDownRefresh: fn,
       setup() {
@@ -356,9 +356,9 @@ describe('page', () => {
   })
 
   it('onReachBottom', () => {
-    const fn = jest.fn()
-    const injectedFn1 = jest.fn()
-    const injectedFn2 = jest.fn()
+    const fn = vi.fn()
+    const injectedFn1 = vi.fn()
+    const injectedFn2 = vi.fn()
     definePage({
       onReachBottom: fn,
       setup() {
@@ -375,9 +375,9 @@ describe('page', () => {
 
   it('onResize', () => {
     const arg = {}
-    const fn = jest.fn()
-    const injectedFn1 = jest.fn()
-    const injectedFn2 = jest.fn()
+    const fn = vi.fn()
+    const injectedFn1 = vi.fn()
+    const injectedFn2 = vi.fn()
     definePage({
       onResize: fn,
       setup() {
@@ -394,9 +394,9 @@ describe('page', () => {
 
   it('onTabItemTap', () => {
     const arg = {}
-    const fn = jest.fn()
-    const injectedFn1 = jest.fn()
-    const injectedFn2 = jest.fn()
+    const fn = vi.fn()
+    const injectedFn1 = vi.fn()
+    const injectedFn2 = vi.fn()
     definePage({
       onTabItemTap: fn,
       setup() {
@@ -422,9 +422,9 @@ describe('page', () => {
     expect('onPageScroll() hook only').toHaveBeenWarned()
 
     const arg = {}
-    const fn = jest.fn()
-    const injectedFn1 = jest.fn()
-    const injectedFn2 = jest.fn()
+    const fn = vi.fn()
+    const injectedFn1 = vi.fn()
+    const injectedFn2 = vi.fn()
     definePage({
       onPageScroll: fn,
       setup() {
@@ -438,7 +438,7 @@ describe('page', () => {
     expect(injectedFn1).toBeCalledWith(arg)
     expect(injectedFn2).toBeCalledWith(arg)
 
-    const injectedFn = jest.fn()
+    const injectedFn = vi.fn()
     definePage(
       () => {
         onPageScroll(injectedFn)
@@ -482,7 +482,7 @@ describe('page', () => {
     expect('onShareAppMessage() hook can only').toHaveBeenWarned()
 
     const arg = {}
-    const fn = jest.fn(() => ({ title: 'test' }))
+    const fn = vi.fn(() => ({ title: 'test' }))
     definePage(
       () => {
         onShareAppMessage(fn)
@@ -532,7 +532,7 @@ describe('page', () => {
     page.onLoad()
     expect('onShareTimeline() hook can only').toHaveBeenWarned()
 
-    const fn = jest.fn(() => ({ title: 'test' }))
+    const fn = vi.fn(() => ({ title: 'test' }))
     definePage(
       () => {
         onShareTimeline(fn)
@@ -574,7 +574,7 @@ describe('page', () => {
     expect('onAddToFavorites() hook can only').toHaveBeenWarned()
 
     const arg = {}
-    const fn = jest.fn(() => ({ title: 'test' }))
+    const fn = vi.fn(() => ({ title: 'test' }))
     definePage(() => {
       onAddToFavorites(fn)
     })

@@ -315,7 +315,7 @@ describe('component', () => {
   })
 
   it('observer', () => {
-    const fn = jest.fn()
+    const fn = vi.fn()
     defineComponent({
       properties: {
         count: Number,
@@ -342,7 +342,7 @@ describe('component', () => {
   })
 
   it('attached', () => {
-    const fn = jest.fn()
+    const fn = vi.fn()
     defineComponent({
       lifetimes: { attached: fn },
       setup() {},
@@ -352,7 +352,7 @@ describe('component', () => {
   })
 
   it('legacy attached', () => {
-    const fn = jest.fn()
+    const fn = vi.fn()
     defineComponent({
       attached: fn,
       setup() {},
@@ -365,9 +365,9 @@ describe('component', () => {
     onReady(() => {})
     expect('onReady() hook can only').toHaveBeenWarned()
 
-    const fn = jest.fn()
-    const injectedFn1 = jest.fn()
-    const injectedFn2 = jest.fn()
+    const fn = vi.fn()
+    const injectedFn1 = vi.fn()
+    const injectedFn2 = vi.fn()
     defineComponent({
       lifetimes: { ready: fn },
       setup() {
@@ -383,7 +383,7 @@ describe('component', () => {
   })
 
   it('legacy ready', () => {
-    const fn = jest.fn()
+    const fn = vi.fn()
     defineComponent({
       ready: fn,
       setup() {},
@@ -394,9 +394,9 @@ describe('component', () => {
   })
 
   it('moved', () => {
-    const fn = jest.fn()
-    const injectedFn1 = jest.fn()
-    const injectedFn2 = jest.fn()
+    const fn = vi.fn()
+    const injectedFn1 = vi.fn()
+    const injectedFn2 = vi.fn()
     defineComponent({
       lifetimes: { moved: fn },
       setup() {
@@ -412,7 +412,7 @@ describe('component', () => {
   })
 
   it('legacy moved', () => {
-    const fn = jest.fn()
+    const fn = vi.fn()
     defineComponent({
       moved: fn,
       setup() {},
@@ -423,9 +423,9 @@ describe('component', () => {
   })
 
   it('detached', () => {
-    const fn = jest.fn()
-    const injectedFn1 = jest.fn()
-    const injectedFn2 = jest.fn()
+    const fn = vi.fn()
+    const injectedFn1 = vi.fn()
+    const injectedFn2 = vi.fn()
     defineComponent({
       lifetimes: { detached: fn },
       setup() {
@@ -441,7 +441,7 @@ describe('component', () => {
   })
 
   it('legacy detached', () => {
-    const fn = jest.fn()
+    const fn = vi.fn()
     defineComponent({
       detached: fn,
       setup() {},
@@ -453,9 +453,9 @@ describe('component', () => {
 
   it('error', () => {
     const error = new Error('unknown')
-    const fn = jest.fn()
-    const injectedFn1 = jest.fn()
-    const injectedFn2 = jest.fn()
+    const fn = vi.fn()
+    const injectedFn1 = vi.fn()
+    const injectedFn2 = vi.fn()
     defineComponent({
       lifetimes: { error: fn },
       setup() {
@@ -472,7 +472,7 @@ describe('component', () => {
 
   it('legacy error', () => {
     const error = new Error('unknown')
-    const fn = jest.fn()
+    const fn = vi.fn()
     defineComponent({
       error: fn,
       setup() {},
@@ -484,9 +484,9 @@ describe('component', () => {
 
   it('onLoad', () => {
     const arg = {}
-    const fn = jest.fn()
-    const injectedFn1 = jest.fn()
-    const injectedFn2 = jest.fn()
+    const fn = vi.fn()
+    const injectedFn1 = vi.fn()
+    const injectedFn2 = vi.fn()
     defineComponent({
       methods: { onLoad: fn },
       setup() {
@@ -502,9 +502,9 @@ describe('component', () => {
   })
 
   it('onPullDownRefresh', () => {
-    const fn = jest.fn()
-    const injectedFn1 = jest.fn()
-    const injectedFn2 = jest.fn()
+    const fn = vi.fn()
+    const injectedFn1 = vi.fn()
+    const injectedFn2 = vi.fn()
     defineComponent({
       methods: { onPullDownRefresh: fn },
       setup() {
@@ -520,9 +520,9 @@ describe('component', () => {
   })
 
   it('onReachBottom', () => {
-    const fn = jest.fn()
-    const injectedFn1 = jest.fn()
-    const injectedFn2 = jest.fn()
+    const fn = vi.fn()
+    const injectedFn1 = vi.fn()
+    const injectedFn2 = vi.fn()
     defineComponent({
       methods: { onReachBottom: fn },
       setup() {
@@ -539,9 +539,9 @@ describe('component', () => {
 
   it('onTabItemTap', () => {
     const arg = {}
-    const fn = jest.fn()
-    const injectedFn1 = jest.fn()
-    const injectedFn2 = jest.fn()
+    const fn = vi.fn()
+    const injectedFn1 = vi.fn()
+    const injectedFn2 = vi.fn()
     defineComponent({
       methods: { onTabItemTap: fn },
       setup() {
@@ -568,9 +568,9 @@ describe('component', () => {
     expect('onPageScroll() hook only').toHaveBeenWarned()
 
     const arg = {}
-    const fn = jest.fn()
-    const injectedFn1 = jest.fn()
-    const injectedFn2 = jest.fn()
+    const fn = vi.fn()
+    const injectedFn1 = vi.fn()
+    const injectedFn2 = vi.fn()
     defineComponent({
       methods: { onPageScroll: fn },
       setup() {
@@ -585,7 +585,7 @@ describe('component', () => {
     expect(injectedFn1).toBeCalledWith(arg)
     expect(injectedFn2).toBeCalledWith(arg)
 
-    const injectedFn = jest.fn()
+    const injectedFn = vi.fn()
     defineComponent(
       () => {
         onPageScroll(injectedFn)
@@ -641,7 +641,7 @@ describe('component', () => {
     expect('onShareAppMessage() hook can only').toHaveBeenWarned()
 
     const arg = {}
-    const fn = jest.fn(() => ({ title: 'test' }))
+    const fn = vi.fn(() => ({ title: 'test' }))
     defineComponent(
       () => {
         onShareAppMessage(fn)
@@ -708,7 +708,7 @@ describe('component', () => {
     component.lifetimes.attached.call(component)
     expect('onShareTimeline() hook can only').toHaveBeenWarned()
 
-    const fn = jest.fn(() => ({ title: 'test' }))
+    const fn = vi.fn(() => ({ title: 'test' }))
     defineComponent(
       () => {
         onShareTimeline(fn)
@@ -759,7 +759,7 @@ describe('component', () => {
     expect('onAddToFavorites() hook can only').toHaveBeenWarned()
 
     const arg = {}
-    const fn = jest.fn(() => ({ title: 'test' }))
+    const fn = vi.fn(() => ({ title: 'test' }))
     defineComponent(() => {
       onAddToFavorites(fn)
     })
@@ -778,9 +778,9 @@ describe('component', () => {
   })
 
   it('onShow', () => {
-    const fn = jest.fn()
-    const injectedFn1 = jest.fn()
-    const injectedFn2 = jest.fn()
+    const fn = vi.fn()
+    const injectedFn1 = vi.fn()
+    const injectedFn2 = vi.fn()
     defineComponent({
       pageLifetimes: { show: fn },
       setup() {
@@ -796,9 +796,9 @@ describe('component', () => {
   })
 
   it('onHide', () => {
-    const fn = jest.fn()
-    const injectedFn1 = jest.fn()
-    const injectedFn2 = jest.fn()
+    const fn = vi.fn()
+    const injectedFn1 = vi.fn()
+    const injectedFn2 = vi.fn()
     defineComponent({
       pageLifetimes: { hide: fn },
       setup() {
@@ -815,9 +815,9 @@ describe('component', () => {
 
   it('onResize', () => {
     const arg = {}
-    const fn = jest.fn()
-    const injectedFn1 = jest.fn()
-    const injectedFn2 = jest.fn()
+    const fn = vi.fn()
+    const injectedFn1 = vi.fn()
+    const injectedFn2 = vi.fn()
     defineComponent({
       pageLifetimes: { resize: fn },
       setup() {

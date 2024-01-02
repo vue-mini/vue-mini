@@ -1,6 +1,18 @@
-/* eslint-env jest */
+import type { MockInstance } from 'vitest'
+
+interface CustomMatchers<R = unknown> {
+  toHaveBeenWarned: () => R
+  toHaveBeenWarnedLast: () => R
+  toHaveBeenWarnedTimes: (n: number) => R
+}
+
+declare module 'vitest' {
+  interface Assertion<T = any> extends CustomMatchers<T> {}
+  interface AsymmetricMatchersContaining extends CustomMatchers {}
+}
+
 expect.extend({
-  toHaveBeenWarned(received) {
+  toHaveBeenWarned(received: string) {
     asserted.add(received)
     const passed = warn.mock.calls.some((args) => args[0].includes(received))
     if (passed) {
@@ -21,9 +33,9 @@ expect.extend({
     }
   },
 
-  toHaveBeenWarnedLast(received) {
+  toHaveBeenWarnedLast(received: string) {
     asserted.add(received)
-    const passed = warn.mock.calls.at(-1)[0].includes(received)
+    const passed = warn.mock.calls.at(-1)![0].includes(received)
     if (passed) {
       return {
         pass: true,
@@ -39,10 +51,9 @@ expect.extend({
     }
   },
 
-  toHaveBeenWarnedTimes(received, n) {
+  toHaveBeenWarnedTimes(received: string, n: number) {
     asserted.add(received)
     let found = 0
-    // eslint-disable-next-line unicorn/no-array-for-each
     warn.mock.calls.forEach((args) => {
       if (args[0].includes(received)) {
         found++
@@ -64,12 +75,13 @@ expect.extend({
   },
 })
 
-let warn
-const asserted = new Set()
+let warn: MockInstance
+const asserted = new Set<string>()
 
 beforeEach(() => {
   asserted.clear()
-  warn = jest.spyOn(console, 'warn')
+  warn = vi.spyOn(console, 'warn')
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
   warn.mockImplementation(() => {})
 })
 
@@ -78,10 +90,8 @@ afterEach(() => {
   const nonAssertedWarnings = warn.mock.calls
     .map((args) => args[0])
     .filter(
-      (received) =>
-        !assertedArray.some((assertedMessage) =>
-          received.includes(assertedMessage),
-        ),
+      (received: string) =>
+        !assertedArray.some((assertedMsg) => received.includes(assertedMsg)),
     )
   warn.mockRestore()
   if (nonAssertedWarnings.length > 0) {

@@ -50,7 +50,7 @@ export function setCurrentPage(page: PageInstance): void {
 }
 
 export function unsetCurrentPage(): void {
-  /* istanbul ignore else */
+  /* istanbul ignore else -- @preserve */
   if (currentPage) {
     // @ts-expect-error
     currentPage.__scope__.off()
@@ -66,7 +66,7 @@ export function setCurrentComponent(component: ComponentInstance): void {
 }
 
 export function unsetCurrentComponent(): void {
-  /* istanbul ignore else */
+  /* istanbul ignore else -- @preserve */
   if (currentComponent) {
     // @ts-expect-error
     currentComponent.__scope__.off()

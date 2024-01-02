@@ -13,7 +13,7 @@
     "noFallthroughCasesInSwitch": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
-    "types": ["jest"]
+    "types": ["vitest/globals"]
   },
-  "include": ["packages", "global.d.ts"]
+  "include": ["packages", "global.d.ts", "vitest.setup.ts", "vitest.config.ts"]
 }

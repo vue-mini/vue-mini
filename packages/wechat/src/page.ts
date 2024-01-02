@@ -135,7 +135,7 @@ export function definePage(optionsOrSetup: any, config?: Config): void {
       options,
       PageLifecycle.ON_PAGE_SCROLL,
     )
-    /* istanbul ignore next */
+    /* istanbul ignore next -- @preserve */
     options.__listenPageScroll__ = () => true
   }
 
@@ -157,7 +157,7 @@ export function definePage(optionsOrSetup: any, config?: Config): void {
       return {}
     }
 
-    /* istanbul ignore next */
+    /* istanbul ignore next -- @preserve */
     options.__isInjectedShareToOthersHook__ = () => true
   }
 
@@ -178,7 +178,7 @@ export function definePage(optionsOrSetup: any, config?: Config): void {
       return {}
     }
 
-    /* istanbul ignore next */
+    /* istanbul ignore next -- @preserve */
     options.__isInjectedShareToTimelineHook__ = () => true
   }
 
@@ -197,7 +197,7 @@ export function definePage(optionsOrSetup: any, config?: Config): void {
       return {}
     }
 
-    /* istanbul ignore next */
+    /* istanbul ignore next -- @preserve */
     options.__isInjectedFavoritesHook__ = () => true
   }
 

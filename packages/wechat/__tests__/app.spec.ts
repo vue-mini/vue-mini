@@ -58,8 +58,8 @@ describe('app', () => {
 
   it('onLaunch', () => {
     const arg = {}
-    const onLaunch = jest.fn()
-    const setup = jest.fn()
+    const onLaunch = vi.fn()
+    const setup = vi.fn()
     createApp({ onLaunch, setup })
     app.onLaunch(arg)
     expect(onLaunch).toBeCalledWith(arg)
@@ -68,9 +68,9 @@ describe('app', () => {
 
   it('onShow', () => {
     const arg = {}
-    const fn = jest.fn()
-    const injectedFn1 = jest.fn()
-    const injectedFn2 = jest.fn()
+    const fn = vi.fn()
+    const injectedFn1 = vi.fn()
+    const injectedFn2 = vi.fn()
     createApp({
       onShow: fn,
       setup() {
@@ -86,9 +86,9 @@ describe('app', () => {
   })
 
   it('onHide', () => {
-    const fn = jest.fn()
-    const injectedFn1 = jest.fn()
-    const injectedFn2 = jest.fn()
+    const fn = vi.fn()
+    const injectedFn1 = vi.fn()
+    const injectedFn2 = vi.fn()
     createApp({
       onHide: fn,
       setup() {
@@ -105,9 +105,9 @@ describe('app', () => {
 
   it('onError', () => {
     const arg = ''
-    const fn = jest.fn()
-    const injectedFn1 = jest.fn()
-    const injectedFn2 = jest.fn()
+    const fn = vi.fn()
+    const injectedFn1 = vi.fn()
+    const injectedFn2 = vi.fn()
     createApp({
       onError: fn,
       setup() {
@@ -124,9 +124,9 @@ describe('app', () => {
 
   it('onPageNotFound', () => {
     const arg = {}
-    const fn = jest.fn()
-    const injectedFn1 = jest.fn()
-    const injectedFn2 = jest.fn()
+    const fn = vi.fn()
+    const injectedFn1 = vi.fn()
+    const injectedFn2 = vi.fn()
     createApp({
       onPageNotFound: fn,
       setup() {
@@ -143,9 +143,9 @@ describe('app', () => {
 
   it('onUnhandledRejection', () => {
     const arg = {}
-    const fn = jest.fn()
-    const injectedFn1 = jest.fn()
-    const injectedFn2 = jest.fn()
+    const fn = vi.fn()
+    const injectedFn1 = vi.fn()
+    const injectedFn2 = vi.fn()
     createApp({
       onUnhandledRejection: fn,
       setup() {
@@ -162,9 +162,9 @@ describe('app', () => {
 
   it('onThemeChange', () => {
     const arg = {}
-    const fn = jest.fn()
-    const injectedFn1 = jest.fn()
-    const injectedFn2 = jest.fn()
+    const fn = vi.fn()
+    const injectedFn1 = vi.fn()
+    const injectedFn2 = vi.fn()
     createApp({
       onThemeChange: fn,
       setup() {
@@ -185,7 +185,7 @@ describe('app', () => {
   })
 
   it('no injected lifecycle', () => {
-    const fn = jest.fn()
+    const fn = vi.fn()
     createApp({
       onHide: fn,
       setup() {
@@ -200,7 +200,7 @@ describe('app', () => {
   })
 
   it('only injected lifecycle', () => {
-    const fn = jest.fn()
+    const fn = vi.fn()
     createApp(() => {
       onAppHide(fn)
     })

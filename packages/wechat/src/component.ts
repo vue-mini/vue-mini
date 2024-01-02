@@ -165,7 +165,7 @@ export function defineComponent(optionsOrSetup: any, config?: Config): string {
     const bindings = setup(
       __DEV__ ?
         shallowReadonly(this.__props__)
-      : /* istanbul ignore next */ this.__props__,
+      : /* istanbul ignore next -- @preserve */ this.__props__,
       context,
     )
     if (bindings !== undefined) {
@@ -228,7 +228,7 @@ export function defineComponent(optionsOrSetup: any, config?: Config): string {
       options,
       PageLifecycle.ON_PAGE_SCROLL,
     )
-    /* istanbul ignore next */
+    /* istanbul ignore next -- @preserve */
     options.methods.__listenPageScroll__ = () => true
   }
 
@@ -250,7 +250,7 @@ export function defineComponent(optionsOrSetup: any, config?: Config): string {
       return {}
     }
 
-    /* istanbul ignore next */
+    /* istanbul ignore next -- @preserve */
     options.methods.__isInjectedShareToOthersHook__ = () => true
   }
 
@@ -271,7 +271,7 @@ export function defineComponent(optionsOrSetup: any, config?: Config): string {
       return {}
     }
 
-    /* istanbul ignore next */
+    /* istanbul ignore next -- @preserve */
     options.methods.__isInjectedShareToTimelineHook__ = () => true
   }
 
@@ -290,7 +290,7 @@ export function defineComponent(optionsOrSetup: any, config?: Config): string {
       return {}
     }
 
-    /* istanbul ignore next */
+    /* istanbul ignore next -- @preserve */
     options.methods.__isInjectedFavoritesHook__ = () => true
   }
 

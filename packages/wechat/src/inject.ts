@@ -39,7 +39,7 @@ export function inject(
       : defaultValue
   }
 
-  /* istanbul ignore else */
+  /* istanbul ignore else -- @preserve */
   if (__DEV__) {
     console.warn(`injection "${String(key)}" not found.`)
   }

@@ -52,7 +52,7 @@ function queueFlush(): void {
 function flushJobs(seen?: CountMap): void {
   isFlushPending = false
   isFlushing = true
-  /* istanbul ignore else  */
+  /* istanbul ignore else -- @preserve  */
   if (__DEV__) {
     seen = seen || new Map()
   }
@@ -65,13 +65,13 @@ function flushJobs(seen?: CountMap): void {
   const check =
     __DEV__ ?
       (job: SchedulerJob) => checkRecursiveUpdates(seen!, job)
-    : /* istanbul ignore next  */ NOOP
+    : /* istanbul ignore next -- @preserve  */ NOOP
 
   try {
     for (flushIndex = 0; flushIndex < queue.length; flushIndex++) {
       const job = queue[flushIndex]
       if (job.active !== false) {
-        /* istanbul ignore if  */
+        /* istanbul ignore if -- @preserve  */
         if (__DEV__ && check(job)) {
           continue
         }
@@ -90,7 +90,7 @@ function flushJobs(seen?: CountMap): void {
 
 function checkRecursiveUpdates(seen: CountMap, fn: SchedulerJob): boolean {
   const count = seen.get(fn) || 0
-  /* istanbul ignore if */
+  /* istanbul ignore if -- @preserve */
   if (count > RECURSION_LIMIT) {
     console.warn(
       `Maximum recursive updates exceeded. ` +

@@ -140,7 +140,7 @@ describe('scheduler', () => {
 
   // #910
   test('should not run stopped reactive effects', async () => {
-    const spy = jest.fn()
+    const spy = vi.fn()
 
     // Simulate parent component that toggles child
     const job1 = () => {
@@ -162,7 +162,7 @@ describe('scheduler', () => {
   })
 
   test('nextTick should return promise', async () => {
-    const fn = jest.fn(() => 1)
+    const fn = vi.fn(() => 1)
 
     const p = nextTick(fn)
 

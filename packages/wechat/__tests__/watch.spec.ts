@@ -70,7 +70,7 @@ describe('watch', () => {
 
   it('watching single source: array', async () => {
     const array = reactive([] as number[])
-    const spy = jest.fn()
+    const spy = vi.fn()
     watch(array, spy)
     array.push(1)
     await nextTick()
@@ -79,7 +79,7 @@ describe('watch', () => {
   })
 
   it('should not fire if watched getter result did not change', async () => {
-    const spy = jest.fn()
+    const spy = vi.fn()
     const n = ref(0)
     watch(() => n.value % 2, spy)
 
@@ -179,7 +179,7 @@ describe('watch', () => {
     const obj2 = new Foo()
 
     const collection = shallowReactive([obj1, obj2])
-    const cb = jest.fn()
+    const cb = vi.fn()
     watch(collection, cb)
 
     collection[0].prop1.value = 'foo'
@@ -320,7 +320,7 @@ describe('watch', () => {
 
   it('cleanup registration (effect)', async () => {
     const state = reactive({ count: 0 })
-    const cleanup = jest.fn()
+    const cleanup = vi.fn()
     let dummy
     const stop = watchEffect((onCleanup) => {
       onCleanup(cleanup)
@@ -339,7 +339,7 @@ describe('watch', () => {
 
   it('cleanup registration (with source)', async () => {
     const count = ref(0)
-    const cleanup = jest.fn()
+    const cleanup = vi.fn()
     let dummy
     const stop = watch(count, (count, _, onCleanup) => {
       onCleanup(cleanup)
@@ -428,7 +428,7 @@ describe('watch', () => {
 
   it('immediate', async () => {
     const count = ref(0)
-    const cb = jest.fn()
+    const cb = vi.fn()
     watch(count, cb, { immediate: true })
     expect(cb).toHaveBeenCalledTimes(1)
     count.value++
@@ -438,14 +438,14 @@ describe('watch', () => {
 
   it('immediate: triggers when initial value is null', async () => {
     const state = ref(null)
-    const spy = jest.fn()
+    const spy = vi.fn()
     watch(() => state.value, spy, { immediate: true })
     expect(spy).toHaveBeenCalled()
   })
 
   it('immediate: triggers when initial value is undefined', async () => {
     const state = ref()
-    const spy = jest.fn()
+    const spy = vi.fn()
     watch(() => state.value, spy, { immediate: true })
     expect(spy).toHaveBeenCalledWith(undefined, undefined, expect.any(Function))
     state.value = 3
@@ -481,7 +481,7 @@ describe('watch', () => {
 
   it('warn and not respect deep option when using effect', async () => {
     const arr = ref([1, [2]])
-    const spy = jest.fn()
+    const spy = vi.fn()
     watchEffect(
       () => {
         spy()
@@ -500,7 +500,7 @@ describe('watch', () => {
   it('onTrack', async () => {
     const events: DebuggerEvent[] = []
     let dummy
-    const onTrack = jest.fn((e: DebuggerEvent) => {
+    const onTrack = vi.fn((e: DebuggerEvent) => {
       events.push(e)
     })
     const obj = reactive({ foo: 1, bar: 2 })
@@ -535,7 +535,7 @@ describe('watch', () => {
   it('onTrigger', async () => {
     const events: DebuggerEvent[] = []
     let dummy
-    const onTrigger = jest.fn((e: DebuggerEvent) => {
+    const onTrigger = vi.fn((e: DebuggerEvent) => {
       events.push(e)
     })
     const obj = reactive({ foo: 1 })
@@ -616,7 +616,7 @@ describe('watch', () => {
 
   test('should force trigger on triggerRef when watching multiple sources: shallow ref array', async () => {
     const v = shallowRef([] as any)
-    const spy = jest.fn()
+    const spy = vi.fn()
     watch([v], () => {
       spy()
     })
@@ -630,7 +630,7 @@ describe('watch', () => {
   })
 
   test('watchEffect should not recursively trigger itself', async () => {
-    const spy = jest.fn()
+    const spy = vi.fn()
     const price = ref(10)
     const history = ref<number[]>([])
     watchEffect(() => {
@@ -642,7 +642,7 @@ describe('watch', () => {
   })
 
   test('computed refs should not trigger watch if value has no change', async () => {
-    const spy = jest.fn()
+    const spy = vi.fn()
     const source = ref(0)
     const price = computed(() => source.value === 0)
     watch(price, spy)
@@ -655,7 +655,7 @@ describe('watch', () => {
 
   test('watching sources: ref<any[]>', async () => {
     const foo = ref([1])
-    const spy = jest.fn()
+    const spy = vi.fn()
     watch(foo, () => {
       spy()
     })
@@ -698,7 +698,7 @@ describe('watch', () => {
   ] as const
   test.each(options)('$name', async (option) => {
     const count = ref(0)
-    const cb = jest.fn()
+    const cb = vi.fn()
 
     watch(count, cb, { once: true, ...option })
 
@@ -716,8 +716,8 @@ describe('watch', () => {
   })
 
   test('OnCleanup also needs to be cleaned', async () => {
-    const spy1 = jest.fn()
-    const spy2 = jest.fn()
+    const spy1 = vi.fn()
+    const spy2 = vi.fn()
     const num = ref(0)
 
     watch(num, (value, _, onCleanup) => {
@@ -785,7 +785,7 @@ describe('watch', () => {
   })
 
   it('should not trigger when value changed from NaN to NaN', async () => {
-    const spy = jest.fn()
+    const spy = vi.fn()
     const s = ref('a')
     watch(() => Number(s.value), spy)
 
@@ -795,7 +795,7 @@ describe('watch', () => {
   })
 
   it('should work with circular object', async () => {
-    const spy = jest.fn()
+    const spy = vi.fn()
     const obj = { count: 0 }
     // @ts-expect-error
     obj.self = obj
@@ -864,7 +864,7 @@ describe('watch', () => {
     const obj2 = new Foo()
 
     const collection = shallowReactive([obj1, obj2])
-    const cb = jest.fn()
+    const cb = vi.fn()
     watch([collection], cb)
 
     collection[0].prop1.value = 'foo'

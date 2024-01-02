@@ -80,7 +80,7 @@ export function watchPostEffect(
     null,
     __DEV__ ?
       extend({}, options as any, { flush: 'post' })
-    : /* istanbul ignore next */ { flush: 'post' },
+    : /* istanbul ignore next -- @preserve */ { flush: 'post' },
   )
 }
 
@@ -93,7 +93,7 @@ export function watchSyncEffect(
     null,
     __DEV__ ?
       extend({}, options as any, { flush: 'sync' })
-    : /* istanbul ignore next */ { flush: 'sync' },
+    : /* istanbul ignore next -- @preserve */ { flush: 'sync' },
   )
 }
 
@@ -234,7 +234,7 @@ function doWatch(
           return s()
         }
 
-        /* istanbul ignore else  */
+        /* istanbul ignore else -- @preserve  */
         if (__DEV__) {
           warnInvalidSource(s)
         }
@@ -257,7 +257,7 @@ function doWatch(
     }
   } else {
     getter = NOOP
-    /* istanbul ignore else  */
+    /* istanbul ignore else -- @preserve  */
     if (__DEV__) {
       warnInvalidSource(source)
     }
@@ -342,7 +342,7 @@ function doWatch(
     }
   }
 
-  /* istanbul ignore else */
+  /* istanbul ignore else -- @preserve */
   if (__DEV__) {
     effect.onTrack = onTrack
     effect.onTrigger = onTrigger
@@ -386,7 +386,7 @@ function traverse(
   }
 
   seen.add(value)
-  /* istanbul ignore else  */
+  /* istanbul ignore else -- @preserve  */
   if (isRef(value)) {
     traverse(value.value, depth, currentDepth, seen)
   } else if (isArray(value)) {
