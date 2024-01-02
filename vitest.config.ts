@@ -5,6 +5,7 @@ export default defineConfig({
     __DEV__: true,
   },
   test: {
+    watch: false,
     globals: true,
     setupFiles: 'vitest.setup.ts',
     include: ['packages/**/__tests__/**/*.spec.ts'],
