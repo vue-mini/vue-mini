@@ -72,6 +72,10 @@ async function generateCode({
             // eslint-disable-next-line camelcase
             pure_getters: true,
           },
+          format: {
+            // Remove comments for tests
+            comments: /^!/,
+          },
         }),
       typescript({ tsconfig: 'tsconfig.build.json' }),
       replace({ values: replaces, preventAssignment: true }),
