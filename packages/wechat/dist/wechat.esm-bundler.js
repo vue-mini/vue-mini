@@ -1,5 +1,5 @@
 /*!
- * vue-mini v1.0.0-beta.1
+ * vue-mini v1.0.0-beta.2
  * https://github.com/vue-mini/vue-mini
  * (c) 2019-present Yang Mingshan
  * @license MIT
@@ -91,7 +91,7 @@ function queueFlush() {
 function flushJobs(seen) {
     isFlushPending = false;
     isFlushing = true;
-    /* istanbul ignore else  */
+    /* istanbul ignore else -- @preserve  */
     if ((process.env.NODE_ENV !== 'production')) {
         seen = seen || new Map();
     }
@@ -102,12 +102,12 @@ function flushJobs(seen) {
     // would fail to do that (e.g. https://github.com/evanw/esbuild/issues/1610)
     const check = (process.env.NODE_ENV !== 'production') ?
         (job) => checkRecursiveUpdates(seen, job)
-        : /* istanbul ignore next  */ NOOP;
+        : /* istanbul ignore next -- @preserve  */ NOOP;
     try {
         for (flushIndex = 0; flushIndex < queue.length; flushIndex++) {
             const job = queue[flushIndex];
             if (job.active !== false) {
-                /* istanbul ignore if  */
+                /* istanbul ignore if -- @preserve  */
                 if ((process.env.NODE_ENV !== 'production') && check(job)) {
                     continue;
                 }
@@ -124,7 +124,7 @@ function flushJobs(seen) {
 }
 function checkRecursiveUpdates(seen, fn) {
     const count = seen.get(fn) || 0;
-    /* istanbul ignore if */
+    /* istanbul ignore if -- @preserve */
     if (count > RECURSION_LIMIT) {
         console.warn(`Maximum recursive updates exceeded. ` +
             `This means you have a reactive effect that is mutating its own ` +
@@ -153,7 +153,7 @@ function setCurrentPage(page) {
     page.__scope__.on();
 }
 function unsetCurrentPage() {
-    /* istanbul ignore else */
+    /* istanbul ignore else -- @preserve */
     if (currentPage) {
         // @ts-expect-error
         currentPage.__scope__.off();
@@ -166,7 +166,7 @@ function setCurrentComponent(component) {
     component.__scope__.on();
 }
 function unsetCurrentComponent() {
-    /* istanbul ignore else */
+    /* istanbul ignore else -- @preserve */
     if (currentComponent) {
         // @ts-expect-error
         currentComponent.__scope__.off();
@@ -181,12 +181,12 @@ function watchEffect(effect, options) {
 function watchPostEffect(effect, options) {
     return doWatch(effect, null, (process.env.NODE_ENV !== 'production') ?
         extend({}, options, { flush: 'post' })
-        : /* istanbul ignore next */ { flush: 'post' });
+        : /* istanbul ignore next -- @preserve */ { flush: 'post' });
 }
 function watchSyncEffect(effect, options) {
     return doWatch(effect, null, (process.env.NODE_ENV !== 'production') ?
         extend({}, options, { flush: 'sync' })
-        : /* istanbul ignore next */ { flush: 'sync' });
+        : /* istanbul ignore next -- @preserve */ { flush: 'sync' });
 }
 // Initial value for watchers to trigger on undefined initial values
 const INITIAL_WATCHER_VALUE = {};
@@ -208,6 +208,10 @@ function doWatch(source, cb, { immediate, deep, flush, once, onTrack, onTrigger 
             unwatch();
         };
     }
+    if ((process.env.NODE_ENV !== 'production') && deep !== undefined && typeof deep === 'number') {
+        console.warn(`watch() "deep" option with number value will be used as watch depth in future versions. ` +
+            `Please use a boolean instead to avoid potential breakage.`);
+    }
     if ((process.env.NODE_ENV !== 'production') && !cb) {
         if (immediate !== undefined) {
             console.warn(`watch() "immediate" option is only respected when using the ` +
@@ -226,6 +230,10 @@ function doWatch(source, cb, { immediate, deep, flush, once, onTrack, onTrigger 
         console.warn(`Invalid watch source:`, s, `A watch source can only be a getter/effect function, a ref, ` +
             `a reactive object, or an array of these types.`);
     };
+    const reactiveGetter = (source) => deep === true ?
+        source // Traverse will happen in wrapped getter below
+        // For deep: false, only traverse root-level properties
+        : traverse(source, deep === false ? 1 : undefined);
     let getter;
     let forceTrigger = false;
     let isMultiSource = false;
@@ -234,10 +242,7 @@ function doWatch(source, cb, { immediate, deep, flush, once, onTrack, onTrigger 
         forceTrigger = isShallow(source);
     }
     else if (isReactive(source)) {
-        getter =
-            isShallow(source) || deep === false ?
-                () => traverse(source, 1)
-                : () => traverse(source);
+        getter = () => reactiveGetter(source);
         forceTrigger = true;
     }
     else if (isArray(source)) {
@@ -248,12 +253,12 @@ function doWatch(source, cb, { immediate, deep, flush, once, onTrack, onTrigger 
                 return s.value;
             }
             if (isReactive(s)) {
-                return traverse(s, isShallow(s) || deep === false ? 1 : undefined);
+                return reactiveGetter(s);
             }
             if (isFunction(s)) {
                 return s();
             }
-            /* istanbul ignore else  */
+            /* istanbul ignore else -- @preserve  */
             if ((process.env.NODE_ENV !== 'production')) {
                 warnInvalidSource(s);
             }
@@ -277,7 +282,7 @@ function doWatch(source, cb, { immediate, deep, flush, once, onTrack, onTrigger 
     }
     else {
         getter = NOOP;
-        /* istanbul ignore else  */
+        /* istanbul ignore else -- @preserve  */
         if ((process.env.NODE_ENV !== 'production')) {
             warnInvalidSource(source);
         }
@@ -348,7 +353,7 @@ function doWatch(source, cb, { immediate, deep, flush, once, onTrack, onTrigger 
             remove(instance.__scope__.effects, effect);
         }
     };
-    /* istanbul ignore else */
+    /* istanbul ignore else -- @preserve */
     if ((process.env.NODE_ENV !== 'production')) {
         effect.onTrack = onTrack;
         effect.onTrigger = onTrigger;
@@ -382,7 +387,7 @@ function traverse(value, depth, currentDepth = 0, seen) {
         return value;
     }
     seen.add(value);
-    /* istanbul ignore else  */
+    /* istanbul ignore else -- @preserve  */
     if (isRef(value)) {
         traverse(value.value, depth, currentDepth, seen);
     }
@@ -419,7 +424,7 @@ function inject(key, defaultValue, treatDefaultAsFactory = false) {
         return treatDefaultAsFactory && isFunction(defaultValue) ? defaultValue()
             : defaultValue;
     }
-    /* istanbul ignore else */
+    /* istanbul ignore else -- @preserve */
     if ((process.env.NODE_ENV !== 'production')) {
         console.warn(`injection "${String(key)}" not found.`);
     }
@@ -602,7 +607,7 @@ function definePage(optionsOrSetup, config) {
     };
     if (options[PageLifecycle.ON_PAGE_SCROLL] || config.listenPageScroll) {
         options[PageLifecycle.ON_PAGE_SCROLL] = createLifecycle$1(options, PageLifecycle.ON_PAGE_SCROLL);
-        /* istanbul ignore next */
+        /* istanbul ignore next -- @preserve */
         options.__listenPageScroll__ = () => true;
     }
     if (options[PageLifecycle.ON_SHARE_APP_MESSAGE] === undefined &&
@@ -614,7 +619,7 @@ function definePage(optionsOrSetup, config) {
             }
             return {};
         };
-        /* istanbul ignore next */
+        /* istanbul ignore next -- @preserve */
         options.__isInjectedShareToOthersHook__ = () => true;
     }
     if (options[PageLifecycle.ON_SHARE_TIMELINE] === undefined &&
@@ -626,7 +631,7 @@ function definePage(optionsOrSetup, config) {
             }
             return {};
         };
-        /* istanbul ignore next */
+        /* istanbul ignore next -- @preserve */
         options.__isInjectedShareToTimelineHook__ = () => true;
     }
     if (options[PageLifecycle.ON_ADD_TO_FAVORITES] === undefined) {
@@ -637,7 +642,7 @@ function definePage(optionsOrSetup, config) {
             }
             return {};
         };
-        /* istanbul ignore next */
+        /* istanbul ignore next -- @preserve */
         options.__isInjectedFavoritesHook__ = () => true;
     }
     options[PageLifecycle.ON_SHOW] = createLifecycle$1(options, PageLifecycle.ON_SHOW);
@@ -738,7 +743,7 @@ function defineComponent(optionsOrSetup, config) {
         };
         const bindings = setup((process.env.NODE_ENV !== 'production') ?
             shallowReadonly(this.__props__)
-            : /* istanbul ignore next */ this.__props__, context);
+            : /* istanbul ignore next -- @preserve */ this.__props__, context);
         if (bindings !== undefined) {
             Object.keys(bindings).forEach((key) => {
                 const value = bindings[key];
@@ -771,7 +776,7 @@ function defineComponent(optionsOrSetup, config) {
     if (options.methods[PageLifecycle.ON_PAGE_SCROLL] ||
         config.listenPageScroll) {
         options.methods[PageLifecycle.ON_PAGE_SCROLL] = createPageLifecycle(options, PageLifecycle.ON_PAGE_SCROLL);
-        /* istanbul ignore next */
+        /* istanbul ignore next -- @preserve */
         options.methods.__listenPageScroll__ = () => true;
     }
     if (options.methods[PageLifecycle.ON_SHARE_APP_MESSAGE] === undefined &&
@@ -783,7 +788,7 @@ function defineComponent(optionsOrSetup, config) {
             }
             return {};
         };
-        /* istanbul ignore next */
+        /* istanbul ignore next -- @preserve */
         options.methods.__isInjectedShareToOthersHook__ = () => true;
     }
     if (options.methods[PageLifecycle.ON_SHARE_TIMELINE] === undefined &&
@@ -795,7 +800,7 @@ function defineComponent(optionsOrSetup, config) {
             }
             return {};
         };
-        /* istanbul ignore next */
+        /* istanbul ignore next -- @preserve */
         options.methods.__isInjectedShareToTimelineHook__ = () => true;
     }
     if (options.methods[PageLifecycle.ON_ADD_TO_FAVORITES] === undefined) {
@@ -806,7 +811,7 @@ function defineComponent(optionsOrSetup, config) {
             }
             return {};
         };
-        /* istanbul ignore next */
+        /* istanbul ignore next -- @preserve */
         options.methods.__isInjectedFavoritesHook__ = () => true;
     }
     options.methods[PageLifecycle.ON_LOAD] = createPageLifecycle(options, PageLifecycle.ON_LOAD);
@@ -883,9 +888,9 @@ const onResize = createPageHook(PageLifecycle.ON_RESIZE);
 const onTabItemTap = createPageHook(PageLifecycle.ON_TAB_ITEM_TAP);
 const onPageScroll = (hook) => {
     const currentInstance = getCurrentInstance();
-    /* istanbul ignore else  */
+    /* istanbul ignore else -- @preserve  */
     if (currentInstance) {
-        /* istanbul ignore else  */
+        /* istanbul ignore else -- @preserve   */
         if (currentInstance.__listenPageScroll__) {
             injectHook(currentInstance, PageLifecycle.ON_PAGE_SCROLL, hook);
         }
@@ -899,13 +904,13 @@ const onPageScroll = (hook) => {
 };
 const onShareAppMessage = (hook) => {
     const currentInstance = getCurrentInstance();
-    /* istanbul ignore else  */
+    /* istanbul ignore else -- @preserve  */
     if (currentInstance) {
-        /* istanbul ignore else  */
+        /* istanbul ignore else -- @preserve  */
         if (currentInstance[PageLifecycle.ON_SHARE_APP_MESSAGE] &&
             currentInstance.__isInjectedShareToOthersHook__) {
             const hiddenField = toHiddenField(PageLifecycle.ON_SHARE_APP_MESSAGE);
-            /* istanbul ignore else  */
+            /* istanbul ignore else -- @preserve  */
             if (currentInstance[hiddenField] === undefined) {
                 currentInstance[hiddenField] = hook;
             }
@@ -923,13 +928,13 @@ const onShareAppMessage = (hook) => {
 };
 const onShareTimeline = (hook) => {
     const currentInstance = getCurrentInstance();
-    /* istanbul ignore else  */
+    /* istanbul ignore else -- @preserve  */
     if (currentInstance) {
-        /* istanbul ignore else  */
+        /* istanbul ignore else -- @preserve  */
         if (currentInstance[PageLifecycle.ON_SHARE_TIMELINE] &&
             currentInstance.__isInjectedShareToTimelineHook__) {
             const hiddenField = toHiddenField(PageLifecycle.ON_SHARE_TIMELINE);
-            /* istanbul ignore else  */
+            /* istanbul ignore else -- @preserve  */
             if (currentInstance[hiddenField] === undefined) {
                 currentInstance[hiddenField] = hook;
             }
@@ -947,12 +952,12 @@ const onShareTimeline = (hook) => {
 };
 const onAddToFavorites = (hook) => {
     const currentInstance = getCurrentInstance();
-    /* istanbul ignore else  */
+    /* istanbul ignore else -- @preserve  */
     if (currentInstance) {
-        /* istanbul ignore else  */
+        /* istanbul ignore else -- @preserve  */
         if (currentInstance.__isInjectedFavoritesHook__) {
             const hiddenField = toHiddenField(PageLifecycle.ON_ADD_TO_FAVORITES);
-            /* istanbul ignore else  */
+            /* istanbul ignore else -- @preserve  */
             if (currentInstance[hiddenField] === undefined) {
                 currentInstance[hiddenField] = hook;
             }
@@ -970,7 +975,7 @@ const onAddToFavorites = (hook) => {
 };
 const onReady = (hook) => {
     const currentInstance = getCurrentInstance();
-    /* istanbul ignore else  */
+    /* istanbul ignore else -- @preserve  */
     if (currentInstance) {
         injectHook(currentInstance, PageLifecycle.ON_READY, hook);
     }
@@ -984,7 +989,7 @@ const onDetach = createComponentHook(ComponentLifecycle.DETACHED);
 const onError = createComponentHook(ComponentLifecycle.ERROR);
 function createAppHook(lifecycle) {
     return (hook) => {
-        /* istanbul ignore else  */
+        /* istanbul ignore else -- @preserve  */
         if (currentApp) {
             injectHook(currentApp, lifecycle, hook);
         }
@@ -996,7 +1001,7 @@ function createAppHook(lifecycle) {
 function createPageHook(lifecycle) {
     return (hook) => {
         const currentInstance = getCurrentInstance();
-        /* istanbul ignore else  */
+        /* istanbul ignore else -- @preserve  */
         if (currentInstance) {
             injectHook(currentInstance, lifecycle, hook);
         }
@@ -1007,7 +1012,7 @@ function createPageHook(lifecycle) {
 }
 function createComponentHook(lifecycle) {
     return (hook) => {
-        /* istanbul ignore else  */
+        /* istanbul ignore else -- @preserve  */
         if (currentComponent) {
             injectHook(currentComponent, lifecycle, hook);
         }

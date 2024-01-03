@@ -1,3 +1,17 @@
+# 1.0.0-beta.2 (2024-01-03)
+
+### 依赖
+
+- **@vue/reactivity:** 从 3.4.3 升至 3.4.4，详情请看 [Vue 更新日志](https://github.com/vuejs/vue-next/blob/main/CHANGELOG.md)
+
+### 性能优化
+
+- **watch:** 避免重复遍历源数据 ([a9f8713](https://github.com/vue-mini/vue-mini/commit/a9f871326ab6fb78b40c890eb174780e916316a6))
+
+### Bug 修复
+
+- **watch:** 回退观察浅响应式数据的行为 ([6f069b2](https://github.com/vue-mini/vue-mini/commit/6f069b2911804fbc29f81ef89cf1f522b504c4f7))
+
 # 1.0.0-beta.1 (2023-12-31)
 
 ## 🎉 新年快乐 🎉

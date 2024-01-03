@@ -1,6 +1,6 @@
 {
   "name": "@vue-mini/wechat",
-  "version": "1.0.0-beta.1",
+  "version": "1.0.0-beta.2",
   "description": "vue-mini for wechat miniprogram",
   "main": "dist/wechat.cjs.js",
   "module": "dist/wechat.esm-bundler.js",
