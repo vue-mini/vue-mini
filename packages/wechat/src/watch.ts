@@ -207,8 +207,8 @@ function doWatch(
   const reactiveGetter = (source: object) =>
     deep === true ?
       source // Traverse will happen in wrapped getter below
-      // For shallow or deep: false, only traverse root-level properties
-    : traverse(source, isShallow(source) || deep === false ? 1 : undefined)
+      // For deep: false, only traverse root-level properties
+    : traverse(source, deep === false ? 1 : undefined)
 
   let getter: () => any
   let forceTrigger = false

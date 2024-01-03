@@ -169,7 +169,7 @@ describe('watch', () => {
   })
 
   // #9916
-  it('directly watching shallow reactive array', async () => {
+  it('watching shallow reactive array with deep: false', async () => {
     class Foo {
       prop1: ShallowRef<string> = shallowRef('')
       prop2 = ''
@@ -180,7 +180,7 @@ describe('watch', () => {
 
     const collection = shallowReactive([obj1, obj2])
     const cb = vi.fn()
-    watch(collection, cb)
+    watch(collection, cb, { deep: false })
 
     collection[0].prop1.value = 'foo'
     await nextTick()
@@ -883,7 +883,7 @@ describe('watch', () => {
 
     const collection = shallowReactive([obj1, obj2])
     const cb = vi.fn()
-    watch([collection], cb)
+    watch([collection], cb, { deep: false })
 
     collection[0].prop1.value = 'foo'
     await nextTick()
