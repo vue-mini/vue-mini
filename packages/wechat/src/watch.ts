@@ -172,6 +172,13 @@ function doWatch(
     }
   }
 
+  if (__DEV__ && deep !== undefined && typeof deep === 'number') {
+    console.warn(
+      `watch() "deep" option with number value will be used as watch depth in future versions. ` +
+        `Please use a boolean instead to avoid potential breakage.`,
+    )
+  }
+
   if (__DEV__ && !cb) {
     if (immediate !== undefined) {
       console.warn(
