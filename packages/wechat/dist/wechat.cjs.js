@@ -1,5 +1,5 @@
 /*!
- * vue-mini v1.0.0-beta.2
+ * vue-mini v1.0.0-beta.3
  * https://github.com/vue-mini/vue-mini
  * (c) 2019-present Yang Mingshan
  * @license MIT
@@ -1386,45 +1386,6 @@ function checkRecursiveUpdates(seen, fn) {
     return false;
 }
 
-let currentApp = null;
-let currentPage = null;
-let currentComponent = null;
-function getCurrentInstance() {
-    return currentPage || currentComponent;
-}
-function setCurrentApp(page) {
-    currentApp = page;
-}
-function unsetCurrentApp() {
-    currentApp = null;
-}
-function setCurrentPage(page) {
-    currentPage = page;
-    // @ts-expect-error
-    page.__scope__.on();
-}
-function unsetCurrentPage() {
-    /* istanbul ignore else -- @preserve */
-    if (currentPage) {
-        // @ts-expect-error
-        currentPage.__scope__.off();
-    }
-    currentPage = null;
-}
-function setCurrentComponent(component) {
-    currentComponent = component;
-    // @ts-expect-error
-    component.__scope__.on();
-}
-function unsetCurrentComponent() {
-    /* istanbul ignore else -- @preserve */
-    if (currentComponent) {
-        // @ts-expect-error
-        currentComponent.__scope__.off();
-    }
-    currentComponent = null;
-}
-
 // Simple effect.
 function watchEffect(effect, options) {
     return doWatch(effect, null, options);
@@ -1594,12 +1555,12 @@ function doWatch(source, cb, { immediate, deep, flush, once, onTrack, onTrigger 
         };
     }
     const effect = new ReactiveEffect(getter, NOOP, scheduler);
-    const instance = getCurrentInstance();
+    const scope = getCurrentScope();
     const unwatch = () => {
         effect.stop();
-        if (instance && instance.__scope__) {
+        if (scope) {
             // @ts-expect-error
-            remove(instance.__scope__.effects, effect);
+            remove(scope.effects, effect);
         }
     };
     /* istanbul ignore else -- @preserve */
@@ -1677,6 +1638,45 @@ function inject(key, defaultValue, treatDefaultAsFactory = false) {
     {
         console.warn(`injection "${String(key)}" not found.`);
     }
+}
+
+let currentApp = null;
+let currentPage = null;
+let currentComponent = null;
+function getCurrentInstance() {
+    return currentPage || currentComponent;
+}
+function setCurrentApp(page) {
+    currentApp = page;
+}
+function unsetCurrentApp() {
+    currentApp = null;
+}
+function setCurrentPage(page) {
+    currentPage = page;
+    // @ts-expect-error
+    page.__scope__.on();
+}
+function unsetCurrentPage() {
+    /* istanbul ignore else -- @preserve */
+    if (currentPage) {
+        // @ts-expect-error
+        currentPage.__scope__.off();
+    }
+    currentPage = null;
+}
+function setCurrentComponent(component) {
+    currentComponent = component;
+    // @ts-expect-error
+    component.__scope__.on();
+}
+function unsetCurrentComponent() {
+    /* istanbul ignore else -- @preserve */
+    if (currentComponent) {
+        // @ts-expect-error
+        currentComponent.__scope__.off();
+    }
+    currentComponent = null;
 }
 
 var AppLifecycle;

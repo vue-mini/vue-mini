@@ -1,3 +1,13 @@
+# 1.0.0-beta.3 (2024-01-04)
+
+### 依赖
+
+- **@vue/reactivity:** 从 3.4.4 升至 3.4.5，详情请看 [Vue 更新日志](https://github.com/vuejs/vue-next/blob/main/CHANGELOG.md)
+
+### Bug 修复
+
+- **watch:** 观察器手动停止后将其从对应的 scope 中清除 ([43ad395](https://github.com/vue-mini/vue-mini/commit/43ad395d601ddd0ef5d96b54e2ffea8acdcbb30f))
+
 # 1.0.0-beta.2 (2024-01-03)
 
 ### 依赖
