@@ -7,6 +7,7 @@ import {
   triggerRef,
   shallowReactive,
   shallowRef,
+  effectScope,
 } from '@vue/reactivity'
 import {
   watch,
@@ -766,6 +767,22 @@ describe('watch', () => {
     // Would not be calld when value>1
     expect(spy1).toHaveBeenCalledTimes(1)
     expect(spy2).toHaveBeenCalledTimes(1)
+  })
+
+  test("effect should be removed from scope's effects after it is stopped", () => {
+    const num = ref(0)
+    let unwatch: () => void
+    const scope = effectScope()
+    scope.run(() => {
+      unwatch = watch(num, () => {
+        console.log(num.value)
+      })
+    })
+    // @ts-expect-error
+    expect(scope.effects.length).toBe(1)
+    unwatch!()
+    // @ts-expect-error
+    expect(scope.effects.length).toBe(0)
   })
 
   /** Dividing line, the above tests is directly copy from vue.js **/

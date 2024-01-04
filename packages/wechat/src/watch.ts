@@ -10,10 +10,10 @@ import {
   ReactiveEffect,
   isReactive,
   ReactiveFlags,
+  getCurrentScope,
 } from '@vue/reactivity'
 import type { SchedulerJob } from './scheduler'
 import { queueJob } from './scheduler'
-import { getCurrentInstance } from './instance'
 import {
   NOOP,
   extend,
@@ -343,12 +343,12 @@ function doWatch(
 
   const effect = new ReactiveEffect(getter, NOOP, scheduler)
 
-  const instance = getCurrentInstance()
+  const scope = getCurrentScope()
   const unwatch = () => {
     effect.stop()
-    if (instance && instance.__scope__) {
+    if (scope) {
       // @ts-expect-error
-      remove(instance.__scope__.effects, effect)
+      remove(scope.effects, effect)
     }
   }
 
