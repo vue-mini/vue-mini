@@ -1,19 +1,23 @@
-import { queueJob, nextTick } from '../src/scheduler'
+import {
+  flushPostFlushCbs,
+  nextTick,
+  queueJob,
+  queuePostFlushCb,
+} from '../src/scheduler'
 
 describe('scheduler', () => {
   it('nextTick', async () => {
     const calls: string[] = []
     const dummyThen = Promise.resolve().then()
-    const job1 = (): void => {
+    const job1 = () => {
       calls.push('job1')
     }
 
-    const job2 = (): void => {
+    const job2 = () => {
       calls.push('job2')
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-floating-promises
-    nextTick(job1)
+    void nextTick(job1)
     job2()
 
     expect(calls.length).toBe(1)
@@ -26,11 +30,11 @@ describe('scheduler', () => {
   describe('queueJob', () => {
     it('basic usage', async () => {
       const calls: string[] = []
-      const job1 = (): void => {
+      const job1 = () => {
         calls.push('job1')
       }
 
-      const job2 = (): void => {
+      const job2 = () => {
         calls.push('job2')
       }
 
@@ -43,11 +47,11 @@ describe('scheduler', () => {
 
     it('should dedupe queued jobs', async () => {
       const calls: string[] = []
-      const job1 = (): void => {
+      const job1 = () => {
         calls.push('job1')
       }
 
-      const job2 = (): void => {
+      const job2 = () => {
         calls.push('job2')
       }
 
@@ -62,13 +66,13 @@ describe('scheduler', () => {
 
     it('queueJob while flushing', async () => {
       const calls: string[] = []
-      const job1 = (): void => {
+      const job1 = () => {
         calls.push('job1')
-        // Job2 will be excuted after job1 at the same tick
+        // Job2 will be executed after job1 at the same tick
         queueJob(job2)
       }
 
-      const job2 = (): void => {
+      const job2 = () => {
         calls.push('job2')
       }
 
@@ -79,15 +83,249 @@ describe('scheduler', () => {
     })
   })
 
+  describe('pre flush jobs', () => {
+    it('queueJob inside preFlushCb', async () => {
+      const calls: string[] = []
+      const job1 = () => {
+        calls.push('job1')
+      }
+
+      const cb1 = () => {
+        // QueueJob in postFlushCb
+        calls.push('cb1')
+        queueJob(job1)
+      }
+
+      queueJob(cb1)
+      await nextTick()
+      expect(calls).toEqual(['cb1', 'job1'])
+    })
+  })
+
+  describe('queuePostFlushCb', () => {
+    it('basic usage', async () => {
+      const calls: string[] = []
+
+      const cb1 = () => {
+        calls.push('cb1')
+      }
+
+      const cb2 = () => {
+        calls.push('cb2')
+      }
+
+      const cb3 = () => {
+        calls.push('cb3')
+      }
+
+      queuePostFlushCb(cb1)
+      queuePostFlushCb(cb2)
+      queuePostFlushCb(cb3)
+
+      expect(calls).toEqual([])
+      flushPostFlushCbs()
+      expect(calls).toEqual(['cb1', 'cb2', 'cb3'])
+    })
+
+    it('should dedupe queued postFlushCb', async () => {
+      const calls: string[] = []
+
+      const cb1 = () => {
+        calls.push('cb1')
+      }
+
+      const cb2 = () => {
+        calls.push('cb2')
+      }
+
+      const cb3 = () => {
+        calls.push('cb3')
+      }
+
+      queuePostFlushCb(cb1)
+      queuePostFlushCb(cb2)
+      queuePostFlushCb(cb3)
+
+      queuePostFlushCb(cb1)
+      queuePostFlushCb(cb3)
+      queuePostFlushCb(cb2)
+
+      expect(calls).toEqual([])
+      flushPostFlushCbs()
+      expect(calls).toEqual(['cb1', 'cb2', 'cb3'])
+    })
+
+    it('queuePostFlushCb while flushing', async () => {
+      const calls: string[] = []
+      const cb1 = () => {
+        calls.push('cb1')
+        // Cb2 will be executed after cb1 at the same tick
+        queuePostFlushCb(cb2)
+      }
+
+      const cb2 = () => {
+        calls.push('cb2')
+      }
+
+      queuePostFlushCb(cb1)
+
+      flushPostFlushCbs()
+      expect(calls).toEqual(['cb1'])
+
+      flushPostFlushCbs()
+      expect(calls).toEqual(['cb1', 'cb2'])
+    })
+  })
+
+  describe('queueJob w/ queuePostFlushCb', () => {
+    it('queueJob inside postFlushCb', async () => {
+      const calls: string[] = []
+      const job1 = () => {
+        calls.push('job1')
+      }
+
+      const cb1 = () => {
+        // QueueJob in postFlushCb
+        calls.push('cb1')
+        queueJob(job1)
+      }
+
+      queuePostFlushCb(cb1)
+      flushPostFlushCbs()
+      expect(calls).toEqual(['cb1'])
+      await nextTick()
+      expect(calls).toEqual(['cb1', 'job1'])
+    })
+
+    it('queueJob & postFlushCb inside postFlushCb', async () => {
+      const calls: string[] = []
+      const job1 = () => {
+        calls.push('job1')
+      }
+
+      const cb1 = () => {
+        calls.push('cb1')
+        queuePostFlushCb(cb2)
+        // Job1 will executed before cb2
+        // Job has higher priority than postFlushCb
+        queueJob(job1)
+      }
+
+      const cb2 = () => {
+        calls.push('cb2')
+      }
+
+      queuePostFlushCb(cb1)
+      flushPostFlushCbs()
+      expect(calls).toEqual(['cb1'])
+      await nextTick()
+      expect(calls).toEqual(['cb1', 'job1'])
+      flushPostFlushCbs()
+      expect(calls).toEqual(['cb1', 'job1', 'cb2'])
+    })
+
+    it('postFlushCb inside queueJob', async () => {
+      const calls: string[] = []
+      const job1 = () => {
+        calls.push('job1')
+        // PostFlushCb in queueJob
+        queuePostFlushCb(cb1)
+      }
+
+      const cb1 = () => {
+        calls.push('cb1')
+      }
+
+      queueJob(job1)
+      await nextTick()
+      expect(calls).toEqual(['job1'])
+      flushPostFlushCbs()
+      expect(calls).toEqual(['job1', 'cb1'])
+    })
+
+    it('queueJob & postFlushCb inside queueJob', async () => {
+      const calls: string[] = []
+      const job1 = () => {
+        calls.push('job1')
+        // Cb1 will executed after job2
+        // Job has higher priority than postFlushCb
+        queuePostFlushCb(cb1)
+        queueJob(job2)
+      }
+
+      const job2 = () => {
+        calls.push('job2')
+      }
+
+      const cb1 = () => {
+        calls.push('cb1')
+      }
+
+      queueJob(job1)
+      await nextTick()
+      expect(calls).toEqual(['job1', 'job2'])
+      flushPostFlushCbs()
+      expect(calls).toEqual(['job1', 'job2', 'cb1'])
+    })
+
+    it('nested queueJob w/ postFlushCb', async () => {
+      const calls: string[] = []
+      const job1 = () => {
+        calls.push('job1')
+
+        queuePostFlushCb(cb1)
+        queueJob(job2)
+      }
+
+      const job2 = () => {
+        calls.push('job2')
+        queuePostFlushCb(cb2)
+      }
+
+      const cb1 = () => {
+        calls.push('cb1')
+      }
+
+      const cb2 = () => {
+        calls.push('cb2')
+      }
+
+      queueJob(job1)
+      await nextTick()
+      expect(calls).toEqual(['job1', 'job2'])
+      flushPostFlushCbs()
+      expect(calls).toEqual(['job1', 'job2', 'cb1', 'cb2'])
+    })
+  })
+
+  // #1595
+  test('avoid duplicate postFlushCb invocation', async () => {
+    const calls: string[] = []
+    const cb1 = () => {
+      calls.push('cb1')
+      queuePostFlushCb(cb2)
+    }
+
+    const cb2 = () => {
+      calls.push('cb2')
+    }
+
+    queuePostFlushCb(cb1)
+    queuePostFlushCb(cb2)
+    flushPostFlushCbs()
+    expect(calls).toEqual(['cb1', 'cb2'])
+    flushPostFlushCbs()
+    expect(calls).toEqual(['cb1', 'cb2'])
+  })
+
   test('nextTick should capture scheduler flush errors', async () => {
     const err = new Error('test')
     queueJob(() => {
       throw err
     })
-    // prettier-ignore
     try {
       await nextTick()
-    } catch (error: unknown) {
+    } catch (error: any) {
       expect(error).toBe(err)
     }
 
@@ -111,6 +349,7 @@ describe('scheduler', () => {
   })
 
   test('should allow explicitly marked jobs to trigger itself', async () => {
+    // Normal job
     let count = 0
     const job = () => {
       if (count < 3) {
@@ -123,19 +362,23 @@ describe('scheduler', () => {
     queueJob(job)
     await nextTick()
     expect(count).toBe(3)
-  })
 
-  test('should prevent duplicate queue', async () => {
-    let count = 0
-    const job = () => {
-      count++
+    // Post cb
+    const cb = () => {
+      if (count < 5) {
+        count++
+        queuePostFlushCb(cb)
+      }
     }
 
-    job.cb = true
-    queueJob(job)
-    queueJob(job)
-    await nextTick()
-    expect(count).toBe(1)
+    cb.allowRecurse = true
+    queuePostFlushCb(cb)
+    flushPostFlushCbs()
+    expect(count).toBe(4)
+    flushPostFlushCbs()
+    expect(count).toBe(5)
+    flushPostFlushCbs()
+    expect(count).toBe(5)
   })
 
   // #910
@@ -161,7 +404,7 @@ describe('scheduler', () => {
     expect(spy).toHaveBeenCalledTimes(0)
   })
 
-  test('nextTick should return promise', async () => {
+  it('nextTick should return promise', async () => {
     const fn = vi.fn(() => 1)
 
     const p = nextTick(fn)

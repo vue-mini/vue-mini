@@ -6,6 +6,7 @@ import {
   readonly,
   watch,
   watchEffect,
+  watchPostEffect,
   nextTick,
   isReadonly,
   effectScope,
@@ -28,6 +29,7 @@ import {
 
 // Mocks
 let component: Record<string, any>
+let renderCb: () => void
 // @ts-expect-error
 global.Component = (options: Record<string, any>) => {
   component = {
@@ -51,11 +53,13 @@ global.Component = (options: Record<string, any>) => {
     setUpdatePerformanceListener() {},
     getPassiveEvent() {},
     setPassiveEvent() {},
-    setData(data: Record<string, unknown>) {
+    setData(data: Record<string, unknown>, callback: () => void) {
       this.data = this.data || {}
       Object.keys(data).forEach((key) => {
         this.data[key] = data[key]
       })
+
+      renderCb = callback
     },
   }
 }
@@ -242,6 +246,73 @@ describe('component', () => {
     expect(dummy!).toBe(1)
     expect(component.data.count).toBe(2)
     expect(component.__scope__.effects.length).toBe(1)
+  })
+
+  it('post watch', async () => {
+    let foo: number | undefined
+    let bar: number | undefined
+    defineComponent(() => {
+      const count = ref(0)
+      const increment = (): void => {
+        count.value++
+      }
+
+      watchPostEffect(() => {
+        foo = count.value
+      })
+
+      watch(
+        count,
+        () => {
+          bar = count.value
+        },
+        { flush: 'post' },
+      )
+
+      return {
+        count,
+        increment,
+      }
+    })
+    component.lifetimes.attached.call(component)
+    await nextTick()
+    expect(foo).toBe(0)
+    expect(bar).toBe(undefined)
+    expect(component.data.count).toBe(0)
+
+    component.increment()
+    await nextTick()
+    expect(foo).toBe(0)
+    expect(bar).toBe(undefined)
+    expect(component.data.count).toBe(1)
+
+    renderCb()
+    expect(foo).toBe(1)
+    expect(bar).toBe(1)
+    expect(component.data.count).toBe(1)
+  })
+
+  it('no post watch', async () => {
+    defineComponent(() => {
+      const count = ref(0)
+      const increment = (): void => {
+        count.value++
+      }
+
+      return {
+        count,
+        increment,
+      }
+    })
+    component.lifetimes.attached.call(component)
+    expect(component.data.count).toBe(0)
+
+    component.increment()
+    await nextTick()
+    expect(component.data.count).toBe(1)
+
+    renderCb()
+    expect(component.data.count).toBe(1)
   })
 
   it('watch should not register in owner component if created inside detached scope', () => {

@@ -12,7 +12,6 @@ import {
 import {
   watch,
   watchEffect,
-  watchPostEffect,
   watchSyncEffect,
   reactive,
   computed,
@@ -786,19 +785,6 @@ describe('watch', () => {
   })
 
   /** Dividing line, the above tests is directly copy from vue.js **/
-
-  it('watchPostEffect', async () => {
-    const state = reactive({ count: 0 })
-    let dummy
-    watchPostEffect(() => {
-      dummy = state.count
-    })
-    expect(dummy).toBe(0)
-
-    state.count++
-    await nextTick()
-    expect(dummy).toBe(1)
-  })
 
   it('watchSyncEffect', () => {
     const state = reactive({ count: 0 })

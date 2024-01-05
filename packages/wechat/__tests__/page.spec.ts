@@ -6,6 +6,7 @@ import {
   readonly,
   watch,
   watchEffect,
+  watchPostEffect,
   nextTick,
   effectScope,
   onReady,
@@ -24,6 +25,7 @@ import {
 
 // Mocks
 let page: Record<string, any>
+let renderCb: () => void
 // @ts-expect-error
 global.Page = (options: Record<string, any>) => {
   page = {
@@ -43,11 +45,13 @@ global.Page = (options: Record<string, any>) => {
     setUpdatePerformanceListener() {},
     getPassiveEvent() {},
     setPassiveEvent() {},
-    setData(data: Record<string, unknown>) {
+    setData(data: Record<string, unknown>, callback: () => void) {
       this.data = this.data || {}
       Object.keys(data).forEach((key) => {
         this.data[key] = data[key]
       })
+
+      renderCb = callback
     },
   }
 }
@@ -232,6 +236,73 @@ describe('page', () => {
     expect(dummy!).toBe(1)
     expect(page.data.count).toBe(2)
     expect(page.__scope__.effects.length).toBe(1)
+  })
+
+  it('post watch', async () => {
+    let foo: number | undefined
+    let bar: number | undefined
+    definePage(() => {
+      const count = ref(0)
+      const increment = (): void => {
+        count.value++
+      }
+
+      watchPostEffect(() => {
+        foo = count.value
+      })
+
+      watch(
+        count,
+        () => {
+          bar = count.value
+        },
+        { flush: 'post' },
+      )
+
+      return {
+        count,
+        increment,
+      }
+    })
+    page.onLoad()
+    await nextTick()
+    expect(foo).toBe(0)
+    expect(bar).toBe(undefined)
+    expect(page.data.count).toBe(0)
+
+    page.increment()
+    await nextTick()
+    expect(foo).toBe(0)
+    expect(bar).toBe(undefined)
+    expect(page.data.count).toBe(1)
+
+    renderCb()
+    expect(foo).toBe(1)
+    expect(bar).toBe(1)
+    expect(page.data.count).toBe(1)
+  })
+
+  it('no post watch', async () => {
+    definePage(() => {
+      const count = ref(0)
+      const increment = (): void => {
+        count.value++
+      }
+
+      return {
+        count,
+        increment,
+      }
+    })
+    page.onLoad()
+    expect(page.data.count).toBe(0)
+
+    page.increment()
+    await nextTick()
+    expect(page.data.count).toBe(1)
+
+    renderCb()
+    expect(page.data.count).toBe(1)
   })
 
   it('watch should not register in owner page if created inside detached scope', () => {

@@ -1,5 +1,6 @@
 import { isRef, isProxy, toRaw } from '@vue/reactivity'
 import { watch } from './watch'
+import { flushPostFlushCbs } from './scheduler'
 import {
   isArray,
   getType,
@@ -52,7 +53,7 @@ export function deepWatch(
   watch(
     isRef(value) ? value : () => value,
     () => {
-      this.setData({ [key]: deepToRaw(value) })
+      this.setData({ [key]: deepToRaw(value) }, flushPostFlushCbs)
     },
     {
       deep: true,

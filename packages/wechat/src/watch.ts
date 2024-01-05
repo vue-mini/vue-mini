@@ -13,7 +13,7 @@ import {
   getCurrentScope,
 } from '@vue/reactivity'
 import type { SchedulerJob } from './scheduler'
-import { queueJob } from './scheduler'
+import { queueJob, queuePostFlushCb } from './scheduler'
 import {
   NOOP,
   extend,
@@ -335,6 +335,10 @@ function doWatch(
   let scheduler: EffectScheduler
   if (flush === 'sync') {
     scheduler = job as any // The scheduler function gets called directly
+  } else if (flush === 'post') {
+    scheduler = () => {
+      queuePostFlushCb(job)
+    }
   } else {
     scheduler = () => {
       queueJob(job)

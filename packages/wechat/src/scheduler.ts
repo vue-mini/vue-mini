@@ -11,6 +11,10 @@ let isFlushPending = false
 const queue: SchedulerJob[] = []
 let flushIndex = 0
 
+const pendingPostFlushCbs: SchedulerJob[] = []
+let activePostFlushCbs: SchedulerJob[] | null = null
+let postFlushIndex = 0
+
 // eslint-disable-next-line spaced-comment
 const resolvedPromise = /*#__PURE__*/ Promise.resolve() as Promise<any>
 let currentFlushPromise: Promise<void> | null = null
@@ -46,6 +50,36 @@ function queueFlush(): void {
   if (!isFlushing && !isFlushPending) {
     isFlushPending = true
     currentFlushPromise = resolvedPromise.then(flushJobs)
+  }
+}
+
+export function queuePostFlushCb(cb: SchedulerJob) {
+  if (
+    !activePostFlushCbs ||
+    !activePostFlushCbs.includes(
+      cb,
+      cb.allowRecurse ? postFlushIndex + 1 : postFlushIndex,
+    )
+  ) {
+    pendingPostFlushCbs.push(cb)
+  }
+}
+
+export function flushPostFlushCbs() {
+  if (pendingPostFlushCbs.length > 0) {
+    activePostFlushCbs = [...new Set(pendingPostFlushCbs)]
+    pendingPostFlushCbs.length = 0
+
+    for (
+      postFlushIndex = 0;
+      postFlushIndex < activePostFlushCbs.length;
+      postFlushIndex++
+    ) {
+      activePostFlushCbs[postFlushIndex]()
+    }
+
+    activePostFlushCbs = null
+    postFlushIndex = 0
   }
 }
 
