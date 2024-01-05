@@ -1,5 +1,5 @@
-// eslint-disable-next-line import/no-unassigned-import
-import 'miniprogram-api-typings'
+// eslint-disable-next-line @typescript-eslint/triple-slash-reference
+/// <reference types="miniprogram-api-typings" />
 
 // Core API ------------------------------------------------------------------
 
