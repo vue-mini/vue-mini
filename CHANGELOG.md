@@ -1,3 +1,13 @@
+# 1.0.0-beta.4 (2024-01-05)
+
+### 特性
+
+- **watch:** 标记为 `flush: 'post'` 的观察器会在页面渲染后执行 ([6446440](https://github.com/vue-mini/vue-mini/commit/6446440bf0e482a2514c87815db2ad64aefa721d))
+
+### Bug 修复
+
+- **types:** 修复微信小程序类型引用 ([6590aa7](https://github.com/vue-mini/vue-mini/commit/6590aa7d28ba660e434a272a2ab66b453021e852))
+
 # 1.0.0-beta.3 (2024-01-04)
 
 ### 依赖

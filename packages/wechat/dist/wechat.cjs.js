@@ -1,5 +1,5 @@
 /*!
- * vue-mini v1.0.0-beta.3
+ * vue-mini v1.0.0-beta.4
  * https://github.com/vue-mini/vue-mini
  * (c) 2019-present Yang Mingshan
  * @license MIT
@@ -1313,6 +1313,9 @@ let isFlushing = false;
 let isFlushPending = false;
 const queue = [];
 let flushIndex = 0;
+const pendingPostFlushCbs = [];
+let activePostFlushCbs = null;
+let postFlushIndex = 0;
 // eslint-disable-next-line spaced-comment
 const resolvedPromise = /*#__PURE__*/ Promise.resolve();
 let currentFlushPromise = null;
@@ -1338,6 +1341,23 @@ function queueFlush() {
     if (!isFlushing && !isFlushPending) {
         isFlushPending = true;
         currentFlushPromise = resolvedPromise.then(flushJobs);
+    }
+}
+function queuePostFlushCb(cb) {
+    if (!activePostFlushCbs ||
+        !activePostFlushCbs.includes(cb, cb.allowRecurse ? postFlushIndex + 1 : postFlushIndex)) {
+        pendingPostFlushCbs.push(cb);
+    }
+}
+function flushPostFlushCbs() {
+    if (pendingPostFlushCbs.length > 0) {
+        activePostFlushCbs = [...new Set(pendingPostFlushCbs)];
+        pendingPostFlushCbs.length = 0;
+        for (postFlushIndex = 0; postFlushIndex < activePostFlushCbs.length; postFlushIndex++) {
+            activePostFlushCbs[postFlushIndex]();
+        }
+        activePostFlushCbs = null;
+        postFlushIndex = 0;
     }
 }
 function flushJobs(seen) {
@@ -1548,6 +1568,11 @@ function doWatch(source, cb, { immediate, deep, flush, once, onTrack, onTrigger 
     let scheduler;
     if (flush === 'sync') {
         scheduler = job; // The scheduler function gets called directly
+    }
+    else if (flush === 'post') {
+        scheduler = () => {
+            queuePostFlushCb(job);
+        };
     }
     else {
         scheduler = () => {
@@ -1768,7 +1793,7 @@ function deepWatch(key, value) {
         return;
     }
     watch(isRef(value) ? value : () => value, () => {
-        this.setData({ [key]: deepToRaw(value) });
+        this.setData({ [key]: deepToRaw(value) }, flushPostFlushCbs);
     }, {
         deep: true,
     });
