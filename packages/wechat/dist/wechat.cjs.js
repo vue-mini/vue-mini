@@ -1,11 +1,16 @@
 /*!
- * vue-mini v1.0.0-beta.5
+ * vue-mini v1.0.0-beta.6
  * https://github.com/vue-mini/vue-mini
  * (c) 2019-present Yang Mingshan
  * @license MIT
  */
 'use strict';
 
+/**
+* @vue/shared v3.4.15
+* (c) 2018-present Yuxi (Evan) You and Vue contributors
+* @license MIT
+**/
 function makeMap(str, expectsLowerCase) {
   const set = new Set(str.split(","));
   return expectsLowerCase ? (val) => set.has(val.toLowerCase()) : (val) => set.has(val);
@@ -45,6 +50,12 @@ const def = (obj, key, value) => {
     value
   });
 };
+
+/**
+* @vue/reactivity v3.4.15
+* (c) 2018-present Yuxi (Evan) You and Vue contributors
+* @license MIT
+**/
 
 function warn(msg, ...args) {
   console.warn(`[Vue warn] ${msg}`, ...args);
@@ -161,7 +172,7 @@ class ReactiveEffect {
     /**
      * @internal
      */
-    this._dirtyLevel = 3;
+    this._dirtyLevel = 2;
     /**
      * @internal
      */
@@ -173,7 +184,7 @@ class ReactiveEffect {
     /**
      * @internal
      */
-    this._queryings = 0;
+    this._shouldSchedule = false;
     /**
      * @internal
      */
@@ -182,10 +193,9 @@ class ReactiveEffect {
   }
   get dirty() {
     if (this._dirtyLevel === 1) {
-      this._dirtyLevel = 0;
-      this._queryings++;
       pauseTracking();
-      for (const dep of this.deps) {
+      for (let i = 0; i < this._depsLength; i++) {
+        const dep = this.deps[i];
         if (dep.computed) {
           triggerComputed(dep.computed);
           if (this._dirtyLevel >= 2) {
@@ -193,13 +203,15 @@ class ReactiveEffect {
           }
         }
       }
+      if (this._dirtyLevel < 2) {
+        this._dirtyLevel = 0;
+      }
       resetTracking();
-      this._queryings--;
     }
     return this._dirtyLevel >= 2;
   }
   set dirty(v) {
-    this._dirtyLevel = v ? 3 : 0;
+    this._dirtyLevel = v ? 2 : 0;
   }
   run() {
     this._dirtyLevel = 0;
@@ -322,24 +334,28 @@ function triggerEffects(dep, dirtyLevel, debuggerEventExtraInfo) {
   var _a;
   pauseScheduling();
   for (const effect2 of dep.keys()) {
-    if (!effect2.allowRecurse && effect2._runnings) {
-      continue;
-    }
-    if (effect2._dirtyLevel < dirtyLevel && (!effect2._runnings || dirtyLevel !== 2)) {
+    if (effect2._dirtyLevel < dirtyLevel && dep.get(effect2) === effect2._trackId) {
       const lastDirtyLevel = effect2._dirtyLevel;
       effect2._dirtyLevel = dirtyLevel;
-      if (lastDirtyLevel === 0 && (!effect2._queryings || dirtyLevel !== 2)) {
+      if (lastDirtyLevel === 0) {
+        effect2._shouldSchedule = true;
         {
           (_a = effect2.onTrigger) == null ? void 0 : _a.call(effect2, extend$1({ effect: effect2 }, debuggerEventExtraInfo));
         }
         effect2.trigger();
-        if (effect2.scheduler) {
-          queueEffectSchedulers.push(effect2.scheduler);
-        }
       }
     }
   }
+  scheduleEffects(dep);
   resetScheduling();
+}
+function scheduleEffects(dep) {
+  for (const effect2 of dep.keys()) {
+    if (effect2.scheduler && effect2._shouldSchedule && (!effect2._runnings || effect2.allowRecurse) && dep.get(effect2) === effect2._trackId) {
+      effect2._shouldSchedule = false;
+      queueEffectSchedulers.push(effect2.scheduler);
+    }
+  }
 }
 
 const createDep = (cleanup, computed) => {
@@ -423,7 +439,7 @@ function trigger(target, type, key, newValue, oldValue, oldTarget) {
     if (dep) {
       triggerEffects(
         dep,
-        3,
+        2,
         {
           target,
           type,
@@ -1022,7 +1038,8 @@ class ComputedRefImpl {
     this["__v_isReadonly"] = false;
     this.effect = new ReactiveEffect(
       () => getter(this._value),
-      () => triggerRefValue(this, 1)
+      () => triggerRefValue(this, 1),
+      () => this.dep && scheduleEffects(this.dep)
     );
     this.effect.computed = this;
     this.effect.active = this._cacheable = !isSSR;
@@ -1030,11 +1047,14 @@ class ComputedRefImpl {
   }
   get value() {
     const self = toRaw(this);
-    trackRefValue(self);
     if (!self._cacheable || self.effect.dirty) {
       if (hasChanged$1(self._value, self._value = self.effect.run())) {
         triggerRefValue(self, 2);
       }
+    }
+    trackRefValue(self);
+    if (self.effect._dirtyLevel >= 1) {
+      triggerRefValue(self, 1);
     }
     return self._value;
   }
@@ -1088,7 +1108,7 @@ function trackRefValue(ref2) {
     );
   }
 }
-function triggerRefValue(ref2, dirtyLevel = 3, newVal) {
+function triggerRefValue(ref2, dirtyLevel = 2, newVal) {
   ref2 = toRaw(ref2);
   const dep = ref2.dep;
   if (dep) {
@@ -1137,12 +1157,12 @@ class RefImpl {
     if (hasChanged$1(newVal, this._rawValue)) {
       this._rawValue = newVal;
       this._value = useDirectValue ? newVal : toReactive(newVal);
-      triggerRefValue(this, 3, newVal);
+      triggerRefValue(this, 2, newVal);
     }
   }
 }
 function triggerRef(ref2) {
-  triggerRefValue(ref2, 3, ref2.value );
+  triggerRefValue(ref2, 2, ref2.value );
 }
 function unref(ref2) {
   return isRef(ref2) ? ref2.value : ref2;
