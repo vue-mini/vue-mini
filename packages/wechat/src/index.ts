@@ -54,6 +54,7 @@ export {
   onShow,
   onHide,
   onUnload,
+  onRouteDone,
   onPullDownRefresh,
   onReachBottom,
   onResize,

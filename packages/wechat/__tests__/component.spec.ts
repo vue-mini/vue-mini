@@ -17,6 +17,7 @@ import {
   onLoad,
   onShow,
   onHide,
+  onRouteDone,
   onPullDownRefresh,
   onReachBottom,
   onResize,
@@ -901,6 +902,25 @@ describe('component', () => {
     expect(fn).toBeCalledWith(arg)
     expect(injectedFn1).toBeCalledWith(arg)
     expect(injectedFn2).toBeCalledWith(arg)
+  })
+
+  it('onRouteDone', () => {
+    const fn = vi.fn()
+    const injectedFn1 = vi.fn()
+    const injectedFn2 = vi.fn()
+    // @ts-expect-error
+    defineComponent({
+      pageLifetimes: { routeDone: fn },
+      setup() {
+        onRouteDone(injectedFn1)
+        onRouteDone(injectedFn2)
+      },
+    })
+    component.lifetimes.attached.call(component)
+    component.pageLifetimes.routeDone.call(component)
+    expect(fn).toBeCalledTimes(1)
+    expect(injectedFn1).toBeCalledTimes(1)
+    expect(injectedFn2).toBeCalledTimes(1)
   })
 
   it('inject component lifecycle outside setup', () => {

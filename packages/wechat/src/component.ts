@@ -68,6 +68,7 @@ const SpecialLifecycleMap = {
   [PageLifecycle.ON_SHOW]: 'show',
   [PageLifecycle.ON_HIDE]: 'hide',
   [PageLifecycle.ON_RESIZE]: 'resize',
+  [PageLifecycle.ON_ROUTE_DONE]: 'routeDone',
   [ComponentLifecycle.READY]: PageLifecycle.ON_READY,
 }
 
@@ -321,6 +322,8 @@ export function defineComponent(optionsOrSetup: any, config?: Config): string {
     createSpecialPageLifecycle(options, PageLifecycle.ON_HIDE)
   options.pageLifetimes[SpecialLifecycleMap[PageLifecycle.ON_RESIZE]] =
     createSpecialPageLifecycle(options, PageLifecycle.ON_RESIZE)
+  options.pageLifetimes[SpecialLifecycleMap[PageLifecycle.ON_ROUTE_DONE]] =
+    createSpecialPageLifecycle(options, PageLifecycle.ON_ROUTE_DONE)
 
   if (properties) {
     if (options.observers === undefined) {
@@ -370,7 +373,8 @@ function createSpecialPageLifecycle(
   lifecycle:
     | PageLifecycle.ON_SHOW
     | PageLifecycle.ON_HIDE
-    | PageLifecycle.ON_RESIZE,
+    | PageLifecycle.ON_RESIZE
+    | PageLifecycle.ON_ROUTE_DONE,
 ): (...args: any[]) => void {
   const originLifecycle = options.pageLifetimes[SpecialLifecycleMap[lifecycle]]
   return createLifecycle(lifecycle, originLifecycle)

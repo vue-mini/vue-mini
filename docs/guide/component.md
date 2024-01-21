@@ -171,6 +171,7 @@ Vue Mini 并没有 `onCreate` 钩子函数，这是因为 `setup` 是在 `attach
   - `pageLifetimes.show` -> `onShow`
   - `pageLifetimes.hide` -> `onHide`
   - `pageLifetimes.resize` -> `onResize`
+  - `pageLifetimes.routeDone` -> `onRouteDone`
 
 ## 与原生语法混用
 

@@ -37,6 +37,7 @@ export enum PageLifecycle {
   ON_READY = 'onReady',
   ON_HIDE = 'onHide',
   ON_UNLOAD = 'onUnload',
+  ON_ROUTE_DONE = 'onRouteDone',
   ON_PULL_DOWN_REFRESH = 'onPullDownRefresh',
   ON_REACH_BOTTOM = 'onReachBottom',
   ON_PAGE_SCROLL = 'onPageScroll',
@@ -212,6 +213,10 @@ export function definePage(optionsOrSetup: any, config?: Config): void {
   options[PageLifecycle.ON_HIDE] = createLifecycle(
     options,
     PageLifecycle.ON_HIDE,
+  )
+  options[PageLifecycle.ON_ROUTE_DONE] = createLifecycle(
+    options,
+    PageLifecycle.ON_ROUTE_DONE,
   )
   options[PageLifecycle.ON_PULL_DOWN_REFRESH] = createLifecycle(
     options,

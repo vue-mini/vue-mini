@@ -44,6 +44,9 @@ defineComponent({
     resize() {
       console.log('resize')
     },
+    routeDone() {
+      console.log('routeDone')
+    },
   },
   methods: {
     onLoad() {
@@ -60,6 +63,9 @@ defineComponent({
     },
     onUnload() {
       console.log('onUnload')
+    },
+    onRouteDone() {
+      console.log('onRouteDone')
     },
     onPullDownRefresh() {
       console.log('onPullDownRefresh')
@@ -108,11 +114,13 @@ Vue Mini 对页面组件的生命周期钩子做了些许整合和简化。同�
   - `pageLifetimes.show` -> `onShow`
   - `pageLifetimes.hide` -> `onHide`
   - `pageLifetimes.resize` -> `onResize`
+  - `pageLifetimes.routeDone` -> `onRouteDone`
   - `methods.onLoad` -> `onLoad`
   - `methods.onShow` -> `onShow`
   - `methods.onReady` -> `onReady`
   - `methods.onHide` -> `onHide`
   - `methods.onUnload` -> `onUnload`
+  - `methods.onRouteDone` -> `onRouteDone`
   - `methods.onPullDownRefresh` -> `onPullDownRefresh`
   - `methods.onReachBottom` -> `onReachBottom`
   - `methods.onShareAppMessage` -> `onShareAppMessage`

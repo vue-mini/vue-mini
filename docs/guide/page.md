@@ -239,6 +239,7 @@ definePage({
   - `onReady` -> `onReady`
   - `onHide` -> `onHide`
   - `onUnload` -> `onUnload`
+  - `onRouteDone` -> `onRouteDone`
   - `onPullDownRefresh` -> `onPullDownRefresh`
   - `onReachBottom` -> `onReachBottom`
   - `onShareAppMessage` -> `onShareAppMessage`

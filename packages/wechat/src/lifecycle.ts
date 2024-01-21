@@ -29,6 +29,7 @@ export const onThemeChange = createAppHook<
 export const onShow = createPageHook(PageLifecycle.ON_SHOW)
 export const onHide = createPageHook(PageLifecycle.ON_HIDE)
 export const onUnload = createPageHook(PageLifecycle.ON_UNLOAD)
+export const onRouteDone = createPageHook(PageLifecycle.ON_ROUTE_DONE)
 export const onPullDownRefresh = createPageHook(
   PageLifecycle.ON_PULL_DOWN_REFRESH,
 )

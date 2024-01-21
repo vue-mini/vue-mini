@@ -13,6 +13,7 @@ import {
   onShow,
   onHide,
   onUnload,
+  onRouteDone,
   onPullDownRefresh,
   onReachBottom,
   onResize,
@@ -403,6 +404,24 @@ describe('page', () => {
     })
     page.onLoad()
     page.onUnload()
+    expect(fn).toBeCalledTimes(1)
+    expect(injectedFn1).toBeCalledTimes(1)
+    expect(injectedFn2).toBeCalledTimes(1)
+  })
+
+  it('onRouteDone', () => {
+    const fn = vi.fn()
+    const injectedFn1 = vi.fn()
+    const injectedFn2 = vi.fn()
+    definePage({
+      onRouteDone: fn,
+      setup() {
+        onRouteDone(injectedFn1)
+        onRouteDone(injectedFn2)
+      },
+    })
+    page.onLoad()
+    page.onRouteDone()
     expect(fn).toBeCalledTimes(1)
     expect(injectedFn1).toBeCalledTimes(1)
     expect(injectedFn2).toBeCalledTimes(1)
