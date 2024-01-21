@@ -54,14 +54,16 @@ importers:
         specifier: ^0.56.0
         version: 0.56.0
 
+  packages/api-typings: {}
+
   packages/wechat:
     dependencies:
+      '@vue-mini/miniprogram-api-typings':
+        specifier: workspace:*
+        version: link:../api-typings
       '@vue/reactivity':
         specifier: 3.4.15
         version: 3.4.15
-      miniprogram-api-typings:
-        specifier: ^3.12.2
-        version: 3.12.2
 
 packages:
 
@@ -3492,10 +3494,6 @@ packages:
   /minimist@1.2.8:
     resolution: {integrity: sha512-2yyAR8qBkN3YuheJanUpWC5U3bb5osDywNB8RzDVlDwDHbocAJveqqj1u8+SVD7jkWT4yvsHCpWqqWqAxb0zCA==}
     dev: true
-
-  /miniprogram-api-typings@3.12.2:
-    resolution: {integrity: sha512-OJB2uVAfhycX4teG/zEVpoThushQqLOx946XACDpVc6OQydiJWjn7djVzvNCbv0VOA7sbHGPQp/RkXD9vMCDEw==}
-    dev: false
 
   /minisearch@6.3.0:
     resolution: {integrity: sha512-ihFnidEeU8iXzcVHy74dhkxh/dn8Dc08ERl0xwoMMGqp4+LvRSCgicb+zGqWthVokQKvCSxITlh3P08OzdTYCQ==}

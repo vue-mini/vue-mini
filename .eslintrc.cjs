@@ -3,7 +3,7 @@
 module.exports = {
   root: true,
   extends: ['xo', require.resolve('xo/config/plugins.cjs'), 'prettier'],
-  ignorePatterns: ['dist', 'coverage'],
+  ignorePatterns: ['api-typings', 'dist', 'coverage'],
   overrides: [
     {
       files: ['*.ts'],

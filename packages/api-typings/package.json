@@ -1,0 +1,16 @@
+{
+  "name": "@vue-mini/miniprogram-api-typings",
+  "version": "3.12.2",
+  "description": "Type definitions for APIs of Wechat Mini Program in TypeScript",
+  "main": "./index.d.ts",
+  "types": "./index.d.ts",
+  "repository": "https://github.com/vue-mini/vue-mini.git",
+  "author": "Wechat Miniprogram <wx-miniprogram@qq.com>",
+  "license": "MIT",
+  "files": [
+    "LICENSE",
+    "README.md",
+    "index.d.ts",
+    "types/"
+  ]
+}
