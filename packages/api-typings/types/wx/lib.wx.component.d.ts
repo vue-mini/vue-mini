@@ -366,6 +366,11 @@ declare namespace WechatMiniprogram.Component {
      * 所在页面尺寸变化时执行
      */
     resize(size: Page.IResizeOption): void
+    /** 页面生命周期回调—监听页面路由动画完成
+     *
+     * 所在页面路由动画完成时执行
+     */
+    routeDone(): void
   }
 
   type DefinitionFilter = <T extends TrivialOption>(

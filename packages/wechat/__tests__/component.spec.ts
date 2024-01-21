@@ -908,7 +908,6 @@ describe('component', () => {
     const fn = vi.fn()
     const injectedFn1 = vi.fn()
     const injectedFn2 = vi.fn()
-    // @ts-expect-error
     defineComponent({
       pageLifetimes: { routeDone: fn },
       setup() {

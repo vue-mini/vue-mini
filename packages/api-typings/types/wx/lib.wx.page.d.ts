@@ -76,6 +76,11 @@ declare namespace WechatMiniprogram.Page {
      * 页面卸载时触发。如`redirectTo`或`navigateBack`到其他页面时。
      */
     onUnload(): void | Promise<void>
+    /** 生命周期回调—监听路由动画完成
+     *
+     * 路由动画完成时触发。如 wx.navigateTo 页面完全推入后 或 wx.navigateBack 页面完全恢复时。
+     */
+    onRouteDone(): void | Promise<void>
     /** 监听用户下拉动作
      *
      * 监听用户下拉刷新事件。
