@@ -22,6 +22,7 @@ import {
   onShareAppMessage,
   onShareTimeline,
   onAddToFavorites,
+  onSaveExitState,
 } from '../src'
 
 // Mocks
@@ -675,6 +676,39 @@ describe('page', () => {
 
     definePage(() => {})
     expect(page.onAddToFavorites(arg)).toEqual({})
+  })
+
+  it('onSaveExitState', () => {
+    onSaveExitState(() => ({ data: undefined }))
+    expect('Page specific lifecycle').toHaveBeenWarned()
+
+    definePage({
+      onSaveExitState() {
+        return { data: undefined }
+      },
+      setup() {
+        onSaveExitState(() => ({ data: undefined }))
+      },
+    })
+    page.onLoad()
+    expect('onSaveExitState() hook only').toHaveBeenWarned()
+
+    definePage(() => {
+      onSaveExitState(() => ({ data: undefined }))
+      onSaveExitState(() => ({ data: undefined }))
+    })
+    page.onLoad()
+    expect('onSaveExitState() hook can only').toHaveBeenWarned()
+
+    definePage(() => {
+      onSaveExitState(() => ({ data: { foo: 'foo' } }))
+    })
+    page.onLoad()
+    const exitState = page.onSaveExitState()
+    expect(exitState).toEqual({ data: { foo: 'foo' } })
+
+    definePage(() => {})
+    expect(page.onSaveExitState()).toEqual({ data: undefined })
   })
 
   it('inject lifecycle outside setup', () => {

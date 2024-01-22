@@ -146,6 +146,7 @@ export function defineComponent(optionsOrSetup: any, config?: Config): string {
       is: this.is,
       id: this.id,
       dataset: this.dataset,
+      exitState: this.exitState,
       triggerEvent: this.triggerEvent.bind(this),
       createSelectorQuery: this.createSelectorQuery.bind(this),
       createIntersectionObserver: this.createIntersectionObserver.bind(this),
@@ -293,6 +294,24 @@ export function defineComponent(optionsOrSetup: any, config?: Config): string {
 
     /* istanbul ignore next -- @preserve */
     options.methods.__isInjectedFavoritesHook__ = () => true
+  }
+
+  if (options.methods[PageLifecycle.ON_SAVE_EXIT_STATE] === undefined) {
+    options.methods[PageLifecycle.ON_SAVE_EXIT_STATE] = function (
+      this: ComponentInstance,
+    ): WechatMiniprogram.Page.ISaveExitState {
+      const hook = this[
+        toHiddenField(PageLifecycle.ON_SAVE_EXIT_STATE)
+      ] as () => WechatMiniprogram.Page.ISaveExitState
+      if (hook) {
+        return hook()
+      }
+
+      return { data: undefined }
+    }
+
+    /* istanbul ignore next -- @preserve */
+    options.methods.__isInjectedExitStateHook__ = () => true
   }
 
   options.methods[PageLifecycle.ON_LOAD] = createPageLifecycle(

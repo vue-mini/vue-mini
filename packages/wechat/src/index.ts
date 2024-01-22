@@ -63,6 +63,7 @@ export {
   onShareAppMessage,
   onShareTimeline,
   onAddToFavorites,
+  onSaveExitState,
   onReady,
   onLoad,
   onMove,

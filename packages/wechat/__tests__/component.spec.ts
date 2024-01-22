@@ -26,6 +26,7 @@ import {
   onShareAppMessage,
   onShareTimeline,
   onAddToFavorites,
+  onSaveExitState,
 } from '../src'
 
 // Mocks
@@ -847,6 +848,49 @@ describe('component', () => {
 
     defineComponent(() => {})
     expect(component.methods.onAddToFavorites.call(component, arg)).toEqual({})
+  })
+
+  it('onSaveExitState', () => {
+    onSaveExitState(() => ({ data: undefined }))
+    expect('Page specific lifecycle').toHaveBeenWarned()
+
+    defineComponent({
+      methods: {
+        onSaveExitState() {
+          return { data: undefined }
+        },
+      },
+      setup() {
+        onSaveExitState(() => ({ data: undefined }))
+      },
+    })
+    component.__isInjectedExitStateHook__ =
+      component.methods.__isInjectedExitStateHook__
+    component.lifetimes.attached.call(component)
+    expect('onSaveExitState() hook only').toHaveBeenWarned()
+
+    defineComponent(() => {
+      onSaveExitState(() => ({ data: undefined }))
+      onSaveExitState(() => ({ data: undefined }))
+    })
+    component.__isInjectedExitStateHook__ =
+      component.methods.__isInjectedExitStateHook__
+    component.lifetimes.attached.call(component)
+    expect('onSaveExitState() hook can only').toHaveBeenWarned()
+
+    defineComponent(() => {
+      onSaveExitState(() => ({ data: { foo: 'foo' } }))
+    })
+    component.__isInjectedExitStateHook__ =
+      component.methods.__isInjectedExitStateHook__
+    component.lifetimes.attached.call(component)
+    const exitSate = component.methods.onSaveExitState.call(component)
+    expect(exitSate).toEqual({ data: { foo: 'foo' } })
+
+    defineComponent(() => {})
+    expect(component.methods.onSaveExitState.call(component)).toEqual({
+      data: undefined,
+    })
   })
 
   it('onShow', () => {

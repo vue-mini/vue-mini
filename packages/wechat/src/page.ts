@@ -46,6 +46,7 @@ export enum PageLifecycle {
   ON_ADD_TO_FAVORITES = 'onAddToFavorites',
   ON_RESIZE = 'onResize',
   ON_TAB_ITEM_TAP = 'onTabItemTap',
+  ON_SAVE_EXIT_STATE = 'onSaveExitState',
 }
 
 export function definePage(setup: PageSetup, config?: Config): void
@@ -89,6 +90,7 @@ export function definePage(optionsOrSetup: any, config?: Config): void {
       is: this.is,
       route: this.route,
       options: this.options,
+      exitState: this.exitState,
       createSelectorQuery: this.createSelectorQuery.bind(this),
       createIntersectionObserver: this.createIntersectionObserver.bind(this),
       selectComponent: this.selectComponent.bind(this),
@@ -200,6 +202,24 @@ export function definePage(optionsOrSetup: any, config?: Config): void {
 
     /* istanbul ignore next -- @preserve */
     options.__isInjectedFavoritesHook__ = () => true
+  }
+
+  if (options[PageLifecycle.ON_SAVE_EXIT_STATE] === undefined) {
+    options[PageLifecycle.ON_SAVE_EXIT_STATE] = function (
+      this: PageInstance,
+    ): WechatMiniprogram.Page.ISaveExitState {
+      const hook = this[
+        toHiddenField(PageLifecycle.ON_SAVE_EXIT_STATE)
+      ] as () => WechatMiniprogram.Page.ISaveExitState
+      if (hook) {
+        return hook()
+      }
+
+      return { data: undefined }
+    }
+
+    /* istanbul ignore next -- @preserve */
+    options.__isInjectedExitStateHook__ = () => true
   }
 
   options[PageLifecycle.ON_SHOW] = createLifecycle(

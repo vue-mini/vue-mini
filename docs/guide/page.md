@@ -71,6 +71,7 @@ definePage({
   setup(query, context) {
     context.is
     context.route
+    context.exitState
     context.getOpenerEventChannel
     // ...
   },
@@ -83,7 +84,7 @@ definePage({
 
 ## 生命周期
 
-可以直接导入 `onXXX` 一族的函数来注册生命周期钩子。它们接收的参数和返回值与对应的生命周期一致，除 `onShareAppMessage`、`onShareTimeline` 和 `onAddToFavorites` 外每个 `onXXX` 函数都能被多次调用。
+可以直接导入 `onXXX` 一族的函数来注册生命周期钩子。它们接收的参数和返回值与对应的生命周期一致，除 `onShareAppMessage`、`onShareTimeline`、 `onAddToFavorites` 和 `onSaveExitState` 外每个 `onXXX` 函数都能被多次调用。
 
 ```js
 // page.js
@@ -232,6 +233,32 @@ definePage({
 
 如果条件不满足，在 `setup()` 中调用 `onAddToFavorites()` 钩子会抛出一个错误。
 
+- **onSaveExitState**
+
+由于 `onSaveExitState` 会返回需要保存的状态，所以一个页面只能有一个 `onSaveExitState` 监听。
+
+```js
+// page.js
+import { definePage, ref, onAddToFavorites } from '@vue-mini/wechat'
+
+definePage({
+  setup(_, context) {
+    const foo = ref(context.exitState?.foo ?? '')
+
+    // 仅第一次调用，且 `onSaveExitState` 选项不存在才生效。
+    onSaveExitState(() => {
+      return {
+        data: { foo: 'foo' },
+      }
+    })
+
+    // ...
+  },
+})
+```
+
+如果条件不满足，在 `setup()` 中调用 `onSaveExitState()` 钩子会抛出一个错误。
+
 - **生命周期对应关系**
 
   - `onLoad` -> `setup`
@@ -248,6 +275,7 @@ definePage({
   - `onPageScroll` -> `onPageScroll`
   - `onResize` -> `onResize`
   - `onTabItemTap` -> `onTabItemTap`
+  - `onSaveExitState` -> `onSaveExitState`
 
 ## 与原生语法混用
 

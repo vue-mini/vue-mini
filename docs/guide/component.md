@@ -119,6 +119,7 @@ defineComponent({
     context.is
     context.id
     context.dataset
+    context.exitState
     context.triggerEvent
     // ...
   },

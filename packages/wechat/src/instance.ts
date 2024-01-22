@@ -10,6 +10,7 @@ export type PageInstance = WechatMiniprogram.Page.InstanceProperties &
     __isInjectedShareToOthersHook__?: () => true
     __isInjectedShareToTimelineHook__?: () => true
     __isInjectedFavoritesHook__?: () => true
+    __isInjectedExitStateHook__?: () => true
     __listenPageScroll__?: () => true
     __scope__: EffectScope
   }
@@ -20,6 +21,7 @@ export type ComponentInstance = WechatMiniprogram.Component.InstanceProperties &
     __isInjectedShareToOthersHook__?: () => true
     __isInjectedShareToTimelineHook__?: () => true
     __isInjectedFavoritesHook__?: () => true
+    __isInjectedExitStateHook__?: () => true
     __listenPageScroll__?: () => true
     __scope__: EffectScope
     __props__: undefined | Record<string, any>

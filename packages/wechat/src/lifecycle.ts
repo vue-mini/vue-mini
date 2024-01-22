@@ -145,6 +145,31 @@ export const onAddToFavorites = (
   }
 }
 
+export const onSaveExitState = (
+  hook: () => WechatMiniprogram.Page.ISaveExitState,
+): void => {
+  const currentInstance = getCurrentInstance()
+  /* istanbul ignore else -- @preserve  */
+  if (currentInstance) {
+    /* istanbul ignore else -- @preserve  */
+    if (currentInstance.__isInjectedExitStateHook__) {
+      const hiddenField = toHiddenField(PageLifecycle.ON_SAVE_EXIT_STATE)
+      /* istanbul ignore else -- @preserve  */
+      if (currentInstance[hiddenField] === undefined) {
+        currentInstance[hiddenField] = hook
+      } else if (__DEV__) {
+        console.warn('onSaveExitState() hook can only be called once.')
+      }
+    } else if (__DEV__) {
+      console.warn(
+        'onSaveExitState() hook only works when `onSaveExitState` option is not exist.',
+      )
+    }
+  } else if (__DEV__) {
+    console.warn(pageHookWarn)
+  }
+}
+
 export const onReady = (hook: () => unknown): void => {
   const currentInstance = getCurrentInstance()
   /* istanbul ignore else -- @preserve  */
