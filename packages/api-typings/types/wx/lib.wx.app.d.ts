@@ -317,6 +317,26 @@ declare namespace WechatMiniprogram.App {
     shareTicket: string
     /** 当场景为由从另一个小程序或公众号或App打开时，返回此字段 */
     referrerInfo?: ReferrerInfo
+    /** 打开的文件信息数组，只有从聊天素材场景打开（scene为1173）才会携带该参数 */
+    forwardMaterials: ForwardMaterials[]
+    /** 从微信群聊/单聊打开小程序时，chatType 表示具体微信群聊/单聊类型
+     *
+     * 可选值：
+     * - 1: 微信联系人单聊;
+     * - 2: 企业微信联系人单聊;
+     * - 3: 普通微信群聊;
+     * - 4: 企业微信互通群聊; */
+    chatType?: 1 | 2 | 3 | 4
+    /** 需要基础库： `2.20.0`
+     *
+     * API 类别
+     *
+     * 可选值：
+     * - 'default': 默认类别;
+     * - 'nativeFunctionalized': 原生功能化，视频号直播商品、商品橱窗等场景打开的小程序;
+     * - 'browseOnly': 仅浏览，朋友圈快照页等场景打开的小程序;
+     * - 'embedded': 内嵌，通过打开半屏小程序能力打开的小程序; */
+    apiCategory: 'default' | 'nativeFunctionalized' | 'browseOnly' | 'embedded'
   }
 
   interface PageNotFoundOption {
