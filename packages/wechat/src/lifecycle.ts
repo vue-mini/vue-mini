@@ -63,7 +63,12 @@ export const onPageScroll = (
 export const onShareAppMessage = (
   hook: (
     share: WechatMiniprogram.Page.IShareAppMessageOption,
-  ) => WechatMiniprogram.Page.ICustomShareContent,
+  ) =>
+    | WechatMiniprogram.Page.ICustomShareContent
+    | WechatMiniprogram.Page.IAsyncCustomShareContent
+    | Promise<WechatMiniprogram.Page.ICustomShareContent>
+    | void
+    | Promise<void>,
 ): void => {
   const currentInstance = getCurrentInstance()
   /* istanbul ignore else -- @preserve  */
@@ -91,7 +96,7 @@ export const onShareAppMessage = (
 }
 
 export const onShareTimeline = (
-  hook: () => WechatMiniprogram.Page.ICustomTimelineContent,
+  hook: () => WechatMiniprogram.Page.ICustomTimelineContent | void,
 ): void => {
   const currentInstance = getCurrentInstance()
   /* istanbul ignore else -- @preserve  */
@@ -187,9 +192,9 @@ export const onLoad = createComponentHook<(query: Query) => unknown>(
 )
 export const onMove = createComponentHook(ComponentLifecycle.MOVED)
 export const onDetach = createComponentHook(ComponentLifecycle.DETACHED)
-export const onError = createComponentHook<(error: Error) => unknown>(
-  ComponentLifecycle.ERROR,
-)
+export const onError = createComponentHook<
+  (error: WechatMiniprogram.Error) => unknown
+>(ComponentLifecycle.ERROR)
 
 function createAppHook<T extends Function = () => unknown>(
   lifecycle: AppLifecycle,
