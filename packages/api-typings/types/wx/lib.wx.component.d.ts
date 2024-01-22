@@ -153,6 +153,8 @@ declare namespace WechatMiniprogram.Component {
     id: string
     /** 节点dataset */
     dataset: Record<string, string>
+    /** 上一次退出前 onSaveExitState 保存的数据 */
+    exitState: any
   }
 
   interface InstanceMethods<D extends DataOption> {

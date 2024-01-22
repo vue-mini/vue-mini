@@ -148,6 +148,9 @@ declare namespace WechatMiniprogram.Page {
      * 基础库 2.10.3，安卓 7.0.15 版本起支持，iOS 暂不支持
      */
     onAddToFavorites(options: IAddToFavoritesOption): IAddToFavoritesContent
+
+    /** 每当小程序可能被销毁之前会被调用，可以进行退出状态的保存。最低基础库： `2.7.4` */
+    onSaveExitState(): ISaveExitState
   }
   interface InstanceProperties {
     /** 页面的文件路径 */
@@ -158,6 +161,9 @@ declare namespace WechatMiniprogram.Page {
 
     /** 打开当前页面路径中的参数 */
     options: Record<string, string | undefined>
+
+    /** 上一次退出前 onSaveExitState 保存的数据 */
+    exitState: any
   }
 
   type DataOption = Record<string, any>
@@ -255,6 +261,13 @@ declare namespace WechatMiniprogram.Page {
     imageUrl?: string
     /** 自定义query字段，默认值：当前页面的query */
     query?: string
+  }
+
+  interface ISaveExitState {
+    /** 需要保存的数据（只能是 JSON 兼容的数据） */
+    data: any
+    /** 超时时刻，在这个时刻后，保存的数据保证一定被丢弃，默认为 (当前时刻 + 1 天) */
+    expireTimeStamp?: number
   }
 
   interface GetCurrentPages {
