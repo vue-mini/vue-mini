@@ -164,6 +164,15 @@ declare namespace WechatMiniprogram.Page {
 
     /** 上一次退出前 onSaveExitState 保存的数据 */
     exitState: any
+
+    /** 相对于当前页面的 Router 对象 */
+    router: Component.Router
+
+    /** 相对于当前页面的 Router 对象 */
+    pageRouter: Component.Router
+
+    /** 渲染当前页面的渲染后端 */
+    renderer: 'webview' | 'skyline'
   }
 
   type DataOption = Record<string, any>

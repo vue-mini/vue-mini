@@ -146,6 +146,14 @@ declare namespace WechatMiniprogram.Component {
     [name in keyof P]: PropertyToData<P[name]>
   }
 
+  interface Router {
+    switchTab: Wx['switchTab']
+    reLaunch: Wx['reLaunch']
+    redirectTo: Wx['redirectTo']
+    navigateTo: Wx['navigateTo']
+    navigateBack: Wx['navigateBack']
+  }
+
   interface InstanceProperties {
     /** 组件的文件路径 */
     is: string
@@ -155,6 +163,12 @@ declare namespace WechatMiniprogram.Component {
     dataset: Record<string, string>
     /** 上一次退出前 onSaveExitState 保存的数据 */
     exitState: any
+    /** 相对于当前自定义组件的 Router 对象 */
+    router: Router
+    /** 相对于当前自定义组件所在页面的 Router 对象 */
+    pageRouter: Router
+    /** 渲染当前组件的渲染后端 */
+    renderer: 'webview' | 'skyline'
   }
 
   interface InstanceMethods<D extends DataOption> {
@@ -194,6 +208,8 @@ declare namespace WechatMiniprogram.Component {
     createIntersectionObserver(
       options: CreateIntersectionObserverOption,
     ): IntersectionObserver
+    /** 创建一个 MediaQueryObserver 对象 */
+    createMediaQueryObserver(): MediaQueryObserver
     /** 使用选择器选择组件实例节点，返回匹配到的第一个组件实例对象（会被 `wx://component-export` 影响） */
     selectComponent(selector: string): TrivialInstance
     /** 使用选择器选择组件实例节点，返回匹配到的全部组件实例对象组成的数组 */
@@ -268,6 +284,27 @@ declare namespace WechatMiniprogram.Component {
      * 最低基础库版本：[`2.7.3`](https://developers.weixin.qq.com/miniprogram/dev/framework/compatibility.html)
      */
     getOpenerEventChannel(): EventChannel
+    /**
+     * 绑定由 worklet 驱动的样式到相应的节点，详见 [worklet 动画](https://developers.weixin.qq.com/miniprogram/dev/framework/runtime/skyline/worklet.html)
+     *
+     * 最低基础库版本：[`2.29.0`](https://developers.weixin.qq.com/miniprogram/dev/framework/compatibility.html)
+     */
+    applyAnimatedStyle(
+      selector: string,
+      updater: () => Record<string, string>,
+      userConfig?: { immediate: boolean; flush: 'sync' | 'async' },
+      callback?: (res: { styleId: number }) => void,
+    ): void
+    /**
+     * 清除节点上 worklet 驱动样式的绑定关系
+     *
+     * 最低基础库版本：[`2.30.1`](https://developers.weixin.qq.com/miniprogram/dev/framework/compatibility.html)
+     */
+    clearAnimatedStyle(
+      selector: string,
+      styleIds: number[],
+      callback?: () => void,
+    ): void
     /**
      * 获取更新性能统计信息，详见 [获取更新性能统计信息]((custom-component/update-perf-stat))
      *
