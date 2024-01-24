@@ -131,9 +131,8 @@ async function build(target) {
   })
 }
 
-for (const pkg of fs.readdirSync('packages')) {
+for (const pkg of ['wechat']) {
   const target = path.join('packages', pkg)
-  if (!fs.statSync(target).isDirectory()) continue
   // eslint-disable-next-line no-await-in-loop
   await build(target)
 }
