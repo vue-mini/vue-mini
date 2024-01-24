@@ -1,6 +1,6 @@
 {
   "private": true,
-  "version": "1.0.0-beta.6",
+  "version": "1.0.0-rc.1",
   "type": "module",
   "scripts": {
     "format": "prettier --check \"**/*.{js,cjs,ts,md}\"",

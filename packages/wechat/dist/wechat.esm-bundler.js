@@ -1,5 +1,5 @@
 /*!
- * vue-mini v1.0.0-beta.6
+ * vue-mini v1.0.0-rc.1
  * https://github.com/vue-mini/vue-mini
  * (c) 2019-present Yang Mingshan
  * @license MIT
@@ -557,6 +557,7 @@ var PageLifecycle;
     PageLifecycle["ON_READY"] = "onReady";
     PageLifecycle["ON_HIDE"] = "onHide";
     PageLifecycle["ON_UNLOAD"] = "onUnload";
+    PageLifecycle["ON_ROUTE_DONE"] = "onRouteDone";
     PageLifecycle["ON_PULL_DOWN_REFRESH"] = "onPullDownRefresh";
     PageLifecycle["ON_REACH_BOTTOM"] = "onReachBottom";
     PageLifecycle["ON_PAGE_SCROLL"] = "onPageScroll";
@@ -565,6 +566,7 @@ var PageLifecycle;
     PageLifecycle["ON_ADD_TO_FAVORITES"] = "onAddToFavorites";
     PageLifecycle["ON_RESIZE"] = "onResize";
     PageLifecycle["ON_TAB_ITEM_TAP"] = "onTabItemTap";
+    PageLifecycle["ON_SAVE_EXIT_STATE"] = "onSaveExitState";
 })(PageLifecycle || (PageLifecycle = {}));
 function definePage(optionsOrSetup, config) {
     config = extend({
@@ -595,8 +597,13 @@ function definePage(optionsOrSetup, config) {
             is: this.is,
             route: this.route,
             options: this.options,
+            exitState: this.exitState,
+            router: this.router,
+            pageRouter: this.pageRouter,
+            renderer: this.renderer,
             createSelectorQuery: this.createSelectorQuery.bind(this),
             createIntersectionObserver: this.createIntersectionObserver.bind(this),
+            createMediaQueryObserver: this.createMediaQueryObserver.bind(this),
             selectComponent: this.selectComponent.bind(this),
             selectAllComponents: this.selectAllComponents.bind(this),
             getTabBar: this.getTabBar.bind(this),
@@ -604,6 +611,8 @@ function definePage(optionsOrSetup, config) {
             animate: this.animate.bind(this),
             clearAnimation: this.clearAnimation.bind(this),
             getOpenerEventChannel: this.getOpenerEventChannel.bind(this),
+            applyAnimatedStyle: this.applyAnimatedStyle.bind(this),
+            clearAnimatedStyle: this.clearAnimatedStyle.bind(this),
             setUpdatePerformanceListener: this.setUpdatePerformanceListener.bind(this),
             getPassiveEvent: this.getPassiveEvent.bind(this),
             setPassiveEvent: this.setPassiveEvent.bind(this),
@@ -670,9 +679,21 @@ function definePage(optionsOrSetup, config) {
         /* istanbul ignore next -- @preserve */
         options.__isInjectedFavoritesHook__ = () => true;
     }
+    if (options[PageLifecycle.ON_SAVE_EXIT_STATE] === undefined) {
+        options[PageLifecycle.ON_SAVE_EXIT_STATE] = function () {
+            const hook = this[toHiddenField(PageLifecycle.ON_SAVE_EXIT_STATE)];
+            if (hook) {
+                return hook();
+            }
+            return { data: undefined };
+        };
+        /* istanbul ignore next -- @preserve */
+        options.__isInjectedExitStateHook__ = () => true;
+    }
     options[PageLifecycle.ON_SHOW] = createLifecycle$1(options, PageLifecycle.ON_SHOW);
     options[PageLifecycle.ON_READY] = createLifecycle$1(options, PageLifecycle.ON_READY);
     options[PageLifecycle.ON_HIDE] = createLifecycle$1(options, PageLifecycle.ON_HIDE);
+    options[PageLifecycle.ON_ROUTE_DONE] = createLifecycle$1(options, PageLifecycle.ON_ROUTE_DONE);
     options[PageLifecycle.ON_PULL_DOWN_REFRESH] = createLifecycle$1(options, PageLifecycle.ON_PULL_DOWN_REFRESH);
     options[PageLifecycle.ON_REACH_BOTTOM] = createLifecycle$1(options, PageLifecycle.ON_REACH_BOTTOM);
     options[PageLifecycle.ON_RESIZE] = createLifecycle$1(options, PageLifecycle.ON_RESIZE);
@@ -705,6 +726,7 @@ const SpecialLifecycleMap = {
     [PageLifecycle.ON_SHOW]: 'show',
     [PageLifecycle.ON_HIDE]: 'hide',
     [PageLifecycle.ON_RESIZE]: 'resize',
+    [PageLifecycle.ON_ROUTE_DONE]: 'routeDone',
     [ComponentLifecycle.READY]: PageLifecycle.ON_READY,
 };
 function defineComponent(optionsOrSetup, config) {
@@ -750,9 +772,14 @@ function defineComponent(optionsOrSetup, config) {
             is: this.is,
             id: this.id,
             dataset: this.dataset,
+            exitState: this.exitState,
+            router: this.router,
+            pageRouter: this.pageRouter,
+            renderer: this.renderer,
             triggerEvent: this.triggerEvent.bind(this),
             createSelectorQuery: this.createSelectorQuery.bind(this),
             createIntersectionObserver: this.createIntersectionObserver.bind(this),
+            createMediaQueryObserver: this.createMediaQueryObserver.bind(this),
             selectComponent: this.selectComponent.bind(this),
             selectAllComponents: this.selectAllComponents.bind(this),
             selectOwnerComponent: this.selectOwnerComponent.bind(this),
@@ -762,6 +789,8 @@ function defineComponent(optionsOrSetup, config) {
             animate: this.animate.bind(this),
             clearAnimation: this.clearAnimation.bind(this),
             getOpenerEventChannel: this.getOpenerEventChannel.bind(this),
+            applyAnimatedStyle: this.applyAnimatedStyle.bind(this),
+            clearAnimatedStyle: this.clearAnimatedStyle.bind(this),
             setUpdatePerformanceListener: this.setUpdatePerformanceListener.bind(this),
             getPassiveEvent: this.getPassiveEvent.bind(this),
             setPassiveEvent: this.setPassiveEvent.bind(this),
@@ -839,6 +868,17 @@ function defineComponent(optionsOrSetup, config) {
         /* istanbul ignore next -- @preserve */
         options.methods.__isInjectedFavoritesHook__ = () => true;
     }
+    if (options.methods[PageLifecycle.ON_SAVE_EXIT_STATE] === undefined) {
+        options.methods[PageLifecycle.ON_SAVE_EXIT_STATE] = function () {
+            const hook = this[toHiddenField(PageLifecycle.ON_SAVE_EXIT_STATE)];
+            if (hook) {
+                return hook();
+            }
+            return { data: undefined };
+        };
+        /* istanbul ignore next -- @preserve */
+        options.methods.__isInjectedExitStateHook__ = () => true;
+    }
     options.methods[PageLifecycle.ON_LOAD] = createPageLifecycle(options, PageLifecycle.ON_LOAD);
     options.methods[PageLifecycle.ON_PULL_DOWN_REFRESH] = createPageLifecycle(options, PageLifecycle.ON_PULL_DOWN_REFRESH);
     options.methods[PageLifecycle.ON_REACH_BOTTOM] = createPageLifecycle(options, PageLifecycle.ON_REACH_BOTTOM);
@@ -852,6 +892,8 @@ function defineComponent(optionsOrSetup, config) {
         createSpecialPageLifecycle(options, PageLifecycle.ON_HIDE);
     options.pageLifetimes[SpecialLifecycleMap[PageLifecycle.ON_RESIZE]] =
         createSpecialPageLifecycle(options, PageLifecycle.ON_RESIZE);
+    options.pageLifetimes[SpecialLifecycleMap[PageLifecycle.ON_ROUTE_DONE]] =
+        createSpecialPageLifecycle(options, PageLifecycle.ON_ROUTE_DONE);
     if (properties) {
         if (options.observers === undefined) {
             options.observers = {};
@@ -907,6 +949,7 @@ const onThemeChange = createAppHook(AppLifecycle.ON_THEME_CHANGE);
 const onShow = createPageHook(PageLifecycle.ON_SHOW);
 const onHide = createPageHook(PageLifecycle.ON_HIDE);
 const onUnload = createPageHook(PageLifecycle.ON_UNLOAD);
+const onRouteDone = createPageHook(PageLifecycle.ON_ROUTE_DONE);
 const onPullDownRefresh = createPageHook(PageLifecycle.ON_PULL_DOWN_REFRESH);
 const onReachBottom = createPageHook(PageLifecycle.ON_REACH_BOTTOM);
 const onResize = createPageHook(PageLifecycle.ON_RESIZE);
@@ -998,6 +1041,29 @@ const onAddToFavorites = (hook) => {
         console.warn(pageHookWarn);
     }
 };
+const onSaveExitState = (hook) => {
+    const currentInstance = getCurrentInstance();
+    /* istanbul ignore else -- @preserve  */
+    if (currentInstance) {
+        /* istanbul ignore else -- @preserve  */
+        if (currentInstance.__isInjectedExitStateHook__) {
+            const hiddenField = toHiddenField(PageLifecycle.ON_SAVE_EXIT_STATE);
+            /* istanbul ignore else -- @preserve  */
+            if (currentInstance[hiddenField] === undefined) {
+                currentInstance[hiddenField] = hook;
+            }
+            else if ((process.env.NODE_ENV !== 'production')) {
+                console.warn('onSaveExitState() hook can only be called once.');
+            }
+        }
+        else if ((process.env.NODE_ENV !== 'production')) {
+            console.warn('onSaveExitState() hook only works when `onSaveExitState` option is not exist.');
+        }
+    }
+    else if ((process.env.NODE_ENV !== 'production')) {
+        console.warn(pageHookWarn);
+    }
+};
 const onReady = (hook) => {
     const currentInstance = getCurrentInstance();
     /* istanbul ignore else -- @preserve  */
@@ -1054,4 +1120,4 @@ function injectHook(currentInstance, lifecycle, hook) {
     currentInstance[hiddenField].push(hook);
 }
 
-export { createApp, defineComponent, definePage, inject, nextTick, onAddToFavorites, onAppError, onAppHide, onAppShow, onDetach, onError, onHide, onLoad, onMove, onPageNotFound, onPageScroll, onPullDownRefresh, onReachBottom, onReady, onResize, onShareAppMessage, onShareTimeline, onShow, onTabItemTap, onThemeChange, onUnhandledRejection, onUnload, provide, watch, watchEffect, watchPostEffect, watchSyncEffect };
+export { createApp, defineComponent, definePage, inject, nextTick, onAddToFavorites, onAppError, onAppHide, onAppShow, onDetach, onError, onHide, onLoad, onMove, onPageNotFound, onPageScroll, onPullDownRefresh, onReachBottom, onReady, onResize, onRouteDone, onSaveExitState, onShareAppMessage, onShareTimeline, onShow, onTabItemTap, onThemeChange, onUnhandledRejection, onUnload, provide, watch, watchEffect, watchPostEffect, watchSyncEffect };

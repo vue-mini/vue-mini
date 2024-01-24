@@ -1,6 +1,6 @@
 {
   "name": "@vue-mini/miniprogram-api-typings",
-  "version": "3.12.2",
+  "version": "3.12.2-patch.1",
   "description": "Type definitions for APIs of Wechat Mini Program in TypeScript",
   "main": "./index.d.ts",
   "types": "./index.d.ts",

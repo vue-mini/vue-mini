@@ -1,4 +1,4 @@
-/// <reference types="miniprogram-api-typings" />
+/// <reference types="@vue-mini/miniprogram-api-typings" />
 import { Ref, ComputedRef, DebuggerOptions } from '@vue/reactivity';
 export { ComputedGetter, ComputedRef, ComputedSetter, CustomRefFactory, DebuggerEvent, DebuggerEventExtraInfo, DebuggerOptions, DeepReadonly, EffectScheduler, EffectScope, MaybeRef, MaybeRefOrGetter, Raw, ReactiveEffect, ReactiveEffectOptions, ReactiveEffectRunner, ReactiveFlags, Ref, ShallowReactive, ShallowRef, ShallowUnwrapRef, ToRef, ToRefs, TrackOpTypes, TriggerOpTypes, UnwrapNestedRefs, UnwrapRef, WritableComputedOptions, WritableComputedRef, computed, customRef, effect, effectScope, getCurrentScope, isProxy, isReactive, isReadonly, isRef, isShallow, markRaw, onScopeDispose, proxyRefs, reactive, readonly, ref, shallowReactive, shallowReadonly, shallowRef, stop, toRaw, toRef, toRefs, toValue, triggerRef, unref } from '@vue/reactivity';
 
@@ -88,18 +88,20 @@ declare const onThemeChange: (hook: (options: WechatMiniprogram.OnThemeChangeLis
 declare const onShow: (hook: () => unknown) => void;
 declare const onHide: (hook: () => unknown) => void;
 declare const onUnload: (hook: () => unknown) => void;
+declare const onRouteDone: (hook: () => unknown) => void;
 declare const onPullDownRefresh: (hook: () => unknown) => void;
 declare const onReachBottom: (hook: () => unknown) => void;
 declare const onResize: (hook: (resize: WechatMiniprogram.Page.IResizeOption) => unknown) => void;
 declare const onTabItemTap: (hook: (tap: WechatMiniprogram.Page.ITabItemTapOption) => unknown) => void;
 declare const onPageScroll: (hook: (scroll: WechatMiniprogram.Page.IPageScrollOption) => unknown) => void;
-declare const onShareAppMessage: (hook: (share: WechatMiniprogram.Page.IShareAppMessageOption) => WechatMiniprogram.Page.ICustomShareContent) => void;
-declare const onShareTimeline: (hook: () => WechatMiniprogram.Page.ICustomTimelineContent) => void;
+declare const onShareAppMessage: (hook: (share: WechatMiniprogram.Page.IShareAppMessageOption) => WechatMiniprogram.Page.ICustomShareContent | WechatMiniprogram.Page.IAsyncCustomShareContent | Promise<WechatMiniprogram.Page.ICustomShareContent> | void | Promise<void>) => void;
+declare const onShareTimeline: (hook: () => WechatMiniprogram.Page.ICustomTimelineContent | void) => void;
 declare const onAddToFavorites: (hook: (share: WechatMiniprogram.Page.IAddToFavoritesOption) => WechatMiniprogram.Page.IAddToFavoritesContent) => void;
+declare const onSaveExitState: (hook: () => WechatMiniprogram.Page.ISaveExitState) => void;
 declare const onReady: (hook: () => unknown) => void;
 declare const onLoad: (hook: (query: Query) => unknown) => void;
 declare const onMove: (hook: () => unknown) => void;
 declare const onDetach: (hook: () => unknown) => void;
-declare const onError: (hook: (error: Error) => unknown) => void;
+declare const onError: (hook: (error: WechatMiniprogram.Error) => unknown) => void;
 
-export { type AppOptions, type AppSetup, type Bindings, type ComponentContext, type ComponentOptionsWithProps, type ComponentOptionsWithoutProps, type ComponentSetup, type Config, type InjectionKey, type PageContext, type PageOptions, type PageSetup, type Query, type WatchCallback, type WatchEffect, type WatchOptions, type WatchOptionsBase, type WatchSource, type WatchStopHandle, createApp, defineComponent, definePage, inject, nextTick, onAddToFavorites, onAppError, onAppHide, onAppShow, onDetach, onError, onHide, onLoad, onMove, onPageNotFound, onPageScroll, onPullDownRefresh, onReachBottom, onReady, onResize, onShareAppMessage, onShareTimeline, onShow, onTabItemTap, onThemeChange, onUnhandledRejection, onUnload, provide, watch, watchEffect, watchPostEffect, watchSyncEffect };
+export { type AppOptions, type AppSetup, type Bindings, type ComponentContext, type ComponentOptionsWithProps, type ComponentOptionsWithoutProps, type ComponentSetup, type Config, type InjectionKey, type PageContext, type PageOptions, type PageSetup, type Query, type WatchCallback, type WatchEffect, type WatchOptions, type WatchOptionsBase, type WatchSource, type WatchStopHandle, createApp, defineComponent, definePage, inject, nextTick, onAddToFavorites, onAppError, onAppHide, onAppShow, onDetach, onError, onHide, onLoad, onMove, onPageNotFound, onPageScroll, onPullDownRefresh, onReachBottom, onReady, onResize, onRouteDone, onSaveExitState, onShareAppMessage, onShareTimeline, onShow, onTabItemTap, onThemeChange, onUnhandledRejection, onUnload, provide, watch, watchEffect, watchPostEffect, watchSyncEffect };
