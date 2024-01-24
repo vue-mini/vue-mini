@@ -43,6 +43,10 @@ export default defineConfig({
         ],
       },
       {
+        text: '常见问题',
+        link: '/guide/faq',
+      },
+      {
         text: '赞助',
         link: '/guide/sponsor',
       },
