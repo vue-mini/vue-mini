@@ -12,7 +12,9 @@ module.exports = {
         project: './tsconfig.json',
       },
       rules: {
+        'logical-assignment-operators': 'off',
         'import/extensions': ['error', 'never'],
+        'import/no-duplicates': ['error', { 'prefer-inline': false }],
         'import/no-mutable-exports': 'off',
         'unicorn/no-for-loop': 'off',
         'unicorn/import-style': 'off',

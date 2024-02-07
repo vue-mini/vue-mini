@@ -131,6 +131,7 @@ async function build(target) {
   })
 }
 
+// eslint-disable-next-line unicorn/prevent-abbreviations
 for (const pkg of ['wechat']) {
   const target = path.join('packages', pkg)
   // eslint-disable-next-line no-await-in-loop

@@ -1,5 +1,6 @@
 import { execa } from 'execa'
 
+// eslint-disable-next-line unicorn/prevent-abbreviations
 function run(bin, args) {
   return execa(bin, args, { stdio: 'inherit' })
 }
