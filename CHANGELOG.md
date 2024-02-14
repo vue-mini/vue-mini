@@ -1,8 +1,12 @@
+# 1.0.0-rc.2 (2024-02-14)
+
+- **@vue/reactivity:** 从 3.4.15 升至 3.4.19，详情请看 [Vue 更新日志](https://github.com/vuejs/vue-next/blob/main/CHANGELOG.md) ([942f6a5](https://github.com/vue-mini/vue-mini/commit/942f6a5b7582e1609a218672ca37133931600a6c))
+
 # 1.0.0-rc.1 (2024-01-24)
 
 ### 依赖
 
-- **miniprogram-api-typings:** Fork 了一份 [miniprogram-api-typings](https://github.com/wechat-miniprogram/api-typings)，补全了一些缺失的类型 ([0800f3e](https://github.com/vue-mini/vue-mini/commit/0800f3e5466a91fe12bef6a1d3c5b2725e50ba44))
+- **miniprogram-api-typings:** Fork 了一份 [miniprogram-api-typings](https://github.com/wechat-miniprogram/api-typings)，补全了一些缺失的类型
 
 ### 特性
 

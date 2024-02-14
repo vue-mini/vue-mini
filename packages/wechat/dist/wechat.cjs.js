@@ -1,5 +1,5 @@
 /*!
- * vue-mini v1.0.0-rc.1
+ * vue-mini v1.0.0-rc.2
  * https://github.com/vue-mini/vue-mini
  * (c) 2019-present Yang Mingshan
  * @license MIT
@@ -7,7 +7,7 @@
 'use strict';
 
 /**
-* @vue/shared v3.4.15
+* @vue/shared v3.4.19
 * (c) 2018-present Yuxi (Evan) You and Vue contributors
 * @license MIT
 **/
@@ -52,7 +52,7 @@ const def = (obj, key, value) => {
 };
 
 /**
-* @vue/reactivity v3.4.15
+* @vue/reactivity v3.4.19
 * (c) 2018-present Yuxi (Evan) You and Vue contributors
 * @license MIT
 **/
@@ -172,7 +172,7 @@ class ReactiveEffect {
     /**
      * @internal
      */
-    this._dirtyLevel = 2;
+    this._dirtyLevel = 4;
     /**
      * @internal
      */
@@ -192,26 +192,27 @@ class ReactiveEffect {
     recordEffectScope(this, scope);
   }
   get dirty() {
-    if (this._dirtyLevel === 1) {
+    if (this._dirtyLevel === 2 || this._dirtyLevel === 3) {
+      this._dirtyLevel = 1;
       pauseTracking();
       for (let i = 0; i < this._depsLength; i++) {
         const dep = this.deps[i];
         if (dep.computed) {
           triggerComputed(dep.computed);
-          if (this._dirtyLevel >= 2) {
+          if (this._dirtyLevel >= 4) {
             break;
           }
         }
       }
-      if (this._dirtyLevel < 2) {
+      if (this._dirtyLevel === 1) {
         this._dirtyLevel = 0;
       }
       resetTracking();
     }
-    return this._dirtyLevel >= 2;
+    return this._dirtyLevel >= 4;
   }
   set dirty(v) {
-    this._dirtyLevel = v ? 2 : 0;
+    this._dirtyLevel = v ? 4 : 0;
   }
   run() {
     this._dirtyLevel = 0;
@@ -251,7 +252,7 @@ function preCleanupEffect(effect2) {
   effect2._depsLength = 0;
 }
 function postCleanupEffect(effect2) {
-  if (effect2.deps && effect2.deps.length > effect2._depsLength) {
+  if (effect2.deps.length > effect2._depsLength) {
     for (let i = effect2._depsLength; i < effect2.deps.length; i++) {
       cleanupDepEffect(effect2.deps[i], effect2);
     }
@@ -334,28 +335,25 @@ function triggerEffects(dep, dirtyLevel, debuggerEventExtraInfo) {
   var _a;
   pauseScheduling();
   for (const effect2 of dep.keys()) {
-    if (effect2._dirtyLevel < dirtyLevel && dep.get(effect2) === effect2._trackId) {
-      const lastDirtyLevel = effect2._dirtyLevel;
+    let tracking;
+    if (effect2._dirtyLevel < dirtyLevel && (tracking != null ? tracking : tracking = dep.get(effect2) === effect2._trackId)) {
+      effect2._shouldSchedule || (effect2._shouldSchedule = effect2._dirtyLevel === 0);
       effect2._dirtyLevel = dirtyLevel;
-      if (lastDirtyLevel === 0) {
-        effect2._shouldSchedule = true;
-        {
-          (_a = effect2.onTrigger) == null ? void 0 : _a.call(effect2, extend$1({ effect: effect2 }, debuggerEventExtraInfo));
+    }
+    if (effect2._shouldSchedule && (tracking != null ? tracking : tracking = dep.get(effect2) === effect2._trackId)) {
+      {
+        (_a = effect2.onTrigger) == null ? void 0 : _a.call(effect2, extend$1({ effect: effect2 }, debuggerEventExtraInfo));
+      }
+      effect2.trigger();
+      if ((!effect2._runnings || effect2.allowRecurse) && effect2._dirtyLevel !== 2) {
+        effect2._shouldSchedule = false;
+        if (effect2.scheduler) {
+          queueEffectSchedulers.push(effect2.scheduler);
         }
-        effect2.trigger();
       }
     }
   }
-  scheduleEffects(dep);
   resetScheduling();
-}
-function scheduleEffects(dep) {
-  for (const effect2 of dep.keys()) {
-    if (effect2.scheduler && effect2._shouldSchedule && (!effect2._runnings || effect2.allowRecurse) && dep.get(effect2) === effect2._trackId) {
-      effect2._shouldSchedule = false;
-      queueEffectSchedulers.push(effect2.scheduler);
-    }
-  }
 }
 
 const createDep = (cleanup, computed) => {
@@ -439,7 +437,7 @@ function trigger(target, type, key, newValue, oldValue, oldTarget) {
     if (dep) {
       triggerEffects(
         dep,
-        2,
+        4,
         {
           target,
           type,
@@ -1024,12 +1022,15 @@ function toRaw(observed) {
   return raw ? toRaw(raw) : observed;
 }
 function markRaw(value) {
-  def(value, "__v_skip", true);
+  if (Object.isExtensible(value)) {
+    def(value, "__v_skip", true);
+  }
   return value;
 }
 const toReactive = (value) => isObject$1(value) ? reactive(value) : value;
 const toReadonly = (value) => isObject$1(value) ? readonly(value) : value;
 
+const COMPUTED_SIDE_EFFECT_WARN = `Computed is still dirty after getter evaluation, likely because a computed is mutating its own dependency in its getter. State mutations in computed getters should be avoided.  Check the docs for more details: https://vuejs.org/guide/essentials/computed.html#getters-should-be-side-effect-free`;
 class ComputedRefImpl {
   constructor(getter, _setter, isReadonly, isSSR) {
     this._setter = _setter;
@@ -1038,8 +1039,10 @@ class ComputedRefImpl {
     this["__v_isReadonly"] = false;
     this.effect = new ReactiveEffect(
       () => getter(this._value),
-      () => triggerRefValue(this, 1),
-      () => this.dep && scheduleEffects(this.dep)
+      () => triggerRefValue(
+        this,
+        this.effect._dirtyLevel === 2 ? 2 : 3
+      )
     );
     this.effect.computed = this;
     this.effect.active = this._cacheable = !isSSR;
@@ -1047,14 +1050,13 @@ class ComputedRefImpl {
   }
   get value() {
     const self = toRaw(this);
-    if (!self._cacheable || self.effect.dirty) {
-      if (hasChanged$1(self._value, self._value = self.effect.run())) {
-        triggerRefValue(self, 2);
-      }
+    if ((!self._cacheable || self.effect.dirty) && hasChanged$1(self._value, self._value = self.effect.run())) {
+      triggerRefValue(self, 4);
     }
     trackRefValue(self);
-    if (self.effect._dirtyLevel >= 1) {
-      triggerRefValue(self, 1);
+    if (self.effect._dirtyLevel >= 2) {
+      warn(COMPUTED_SIDE_EFFECT_WARN);
+      triggerRefValue(self, 2);
     }
     return self._value;
   }
@@ -1077,7 +1079,7 @@ function computed(getterOrOptions, debugOptions, isSSR = false) {
   if (onlyGetter) {
     getter = getterOrOptions;
     setter = () => {
-      console.warn("Write operation failed: computed value is readonly");
+      warn("Write operation failed: computed value is readonly");
     } ;
   } else {
     getter = getterOrOptions.get;
@@ -1092,14 +1094,15 @@ function computed(getterOrOptions, debugOptions, isSSR = false) {
 }
 
 function trackRefValue(ref2) {
+  var _a;
   if (shouldTrack && activeEffect) {
     ref2 = toRaw(ref2);
     trackEffect(
       activeEffect,
-      ref2.dep || (ref2.dep = createDep(
+      (_a = ref2.dep) != null ? _a : ref2.dep = createDep(
         () => ref2.dep = void 0,
         ref2 instanceof ComputedRefImpl ? ref2 : void 0
-      )),
+      ),
       {
         target: ref2,
         type: "get",
@@ -1108,7 +1111,7 @@ function trackRefValue(ref2) {
     );
   }
 }
-function triggerRefValue(ref2, dirtyLevel = 2, newVal) {
+function triggerRefValue(ref2, dirtyLevel = 4, newVal) {
   ref2 = toRaw(ref2);
   const dep = ref2.dep;
   if (dep) {
@@ -1157,12 +1160,12 @@ class RefImpl {
     if (hasChanged$1(newVal, this._rawValue)) {
       this._rawValue = newVal;
       this._value = useDirectValue ? newVal : toReactive(newVal);
-      triggerRefValue(this, 2, newVal);
+      triggerRefValue(this, 4, newVal);
     }
   }
 }
 function triggerRef(ref2) {
-  triggerRefValue(ref2, 2, ref2.value );
+  triggerRefValue(ref2, 4, ref2.value );
 }
 function unref(ref2) {
   return isRef(ref2) ? ref2.value : ref2;
