@@ -13,9 +13,9 @@ declare module 'vitest' {
 
 expect.extend({
   toHaveBeenWarned(received: string) {
-    asserted.add(received)
     const passed = warn.mock.calls.some((args) => args[0].includes(received))
     if (passed) {
+      asserted.add(received)
       return {
         pass: true,
         message: () => `expected "${received}" not to have been warned.`,
@@ -34,9 +34,9 @@ expect.extend({
   },
 
   toHaveBeenWarnedLast(received: string) {
-    asserted.add(received)
     const passed = warn.mock.calls.at(-1)![0].includes(received)
     if (passed) {
+      asserted.add(received)
       return {
         pass: true,
         message: () => `expected "${received}" not to have been warned last.`,
@@ -52,7 +52,6 @@ expect.extend({
   },
 
   toHaveBeenWarnedTimes(received: string, n: number) {
-    asserted.add(received)
     let found = 0
     warn.mock.calls.forEach((args) => {
       if (args[0].includes(received)) {
@@ -61,6 +60,7 @@ expect.extend({
     })
 
     if (found === n) {
+      asserted.add(received)
       return {
         pass: true,
         message: () => `expected "${received}" to have been warned ${n} times.`,
