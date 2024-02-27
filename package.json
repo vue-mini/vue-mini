@@ -3,7 +3,7 @@
   "version": "1.0.0-rc.3",
   "type": "module",
   "scripts": {
-    "format": "prettier --check \"**/*.{js,cjs,ts,md}\"",
+    "format": "prettier --check \"**/*.{js,cjs,ts,json,md}\"",
     "lint": "eslint --ext .js,.cjs,.ts .",
     "type": "tsc --noEmit",
     "test": "vitest",
