@@ -18,7 +18,7 @@
     "weixin"
   ],
   "dependencies": {
-    "@vue/reactivity": "3.4.19",
+    "@vue/reactivity": "3.4.20",
     "@vue-mini/miniprogram-api-typings": "workspace:*"
   }
 }
