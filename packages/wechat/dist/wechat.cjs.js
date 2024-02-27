@@ -1,5 +1,5 @@
 /*!
- * vue-mini v1.0.0-rc.2
+ * vue-mini v1.0.0-rc.3
  * https://github.com/vue-mini/vue-mini
  * (c) 2019-present Yang Mingshan
  * @license MIT
@@ -7,7 +7,7 @@
 'use strict';
 
 /**
-* @vue/shared v3.4.19
+* @vue/shared v3.4.20
 * (c) 2018-present Yuxi (Evan) You and Vue contributors
 * @license MIT
 **/
@@ -52,7 +52,7 @@ const def = (obj, key, value) => {
 };
 
 /**
-* @vue/reactivity v3.4.19
+* @vue/reactivity v3.4.20
 * (c) 2018-present Yuxi (Evan) You and Vue contributors
 * @license MIT
 **/
@@ -495,20 +495,20 @@ function hasOwnProperty(key) {
   return obj.hasOwnProperty(key);
 }
 class BaseReactiveHandler {
-  constructor(_isReadonly = false, _shallow = false) {
+  constructor(_isReadonly = false, _isShallow = false) {
     this._isReadonly = _isReadonly;
-    this._shallow = _shallow;
+    this._isShallow = _isShallow;
   }
   get(target, key, receiver) {
-    const isReadonly2 = this._isReadonly, shallow = this._shallow;
+    const isReadonly2 = this._isReadonly, isShallow2 = this._isShallow;
     if (key === "__v_isReactive") {
       return !isReadonly2;
     } else if (key === "__v_isReadonly") {
       return isReadonly2;
     } else if (key === "__v_isShallow") {
-      return shallow;
+      return isShallow2;
     } else if (key === "__v_raw") {
-      if (receiver === (isReadonly2 ? shallow ? shallowReadonlyMap : readonlyMap : shallow ? shallowReactiveMap : reactiveMap).get(target) || // receiver is not the reactive proxy, but has the same prototype
+      if (receiver === (isReadonly2 ? isShallow2 ? shallowReadonlyMap : readonlyMap : isShallow2 ? shallowReactiveMap : reactiveMap).get(target) || // receiver is not the reactive proxy, but has the same prototype
       // this means the reciever is a user proxy of the reactive proxy
       Object.getPrototypeOf(target) === Object.getPrototypeOf(receiver)) {
         return target;
@@ -531,7 +531,7 @@ class BaseReactiveHandler {
     if (!isReadonly2) {
       track(target, "get", key);
     }
-    if (shallow) {
+    if (isShallow2) {
       return res;
     }
     if (isRef(res)) {
@@ -544,12 +544,12 @@ class BaseReactiveHandler {
   }
 }
 class MutableReactiveHandler extends BaseReactiveHandler {
-  constructor(shallow = false) {
-    super(false, shallow);
+  constructor(isShallow2 = false) {
+    super(false, isShallow2);
   }
   set(target, key, value, receiver) {
     let oldValue = target[key];
-    if (!this._shallow) {
+    if (!this._isShallow) {
       const isOldValueReadonly = isReadonly(oldValue);
       if (!isShallow(value) && !isReadonly(value)) {
         oldValue = toRaw(oldValue);
@@ -601,8 +601,8 @@ class MutableReactiveHandler extends BaseReactiveHandler {
   }
 }
 class ReadonlyReactiveHandler extends BaseReactiveHandler {
-  constructor(shallow = false) {
-    super(true, shallow);
+  constructor(isShallow2 = false) {
+    super(true, isShallow2);
   }
   set(target, key) {
     {
@@ -773,7 +773,7 @@ function createReadonlyMethod(type) {
   return function(...args) {
     {
       const key = args[0] ? `on key "${args[0]}" ` : ``;
-      console.warn(
+      warn(
         `${capitalize(type)} operation ${key}failed: target is readonly.`,
         toRaw(this)
       );
@@ -911,7 +911,7 @@ function checkIdentityKeys(target, has2, key) {
   const rawKey = toRaw(key);
   if (rawKey !== key && has2.call(target, rawKey)) {
     const type = toRawType(target);
-    console.warn(
+    warn(
       `Reactive ${type} contains both the raw and reactive versions of the same object${type === `Map` ? ` as keys` : ``}, which can lead to inconsistencies. Avoid differentiating between the raw and reactive versions of an object and only use the reactive version if possible.`
     );
   }
@@ -980,7 +980,7 @@ function shallowReadonly(target) {
 function createReactiveObject(target, isReadonly2, baseHandlers, collectionHandlers, proxyMap) {
   if (!isObject$1(target)) {
     {
-      console.warn(`value cannot be made reactive: ${String(target)}`);
+      warn(`value cannot be made reactive: ${String(target)}`);
     }
     return target;
   }
@@ -1033,6 +1033,7 @@ const toReadonly = (value) => isObject$1(value) ? readonly(value) : value;
 const COMPUTED_SIDE_EFFECT_WARN = `Computed is still dirty after getter evaluation, likely because a computed is mutating its own dependency in its getter. State mutations in computed getters should be avoided.  Check the docs for more details: https://vuejs.org/guide/essentials/computed.html#getters-should-be-side-effect-free`;
 class ComputedRefImpl {
   constructor(getter, _setter, isReadonly, isSSR) {
+    this.getter = getter;
     this._setter = _setter;
     this.dep = void 0;
     this.__v_isRef = true;
@@ -1055,7 +1056,11 @@ class ComputedRefImpl {
     }
     trackRefValue(self);
     if (self.effect._dirtyLevel >= 2) {
-      warn(COMPUTED_SIDE_EFFECT_WARN);
+      if (this._warnRecursive) {
+        warn(COMPUTED_SIDE_EFFECT_WARN, `
+
+getter: `, this.getter);
+      }
       triggerRefValue(self, 2);
     }
     return self._value;
@@ -1211,7 +1216,7 @@ function customRef(factory) {
 }
 function toRefs(object) {
   if (!isProxy(object)) {
-    console.warn(`toRefs() expects a reactive object but received a plain one.`);
+    warn(`toRefs() expects a reactive object but received a plain one.`);
   }
   const ret = isArray$1(object) ? new Array(object.length) : {};
   for (const key in object) {
