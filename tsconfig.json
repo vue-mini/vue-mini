@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     "target": "es2016",
-    "lib": ["esnext"],
+    "lib": ["es2016"],
     "skipLibCheck": true,
     "esModuleInterop": true,
     "strict": true,
