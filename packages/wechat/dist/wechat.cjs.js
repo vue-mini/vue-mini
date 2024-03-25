@@ -1,5 +1,5 @@
 /*!
- * vue-mini v1.0.0-rc.3
+ * vue-mini v1.0.0-rc.4
  * https://github.com/vue-mini/vue-mini
  * (c) 2019-present Yang Mingshan
  * @license MIT
@@ -7,7 +7,7 @@
 'use strict';
 
 /**
-* @vue/shared v3.4.20
+* @vue/shared v3.4.21
 * (c) 2018-present Yuxi (Evan) You and Vue contributors
 * @license MIT
 **/
@@ -52,7 +52,7 @@ const def = (obj, key, value) => {
 };
 
 /**
-* @vue/reactivity v3.4.20
+* @vue/reactivity v3.4.21
 * (c) 2018-present Yuxi (Evan) You and Vue contributors
 * @license MIT
 **/
