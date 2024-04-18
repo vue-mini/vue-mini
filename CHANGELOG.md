@@ -1,3 +1,9 @@
+# 1.0.0-rc.5 (2024-04-18)
+
+### 依赖
+
+- **@vue/reactivity:** 从 3.4.21 升至 3.4.23，详情请看 [Vue 更新日志](https://github.com/vuejs/vue-next/blob/main/CHANGELOG.md) ([1e622e4](https://github.com/vue-mini/vue-mini/commit/1e622e43fd68a0d80c0224f3137d8325ddedb0f6))
+
 # 1.0.0-rc.4 (2024-03-25)
 
 ### 依赖
