@@ -4,7 +4,7 @@
 
 ```js
 // component.js
-import { defineComponent, reactive, computed } from '@vue-mini/wechat'
+import { defineComponent, reactive, computed } from '@vue-mini/core'
 
 defineComponent({
   setup() {
@@ -52,7 +52,7 @@ defineComponent({
 
 ```js
 // component.js
-import { defineComponent } from '@vue-mini/wechat'
+import { defineComponent } from '@vue-mini/core'
 
 defineComponent({
   properties: {
@@ -68,7 +68,7 @@ defineComponent({
 
 ```js
 // component.js
-import { defineComponent, watchEffect, computed } from '@vue-mini/wechat'
+import { defineComponent, watchEffect, computed } from '@vue-mini/core'
 
 defineComponent({
   properties: {
@@ -92,7 +92,7 @@ defineComponent({
 
 ```js
 // component.js
-import { defineComponent, watchEffect } from '@vue-mini/wechat'
+import { defineComponent, watchEffect } from '@vue-mini/core'
 
 defineComponent({
   properties: {
@@ -112,7 +112,7 @@ defineComponent({
 
 ```js
 // component.js
-import { defineComponent } from '@vue-mini/wechat'
+import { defineComponent } from '@vue-mini/core'
 
 defineComponent({
   setup(props, context) {
@@ -136,7 +136,7 @@ defineComponent({
 
 ```js
 // component.js
-import { defineComponent, onReady, onMove, onDetach } from '@vue-mini/wechat'
+import { defineComponent, onReady, onMove, onDetach } from '@vue-mini/core'
 
 createApp({
   setup() {
@@ -180,7 +180,7 @@ Vue Mini 并没有 `onCreate` 钩子函数，这是因为 `setup` 是在 `attach
 
 ```js
 // component.js
-import { defineComponent, ref } from '@vue-mini/wechat'
+import { defineComponent, ref } from '@vue-mini/core'
 
 defineComponent({
   setup() {
@@ -216,7 +216,7 @@ defineComponent({
 
 ```js
 // page.js
-import { defineComponent, ref } from '@vue-mini/wechat'
+import { defineComponent, ref } from '@vue-mini/core'
 
 defineComponent(() => {
   const count = ref(0)

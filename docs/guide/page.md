@@ -4,7 +4,7 @@
 
 ```js
 // page.js
-import { definePage, reactive, computed } from '@vue-mini/wechat'
+import { definePage, reactive, computed } from '@vue-mini/core'
 
 definePage({
   setup() {
@@ -52,7 +52,7 @@ definePage({
 
 ```js
 // page.js
-import { definePage } from '@vue-mini/wechat'
+import { definePage } from '@vue-mini/core'
 
 definePage({
   setup(query) {
@@ -65,7 +65,7 @@ definePage({
 
 ```js
 // page.js
-import { definePage } from '@vue-mini/wechat'
+import { definePage } from '@vue-mini/core'
 
 definePage({
   setup(query, context) {
@@ -88,7 +88,7 @@ definePage({
 
 ```js
 // page.js
-import { definePage, onShow, onHide, onUnload } from '@vue-mini/wechat'
+import { definePage, onShow, onHide, onUnload } from '@vue-mini/core'
 
 definePage({
   setup() {
@@ -115,7 +115,7 @@ definePage({
 
 ```js
 // page.js
-import { definePage, onPageScroll } from '@vue-mini/wechat'
+import { definePage, onPageScroll } from '@vue-mini/core'
 
 definePage(
   {
@@ -135,7 +135,7 @@ definePage(
 
 ```js
 // page.js
-import { definePage, onPageScroll } from '@vue-mini/wechat'
+import { definePage, onPageScroll } from '@vue-mini/core'
 
 definePage({
   setup() {
@@ -157,7 +157,7 @@ definePage({
 
 ```js
 // page.js
-import { definePage, onShareAppMessage } from '@vue-mini/wechat'
+import { definePage, onShareAppMessage } from '@vue-mini/core'
 
 definePage(
   {
@@ -186,7 +186,7 @@ definePage(
 
 ```js
 // page.js
-import { definePage, onShareTimeline } from '@vue-mini/wechat'
+import { definePage, onShareTimeline } from '@vue-mini/core'
 
 definePage(
   {
@@ -215,7 +215,7 @@ definePage(
 
 ```js
 // page.js
-import { definePage, onAddToFavorites } from '@vue-mini/wechat'
+import { definePage, onAddToFavorites } from '@vue-mini/core'
 
 definePage({
   setup() {
@@ -239,7 +239,7 @@ definePage({
 
 ```js
 // page.js
-import { definePage, ref, onAddToFavorites } from '@vue-mini/wechat'
+import { definePage, ref, onAddToFavorites } from '@vue-mini/core'
 
 definePage({
   setup(_, context) {
@@ -283,7 +283,7 @@ definePage({
 
 ```js
 // page.js
-import { definePage, ref } from '@vue-mini/wechat'
+import { definePage, ref } from '@vue-mini/core'
 
 definePage({
   setup() {
@@ -317,7 +317,7 @@ definePage({
 
 ```js
 // page.js
-import { definePage, ref } from '@vue-mini/wechat'
+import { definePage, ref } from '@vue-mini/core'
 
 definePage(() => {
   const count = ref(0)

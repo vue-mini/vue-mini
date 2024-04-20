@@ -56,7 +56,7 @@ importers:
 
   packages/api-typings: {}
 
-  packages/wechat:
+  packages/core:
     dependencies:
       '@vue-mini/miniprogram-api-typings':
         specifier: workspace:*

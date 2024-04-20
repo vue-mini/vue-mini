@@ -4,7 +4,7 @@
 
 ```js
 // app.js
-import { createApp } from '@vue-mini/wechat'
+import { createApp } from '@vue-mini/core'
 
 createApp({
   setup() {
@@ -37,7 +37,7 @@ console.log(app.greeting) // Hello World!
 
 ```js
 // app.js
-import { createApp } from '@vue-mini/wechat'
+import { createApp } from '@vue-mini/core'
 
 createApp({
   setup(options) {
@@ -56,7 +56,7 @@ createApp({
 
 ```js
 // app.js
-import { createApp, onAppShow, onAppHide, onAppError } from '@vue-mini/wechat'
+import { createApp, onAppShow, onAppHide, onAppError } from '@vue-mini/core'
 
 createApp({
   setup() {
@@ -91,7 +91,7 @@ createApp({
 
 ```js
 // app.js
-import { createApp, onAppShow } from '@vue-mini/wechat'
+import { createApp, onAppShow } from '@vue-mini/core'
 
 createApp({
   setup() {
@@ -122,7 +122,7 @@ createApp({
 
 ```js
 // app.js
-import { createApp } from '@vue-mini/wechat'
+import { createApp } from '@vue-mini/core'
 
 createApp(() => {
   const greeting = 'Hello World!'

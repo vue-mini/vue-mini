@@ -11,7 +11,7 @@
 ## 生命周期
 
 ```js
-import { defineComponent } from '@vue-mini/wechat'
+import { defineComponent } from '@vue-mini/core'
 
 defineComponent({
   lifetimes: {

@@ -1,11 +1,12 @@
 {
-  "name": "@vue-mini/wechat",
+  "name": "@vue-mini/core",
   "version": "1.0.0-rc.5",
-  "description": "vue-mini for wechat miniprogram",
-  "main": "dist/wechat.cjs.js",
-  "module": "dist/wechat.esm-bundler.js",
-  "types": "dist/wechat.d.ts",
+  "description": "基于 Vue 3 的小程序框架。简单，强大，高性能。 ",
+  "main": "dist/vuemini.cjs.js",
+  "module": "dist/vuemini.esm-bundler.js",
+  "types": "dist/vuemini.d.ts",
   "repository": "https://github.com/vue-mini/vue-mini.git",
+  "homepage": "https://vuemini.org",
   "author": "Yang Mingshan <y.mingshan3@gmail.com>",
   "license": "MIT",
   "files": [
@@ -15,7 +16,11 @@
     "vue",
     "mini",
     "wechat",
-    "weixin"
+    "weixin",
+    "miniprogram",
+    "mp",
+    "微信",
+    "小程序"
   ],
   "dependencies": {
     "@vue/reactivity": "3.4.23",

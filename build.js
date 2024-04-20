@@ -40,13 +40,13 @@ async function generateDeclaration(target) {
     plugins: [dts()],
   })
   await dtsBundle.write({
-    file: path.join(target, 'dist', 'wechat.d.ts'),
+    file: path.join(target, 'dist', 'vuemini.d.ts'),
     format: 'es',
   })
 
   const removals = []
   for (const file of await fs.readdirSync(path.join(target, 'dist'))) {
-    if (file === 'wechat.d.ts') continue
+    if (file === 'vuemini.d.ts') continue
     removals.push(fs.remove(path.join(target, 'dist', file)))
   }
 
@@ -104,7 +104,7 @@ async function build(target) {
       __DEV__: true,
       'process.env.NODE_ENV': JSON.stringify('development'),
     },
-    fileName: 'wechat.cjs.js',
+    fileName: 'vuemini.cjs.js',
     format: 'cjs',
   })
 
@@ -115,7 +115,7 @@ async function build(target) {
       __DEV__: false,
       'process.env.NODE_ENV': JSON.stringify('production'),
     },
-    fileName: 'wechat.cjs.prod.js',
+    fileName: 'vuemini.cjs.prod.js',
     format: 'cjs',
   })
 
@@ -126,14 +126,9 @@ async function build(target) {
     replaces: {
       __DEV__: `(process.env.NODE_ENV !== 'production')`,
     },
-    fileName: 'wechat.esm-bundler.js',
+    fileName: 'vuemini.esm-bundler.js',
     format: 'es',
   })
 }
 
-// eslint-disable-next-line unicorn/prevent-abbreviations
-for (const pkg of ['wechat']) {
-  const target = path.join('packages', pkg)
-  // eslint-disable-next-line no-await-in-loop
-  await build(target)
-}
+await build(path.join('packages', 'core'))

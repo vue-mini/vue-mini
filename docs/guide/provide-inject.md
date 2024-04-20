@@ -6,7 +6,7 @@
 
 ```js
 // parent-component.js
-import { defineComponent, ref, provide, readonly } from '@vue-mini/wechat'
+import { defineComponent, ref, provide, readonly } from '@vue-mini/core'
 
 defineComponent({
   setup() {
@@ -26,7 +26,7 @@ defineComponent({
 
 ```js
 // deep-child-component.js
-import { defineComponent, inject } from '@vue-mini/wechat'
+import { defineComponent, inject } from '@vue-mini/core'
 
 defineComponent({
   setup() {
