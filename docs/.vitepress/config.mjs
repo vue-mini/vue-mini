@@ -23,12 +23,12 @@ export default defineConfig({
     ],
     sidebar: [
       {
-        text: '介绍',
+        text: '简介',
         link: '/guide/',
       },
       {
-        text: '安装',
-        link: '/guide/installation',
+        text: '快速上手',
+        link: '/guide/quick-start',
       },
       {
         text: '基础',

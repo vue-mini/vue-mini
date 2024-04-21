@@ -31,7 +31,7 @@ features:
     details: 与小程序原生语法完全兼容，你可以渐进的采用，无需大规模重写。
   - icon: 🤏
     title: 小巧
-    details: Minify 后仅 18KB，不会占用你宝贵的小程序尺寸。
+    details: Gzip 后仅 8KB，不会占用你宝贵的小程序空间。
 ---
 
 <style>
