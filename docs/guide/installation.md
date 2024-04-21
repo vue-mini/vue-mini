@@ -2,7 +2,7 @@
 
 ## 拷贝
 
-使用 Vue Mini 最简单的方式就是直接从 GitHub [拷贝文件](https://github.com/vue-mini/vue-mini/tree/master/packages/core/dist)到你的项目中，然后像使用你自己的文件一样使用 Vue Mini。你可以根据需要选择[开发版本](https://github.com/vue-mini/vue-mini/blob/master/packages/core/dist/vuemini.cjs.js)或[生产版本](https://github.com/vue-mini/vue-mini/blob/master/packages/core/dist/vuemini.cjs.prod.js)。
+使用 Vue Mini 最简单的方式就是直接从 GitHub [拷贝文件](https://github.com/vue-mini/vue-mini/tree/master/packages/core/dist)到你的项目中，然后像使用你自己的文件一样使用 Vue Mini。你可以根据需要选择[开发版本](https://github.com/vue-mini/vue-mini/blob/master/packages/core/dist/vue-mini.cjs.js)或[生产版本](https://github.com/vue-mini/vue-mini/blob/master/packages/core/dist/vue-mini.cjs.prod.js)。
 
 ## 使用包管理工具
 
