@@ -23,7 +23,7 @@
     "小程序"
   ],
   "dependencies": {
-    "@vue/reactivity": "3.4.24",
+    "@vue/reactivity": "3.4.25",
     "@vue-mini/miniprogram-api-typings": "workspace:*"
   }
 }
