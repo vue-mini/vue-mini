@@ -378,20 +378,11 @@ function doWatch(
 
 function traverse(
   value: unknown,
-  depth?: number,
-  currentDepth = 0,
+  depth = Number.POSITIVE_INFINITY,
   seen?: Set<unknown>,
 ): unknown {
-  if (!isObject(value) || (value as any)[ReactiveFlags.SKIP]) {
+  if (depth <= 0 || !isObject(value) || (value as any)[ReactiveFlags.SKIP]) {
     return value
-  }
-
-  if (depth && depth > 0) {
-    if (currentDepth >= depth) {
-      return value
-    }
-
-    currentDepth++
   }
 
   seen = seen || new Set()
@@ -400,21 +391,23 @@ function traverse(
   }
 
   seen.add(value)
+  depth--
+
   /* istanbul ignore else -- @preserve  */
   if (isRef(value)) {
-    traverse(value.value, depth, currentDepth, seen)
+    traverse(value.value, depth, seen)
   } else if (isArray(value)) {
     for (let i = 0; i < value.length; i++) {
-      traverse(value[i], depth, currentDepth, seen)
+      traverse(value[i], depth, seen)
     }
   } else if (isSet(value) || isMap(value)) {
     value.forEach((v: any) => {
-      traverse(v, depth, currentDepth, seen)
+      traverse(v, depth, seen)
     })
   } else if (isPlainObject(value)) {
     // eslint-disable-next-line guard-for-in
     for (const key in value) {
-      traverse(value[key], depth, currentDepth, seen)
+      traverse(value[key], depth, seen)
     }
   }
 
