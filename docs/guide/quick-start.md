@@ -2,15 +2,27 @@
 
 ## 创建一个 Vue Mini 小程序
 
-Vue Mini 提供了一个全功能的小程序[脚手架](https://github.com/yangmingshan/create-mini)，你可以直接使用此脚手架创建新的小程序。
+创建 Vue Mini 小程序最推荐的方案是 [create-vue-mini](https://github.com/vue-mini/create-vue-mini)，你可以在终端内直接运行以下命令（不要带上 `$` 符号）：
 
-```sh
-$ pnpm create mini@latest
+::: code-group
+
+```sh [npm]
+$ npm create vue-mini@latest
 ```
+
+```sh [pnpm]
+$ pnpm create vue-mini@latest
+```
+
+```sh [yarn]
+$ yarn create vue-mini@latest
+```
+
+:::
 
 ## 使用包管理器安装
 
-你也可以使用下列任一命令安装 Vue Mini：
+你也可以使用下列命令安装 Vue Mini：
 
 ::: code-group
 

@@ -5,5 +5,5 @@
 ## 创建一个 Vue Mini 小程序
 
 ```bash
-pnpm create mini@latest
+npm create vue-mini@latest
 ```
