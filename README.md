@@ -10,13 +10,13 @@
 
 Vue Mini 是一个基于 Vue 3 的小程序框架，它简单，强大，高性能。 你可以使用 Vue 3 的响应式数据 + 组合式 API 开发小程序，从此开发小程序也将是一种享受。
 
+## 开始
+
+请访问 [vuemini.org](https://vuemini.org) 并跟随文档指引。
+
 ## 赞助
 
 Vue Mini 从诞生之初到现在一直是我的个人项目，背后没有任何公司支持。你的资金支持将有助于 Vue Mini 更加长远健康的发展。[如何赞助？](https://vuemini.org/guide/sponsor.html#如何赞助)
-
-## 文档（编写中）
-
-https://vuemini.org
 
 ## 许可证
 
