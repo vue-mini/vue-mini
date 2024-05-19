@@ -1,9 +1,5 @@
 # 简介
 
-::: warning ⚠️
-此文档还在编写中。
-:::
-
 ::: tip 注意
 阅读本文档前请先阅读[小程序开发文档](https://developers.weixin.qq.com/miniprogram/dev/framework/)以及 [Vue.js 文档](https://cn.vuejs.org)，本文档将不再重复它们已有的内容。
 :::
