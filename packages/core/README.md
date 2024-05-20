@@ -7,3 +7,7 @@
 ```bash
 npm create vue-mini@latest
 ```
+
+## 了解更多
+
+请访问文档：[vuemini.org](https://vuemini.org)
