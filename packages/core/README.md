@@ -10,4 +10,4 @@ npm create vue-mini@latest
 
 ## 了解更多
 
-请访问文档：[vuemini.org](https://vuemini.org)
+请访问官方文档：[vuemini.org](https://vuemini.org)
