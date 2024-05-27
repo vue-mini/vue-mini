@@ -12,6 +12,15 @@
   "files": [
     "dist"
   ],
+  "exports": {
+    ".": {
+      "types": "./dist/vue-mini.d.ts",
+      "import": "./dist/vue-mini.esm-bundler.js",
+      "require": "./dist/vue-mini.cjs.js",
+      "default": "./dist/vue-mini.cjs.js"
+    },
+    "./package.json": "./package.json"
+  },
   "keywords": [
     "vue",
     "mini",
