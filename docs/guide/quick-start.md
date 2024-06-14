@@ -22,7 +22,7 @@ $ pnpm create vue-mini@latest
 ```
 
 ```sh [yarn]
-$ yarn create vue-mini@latest
+$ yarn create vue-mini
 ```
 
 :::
