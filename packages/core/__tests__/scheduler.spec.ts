@@ -413,4 +413,24 @@ describe('scheduler', () => {
     expect(await p).toBe(1)
     expect(fn).toHaveBeenCalledTimes(1)
   })
+
+  /** Dividing line, the above tests is directly copy from vue.js **/
+
+  test('should not run inactive callback', async () => {
+    const spy = vi.fn()
+
+    const job1 = () => {
+      // @ts-expect-error
+      job2.active = false
+    }
+
+    const job2 = () => spy()
+    expect(spy).toHaveBeenCalledTimes(0)
+
+    queuePostFlushCb(job1)
+    queuePostFlushCb(job2)
+    flushPostFlushCbs()
+
+    expect(spy).toHaveBeenCalledTimes(0)
+  })
 })

@@ -75,7 +75,8 @@ export function flushPostFlushCbs() {
       postFlushIndex < activePostFlushCbs.length;
       postFlushIndex++
     ) {
-      activePostFlushCbs[postFlushIndex]()
+      const cb = activePostFlushCbs[postFlushIndex]
+      if (cb.active !== false) cb()
     }
 
     activePostFlushCbs = null
