@@ -826,6 +826,22 @@ describe('watch', () => {
     expect(scope.effects.length).toBe(0)
   })
 
+  test('circular reference', async () => {
+    const obj = { a: 1 }
+    // @ts-expect-error
+    obj.b = obj
+    const foo = ref(obj)
+    const spy = vi.fn()
+
+    watch(foo, spy, { deep: true })
+
+    // @ts-expect-error
+    foo.value.b.a = 2
+    await nextTick()
+    expect(spy).toHaveBeenCalledTimes(1)
+    expect(foo.value.a).toBe(2)
+  })
+
   /** Dividing line, the above tests is directly copy from vue.js **/
 
   it('watchSyncEffect', () => {
