@@ -100,6 +100,7 @@ export type {
   DebuggerEvent,
   DebuggerEventExtraInfo,
   Raw,
+  Reactive,
 } from '@vue/reactivity'
 export type {
   WatchEffect,

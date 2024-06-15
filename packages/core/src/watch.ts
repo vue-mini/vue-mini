@@ -1,6 +1,7 @@
 import type {
   Ref,
   ComputedRef,
+  ReactiveMarker,
   EffectScheduler,
   DebuggerOptions,
 } from '@vue/reactivity'
@@ -37,15 +38,12 @@ export type WatchCallback<V = any, OV = any> = (
   onCleanup: OnCleanup,
 ) => any
 
+type MaybeUndefined<T, I> = I extends true ? T | undefined : T
+
 type MapSources<T, Immediate> = {
   [K in keyof T]: T[K] extends WatchSource<infer V> ?
-    Immediate extends true ?
-      V | undefined
-    : V
-  : T[K] extends object ?
-    Immediate extends true ?
-      T[K] | undefined
-    : T[K]
+    MaybeUndefined<V, Immediate>
+  : T[K] extends object ? MaybeUndefined<T[K], Immediate>
   : never
 }
 
@@ -105,7 +103,19 @@ type MultiWatchSources = Array<WatchSource<unknown> | object>
 // Overload: single source + cb
 export function watch<T, Immediate extends Readonly<boolean> = false>(
   source: WatchSource<T>,
-  cb: WatchCallback<T, Immediate extends true ? T | undefined : T>,
+  cb: WatchCallback<T, MaybeUndefined<T, Immediate>>,
+  options?: WatchOptions<Immediate>,
+): WatchStopHandle
+
+// Overload: reactive array or tuple of multiple sources + cb
+export function watch<
+  T extends Readonly<MultiWatchSources>,
+  Immediate extends Readonly<boolean> = false,
+>(
+  sources: readonly [...T] | T,
+  cb: [T] extends [ReactiveMarker] ?
+    WatchCallback<T, MaybeUndefined<T, Immediate>>
+  : WatchCallback<MapSources<T, false>, MapSources<T, Immediate>>,
   options?: WatchOptions<Immediate>,
 ): WatchStopHandle
 
@@ -119,25 +129,13 @@ export function watch<
   options?: WatchOptions<Immediate>,
 ): WatchStopHandle
 
-// Overload: multiple sources w/ `as const`
-// watch([foo, bar] as const, () => {})
-// somehow [...T] breaks when the type is readonly
-export function watch<
-  T extends Readonly<MultiWatchSources>,
-  Immediate extends Readonly<boolean> = false,
->(
-  source: T,
-  cb: WatchCallback<MapSources<T, false>, MapSources<T, Immediate>>,
-  options?: WatchOptions<Immediate>,
-): WatchStopHandle
-
 // Overload: watching reactive object w/ cb
 export function watch<
   T extends object,
   Immediate extends Readonly<boolean> = false,
 >(
   source: T,
-  cb: WatchCallback<T, Immediate extends true ? T | undefined : T>,
+  cb: WatchCallback<T, MaybeUndefined<T, Immediate>>,
   options?: WatchOptions<Immediate>,
 ): WatchStopHandle
 
