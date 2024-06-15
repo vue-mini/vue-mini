@@ -1,3 +1,14 @@
+# 1.0.0-rc.12 (2024-06-15)
+
+### 依赖
+
+- **@vue/reactivity:** 从 3.4.27 升至 3.4.29，详情请看 [Vue 更新日志](https://github.com/vuejs/vue-next/blob/main/CHANGELOG.md) ([492d724](https://github.com/vue-mini/vue-mini/commit/492d7242eae6c7b9f499968ef5da2a03d6479121))
+
+### Bug 修复
+
+- **watch:** correct type inference for reactive array ([7d5145b](https://github.com/vue-mini/vue-mini/commit/7d5145b06f9bf3bbd158cefb6686458f2395107d))
+- **watch:** support traversing symbol properties in deep watcher ([c640416](https://github.com/vue-mini/vue-mini/commit/c64041677e3ad52ef87e06282e7a855fef7ea895))
+
 # 1.0.0-rc.11 (2024-05-27)
 
 ### 其他
