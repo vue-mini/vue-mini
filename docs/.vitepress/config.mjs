@@ -43,6 +43,10 @@ export default defineConfig({
         ],
       },
       {
+        text: '深入理解',
+        items: [{ text: '性能', link: '/guide/performance' }],
+      },
+      {
         text: '常见问题',
         link: '/guide/faq',
       },
