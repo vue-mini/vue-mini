@@ -1,3 +1,9 @@
+# 1.0.0-rc.14 (2024-06-23)
+
+### Bug 修复
+
+- **types:** 修复类型引用 ([bb9f45c](https://github.com/vue-mini/vue-mini/commit/bb9f45c6f9ad8630fa7d809fff3f54da17ddb10d))
+
 # 1.0.0-rc.13 (2024-06-23)
 
 ### 依赖
