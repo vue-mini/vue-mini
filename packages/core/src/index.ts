@@ -1,5 +1,5 @@
 // eslint-disable-next-line @typescript-eslint/triple-slash-reference
-/// <reference types="@vue-mini/miniprogram-api-typings" />
+/// <reference types="@vue-mini/miniprogram-api-typings" preserve="true" />
 
 // Core API ------------------------------------------------------------------
 
