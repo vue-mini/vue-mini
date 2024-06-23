@@ -107,6 +107,37 @@ describe('component', () => {
     expect(component.data.double).toBe(2)
   })
 
+  it('chained side effect computed binding', async () => {
+    defineComponent(() => {
+      const foo = ref<{ bar?: { baz?: number[] } }>({})
+
+      const qux = computed(() => {
+        foo.value.bar ??= {}
+        return foo.value.bar
+      })
+
+      const baz = computed(() => {
+        qux.value.baz ??= []
+        return qux.value.baz
+      })
+
+      const onConfirm = () => {
+        baz.value.push(0)
+      }
+
+      return {
+        baz,
+        onConfirm,
+      }
+    })
+    component.lifetimes.attached.call(component)
+    expect(component.data.baz).toEqual([])
+
+    component.onConfirm()
+    await nextTick()
+    expect(component.data.baz).toEqual([0])
+  })
+
   it('reactive binding', async () => {
     defineComponent(() => {
       const state: { count: number; double: number } = reactive({
