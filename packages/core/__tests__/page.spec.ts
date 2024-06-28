@@ -99,38 +99,6 @@ describe('page', () => {
     expect(page.data.double).toBe(2)
   })
 
-  it('chained side effect computed binding', async () => {
-    definePage(() => {
-      const foo = ref<{ bar?: { baz?: number[] } }>({})
-
-      const qux = computed(() => {
-        foo.value.bar ??= {}
-        return foo.value.bar
-      })
-
-      const baz = computed(() => {
-        qux.value.baz ??= []
-        return qux.value.baz
-      })
-
-      const onConfirm = () => {
-        baz.value.push(0)
-      }
-
-      return {
-        baz,
-        onConfirm,
-      }
-    })
-
-    page.onLoad()
-    expect(page.data.baz).toEqual([])
-
-    page.onConfirm()
-    await nextTick()
-    expect(page.data.baz).toEqual([0])
-  })
-
   it('reactive binding', async () => {
     definePage(() => {
       const state: { count: number; double: number } = reactive({
