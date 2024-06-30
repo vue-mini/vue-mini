@@ -1,3 +1,41 @@
+# 1.0.0 (2024-06-30)
+
+### 依赖
+
+- **@vue/reactivity:** 从 3.2.19 升至 3.4.31，详情请看 [Vue 更新日志](https://github.com/vuejs/vue-next/blob/main/CHANGELOG.md)
+- **miniprogram-api-typings:** 切换成了基于 3.12.2 的 Fork 版本
+
+### 新特性
+
+- 新增 `isShallow` API
+- 新增 `toValue` API
+- 新增 `onRouteDone` 生命周期钩子
+- 新增 `onSaveExitState` 生命周期钩子
+- Context 新增 `setUpdatePerformanceListener` `getPassiveEvent` `setPassiveEvent` `router` `pageRouter` `renderer` `createMediaQueryObserver` `applyAnimatedStyle` `clearAnimatedStyle` API
+- **watch:** 标记为 `flush: 'post'` 的观察器会在页面渲染后执行
+
+### 性能优化
+
+- 响应式系统性能大幅提升，详情请看 [Announcing Vue 3.4](https://blog.vuejs.org/posts/vue-3-4#more-efficient-reactivity-system)
+- **watch:** avoid double traverse for reactive source
+
+### Bug 修复
+
+- 修复了兼容性问题，现在代码输出严格为 ES2016
+- **watch:** cleanup watcher effect from scope when manually stopped
+- **watch:** correct type inference for reactive array
+- **watch:** support traversing symbol properties in deep watcher
+- 其他 Bug 修复
+
+### 其他
+
+- `@vue-mini/wechat` 包更名为 `@vue-mini/core`
+- 不再使用 `const enum`，以兼容 TS 的 `isolatedModules: true` 模式
+
+### 破坏性变更
+
+- 微信小程序基础库版本最低要求提升为 v3.0.0
+
 # 1.0.0-rc.15 (2024-06-28)
 
 ### 依赖
