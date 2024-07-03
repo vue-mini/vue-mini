@@ -45,7 +45,7 @@ async function generateDeclaration(target) {
   })
 
   const removals = []
-  for (const file of await fs.readdirSync(path.join(target, 'dist'))) {
+  for (const file of fs.readdirSync(path.join(target, 'dist'))) {
     if (file === 'vue-mini.d.ts') continue
     removals.push(fs.remove(path.join(target, 'dist', file)))
   }
