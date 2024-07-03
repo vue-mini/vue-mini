@@ -19,7 +19,7 @@ function getBanner(version) {
 async function generateDeclaration(target) {
   const bundle = await rollup({
     input: path.join(target, 'src', 'index.ts'),
-    external: ['miniprogram-api-typings', '@vue/reactivity'],
+    external: ['@vue/reactivity'],
     plugins: [
       typescript({
         tsconfig: 'tsconfig.build.json',
