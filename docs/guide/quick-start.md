@@ -5,7 +5,7 @@
 :::tip 前提条件
 
 - 熟悉命令行
-- 已安装 18.19.1 或更高版本的 [Node.js](https://nodejs.org)
+- 已安装 >= 18.19.1 < 19 或 >= 20.6.1 版本的 [Node.js](https://nodejs.org)
 
 :::
 
