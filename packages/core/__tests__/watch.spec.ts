@@ -74,8 +74,8 @@ describe('watch', () => {
     watch(array, spy)
     array.push(1)
     await nextTick()
-    expect(spy).toBeCalledTimes(1)
-    expect(spy).toBeCalledWith([1], expect.anything(), expect.anything())
+    expect(spy).toHaveBeenCalledTimes(1)
+    expect(spy).toHaveBeenCalledWith([1], expect.anything(), expect.anything())
   })
 
   it('should not call functions inside a reactive source array', () => {
@@ -83,8 +83,8 @@ describe('watch', () => {
     const array = reactive([spy1])
     const spy2 = vi.fn()
     watch(array, spy2, { immediate: true })
-    expect(spy1).toBeCalledTimes(0)
-    expect(spy2).toBeCalledWith([spy1], undefined, expect.anything())
+    expect(spy1).toHaveBeenCalledTimes(0)
+    expect(spy2).toHaveBeenCalledWith([spy1], undefined, expect.anything())
   })
 
   it('should not unwrap refs in a reactive source array', async () => {
@@ -92,14 +92,14 @@ describe('watch', () => {
     const array = reactive([val])
     const spy = vi.fn()
     watch(array, spy, { immediate: true })
-    expect(spy).toBeCalledTimes(1)
-    expect(spy).toBeCalledWith([val], undefined, expect.anything())
+    expect(spy).toHaveBeenCalledTimes(1)
+    expect(spy).toHaveBeenCalledWith([val], undefined, expect.anything())
 
     // Deep by default
     val.value.foo++
     await nextTick()
-    expect(spy).toBeCalledTimes(2)
-    expect(spy).toBeCalledWith([val], [val], expect.anything())
+    expect(spy).toHaveBeenCalledTimes(2)
+    expect(spy).toHaveBeenCalledWith([val], [val], expect.anything())
   })
 
   it('should not fire if watched getter result did not change', async () => {
@@ -109,12 +109,12 @@ describe('watch', () => {
 
     n.value++
     await nextTick()
-    expect(spy).toBeCalledTimes(1)
+    expect(spy).toHaveBeenCalledTimes(1)
 
     n.value += 2
     await nextTick()
     // Should not be called again because getter result did not change
-    expect(spy).toBeCalledTimes(1)
+    expect(spy).toHaveBeenCalledTimes(1)
   })
 
   it('watching single source: computed ref', async () => {
@@ -197,17 +197,17 @@ describe('watch', () => {
     const array: any[] = reactive([val])
     const spy = vi.fn()
     watch(array, spy, { immediate: true, deep: false })
-    expect(spy).toBeCalledTimes(1)
-    expect(spy).toBeCalledWith([val], undefined, expect.anything())
+    expect(spy).toHaveBeenCalledTimes(1)
+    expect(spy).toHaveBeenCalledWith([val], undefined, expect.anything())
 
     val.value++
     await nextTick()
-    expect(spy).toBeCalledTimes(1)
+    expect(spy).toHaveBeenCalledTimes(1)
 
     array[1] = 2
     await nextTick()
-    expect(spy).toBeCalledTimes(2)
-    expect(spy).toBeCalledWith([val, 2], [val, 2], expect.anything())
+    expect(spy).toHaveBeenCalledTimes(2)
+    expect(spy).toHaveBeenCalledWith([val, 2], [val, 2], expect.anything())
   })
 
   // #9916
@@ -227,12 +227,12 @@ describe('watch', () => {
     collection[0].prop1.value = 'foo'
     await nextTick()
     // Should not trigger
-    expect(cb).toBeCalledTimes(0)
+    expect(cb).toHaveBeenCalledTimes(0)
 
     collection.push(new Foo())
     await nextTick()
     // Should trigger on array self mutation
-    expect(cb).toBeCalledTimes(1)
+    expect(cb).toHaveBeenCalledTimes(1)
   })
 
   it('should still respect deep: true on shallowReactive source', async () => {
@@ -772,7 +772,7 @@ describe('watch', () => {
     })
     foo.value = [...foo.value]
     await nextTick()
-    expect(spy).toBeCalledTimes(1)
+    expect(spy).toHaveBeenCalledTimes(1)
   })
 
   test('watching multiple sources: computed', async () => {
@@ -934,7 +934,7 @@ describe('watch', () => {
 
     source.count = 1
     await nextTick()
-    expect(spy).toBeCalledTimes(1)
+    expect(spy).toHaveBeenCalledTimes(1)
   })
 
   it('warn and not respect once option when using effect', async () => {
@@ -1000,12 +1000,12 @@ describe('watch', () => {
     collection[0].prop1.value = 'foo'
     await nextTick()
     // Should not trigger
-    expect(cb).toBeCalledTimes(0)
+    expect(cb).toHaveBeenCalledTimes(0)
 
     collection.push(new Foo())
     await nextTick()
     // Should trigger on array self mutation
-    expect(cb).toBeCalledTimes(1)
+    expect(cb).toHaveBeenCalledTimes(1)
   })
 
   it('warn if deep option is number', async () => {

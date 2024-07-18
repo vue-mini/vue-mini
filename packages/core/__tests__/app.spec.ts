@@ -62,8 +62,8 @@ describe('app', () => {
     const setup = vi.fn()
     createApp({ onLaunch, setup })
     app.onLaunch(arg)
-    expect(onLaunch).toBeCalledWith(arg)
-    expect(setup).toBeCalledWith(arg)
+    expect(onLaunch).toHaveBeenCalledWith(arg)
+    expect(setup).toHaveBeenCalledWith(arg)
   })
 
   it('onShow', () => {
@@ -80,9 +80,9 @@ describe('app', () => {
     })
     app.onLaunch()
     app.onShow(arg)
-    expect(fn).toBeCalledWith(arg)
-    expect(injectedFn1).toBeCalledWith(arg)
-    expect(injectedFn2).toBeCalledWith(arg)
+    expect(fn).toHaveBeenCalledWith(arg)
+    expect(injectedFn1).toHaveBeenCalledWith(arg)
+    expect(injectedFn2).toHaveBeenCalledWith(arg)
   })
 
   it('onHide', () => {
@@ -98,9 +98,9 @@ describe('app', () => {
     })
     app.onLaunch()
     app.onHide()
-    expect(fn).toBeCalledTimes(1)
-    expect(injectedFn1).toBeCalledTimes(1)
-    expect(injectedFn2).toBeCalledTimes(1)
+    expect(fn).toHaveBeenCalledTimes(1)
+    expect(injectedFn1).toHaveBeenCalledTimes(1)
+    expect(injectedFn2).toHaveBeenCalledTimes(1)
   })
 
   it('onError', () => {
@@ -117,9 +117,9 @@ describe('app', () => {
     })
     app.onLaunch()
     app.onError(arg)
-    expect(fn).toBeCalledWith(arg)
-    expect(injectedFn1).toBeCalledWith(arg)
-    expect(injectedFn2).toBeCalledWith(arg)
+    expect(fn).toHaveBeenCalledWith(arg)
+    expect(injectedFn1).toHaveBeenCalledWith(arg)
+    expect(injectedFn2).toHaveBeenCalledWith(arg)
   })
 
   it('onPageNotFound', () => {
@@ -136,9 +136,9 @@ describe('app', () => {
     })
     app.onLaunch()
     app.onPageNotFound(arg)
-    expect(fn).toBeCalledWith(arg)
-    expect(injectedFn1).toBeCalledWith(arg)
-    expect(injectedFn2).toBeCalledWith(arg)
+    expect(fn).toHaveBeenCalledWith(arg)
+    expect(injectedFn1).toHaveBeenCalledWith(arg)
+    expect(injectedFn2).toHaveBeenCalledWith(arg)
   })
 
   it('onUnhandledRejection', () => {
@@ -155,9 +155,9 @@ describe('app', () => {
     })
     app.onLaunch()
     app.onUnhandledRejection(arg)
-    expect(fn).toBeCalledWith(arg)
-    expect(injectedFn1).toBeCalledWith(arg)
-    expect(injectedFn2).toBeCalledWith(arg)
+    expect(fn).toHaveBeenCalledWith(arg)
+    expect(injectedFn1).toHaveBeenCalledWith(arg)
+    expect(injectedFn2).toHaveBeenCalledWith(arg)
   })
 
   it('onThemeChange', () => {
@@ -174,9 +174,9 @@ describe('app', () => {
     })
     app.onLaunch()
     app.onThemeChange(arg)
-    expect(fn).toBeCalledWith(arg)
-    expect(injectedFn1).toBeCalledWith(arg)
-    expect(injectedFn2).toBeCalledWith(arg)
+    expect(fn).toHaveBeenCalledWith(arg)
+    expect(injectedFn1).toHaveBeenCalledWith(arg)
+    expect(injectedFn2).toHaveBeenCalledWith(arg)
   })
 
   it('inject lifecycle outside setup', () => {
@@ -196,7 +196,7 @@ describe('app', () => {
     expect(app.num).toBe(0)
 
     app.onHide()
-    expect(fn).toBeCalledTimes(1)
+    expect(fn).toHaveBeenCalledTimes(1)
   })
 
   it('only injected lifecycle', () => {
@@ -206,7 +206,7 @@ describe('app', () => {
     })
     app.onLaunch()
     app.onHide()
-    expect(fn).toBeCalledTimes(1)
+    expect(fn).toHaveBeenCalledTimes(1)
   })
 
   it('no setup', () => {
