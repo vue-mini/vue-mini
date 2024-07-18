@@ -13,6 +13,7 @@ module.exports = {
       },
       rules: {
         'logical-assignment-operators': 'off',
+        'n/file-extension-in-import': 'off',
         'import/extensions': ['error', 'never'],
         'import/no-duplicates': ['error', { 'prefer-inline': false }],
         'import/no-mutable-exports': 'off',
