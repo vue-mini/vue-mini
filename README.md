@@ -22,6 +22,15 @@ Vue Mini 拥有媲美小程序原生框架的极致性能，详情请查看 [Ben
 
 Vue Mini 从诞生之初到现在一直是我的个人项目，背后没有任何公司支持。你的资金支持将有助于 Vue Mini 更加长远健康的发展。[如何赞助？](https://vuemini.org/guide/sponsor.html#如何赞助)
 
+# 案例
+
+Vue Mini 已经被很多公司和团队应用在了生产环境，其中不乏大厂，如网易。下列是一些使用 Vue Mini 开发的小程序，也欢迎[提交你的小程序](https://github.com/vue-mini/vue-mini/issues/59)。
+
+<!-- prettier-ignore -->
+| | | |
+| ------ | ------ | ------ |
+| <img width="1604" alt="网易游戏印象" src="https://vuemini.org/cases/1.jpg"><p align="center">网易游戏印象</p> | <img width="1604" alt="妙邻社区" src="https://vuemini.org/cases/2.jpg"><p align="center">妙邻社区</p> | <img width="1604" alt="字多" src="https://vuemini.org/cases/3.jpg"><p align="center">字多</p> |
+
 ## 许可证
 
 [MIT](https://opensource.org/licenses/MIT)
