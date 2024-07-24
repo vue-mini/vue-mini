@@ -15,3 +15,7 @@ Vue 3 之所以提出组合式 API 是为了解决：逻辑复用、复杂代码
 ## 它是如何工作的？
 
 Vue Mini 底层直接依赖于 [@vue/reactivity](https://github.com/vuejs/vue-next/tree/master/packages/reactivity)，它是 Vue 3 的响应式核心。事实上，你可以简单的将 Vue Mini 理解为 @vue/reactivity 与小程序的绑定。它会在适当的时机调用 `setup` 函数，并监听返回的响应式数据，如果数据变化了，就调用 `setData` 通知小程序。如果返回的是方法，就将其添加到小程序上。如果你在 `setup` 函数内调用生命周期钩子函数，Vue Mini 也会将其动态注入到小程序上。
+
+## 支持的平台
+
+目前 Vue Mini 仅支持微信小程序。虽然技术上 Vue Mini 可以支持其他小程序平台，但由于时间跟精力的限制，短期内并没有这样的计划。未来一段时间 Vue Mini 仍然只会专注于微信小程序，持续提升微信小程序的 UX 以及 DX。
