@@ -50,6 +50,10 @@ export default defineConfig({
         ],
       },
       {
+        text: '案例',
+        link: '/guide/cases',
+      },
+      {
         text: '社群',
         link: '/guide/community',
       },
