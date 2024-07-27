@@ -14,6 +14,10 @@ Vue Mini 是一个基于 Vue 3 的小程序框架，它简单，强大，高性�
 
 请访问 [vuemini.org](https://vuemini.org) 并跟随文档指引。
 
+## 介绍
+
+请观看我在 VueConf 2024 的分享：[《Vue Mini：不妥协的小程序框架》](https://www.bilibili.com/video/BV1J4421D7ja/)
+
 ## 性能
 
 Vue Mini 拥有媲美小程序原生框架的极致性能，详情请查看 [Benchmark](https://github.com/yangmingshan/mp-framework-benchmark)。

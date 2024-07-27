@@ -8,6 +8,8 @@ Vue Mini 是一个基于 Vue 3 的小程序框架，它能让你用组合式 API
 
 Vue Mini 仅聚焦于小程序逻辑部分，也就是 JS 部分，它并不影响小程序的模版、样式及配置。
 
+我在 VueConf 2024 的分享：[《Vue Mini：不妥协的小程序框架》](https://www.bilibili.com/video/BV1J4421D7ja/)
+
 ## 动机
 
 Vue 3 之所以提出组合式 API 是为了解决：逻辑复用、复杂代码组织以及更好的 TypeScript 支持这三大问题。而小程序也有这些问题，并且小程序没有响应式数据，每次更新数据需要调用 `setData`。Vue 的响应式数据 + 组合式 API 能非常好的解决这些问题，于是就有了 Vue Mini。
