@@ -31,6 +31,10 @@ export default defineConfig({
         link: '/guide/quick-start',
       },
       {
+        text: '原生小程序直接使用 Vue Mini',
+        link: '/guide/native-mini-programs-uses',
+      },
+      {
         text: '基础',
         items: [
           { text: '创建小程序', link: '/guide/app' },
