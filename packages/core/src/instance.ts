@@ -37,8 +37,8 @@ export function getCurrentInstance(): PageInstance | ComponentInstance | null {
   return currentPage || currentComponent
 }
 
-export function setCurrentApp(page: AppInstance): void {
-  currentApp = page
+export function setCurrentApp(app: AppInstance): void {
+  currentApp = app
 }
 
 export function unsetCurrentApp(): void {
