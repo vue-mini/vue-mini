@@ -58,12 +58,12 @@ importers:
 
   packages/core:
     dependencies:
-      '@vue-mini/miniprogram-api-typings':
-        specifier: workspace:*
-        version: link:../api-typings
       '@vue/reactivity':
         specifier: 3.4.37
         version: 3.4.37
+      miniprogram-api-typings:
+        specifier: ^3.12.3
+        version: 3.12.3
 
 packages:
 
@@ -2060,6 +2060,9 @@ packages:
   minipass@7.1.2:
     resolution: {integrity: sha512-qOOzS1cBTWYF4BH8fVePDBOO9iptMnGUEZwNc/cMWnTV2nVLZ7VoNWEPHkYczZA0pdoA7dl6e7FL659nX9S2aw==}
     engines: {node: '>=16 || 14 >=14.17'}
+
+  miniprogram-api-typings@3.12.3:
+    resolution: {integrity: sha512-o7bOfrU28MEMCBWo83nXv0ROQSBFxJcfCl4f2wTYqah64ipC5RGqLJfvWJTWhlQt2ECVwspSzM8LgvnfMo7TEQ==}
 
   minisearch@7.1.0:
     resolution: {integrity: sha512-tv7c/uefWdEhcu6hvrfTihflgeEi2tN6VV7HJnCjK6VxM75QQJh4t9FwJCsA2EsRS8LCnu3W87CuGPWMocOLCA==}
@@ -5023,6 +5026,8 @@ snapshots:
   minimist@1.2.8: {}
 
   minipass@7.1.2: {}
+
+  miniprogram-api-typings@3.12.3: {}
 
   minisearch@7.1.0: {}
 
