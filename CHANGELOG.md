@@ -1,3 +1,10 @@
+# 1.0.3 (2024-08-11)
+
+### 依赖
+
+- **@vue/reactivity:** 从 3.4.35 升至 3.4.37，详情请看 [Vue 更新日志](https://github.com/vuejs/vue-next/blob/main/CHANGELOG.md) ([aa8c0fe](https://github.com/vue-mini/vue-mini/commit/aa8c0fe0476eabe9d6e920b25e95da5984b25c85))
+- **miniprogram-api-typings:** 切换回官方版本 ([eef8a6f](https://github.com/vue-mini/vue-mini/commit/eef8a6fe39407f093746a2fea1cce42f75fda2e6))
+
 # 1.0.2 (2024-07-31)
 
 ### 依赖
