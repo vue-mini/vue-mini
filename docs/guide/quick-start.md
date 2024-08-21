@@ -25,6 +25,10 @@ $ pnpm create vue-mini@latest
 $ yarn create vue-mini
 ```
 
+```sh [bun]
+$ bun create vue-mini@latest
+```
+
 :::
 
 然后你将会看到一些诸如 TypeScript 和测试支持之类的可选功能提示：
@@ -52,13 +56,19 @@ $ npm run dev
 ```sh [pnpm]
 $ cd <your-project-name>
 $ pnpm install
-$ pnpm run dev
+$ pnpm dev
 ```
 
 ```sh [yarn]
 $ cd <your-project-name>
 $ yarn
 $ yarn dev
+```
+
+```sh [bun]
+$ cd <your-project-name>
+$ bun install
+$ bun run dev
 ```
 
 :::
@@ -74,11 +84,15 @@ $ npm run build
 ```
 
 ```sh [pnpm]
-$ pnpm run build
+$ pnpm build
 ```
 
 ```sh [yarn]
 $ yarn build
+```
+
+```sh [bun]
+$ bun run build
 ```
 
 :::
@@ -101,6 +115,10 @@ $ pnpm install @vue-mini/core
 
 ```sh [yarn]
 $ yarn add @vue-mini/core
+```
+
+```sh [bun]
+$ bun add @vue-mini/core
 ```
 
 :::
