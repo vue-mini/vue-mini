@@ -14,7 +14,7 @@ import {
   getCurrentScope,
 } from '@vue/reactivity'
 import type { SchedulerJob } from './scheduler'
-import { queueJob, queuePostFlushCb } from './scheduler'
+import { SchedulerJobFlags, queueJob, queuePostFlushCb } from './scheduler'
 import {
   NOOP,
   extend,
@@ -328,7 +328,10 @@ function doWatch(
 
   // Important: mark the job as a watcher callback so that scheduler knows
   // it is allowed to self-trigger
-  job.allowRecurse = Boolean(cb)
+  if (cb) {
+    // eslint-disable-next-line no-bitwise
+    job.flags! |= SchedulerJobFlags.ALLOW_RECURSE
+  }
 
   let scheduler: EffectScheduler
   if (flush === 'sync') {

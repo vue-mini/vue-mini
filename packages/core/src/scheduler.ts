@@ -1,8 +1,17 @@
+/* eslint-disable no-bitwise, unicorn/prefer-math-trunc, @typescript-eslint/prefer-literal-enum-member */
 import { NOOP } from './utils'
 
+export enum SchedulerJobFlags {
+  QUEUED = 1 << 0,
+  ALLOW_RECURSE = 1 << 2,
+}
+
 export interface SchedulerJob extends Function {
-  active?: boolean
-  allowRecurse?: boolean
+  /**
+   * Flags can technically be undefined, but it can still be used in bitwise
+   * operations just like 0.
+   */
+  flags?: SchedulerJobFlags
 }
 
 let isFlushing = false
@@ -16,7 +25,7 @@ let activePostFlushCbs: SchedulerJob[] | null = null
 let postFlushIndex = 0
 
 // eslint-disable-next-line spaced-comment
-const resolvedPromise = /*#__PURE__*/ Promise.resolve() as Promise<any>
+const resolvedPromise = /*@__PURE__*/ Promise.resolve() as Promise<any>
 let currentFlushPromise: Promise<void> | null = null
 
 const RECURSION_LIMIT = 100
@@ -28,21 +37,10 @@ export function nextTick<R = void>(fn?: () => R): Promise<Awaited<R>> {
   return fn ? p.then(fn) : p
 }
 
-export function queueJob(job: SchedulerJob) {
-  // The dedupe search uses the startIndex argument of Array.includes()
-  // by default the search index includes the current job that is being run
-  // so it cannot recursively trigger itself again.
-  // if the job is a watch() callback, the search will start with a +1 index to
-  // allow it recursively trigger itself - it is the user's responsibility to
-  // ensure it doesn't end up in an infinite loop.
-  if (
-    queue.length === 0 ||
-    !queue.includes(
-      job,
-      isFlushing && job.allowRecurse ? flushIndex + 1 : flushIndex,
-    )
-  ) {
+export function queueJob(job: SchedulerJob): void {
+  if (!(job.flags! & SchedulerJobFlags.QUEUED)) {
     queue.push(job)
+    job.flags! |= SchedulerJobFlags.QUEUED
     queueFlush()
   }
 }
@@ -55,19 +53,14 @@ function queueFlush(): void {
   }
 }
 
-export function queuePostFlushCb(cb: SchedulerJob) {
-  if (
-    !activePostFlushCbs ||
-    !activePostFlushCbs.includes(
-      cb,
-      cb.allowRecurse ? postFlushIndex + 1 : postFlushIndex,
-    )
-  ) {
+export function queuePostFlushCb(cb: SchedulerJob): void {
+  if (!(cb.flags! & SchedulerJobFlags.QUEUED)) {
     pendingPostFlushCbs.push(cb)
+    cb.flags! |= SchedulerJobFlags.QUEUED
   }
 }
 
-export function flushPostFlushCbs() {
+export function flushPostFlushCbs(): void {
   if (pendingPostFlushCbs.length > 0) {
     activePostFlushCbs = [...new Set(pendingPostFlushCbs)]
     pendingPostFlushCbs.length = 0
@@ -78,7 +71,12 @@ export function flushPostFlushCbs() {
       postFlushIndex++
     ) {
       const cb = activePostFlushCbs[postFlushIndex]
-      if (cb.active !== false) cb()
+      if (cb.flags! & SchedulerJobFlags.ALLOW_RECURSE) {
+        cb.flags! &= ~SchedulerJobFlags.QUEUED
+      }
+
+      cb()
+      cb.flags! &= ~SchedulerJobFlags.QUEUED
     }
 
     activePostFlushCbs = null
@@ -107,16 +105,25 @@ function flushJobs(seen?: CountMap): void {
   try {
     for (flushIndex = 0; flushIndex < queue.length; flushIndex++) {
       const job = queue[flushIndex]
-      if (job.active !== false) {
-        /* istanbul ignore if -- @preserve  */
-        if (__DEV__ && check(job)) {
-          continue
-        }
-
-        job()
+      /* istanbul ignore if -- @preserve  */
+      if (__DEV__ && check(job)) {
+        continue
       }
+
+      if (job.flags! & SchedulerJobFlags.ALLOW_RECURSE) {
+        job.flags! &= ~SchedulerJobFlags.QUEUED
+      }
+
+      job()
+      job.flags! &= ~SchedulerJobFlags.QUEUED
     }
   } finally {
+    // If there was an error we still need to clear the QUEUED flags
+    for (; flushIndex < queue.length; flushIndex++) {
+      const job = queue[flushIndex]
+      job.flags! &= ~SchedulerJobFlags.QUEUED
+    }
+
     flushIndex = 0
     queue.length = 0
 

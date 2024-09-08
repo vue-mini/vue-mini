@@ -1,4 +1,7 @@
+/* eslint-disable no-bitwise */
+import type { SchedulerJob } from '../src/scheduler'
 import {
+  SchedulerJobFlags,
   flushPostFlushCbs,
   nextTick,
   queueJob,
@@ -81,25 +84,6 @@ describe('scheduler', () => {
 
       await nextTick()
       expect(calls).toEqual(['job1', 'job2'])
-    })
-  })
-
-  describe('pre flush jobs', () => {
-    it('queueJob inside preFlushCb', async () => {
-      const calls: string[] = []
-      const job1 = () => {
-        calls.push('job1')
-      }
-
-      const cb1 = () => {
-        // QueueJob in postFlushCb
-        calls.push('cb1')
-        queueJob(job1)
-      }
-
-      queueJob(cb1)
-      await nextTick()
-      expect(calls).toEqual(['cb1', 'job1'])
     })
   })
 
@@ -352,27 +336,27 @@ describe('scheduler', () => {
   test('should allow explicitly marked jobs to trigger itself', async () => {
     // Normal job
     let count = 0
-    const job = () => {
+    const job: SchedulerJob = () => {
       if (count < 3) {
         count++
         queueJob(job)
       }
     }
 
-    job.allowRecurse = true
+    job.flags! |= SchedulerJobFlags.ALLOW_RECURSE
     queueJob(job)
     await nextTick()
     expect(count).toBe(3)
 
     // Post cb
-    const cb = () => {
+    const cb: SchedulerJob = () => {
       if (count < 5) {
         count++
         queuePostFlushCb(cb)
       }
     }
 
-    cb.allowRecurse = true
+    cb.flags! |= SchedulerJobFlags.ALLOW_RECURSE
     queuePostFlushCb(cb)
     flushPostFlushCbs()
     expect(count).toBe(4)
@@ -380,29 +364,6 @@ describe('scheduler', () => {
     expect(count).toBe(5)
     flushPostFlushCbs()
     expect(count).toBe(5)
-  })
-
-  // #910
-  test('should not run stopped reactive effects', async () => {
-    const spy = vi.fn()
-
-    // Simulate parent component that toggles child
-    const job1 = () => {
-      // @ts-expect-error
-      job2.active = false
-    }
-
-    // Simulate child that's triggered by the same reactive change that
-    // triggers its toggle
-    const job2 = () => spy()
-    expect(spy).toHaveBeenCalledTimes(0)
-
-    queueJob(job1)
-    queueJob(job2)
-    await nextTick()
-
-    // Should not be called
-    expect(spy).toHaveBeenCalledTimes(0)
   })
 
   it('nextTick should return promise', async () => {
@@ -415,23 +376,22 @@ describe('scheduler', () => {
     expect(fn).toHaveBeenCalledTimes(1)
   })
 
-  /** Dividing line, the above tests is directly copy from vue.js **/
+  /** Dividing line, the above tests is directly copy from vue.js with some changes **/
 
-  test('should not run inactive callback', async () => {
-    const spy = vi.fn()
+  test('queueJob inside job', async () => {
+    const calls: string[] = []
 
     const job1 = () => {
-      // @ts-expect-error
-      job2.active = false
+      calls.push('job1')
     }
 
-    const job2 = () => spy()
-    expect(spy).toHaveBeenCalledTimes(0)
+    const cb1 = () => {
+      calls.push('cb1')
+      queueJob(job1)
+    }
 
-    queuePostFlushCb(job1)
-    queuePostFlushCb(job2)
-    flushPostFlushCbs()
-
-    expect(spy).toHaveBeenCalledTimes(0)
+    queueJob(cb1)
+    await nextTick()
+    expect(calls).toEqual(['cb1', 'job1'])
   })
 })
