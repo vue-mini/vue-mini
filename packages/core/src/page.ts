@@ -1,4 +1,5 @@
 import { EffectScope } from '@vue/reactivity'
+import { flushPostFlushCbs } from './scheduler'
 import type { Bindings, PageInstance } from './instance'
 import { setCurrentPage, unsetCurrentPage } from './instance'
 import { deepToRaw, deepWatch } from './shared'
@@ -113,6 +114,7 @@ export function definePage(optionsOrSetup: any, config?: Config): void {
     }
     const bindings = setup(query, context)
     if (bindings !== undefined) {
+      let data: Record<string, unknown> | undefined
       Object.keys(bindings).forEach((key) => {
         const value = bindings[key]
         if (isFunction(value)) {
@@ -120,9 +122,13 @@ export function definePage(optionsOrSetup: any, config?: Config): void {
           return
         }
 
-        this.setData({ [key]: deepToRaw(value) })
+        data = data || {}
+        data[key] = deepToRaw(value)
         deepWatch.call(this, key, value)
       })
+      if (data !== undefined) {
+        this.setData(data, flushPostFlushCbs)
+      }
     }
 
     unsetCurrentPage()

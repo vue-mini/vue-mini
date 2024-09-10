@@ -1007,13 +1007,4 @@ describe('watch', () => {
     // Should trigger on array self mutation
     expect(cb).toBeCalledTimes(1)
   })
-
-  it('warn if deep option is number', async () => {
-    const count = ref(0)
-    watch(count, () => {}, {
-      // @ts-expect-error
-      deep: 1,
-    })
-    expect(`"deep" option with number value`).toHaveBeenWarned()
-  })
 })

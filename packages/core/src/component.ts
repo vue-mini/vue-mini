@@ -1,4 +1,5 @@
 import { shallowReactive, shallowReadonly, EffectScope } from '@vue/reactivity'
+import { flushPostFlushCbs } from './scheduler'
 import type { Config } from './page'
 import { PageLifecycle } from './page'
 import { deepToRaw, deepWatch } from './shared'
@@ -177,6 +178,7 @@ export function defineComponent(optionsOrSetup: any, config?: Config): string {
       context,
     )
     if (bindings !== undefined) {
+      let data: Record<string, unknown> | undefined
       Object.keys(bindings).forEach((key) => {
         const value = bindings[key]
         if (isFunction(value)) {
@@ -184,9 +186,13 @@ export function defineComponent(optionsOrSetup: any, config?: Config): string {
           return
         }
 
-        this.setData({ [key]: deepToRaw(value) })
+        data = data || {}
+        data[key] = deepToRaw(value)
         deepWatch.call(this, key, value)
       })
+      if (data !== undefined) {
+        this.setData(data, flushPostFlushCbs)
+      }
     }
 
     unsetCurrentComponent()

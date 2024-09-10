@@ -31,6 +31,8 @@ export {
   // Effect
   effect,
   stop,
+  getCurrentWatcher,
+  onWatcherCleanup,
   ReactiveEffect,
   // Effect scope
   effectScope,
@@ -103,11 +105,13 @@ export type {
   Reactive,
 } from '@vue/reactivity'
 export type {
+  MultiWatchSources,
   WatchEffect,
   WatchOptions,
-  WatchOptionsBase,
+  WatchEffectOptions as WatchOptionsBase,
   WatchCallback,
   WatchSource,
+  WatchHandle,
   WatchStopHandle,
 } from './watch'
 export type { InjectionKey } from './inject'

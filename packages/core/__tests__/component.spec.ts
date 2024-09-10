@@ -206,7 +206,7 @@ describe('component', () => {
       }
     })
     component.lifetimes.attached.call(component)
-    expect(component.__scope__.effects.length).toBe(3)
+    expect(component.__scope__.effects.length).toBe(2)
 
     component.increment()
     component.lifetimes.detached.call(component)
@@ -281,6 +281,11 @@ describe('component', () => {
     })
     component.lifetimes.attached.call(component)
     await nextTick()
+    expect(foo).toBe(undefined)
+    expect(bar).toBe(undefined)
+    expect(component.data.count).toBe(0)
+
+    renderCb()
     expect(foo).toBe(0)
     expect(bar).toBe(undefined)
     expect(component.data.count).toBe(0)

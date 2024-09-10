@@ -196,7 +196,7 @@ describe('page', () => {
       }
     })
     page.onLoad()
-    expect(page.__scope__.effects.length).toBe(3)
+    expect(page.__scope__.effects.length).toBe(2)
 
     page.increment()
     page.onUnload()
@@ -271,6 +271,11 @@ describe('page', () => {
     })
     page.onLoad()
     await nextTick()
+    expect(foo).toBe(undefined)
+    expect(bar).toBe(undefined)
+    expect(page.data.count).toBe(0)
+
+    renderCb()
     expect(foo).toBe(0)
     expect(bar).toBe(undefined)
     expect(page.data.count).toBe(0)

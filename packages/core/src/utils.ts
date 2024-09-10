@@ -1,3 +1,7 @@
+export const EMPTY_OBJ: Readonly<Record<string, any>> =
+  __DEV__ ? Object.freeze({}) : /* istanbul ignore next -- @preserve */ {}
+
+/* istanbul ignore next -- @preserve */
 // eslint-disable-next-line @typescript-eslint/no-empty-function
 export const NOOP = () => {}
 
@@ -37,27 +41,6 @@ export function isPlainObject(x: unknown): x is Record<string, unknown> {
 
 export function isFunction(x: unknown): x is Function {
   return typeof x === 'function'
-}
-
-export function isMap(x: unknown): x is Map<any, any> {
-  return getType(x) === 'Map'
-}
-
-export function isSet(x: unknown): x is Set<any> {
-  return getType(x) === 'Set'
-}
-
-// Compare whether a value has changed, accounting for NaN.
-export function hasChanged(value: unknown, oldValue: unknown): boolean {
-  // eslint-disable-next-line no-self-compare
-  return value !== oldValue && (value === value || oldValue === oldValue)
-}
-
-export function remove<T>(arr: T[], el: T): void {
-  const i = arr.indexOf(el)
-  if (i > -1) {
-    arr.splice(i, 1)
-  }
 }
 
 export function toHiddenField(name: string): string {
