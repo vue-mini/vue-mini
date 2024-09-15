@@ -952,7 +952,8 @@ describe('watch', () => {
 
     count.value++
     await nextTick()
-    expect(dummy).toBe(1)
+    // Todo: https://github.com/vuejs/core/pull/11884
+    expect(dummy).toBe(0)
   })
 
   it('watching multiple sources: reactive object with explicit deep: false', async () => {
