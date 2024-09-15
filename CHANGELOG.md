@@ -1,3 +1,30 @@
+# 1.1.0 (2024-09-15)
+
+### 依赖
+
+- **@vue/reactivity:** 从 3.4.37 升至 3.5.5，详情请看 [Vue 更新日志](https://github.com/vuejs/vue-next/blob/main/CHANGELOG.md) & [Announcing Vue 3.5](https://blog.vuejs.org/posts/vue-3-5)
+
+### 新特性
+
+- 新增 `getCurrentWatcher` `onWatcherCleanup` API
+- `watch` `effectScope` 新增 `pause` `resume` 方法
+- `watch` 的 `deep` 选项支持传入数字以控制侦听深度
+- `onScopeDispose` 新增 `failSilently` 参数
+- 导出 `MultiWatchSources` `WatchHandle` 类型
+
+### 性能优化
+
+- 合并状态初始绑定的 `setData` 调用
+- 重构 `scheduler`，使用 bitwise flags
+
+### Bug 修复
+
+- 确保 `watchPostEffect` 的首次调用在渲染之后
+
+### 其他
+
+- 重构 `watch`，使用 @vue/reactivity 提供的 baseWatch
+
 # 1.0.3 (2024-08-11)
 
 ### 依赖
