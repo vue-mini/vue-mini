@@ -8,6 +8,7 @@ import {
   shallowReactive,
   shallowRef,
   effectScope,
+  toRef,
 } from '@vue/reactivity'
 import {
   watch,
@@ -17,6 +18,7 @@ import {
   computed,
   nextTick,
   ref,
+  onWatcherCleanup,
 } from '../src'
 
 describe('watch', () => {
@@ -75,7 +77,7 @@ describe('watch', () => {
     array.push(1)
     await nextTick()
     expect(spy).toBeCalledTimes(1)
-    expect(spy).toBeCalledWith([1], expect.anything(), expect.anything())
+    expect(spy).toBeCalledWith([1], [1], expect.anything())
   })
 
   it('should not call functions inside a reactive source array', () => {
@@ -420,6 +422,35 @@ describe('watch', () => {
     expect(cleanup).toHaveBeenCalledTimes(2)
   })
 
+  it('onWatcherCleanup', async () => {
+    const count = ref(0)
+    const cleanupEffect = vi.fn()
+    const cleanupWatch = vi.fn()
+
+    const stopEffect = watchEffect(() => {
+      onWatcherCleanup(cleanupEffect)
+      count.value
+    })
+    const stopWatch = watch(count, () => {
+      onWatcherCleanup(cleanupWatch)
+    })
+
+    count.value++
+    await nextTick()
+    expect(cleanupEffect).toHaveBeenCalledTimes(1)
+    expect(cleanupWatch).toHaveBeenCalledTimes(0)
+
+    count.value++
+    await nextTick()
+    expect(cleanupEffect).toHaveBeenCalledTimes(2)
+    expect(cleanupWatch).toHaveBeenCalledTimes(1)
+
+    stopEffect()
+    expect(cleanupEffect).toHaveBeenCalledTimes(3)
+    stopWatch()
+    expect(cleanupWatch).toHaveBeenCalledTimes(2)
+  })
+
   it('deep', async () => {
     const state = reactive({
       nested: {
@@ -649,7 +680,7 @@ describe('watch', () => {
     const onTrigger = vi.fn((e: DebuggerEvent) => {
       events.push(e)
     })
-    const obj = reactive({ foo: 1 })
+    const obj = reactive<{ foo?: number }>({ foo: 1 })
     watchEffect(
       () => {
         dummy = obj.foo
@@ -659,7 +690,7 @@ describe('watch', () => {
     await nextTick()
     expect(dummy).toBe(1)
 
-    obj.foo++
+    obj.foo!++
     await nextTick()
     expect(dummy).toBe(2)
     expect(onTrigger).toHaveBeenCalledTimes(1)
@@ -670,7 +701,6 @@ describe('watch', () => {
       newValue: 2,
     })
 
-    // @ts-expect-error
     delete obj.foo
     await nextTick()
     expect(dummy).toBeUndefined()
@@ -740,6 +770,26 @@ describe('watch', () => {
     expect(spy).toHaveBeenCalledTimes(1)
   })
 
+  test('should force trigger on triggerRef with toRef from reactive', async () => {
+    const foo = reactive({ bar: 1 })
+    const bar = toRef(foo, 'bar')
+    const spy = vi.fn()
+
+    watchEffect(() => {
+      bar.value
+      spy()
+    })
+
+    expect(spy).toHaveBeenCalledTimes(1)
+
+    triggerRef(bar)
+
+    await nextTick()
+    // Should trigger now
+    expect(spy).toHaveBeenCalledTimes(2)
+  })
+
+  // #2125
   test('watchEffect should not recursively trigger itself', async () => {
     const spy = vi.fn()
     const price = ref(10)
@@ -752,6 +802,7 @@ describe('watch', () => {
     expect(spy).toHaveBeenCalledTimes(1)
   })
 
+  // #2231
   test('computed refs should not trigger watch if value has no change', async () => {
     const spy = vi.fn()
     const source = ref(0)
@@ -826,6 +877,7 @@ describe('watch', () => {
     expect(cb).toHaveBeenCalledTimes(1)
   })
 
+  // #5151
   test('OnCleanup also needs to be cleaned', async () => {
     const spy1 = vi.fn()
     const spy2 = vi.fn()
@@ -861,6 +913,187 @@ describe('watch', () => {
     expect(spy2).toHaveBeenCalledTimes(1)
   })
 
+  it('watching reactive depth', async () => {
+    const state = reactive({
+      a: {
+        b: {
+          c: {
+            d: {
+              e: 1,
+            },
+          },
+        },
+      },
+    })
+
+    const cb = vi.fn()
+
+    watch(state, cb, { deep: 2 })
+
+    state.a.b = { c: { d: { e: 2 } } }
+    await nextTick()
+    expect(cb).toHaveBeenCalledTimes(1)
+
+    state.a.b.c = { d: { e: 3 } }
+
+    await nextTick()
+    expect(cb).toHaveBeenCalledTimes(1)
+
+    state.a.b = { c: { d: { e: 4 } } }
+
+    await nextTick()
+    expect(cb).toHaveBeenCalledTimes(2)
+  })
+
+  it('watching ref depth', async () => {
+    const state = ref({
+      a: {
+        b: 2,
+      },
+    })
+
+    const cb = vi.fn()
+
+    watch(state, cb, { deep: 1 })
+
+    state.value.a.b = 3
+    await nextTick()
+    expect(cb).toHaveBeenCalledTimes(0)
+
+    state.value.a = { b: 3 }
+    await nextTick()
+    expect(cb).toHaveBeenCalledTimes(1)
+  })
+
+  it('watching array depth', async () => {
+    const arr = ref([
+      {
+        a: {
+          b: 2,
+        },
+      },
+      {
+        a: {
+          b: 3,
+        },
+      },
+    ])
+    const cb = vi.fn()
+    watch(arr, cb, { deep: 2 })
+
+    arr.value[0].a.b = 3
+    await nextTick()
+    expect(cb).toHaveBeenCalledTimes(0)
+
+    arr.value[0].a = { b: 3 }
+    await nextTick()
+    expect(cb).toHaveBeenCalledTimes(1)
+
+    arr.value[1].a = { b: 4 }
+    await nextTick()
+    expect(cb).toHaveBeenCalledTimes(2)
+
+    arr.value.push({ a: { b: 5 } })
+    await nextTick()
+    expect(cb).toHaveBeenCalledTimes(3)
+
+    arr.value.pop()
+    await nextTick()
+    expect(cb).toHaveBeenCalledTimes(4)
+  })
+
+  test('pause / resume', async () => {
+    const count = ref(0)
+    const cb = vi.fn()
+    const { pause, resume } = watch(count, cb)
+
+    count.value++
+    await nextTick()
+    expect(cb).toHaveBeenCalledTimes(1)
+    expect(cb).toHaveBeenLastCalledWith(1, 0, expect.any(Function))
+
+    pause()
+    count.value++
+    await nextTick()
+    expect(cb).toHaveBeenCalledTimes(1)
+    expect(cb).toHaveBeenLastCalledWith(1, 0, expect.any(Function))
+
+    resume()
+    count.value++
+    await nextTick()
+    expect(cb).toHaveBeenCalledTimes(2)
+    expect(cb).toHaveBeenLastCalledWith(3, 1, expect.any(Function))
+
+    count.value++
+    await nextTick()
+    expect(cb).toHaveBeenCalledTimes(3)
+    expect(cb).toHaveBeenLastCalledWith(4, 3, expect.any(Function))
+
+    pause()
+    count.value++
+    await nextTick()
+    expect(cb).toHaveBeenCalledTimes(3)
+    expect(cb).toHaveBeenLastCalledWith(4, 3, expect.any(Function))
+
+    resume()
+    await nextTick()
+    expect(cb).toHaveBeenCalledTimes(4)
+    expect(cb).toHaveBeenLastCalledWith(5, 4, expect.any(Function))
+  })
+
+  it('shallowReactive', async () => {
+    const state = shallowReactive({
+      msg: ref('hello'),
+      foo: {
+        a: ref(1),
+        b: 2,
+      },
+      bar: 'bar',
+    })
+
+    const spy = vi.fn()
+
+    watch(state, spy)
+
+    state.msg.value = 'hi'
+    await nextTick()
+    expect(spy).not.toHaveBeenCalled()
+
+    state.bar = 'bar2'
+    await nextTick()
+    expect(spy).toHaveBeenCalledTimes(1)
+
+    state.foo.a.value++
+    state.foo.b++
+    await nextTick()
+    expect(spy).toHaveBeenCalledTimes(1)
+
+    state.bar = 'bar3'
+    await nextTick()
+    expect(spy).toHaveBeenCalledTimes(2)
+  })
+
+  it('watching reactive with deep: false', async () => {
+    const state = reactive({
+      foo: {
+        a: 2,
+      },
+      bar: 'bar',
+    })
+
+    const spy = vi.fn()
+
+    watch(state, spy, { deep: false })
+
+    state.foo.a++
+    await nextTick()
+    expect(spy).toHaveBeenCalledTimes(0)
+
+    state.bar = 'bar2'
+    await nextTick()
+    expect(spy).toHaveBeenCalledTimes(1)
+  })
+
   test("effect should be removed from scope's effects after it is stopped", () => {
     const num = ref(0)
     let unwatch: () => void
@@ -877,6 +1110,48 @@ describe('watch', () => {
     expect(scope.effects.length).toBe(0)
   })
 
+  // Simplified case of VueUse syncRef
+  test('sync watcher should not be batched', () => {
+    const a = ref(0)
+    const b = ref(0)
+    let pauseB = false
+    watch(
+      a,
+      () => {
+        pauseB = true
+        b.value = a.value + 1
+        pauseB = false
+      },
+      { flush: 'sync' },
+    )
+    watch(
+      b,
+      () => {
+        if (!pauseB) {
+          throw new Error('should not be called')
+        }
+      },
+      { flush: 'sync' },
+    )
+
+    a.value = 1
+    expect(b.value).toBe(2)
+  })
+
+  test('watchEffect should not fire on computed deps that did not change', async () => {
+    const a = ref(0)
+    const c = computed(() => a.value % 2)
+    const spy = vi.fn()
+    watchEffect(() => {
+      spy()
+      c.value
+    })
+    expect(spy).toHaveBeenCalledTimes(1)
+    a.value += 2
+    await nextTick()
+    expect(spy).toHaveBeenCalledTimes(1)
+  })
+
   test('circular reference', async () => {
     const obj = { a: 1 }
     // @ts-expect-error
@@ -891,6 +1166,34 @@ describe('watch', () => {
     await nextTick()
     expect(spy).toHaveBeenCalledTimes(1)
     expect(foo.value.a).toBe(2)
+  })
+
+  it('should be executed correctly', () => {
+    const v = ref(1)
+    let foo = ''
+
+    watch(
+      v,
+      () => {
+        foo += '1'
+      },
+      {
+        flush: 'sync',
+      },
+    )
+    watch(
+      v,
+      () => {
+        foo += '2'
+      },
+      {
+        flush: 'sync',
+      },
+    )
+
+    expect(foo).toBe('')
+    v.value++
+    expect(foo).toBe('12')
   })
 
   /** Dividing line, the above tests is directly copy from vue.js **/
