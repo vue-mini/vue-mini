@@ -34,6 +34,7 @@ Vue Mini 已经被很多公司和团队应用在了生产环境，其中不乏�
 | | | |
 | ------ | ------ | ------ |
 | <img width="1604" alt="网易游戏印象" src="https://vuemini.org/cases/1.jpg"><p align="center">网易游戏印象</p> | <img width="1604" alt="妙邻社区" src="https://vuemini.org/cases/2.jpg"><p align="center">妙邻社区</p> | <img width="1604" alt="字多" src="https://vuemini.org/cases/3.jpg"><p align="center">字多</p> |
+| <img width="1604" alt="伊旅小向导" src="https://vuemini.org/cases/4.jpg"><p align="center">伊旅小向导</p> | <img width="1604" alt="枫之谷联盟" src="https://vuemini.org/cases/5.jpg"><p align="center">枫之谷联盟</p> | |
 
 ## 许可证
 

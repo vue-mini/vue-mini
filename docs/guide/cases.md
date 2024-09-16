@@ -15,6 +15,14 @@ Vue Mini 已经被很多公司和团队应用在了生产环境，其中不乏�
     <img src="/cases/3.jpg" alt="字多">
     <span>字多</span>
   </div>
+  <div class="case">
+    <img src="/cases/4.jpg" alt="伊旅小向导">
+    <span>伊旅小向导</span>
+  </div>
+  <div class="case">
+    <img src="/cases/5.jpg" alt="枫之谷联盟">
+    <span>枫之谷联盟</span>
+  </div>
 </div>
 
 <style>
