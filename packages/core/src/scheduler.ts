@@ -115,7 +115,9 @@ function flushJobs(seen?: CountMap): void {
       }
 
       job()
-      job.flags! &= ~SchedulerJobFlags.QUEUED
+      if (!(job.flags! & SchedulerJobFlags.ALLOW_RECURSE)) {
+        job.flags! &= ~SchedulerJobFlags.QUEUED
+      }
     }
   } finally {
     // If there was an error we still need to clear the QUEUED flags
