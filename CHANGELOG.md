@@ -1,3 +1,13 @@
+# 1.1.1 (2024-09-21)
+
+### 依赖
+
+- **@vue/reactivity:** 从 3.5.5 升至 3.5.7，详情请看 [Vue 更新日志](https://github.com/vuejs/vue-next/blob/main/CHANGELOG.md) ([f1f68b5](https://github.com/vue-mini/vue-mini/commit/f1f68b5d4e237718530965786a78ff63d770b6f7))
+
+### Bug 修复
+
+- **scheduler:** ensure recursive jobs can't be queued twice ([6b27c64](https://github.com/vue-mini/vue-mini/commit/6b27c644eafc997c3c365fd353658df1698878b2))
+
 # 1.1.0 (2024-09-15)
 
 ### 依赖
