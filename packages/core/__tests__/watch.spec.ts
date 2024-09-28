@@ -1168,7 +1168,7 @@ describe('watch', () => {
     expect(foo.value.a).toBe(2)
   })
 
-  it('should be executed correctly', () => {
+  test('should be executed correctly', () => {
     const v = ref(1)
     let foo = ''
 
@@ -1194,6 +1194,32 @@ describe('watch', () => {
     expect(foo).toBe('')
     v.value++
     expect(foo).toBe('12')
+  })
+
+  // 12045
+  test('sync watcher should not break default watchers', async () => {
+    const count1 = ref(0)
+    const count2 = ref(0)
+
+    watch(
+      count1,
+      () => {
+        count2.value++
+      },
+      { flush: 'sync' },
+    )
+
+    const spy1 = vi.fn()
+    watch([count1, count2], spy1)
+
+    const spy2 = vi.fn()
+    watch(count1, spy2)
+
+    count1.value++
+
+    await nextTick()
+    expect(spy1).toHaveBeenCalled()
+    expect(spy2).toHaveBeenCalled()
   })
 
   /** Dividing line, the above tests is directly copy from vue.js **/
