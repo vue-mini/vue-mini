@@ -22,10 +22,12 @@ export type ComponentSetup<Props extends Record<string, any>> = (
 export type ComponentOptionsWithoutProps<
   Data extends WechatMiniprogram.Component.DataOption,
   Methods extends WechatMiniprogram.Component.MethodOption,
+  Behavior extends WechatMiniprogram.Component.BehaviorOption,
 > = WechatMiniprogram.Component.Options<
   Data,
   WechatMiniprogram.Component.PropertyOption,
-  Methods
+  Methods,
+  Behavior
 > & { properties?: undefined } & {
   setup?: ComponentSetup<{}>
 }
@@ -34,7 +36,8 @@ export type ComponentOptionsWithProps<
   Props extends WechatMiniprogram.Component.PropertyOption,
   Data extends WechatMiniprogram.Component.DataOption,
   Methods extends WechatMiniprogram.Component.MethodOption,
-> = WechatMiniprogram.Component.Options<Data, Props, Methods> & {
+  Behavior extends WechatMiniprogram.Component.BehaviorOption,
+> = WechatMiniprogram.Component.Options<Data, Props, Methods, Behavior> & {
   setup?: ComponentSetup<PropertyOptionToData<Props>>
 }
 
@@ -49,8 +52,9 @@ type PropertyToData<T extends WechatMiniprogram.Component.AllProperty> =
     WechatMiniprogram.Component.ValueType<T>
   : T extends WechatMiniprogram.Component.AllFullProperty ?
     T['optionalTypes'] extends OptionalTypes<infer Option> ?
-      WechatMiniprogram.Component.ValueType<Option | T['type']>
-    : WechatMiniprogram.Component.ValueType<T['type']>
+      | WechatMiniprogram.Component.FullPropertyToData<T>
+      | WechatMiniprogram.Component.ValueType<Option>
+    : WechatMiniprogram.Component.FullPropertyToData<T>
   : never
 type OptionalTypes<T extends WechatMiniprogram.Component.PropertyType> = T[]
 /*************************************************************************************/
@@ -81,14 +85,19 @@ export function defineComponent(
 export function defineComponent<
   Data extends WechatMiniprogram.Component.DataOption,
   Methods extends WechatMiniprogram.Component.MethodOption,
->(options: ComponentOptionsWithoutProps<Data, Methods>, config?: Config): string
+  Behavior extends WechatMiniprogram.Component.BehaviorOption,
+>(
+  options: ComponentOptionsWithoutProps<Data, Methods, Behavior>,
+  config?: Config,
+): string
 
 export function defineComponent<
   Props extends WechatMiniprogram.Component.PropertyOption,
   Data extends WechatMiniprogram.Component.DataOption,
   Methods extends WechatMiniprogram.Component.MethodOption,
+  Behavior extends WechatMiniprogram.Component.BehaviorOption,
 >(
-  options: ComponentOptionsWithProps<Props, Data, Methods>,
+  options: ComponentOptionsWithProps<Props, Data, Methods, Behavior>,
   config?: Config,
 ): string
 

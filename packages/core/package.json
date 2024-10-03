@@ -33,6 +33,6 @@
   ],
   "dependencies": {
     "@vue/reactivity": "3.5.10",
-    "miniprogram-api-typings": "^3.12.3"
+    "miniprogram-api-typings": "^4.0.1"
   }
 }
