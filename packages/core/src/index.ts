@@ -121,6 +121,5 @@ export type { Query, PageContext, PageSetup, PageOptions, Config } from './page'
 export type {
   ComponentContext,
   ComponentSetup,
-  ComponentOptionsWithoutProps,
-  ComponentOptionsWithProps,
+  ComponentOptions,
 } from './component'

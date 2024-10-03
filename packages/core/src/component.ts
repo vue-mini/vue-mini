@@ -19,26 +19,15 @@ export type ComponentSetup<Props extends Record<string, any>> = (
   context: ComponentContext,
 ) => Bindings
 
-export type ComponentOptionsWithoutProps<
-  Data extends WechatMiniprogram.Component.DataOption,
-  Methods extends WechatMiniprogram.Component.MethodOption,
-  Behavior extends WechatMiniprogram.Component.BehaviorOption,
-> = WechatMiniprogram.Component.Options<
-  Data,
-  WechatMiniprogram.Component.PropertyOption,
-  Methods,
-  Behavior
-> & { properties?: undefined } & {
-  setup?: ComponentSetup<{}>
-}
-
-export type ComponentOptionsWithProps<
+export type ComponentOptions<
   Props extends WechatMiniprogram.Component.PropertyOption,
   Data extends WechatMiniprogram.Component.DataOption,
   Methods extends WechatMiniprogram.Component.MethodOption,
   Behavior extends WechatMiniprogram.Component.BehaviorOption,
 > = WechatMiniprogram.Component.Options<Data, Props, Methods, Behavior> & {
-  setup?: ComponentSetup<PropertyOptionToData<Props>>
+  setup?: ComponentSetup<
+    PropertyOptionToData<WechatMiniprogram.Component.FilterUnknownType<Props>>
+  >
 }
 
 /** * Temporary patch for https://github.com/wechat-miniprogram/api-typings/issues/97 ***/
@@ -83,21 +72,12 @@ export function defineComponent(
 ): string
 
 export function defineComponent<
-  Data extends WechatMiniprogram.Component.DataOption,
-  Methods extends WechatMiniprogram.Component.MethodOption,
-  Behavior extends WechatMiniprogram.Component.BehaviorOption,
->(
-  options: ComponentOptionsWithoutProps<Data, Methods, Behavior>,
-  config?: Config,
-): string
-
-export function defineComponent<
   Props extends WechatMiniprogram.Component.PropertyOption,
   Data extends WechatMiniprogram.Component.DataOption,
   Methods extends WechatMiniprogram.Component.MethodOption,
   Behavior extends WechatMiniprogram.Component.BehaviorOption,
 >(
-  options: ComponentOptionsWithProps<Props, Data, Methods, Behavior>,
+  options: ComponentOptions<Props, Data, Methods, Behavior>,
   config?: Config,
 ): string
 
