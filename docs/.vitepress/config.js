@@ -47,6 +47,7 @@ export default defineConfig({
         items: [
           { text: '性能', link: '/guide/performance' },
           { text: '常见问题', link: '/guide/faq' },
+          { text: '版本发布', link: '/guide/releases' },
         ],
       },
       {
