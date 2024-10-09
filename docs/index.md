@@ -36,21 +36,21 @@ features:
 
 <style>
 :root {
-  --vp-home-hero-name-color: transparent;
-  --vp-home-hero-name-background: -webkit-linear-gradient(315deg, #42d392 25%, #647eff);
-  --vp-home-hero-image-background-image: linear-gradient(0deg, #42d39280 50%, #34485e80);
-  --vp-home-hero-image-filter: blur(40px);
+  --vp-home-hero-name-color: transparent !important;
+  --vp-home-hero-name-background: -webkit-linear-gradient(315deg, #42d392 25%, #647eff) !important;
+  --vp-home-hero-image-background-image: linear-gradient(0deg, #42d39280 50%, #34485e80) !important;
+  --vp-home-hero-image-filter: blur(40px) !important;
 }
 
 @media (min-width: 640px) {
   :root {
-    --vp-home-hero-image-filter: blur(56px);
+    --vp-home-hero-image-filter: blur(56px) !important;
   }
 }
 
 @media (min-width: 960px) {
   :root {
-    --vp-home-hero-image-filter: blur(72px);
+    --vp-home-hero-image-filter: blur(72px) !important;
   }
 }
 </style>
