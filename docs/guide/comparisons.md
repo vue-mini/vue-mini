@@ -15,3 +15,7 @@ Taro 3 / Remax / kbone / Rax 运行时，这四个方案的实现细节略有不
 ## uni-app / mpvue / Megalo
 
 uni-app / mpvue / Megalo 这三个方案也可以大致归为同一类，它们与 Vue Mini 一样都是基于 Vue 的。但是 Vue Mini 与它们的差别也很明显，它们都是基于 Vue 2 的，而 Vue Mini 是基于 Vue 3 的，Vue 3 不论是响应式数据还是 Composition API 都比 Vue 2 要更加灵活、强大。由于 Vue 2 的限制，它们基本都维护了一份 Vue 2 的 Fork，Vue 3 将自身拆成了几个相对独立的部分，Vue Mini 直接且仅依赖 Vue 3 的响应式核心 @vue/reactivity，这避免了一些不必要的性能开销，也保证了运行时的小巧。另外在技术偏向上，Vue Mini 与它们的选择也不同，它们是尽量靠近 Vue，努力将 Vue 渲染到小程序，而 Vue Mini 是在原生小程序基础上借助 Vue 做增强，更靠近原生小程序。这有助于减少各种各样的坑，并且能更好更无痛的使用小程序本身的各种 API。
+
+::: tip 关于uni-app
+虽然uni-app也支持vue3和Composition API 但是uni-app在稳定性和兼容性上还是有一些不如意的地方并且uni-app的性能也稍差一点，所以在这里我们不过多讨论。
+:::
