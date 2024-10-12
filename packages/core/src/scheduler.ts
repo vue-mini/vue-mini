@@ -14,11 +14,8 @@ export interface SchedulerJob extends Function {
   flags?: SchedulerJobFlags
 }
 
-let isFlushing = false
-let isFlushPending = false
-
 const queue: SchedulerJob[] = []
-let flushIndex = 0
+let flushIndex = -1
 
 const pendingPostFlushCbs: SchedulerJob[] = []
 let activePostFlushCbs: SchedulerJob[] | null = null
@@ -46,8 +43,7 @@ export function queueJob(job: SchedulerJob): void {
 }
 
 function queueFlush(): void {
-  if (!isFlushing && !isFlushPending) {
-    isFlushPending = true
+  if (!currentFlushPromise) {
     // eslint-disable-next-line promise/prefer-await-to-then
     currentFlushPromise = resolvedPromise.then(flushJobs)
   }
@@ -85,8 +81,6 @@ export function flushPostFlushCbs(): void {
 }
 
 function flushJobs(seen?: CountMap): void {
-  isFlushPending = false
-  isFlushing = true
   /* istanbul ignore else -- @preserve  */
   if (__DEV__) {
     seen = seen || new Map()
@@ -126,10 +120,9 @@ function flushJobs(seen?: CountMap): void {
       job.flags! &= ~SchedulerJobFlags.QUEUED
     }
 
-    flushIndex = 0
+    flushIndex = -1
     queue.length = 0
 
-    isFlushing = false
     currentFlushPromise = null
   }
 }
