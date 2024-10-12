@@ -1,3 +1,17 @@
+# 1.2.0 (2024-10-12)
+
+### 依赖
+
+- **@vue/reactivity:** 从 3.5.10 升至 3.5.12，详情请看 [Vue 更新日志](https://github.com/vuejs/vue-next/blob/main/CHANGELOG.md) ([5b34143](https://github.com/vue-mini/vue-mini/commit/5b341430fd463f14758de87e5f9dbd778e791cde))
+- **miniprogram-api-typings:** 从 v3 升至 v4 ([7d83657](https://github.com/vue-mini/vue-mini/commit/7d836578131ad01dd4408a0b5fb465c8f645c090))
+
+### 类型破坏性变更
+
+请参考 Vue Mini [版本发布说明](https://vuemini.org/guide/releases.html)
+
+- `miniprogram-api-typings` 从 v3 升至 v4
+- 类型 `ComponentOptionsWithProps` 与 `ComponentOptionsWithoutProps` 合并且重命名为 `ComponentOptions`
+
 # 1.1.2 (2024-09-28)
 
 ### 依赖
