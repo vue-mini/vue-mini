@@ -27,6 +27,10 @@ console.log(app.greeting) // Hello World!
 
 ## setup
 
+::: tip 注意
+setup 只能是同步函数。
+:::
+
 - **调用时机**
 
 `setup` 会在 `onLaunch` 阶段被调用。返回的数据和方法也会在此时才会被合并到小程序实例上。
