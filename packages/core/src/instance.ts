@@ -1,6 +1,6 @@
 import type { EffectScope } from '@vue/reactivity'
 
-export type Bindings = Record<string, any> | void
+export type Bindings = Record<string, unknown> | void
 
 export type AppInstance = Record<string, any>
 
