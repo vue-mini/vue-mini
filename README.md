@@ -14,6 +14,12 @@ Vue Mini 是一个基于 Vue 3 的小程序框架，它简单，强大，高性�
 
 请访问 [vuemini.org](https://vuemini.org) 并跟随文档指引。
 
+太长不读版：
+
+```bash
+npm create vue-mini@latest
+```
+
 ## 介绍
 
 请观看我在 VueConf 2024 的分享：[《Vue Mini：不妥协的小程序框架》](https://www.bilibili.com/video/BV1J4421D7ja/)
