@@ -2,7 +2,7 @@
   "private": true,
   "version": "1.2.1",
   "type": "module",
-  "packageManager": "pnpm@9.13.2",
+  "packageManager": "pnpm@9.14.2",
   "scripts": {
     "format": "prettier --check \"**/*.{js,cjs,ts,json,md}\"",
     "lint": "eslint --ext .js,.cjs,.ts .",
