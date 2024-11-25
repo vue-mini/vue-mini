@@ -31,6 +31,10 @@ Vue Mini 已经被很多公司和团队应用在了生产环境，其中不乏�
     <img src="/cases/7.jpg" alt="日常计数器">
     <span>日常计数器</span>
   </div>
+  <div class="case">
+    <img src="/cases/8.jpg" alt="超清4K壁纸酷">
+    <span>超清4K壁纸酷</span>
+  </div>
 </div>
 
 <style>
