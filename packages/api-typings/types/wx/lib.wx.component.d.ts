@@ -1,5 +1,5 @@
 /*! *****************************************************************************
-Copyright (c) 2023 Tencent, Inc. All rights reserved.
+Copyright (c) 2024 Tencent, Inc. All rights reserved.
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of
 this software and associated documentation files (the "Software"), to deal in
@@ -21,48 +21,76 @@ SOFTWARE.
 ***************************************************************************** */
 
 declare namespace WechatMiniprogram.Component {
+  type FilterUnknownType<T> = string extends keyof T ? {} : T
   type Instance<
     TData extends DataOption,
     TProperty extends PropertyOption,
     TMethod extends Partial<MethodOption>,
+    TBehavior extends BehaviorOption,
     TCustomInstanceProperty extends IAnyObject = {},
     TIsPage extends boolean = false,
   > = InstanceProperties &
     InstanceMethods<TData> &
     TMethod &
+    MixinMethods<TBehavior> &
     (TIsPage extends true ? Page.ILifetime : {}) &
-    TCustomInstanceProperty & {
+    Omit<TCustomInstanceProperty, 'properties' | 'methods' | 'data'> & {
       /** 组件数据，**包括内部数据和属性值** */
-      data: TData & PropertyOptionToData<TProperty>
+      data: FilterUnknownType<TData> &
+        MixinData<TBehavior> &
+        MixinProperties<TBehavior> &
+        PropertyOptionToData<FilterUnknownType<TProperty>>
       /** 组件数据，**包括内部数据和属性值**（与 `data` 一致） */
-      properties: TData & PropertyOptionToData<TProperty>
+      properties: FilterUnknownType<TData> &
+        MixinData<TBehavior> &
+        MixinProperties<TBehavior> &
+        PropertyOptionToData<FilterUnknownType<TProperty>>
     }
+
+  type IEmptyArray = []
   type TrivialInstance = Instance<
     IAnyObject,
     IAnyObject,
     IAnyObject,
+    IEmptyArray,
     IAnyObject
   >
-  type TrivialOption = Options<IAnyObject, IAnyObject, IAnyObject, IAnyObject>
+  type TrivialOption = Options<
+    IAnyObject,
+    IAnyObject,
+    IAnyObject,
+    IEmptyArray,
+    IAnyObject
+  >
   type Options<
     TData extends DataOption,
     TProperty extends PropertyOption,
     TMethod extends MethodOption,
+    TBehavior extends BehaviorOption,
     TCustomInstanceProperty extends IAnyObject = {},
     TIsPage extends boolean = false,
   > = Partial<Data<TData>> &
     Partial<Property<TProperty>> &
     Partial<Method<TMethod, TIsPage>> &
+    Partial<Behavior<TBehavior>> &
     Partial<OtherOption> &
     Partial<Lifetimes> &
     ThisType<
-      Instance<TData, TProperty, TMethod, TCustomInstanceProperty, TIsPage>
+      Instance<
+        TData,
+        TProperty,
+        TMethod,
+        TBehavior,
+        TCustomInstanceProperty,
+        TIsPage
+      >
     >
   interface Constructor {
     <
       TData extends DataOption,
       TProperty extends PropertyOption,
       TMethod extends MethodOption,
+      TBehavior extends BehaviorOption,
       TCustomInstanceProperty extends IAnyObject = {},
       TIsPage extends boolean = false,
     >(
@@ -70,6 +98,7 @@ declare namespace WechatMiniprogram.Component {
         TData,
         TProperty,
         TMethod,
+        TBehavior,
         TCustomInstanceProperty,
         TIsPage
       >,
@@ -78,6 +107,37 @@ declare namespace WechatMiniprogram.Component {
   type DataOption = Record<string, any>
   type PropertyOption = Record<string, AllProperty>
   type MethodOption = Record<string, Function>
+
+  type BehaviorOption = Behavior.BehaviorIdentifier[]
+  type ExtractBehaviorType<T> = T extends { BehaviorType?: infer B } ? B : never
+  type ExtractData<T> = T extends { data: infer D } ? D : never
+  type ExtractProperties<T, TIsBehavior extends boolean = false> =
+    T extends { properties: infer P } ?
+      TIsBehavior extends true ?
+        P
+      : PropertyOptionToData<P extends PropertyOption ? P : {}>
+    : never
+  type ExtractMethods<T> = T extends { methods: infer M } ? M : never
+  type UnionToIntersection<U> =
+    (U extends any ? (k: U) => void : never) extends (k: infer I) => void ? I
+    : never
+  type MixinData<T extends any[]> = UnionToIntersection<
+    ExtractData<ExtractBehaviorType<T[number]>>
+  >
+  type MixinProperties<
+    T extends any[],
+    TIsBehavior extends boolean = false,
+  > = UnionToIntersection<
+    ExtractProperties<ExtractBehaviorType<T[number]>, TIsBehavior>
+  >
+  type MixinMethods<T extends any[]> = UnionToIntersection<
+    ExtractMethods<ExtractBehaviorType<T[number]>>
+  >
+
+  interface Behavior<B extends BehaviorOption> {
+    /** 类似于mixins和traits的组件间代码复用机制，参见 [behaviors](https://developers.weixin.qq.com/miniprogram/dev/framework/custom-component/behaviors.html) */
+    behaviors?: B
+  }
 
   interface Data<D extends DataOption> {
     /** 组件的内部数据，和 `properties` 一同用于组件的模板渲染 */
@@ -140,8 +200,13 @@ declare namespace WechatMiniprogram.Component {
   type PropertyToData<T extends AllProperty> =
     T extends ShortProperty ? ValueType<T>
     : FullPropertyToData<Exclude<T, ShortProperty>>
-  type FullPropertyToData<T extends AllFullProperty> = ValueType<T['type']>
-  // type FullPropertyToData<T extends AllFullProperty> = unknown extends T['value'] ? ValueType<T['type']> : T['value']
+  type ArrayOrObject = ArrayConstructor | ObjectConstructor
+  type FullPropertyToData<T extends AllFullProperty> =
+    T['type'] extends ArrayOrObject ?
+      unknown extends T['value'] ?
+        ValueType<T['type']>
+      : T['value']
+    : ValueType<T['type']>
   type PropertyOptionToData<P extends PropertyOption> = {
     [name in keyof P]: PropertyToData<P[name]>
   }
@@ -328,6 +393,18 @@ declare namespace WechatMiniprogram.Component {
      * 最低基础库版本：[`2.25.1`](https://developers.weixin.qq.com/miniprogram/dev/framework/compatibility.html)
      */
     setPassiveEvent(config: PassiveConfig): void
+    /**
+     * 设置初始渲染缓存的动态数据
+     *
+     * 最低基础库版本：[`2.11.1`](https://developers.weixin.qq.com/miniprogram/dev/framework/compatibility.html)
+     */
+    setInitialRenderingCache(dynamicData: IAnyObject | null): void
+    /**
+     * 返回当前页面的 appBar 组件实例
+     *
+     * 最低基础库版本：[`3.3.1`](https://developers.weixin.qq.com/miniprogram/dev/framework/compatibility.html)
+     */
+    getAppBar(): TrivialInstance
   }
 
   interface ComponentOptions {
@@ -512,8 +589,6 @@ declare namespace WechatMiniprogram.Component {
   }
 
   interface OtherOption {
-    /** 类似于mixins和traits的组件间代码复用机制，参见 [behaviors](https://developers.weixin.qq.com/miniprogram/dev/framework/custom-component/behaviors.html) */
-    behaviors: Behavior.BehaviorIdentifier[]
     /**
      * 组件数据字段监听器，用于监听 properties 和 data 的变化，参见 [数据监听器](https://developers.weixin.qq.com/miniprogram/dev/framework/custom-component/observer.html)
      *
