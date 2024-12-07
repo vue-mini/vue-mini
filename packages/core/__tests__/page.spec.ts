@@ -50,6 +50,7 @@ global.Page = (options: Record<string, any>) => {
     setUpdatePerformanceListener() {},
     getPassiveEvent() {},
     setPassiveEvent() {},
+    setInitialRenderingCache() {},
     setData(data: Record<string, unknown>, callback: () => void) {
       this.data = this.data || {}
       Object.keys(data).forEach((key) => {
@@ -336,11 +337,21 @@ describe('page', () => {
       expect(query).toBe(arg)
       expect(context.is).toBe('')
       expect(context.getOpenerEventChannel).toBeInstanceOf(Function)
+      expect(context.getAppBar).toBe(undefined)
     })
     definePage({ onLoad, setup })
     page.onLoad(arg)
     expect(onLoad).toBeCalledWith(arg)
     expect(setup).toBeCalledTimes(1)
+  })
+
+  it('context: high library version', () => {
+    definePage((_, context) => {
+      expect(context.getAppBar).toBeInstanceOf(Function)
+    })
+    const extendedPage = { ...page, getAppBar() {} }
+    // @ts-expect-error
+    extendedPage.onLoad()
   })
 
   it('onReady', () => {

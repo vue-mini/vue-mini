@@ -1,5 +1,5 @@
 /*! *****************************************************************************
-Copyright (c) 2023 Tencent, Inc. All rights reserved.
+Copyright (c) 2024 Tencent, Inc. All rights reserved.
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of
 this software and associated documentation files (the "Software"), to deal in
@@ -64,7 +64,6 @@ declare namespace WechatMiniprogram {
   type ScriptProcessorNode = any
   type PannerNode = any
   type AnalyserNode = any
-  type AudioListener = any
   type WebGLTexture = any
   type WebGLRenderingContext = any
 
