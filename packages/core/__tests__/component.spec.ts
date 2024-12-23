@@ -33,7 +33,7 @@ import {
 let component: Record<string, any>
 let renderCb: () => void
 // @ts-expect-error
-global.Component = (options: Record<string, any>) => {
+globalThis.Component = (options: Record<string, any>) => {
   component = {
     ...options,
     is: '',

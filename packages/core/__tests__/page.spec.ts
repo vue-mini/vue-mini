@@ -29,7 +29,7 @@ import {
 let page: Record<string, any>
 let renderCb: () => void
 // @ts-expect-error
-global.Page = (options: Record<string, any>) => {
+globalThis.Page = (options: Record<string, any>) => {
   page = {
     ...options,
     is: '',

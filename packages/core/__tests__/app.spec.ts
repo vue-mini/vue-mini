@@ -15,7 +15,7 @@ import {
 // Mocks
 let app: Record<string, any>
 // @ts-expect-error
-global.App = (options: Record<string, any>) => {
+globalThis.App = (options: Record<string, any>) => {
   app = options
 }
 

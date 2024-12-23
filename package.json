@@ -16,21 +16,21 @@
     "prepare": "husky"
   },
   "devDependencies": {
-    "@rollup/plugin-node-resolve": "^15.3.0",
-    "@rollup/plugin-replace": "^6.0.1",
+    "@rollup/plugin-node-resolve": "^16.0.0",
+    "@rollup/plugin-replace": "^6.0.2",
     "@rollup/plugin-terser": "^0.4.4",
-    "@rollup/plugin-typescript": "^12.1.1",
-    "@vitest/coverage-istanbul": "^2.1.5",
-    "execa": "^9.5.1",
+    "@rollup/plugin-typescript": "^12.1.2",
+    "@vitest/coverage-istanbul": "^2.1.8",
+    "execa": "^9.5.2",
     "fs-extra": "^11.2.0",
     "husky": "^9.1.7",
-    "lint-staged": "^15.2.10",
-    "rollup": "^4.27.4",
+    "lint-staged": "^15.2.11",
+    "rollup": "^4.29.1",
     "rollup-plugin-dts": "^6.1.1",
     "typescript": "^5.7.2",
     "vitepress": "^1.5.0",
-    "vitest": "^2.1.5",
-    "xo": "^0.59.3"
+    "vitest": "^2.1.8",
+    "xo": "^0.60.0"
   },
   "pnpm": {
     "peerDependencyRules": {
