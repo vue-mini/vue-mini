@@ -65,6 +65,12 @@ importers:
         specifier: ^4.0.2
         version: 4.0.2
 
+  packages/pinia:
+    devDependencies:
+      '@vue-mini/core':
+        specifier: workspace:*
+        version: link:../core
+
 packages:
 
   '@algolia/autocomplete-core@1.17.7':

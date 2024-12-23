@@ -1,0 +1,15 @@
+{
+  "name": "@vue-mini/pinia",
+  "version": "0.0.1",
+  "description": "Pinia For Vue Mini",
+  "repository": "https://github.com/vue-mini/vue-mini.git",
+  "homepage": "https://vuemini.org",
+  "author": "Yang Mingshan <y.mingshan3@gmail.com>",
+  "license": "MIT",
+  "peerDependencies": {
+    "@vue-mini/core": "^1.2.1"
+  },
+  "devDependencies": {
+    "@vue-mini/core": "workspace:*"
+  }
+}
