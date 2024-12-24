@@ -1,5 +1,5 @@
 /*! *****************************************************************************
-Copyright (c) 2023 Tencent, Inc. All rights reserved.
+Copyright (c) 2024 Tencent, Inc. All rights reserved.
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of
 this software and associated documentation files (the "Software"), to deal in
@@ -265,11 +265,6 @@ declare module 'XrFrame' {
     registerUniformDesc: typeof xrFrameSystem.registerUniformDesc
     registerVertexDataDesc: typeof xrFrameSystem.registerVertexDataDesc
     registerVertexLayout: typeof xrFrameSystem.registerVertexLayout
-    // EDracoDataType: typeof xrFrameSystem.// EDracoDataType;
-    // EDracoDecodeType: typeof xrFrameSystem.// EDracoDecodeType;
-    // EDracoErrorCode: typeof xrFrameSystem.// EDracoErrorCode;
-    // EDracoGeometryType: typeof xrFrameSystem.// EDracoGeometryType;
-    // DracoDecoded: typeof xrFrameSystem.// DracoDecoded;
     registerAssetLoader: typeof xrFrameSystem.registerAssetLoader
     Component: typeof xrFrameSystem.Component
     Element: typeof xrFrameSystem.Element
@@ -296,6 +291,7 @@ declare module 'XrFrame' {
     BoundBall: typeof xrFrameSystem.BoundBall
     BoundBox: typeof xrFrameSystem.BoundBox
     Spherical: typeof xrFrameSystem.Spherical
+    RaycastHit: typeof xrFrameSystem.RaycastHit
     Transform: typeof xrFrameSystem.Transform
     AssetLoad: typeof xrFrameSystem.AssetLoad
     Assets: typeof xrFrameSystem.Assets

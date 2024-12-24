@@ -15,10 +15,5 @@
     "noUnusedParameters": true,
     "types": ["vitest/globals"]
   },
-  "include": [
-    "packages/core",
-    "global.d.ts",
-    "vitest.setup.ts",
-    "vitest.config.ts"
-  ]
+  "include": ["packages", "global.d.ts", "vitest.setup.ts", "vitest.config.ts"]
 }
