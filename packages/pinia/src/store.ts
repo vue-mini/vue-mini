@@ -9,7 +9,6 @@ import {
   watch,
   inject,
   reactive,
-  markRaw,
   isRef,
   isReactive,
   effectScope,
@@ -115,7 +114,7 @@ function isComputed(o: any): o is ComputedRef {
   return Boolean(isRef(o) && (o as any).effect)
 }
 
-function createSetupStore<
+function createStore<
   Id extends string,
   SS extends Record<any, unknown>,
   S extends StateTree,
@@ -123,11 +122,11 @@ function createSetupStore<
   A extends _ActionsTree,
 >(
   $id: Id,
-  setup: (helpers: SetupStoreHelpers) => SS,
+  setup: () => SS,
   // eslint-disable-next-line @typescript-eslint/default-param-last
   options: DefineSetupStoreOptions<Id, S, G, A> = {},
   pinia: Pinia,
-): Store<Id, S, G, A> {
+): void {
   let scope!: EffectScope
 
   // eslint-disable-next-line prefer-object-spread
@@ -262,7 +261,7 @@ function createSetupStore<
       return fn
     }
 
-    const wrappedAction = function (this: any) {
+    const wrappedAction = function () {
       // eslint-disable-next-line unicorn/prefer-spread, prefer-rest-params
       const args = Array.from(arguments)
 
@@ -287,7 +286,8 @@ function createSetupStore<
 
       let ret: unknown
       try {
-        ret = fn.apply(this && this.$id === $id ? this : store, args)
+        // eslint-disable-next-line prefer-spread
+        ret = fn.apply(null, args)
         // Handle sync errors
       } catch (error) {
         triggerSubscriptions(onErrorCallbackList, error)
@@ -326,7 +326,6 @@ function createSetupStore<
   // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
   const partialStore = {
     _p: pinia,
-    // _s: scope,
     $id,
     $onAction: addSubscription.bind(null, actionSubscriptions),
     $patch,
@@ -364,19 +363,12 @@ function createSetupStore<
     $dispose,
   } as _StoreWithState<Id, S, G, A>
 
-  const store: Store<Id, S, G, A> = reactive(
-    __DEV__ ?
-      // eslint-disable-next-line prefer-object-spread
-      assign(
-        {
-          _customProperties: markRaw(new Set<string>()), // Devtools custom properties
-        },
-        partialStore,
-        // Must be added later
-        // setupStore
-      )
-    : partialStore,
-  ) as unknown as Store<Id, S, G, A>
+  const store: Store<Id, S, G, A> = reactive(partialStore) as unknown as Store<
+    Id,
+    S,
+    G,
+    A
+  >
 
   // Store the partial store now so the setup of stores can instantiate each other before they are finished without
   // creating infinite loops.
@@ -384,7 +376,7 @@ function createSetupStore<
 
   const setupStore = pinia._e.run(
     // eslint-disable-next-line no-return-assign
-    () => (scope = effectScope()).run(() => setup({ action }))!,
+    () => (scope = effectScope()).run(() => setup()),
   )!
 
   // Overwrite existing actions to support $onAction
@@ -398,24 +390,12 @@ function createSetupStore<
       pinia.state.value[$id][key] = prop
     } else if (typeof prop === 'function') {
       const actionValue = action(prop as _Method, key)
-      // This a hot module replacement store because the hotUpdate method needs
-      // to do it with the right context
       // @ts-expect-error
       setupStore[key] = actionValue
 
       // List actions so they can be used in plugins
       // @ts-expect-error
       optionsForPlugin.actions[key] = prop
-    } else if (__DEV__) {
-      // Add getters for devtools
-      // eslint-disable-next-line unicorn/no-lonely-if
-      if (isComputed(prop)) {
-        const getters: string[] =
-          (setupStore._getters as string[]) ||
-          // @ts-expect-error: same
-          ((setupStore._getters = markRaw([])) as string[])
-        getters.push(key)
-      }
     }
   }
 
@@ -469,7 +449,6 @@ function createSetupStore<
 
   isListening = true
   isSyncListening = true
-  return store
 }
 
 /**
@@ -498,14 +477,10 @@ export type StoreState<SS> =
     UnwrapRef<S>
   : _ExtractStateFromSetupStore<SS>
 
-export interface SetupStoreHelpers {
-  action: <Fn extends _Method>(fn: Fn) => Fn
-}
-
 /*! #__NO_SIDE_EFFECTS__ */
 export function defineStore<Id extends string, SS extends Record<any, unknown>>(
   id: Id,
-  setup: (helpers: SetupStoreHelpers) => SS,
+  setup: () => SS,
   options?: DefineSetupStoreOptions<
     Id,
     _ExtractStateFromSetupStore<SS>,
@@ -522,7 +497,7 @@ export function defineStore<Id extends string, SS extends Record<any, unknown>>(
     const pinia = inject(piniaSymbol)!
 
     if (!pinia._s.has(id)) {
-      createSetupStore(id, setup, options, pinia)
+      createStore(id, setup, options, pinia)
 
       /* istanbul ignore else */
       if (__DEV__) {
