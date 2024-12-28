@@ -2,7 +2,7 @@ import type { Ref } from '@vue-mini/core'
 import { ref, effectScope, provide } from '@vue-mini/core'
 import type { StateTree, StoreGeneric } from './types'
 import type { Pinia } from './root-store'
-import { setActivePinia, piniaSymbol } from './root-store'
+import { piniaSymbol } from './root-store'
 
 /**
  * Creates a Pinia instance to be used by the application
@@ -27,9 +27,6 @@ export function createPinia(): Pinia {
     state,
   }
 
-  // This allows calling useStore() outside of a component setup after
-  // installing pinia's plugin
-  setActivePinia(pinia)
   provide(piniaSymbol, pinia)
 
   return pinia

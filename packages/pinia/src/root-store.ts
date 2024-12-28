@@ -1,5 +1,4 @@
 import type { EffectScope, InjectionKey, Ref } from '@vue-mini/core'
-import { inject } from '@vue-mini/core'
 import type {
   StateTree,
   PiniaCustomProperties,
@@ -11,31 +10,6 @@ import type {
   StoreGeneric,
 } from './types'
 import { _Method } from './types'
-
-export let activePinia: Pinia | undefined
-
-/**
- * Sets or unsets the active pinia. Used in SSR and internally when calling
- * actions and getters
- *
- * @param pinia - Pinia instance
- */
-// @ts-expect-error: cannot constrain the type of the return
-export const setActivePinia: _SetActivePinia = (pinia) => {
-  activePinia = pinia
-  return pinia
-}
-
-interface _SetActivePinia {
-  (pinia: Pinia): Pinia
-  (pinia: undefined): undefined
-  (pinia: Pinia | undefined): Pinia | undefined
-}
-
-/**
- * Get the currently active pinia if there is any.
- */
-export const getActivePinia = () => inject(piniaSymbol) || activePinia
 
 /**
  * Every application must own its own pinia to be able to create stores
@@ -115,9 +89,3 @@ export interface PiniaPluginContext<
 export type PiniaPlugin = (
   context: PiniaPluginContext,
 ) => Partial<PiniaCustomProperties & PiniaCustomStateProperties> | void
-
-/**
- * Plugin to extend every store.
- * @deprecated use PiniaPlugin instead
- */
-export type PiniaStorePlugin = PiniaPlugin
