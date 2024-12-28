@@ -381,16 +381,6 @@ export interface _StoreWithState<
  */
 export type _Method = (...args: any[]) => any
 
-// In this type we forget about this because otherwise the type is recursive
-/**
- * Store augmented for actions. For internal usage only.
- * For internal use **only**
- */
-export type _StoreWithActions<A> = {
-  [k in keyof A]: A[k] extends (...args: infer P) => infer R ? (...args: P) => R
-  : never
-}
-
 /**
  * Store augmented with getters. For internal usage only.
  * For internal use **only**
@@ -675,16 +665,3 @@ export interface DefineStoreOptionsInPlugin<
    */
   actions: A
 }
-
-/**
- * Utility type. For internal use **only**
- */
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
-export interface _Empty {}
-
-/**
- * Merges type objects for better readability in the code.
- * Utility type. For internal use **only**
- */
-export type _Simplify<T> =
-  _Empty extends T ? _Empty : { [key in keyof T]: T[key] } & {}
