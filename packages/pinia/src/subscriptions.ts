@@ -1,14 +1,12 @@
 import { getCurrentScope, onScopeDispose } from '@vue-mini/core'
 import type { _Method } from './types'
 
-// eslint-disable-next-line @typescript-eslint/no-empty-function
-export const noop = () => {}
-
 export function addSubscription<T extends _Method>(
   subscriptions: T[],
   callback: T,
   detached?: boolean,
-  onCleanup: () => void = noop,
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  onCleanup = () => {},
 ) {
   subscriptions.push(callback)
 

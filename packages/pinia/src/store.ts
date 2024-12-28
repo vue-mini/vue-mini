@@ -28,22 +28,16 @@ import type {
   SubscriptionCallbackMutation,
   DefineSetupStoreOptions,
   DefineStoreOptionsInPlugin,
-  StoreGeneric,
   _StoreWithGetters,
   _ExtractActionsFromSetupStore,
   _ExtractGettersFromSetupStore,
   _ExtractStateFromSetupStore,
   _StoreWithState,
 } from './types'
-import {
-  isPlainObject,
-  MutationType,
-  _StoreWithGetters_Readonly,
-  _StoreWithGetters_Writable,
-} from './types'
+import { isPlainObject, MutationType } from './types'
 import type { Pinia } from './root-store'
 import { piniaSymbol } from './root-store'
-import { addSubscription, triggerSubscriptions, noop } from './subscriptions'
+import { addSubscription, triggerSubscriptions } from './subscriptions'
 
 type _ArrayType<AT> = AT extends Array<infer T> ? T : never
 
@@ -232,16 +226,6 @@ function createStore<
     )
   }
 
-  const $reset =
-    /* istanbul ignore next */
-    __DEV__ ?
-      () => {
-        throw new Error(
-          `🍍: Store "${$id}" is built using the setup syntax and does not implement $reset().`,
-        )
-      }
-    : noop
-
   function $dispose() {
     scope.stop()
     subscriptions = []
@@ -329,7 +313,6 @@ function createStore<
     $id,
     $onAction: addSubscription.bind(null, actionSubscriptions),
     $patch,
-    $reset,
     $subscribe(callback, options = {}) {
       const removeSubscription = addSubscription(
         subscriptions,
@@ -433,20 +416,6 @@ function createStore<
     )
   })
 
-  if (
-    __DEV__ &&
-    store.$state &&
-    typeof store.$state === 'object' &&
-    typeof store.$state.constructor === 'function' &&
-    !store.$state.constructor.toString().includes('[native code]')
-  ) {
-    console.warn(
-      `[🍍]: The "state" must be a plain object. It cannot be\n` +
-        `\tstate: () => new MyClass()\n` +
-        `Found in store "${store.$id}".`,
-    )
-  }
-
   isListening = true
   isSyncListening = true
 }
@@ -506,9 +475,8 @@ export function defineStore<Id extends string, SS extends Record<any, unknown>>(
       }
     }
 
-    const store: StoreGeneric = pinia._s.get(id)!
+    const store = pinia._s.get(id)!
 
-    // StoreGeneric cannot be casted towards Store
     return store as any
   }
 

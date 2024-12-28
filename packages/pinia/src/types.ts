@@ -57,8 +57,6 @@ export enum MutationType {
    * - `store.$patch(state => state.name = 'newName')`
    */
   patchFunction = 'patch function',
-
-  // Maybe reset? for $state = {} and $reset
 }
 
 /**
@@ -280,11 +278,6 @@ export interface _StoreWithState<
     // This prevents the user from using `async` which isn't allowed
     stateMutator: ReturnType<F> extends Promise<any> ? never : F,
   ): void
-
-  /**
-   * Resets the store to its initial state by building a new state object.
-   */
-  $reset(): void
 
   /**
    * Setups a callback to be called whenever the state changes. It also returns a function to remove the callback. Note
