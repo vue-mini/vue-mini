@@ -62,7 +62,7 @@ export enum MutationType {
 /**
  * Base type for the context passed to a subscription callback. Internal type.
  */
-export interface _SubscriptionCallbackMutationBase {
+interface _SubscriptionCallbackMutationBase {
   /**
    * Type of the mutation.
    */
@@ -155,11 +155,7 @@ export type SubscriptionCallback<S> = (
  * purposes. For internal use only.
  * For internal use **only**
  */
-export interface _StoreOnActionListenerContext<
-  Store,
-  ActionName extends string,
-  A,
-> {
+interface _StoreOnActionListenerContext<Store, ActionName extends string, A> {
   /**
    * Name of the action
    */
@@ -354,16 +350,9 @@ export interface _StoreWithState<
 export type _Method = (...args: any[]) => any
 
 /**
- * Store augmented with getters. For internal usage only.
- * For internal use **only**
- */
-export type _StoreWithGetters<G> = _StoreWithGetters_Readonly<G> &
-  _StoreWithGetters_Writable<G>
-
-/**
  * Store augmented with readonly getters. For internal usage **only**.
  */
-export type _StoreWithGetters_Readonly<G> = {
+type _StoreWithGetters_Readonly<G> = {
   readonly [K in keyof G as G[K] extends (...args: any[]) => any ? K
   : ComputedRef extends G[K] ? K
   : never]: G[K] extends (...args: any[]) => infer R ? R : UnwrapRef<G[K]>
@@ -372,12 +361,19 @@ export type _StoreWithGetters_Readonly<G> = {
 /**
  * Store augmented with writable getters. For internal usage **only**.
  */
-export type _StoreWithGetters_Writable<G> = {
+type _StoreWithGetters_Writable<G> = {
   [K in keyof G as G[K] extends WritableComputedRef<any> ? K
   : // NOTE: there is still no way to have a different type for a setter and a getter in TS with dynamic keys
     // https://github.com/microsoft/TypeScript/issues/43826
     never]: G[K] extends WritableComputedRef<infer R, infer _S> ? R : never
 }
+
+/**
+ * Store augmented with getters. For internal usage only.
+ * For internal use **only**
+ */
+export type _StoreWithGetters<G> = _StoreWithGetters_Readonly<G> &
+  _StoreWithGetters_Writable<G>
 
 /**
  * Store type to build a store.
@@ -473,7 +469,7 @@ export type _ActionsTree = Record<string, _Method>
  * Type that enables refactoring through IDE.
  * For internal use **only**
  */
-export type _ExtractStateFromSetupStore_Keys<SS> = keyof {
+type _ExtractStateFromSetupStore_Keys<SS> = keyof {
   [K in keyof SS as SS[K] extends _Method | ComputedRef ? never : K]: any
 }
 
@@ -481,7 +477,7 @@ export type _ExtractStateFromSetupStore_Keys<SS> = keyof {
  * Type that enables refactoring through IDE.
  * For internal use **only**
  */
-export type _ExtractActionsFromSetupStore_Keys<SS> = keyof {
+type _ExtractActionsFromSetupStore_Keys<SS> = keyof {
   [K in keyof SS as SS[K] extends _Method ? K : never]: any
 }
 
@@ -489,7 +485,7 @@ export type _ExtractActionsFromSetupStore_Keys<SS> = keyof {
  * Type that enables refactoring through IDE.
  * For internal use **only**
  */
-export type _ExtractGettersFromSetupStore_Keys<SS> = keyof {
+type _ExtractGettersFromSetupStore_Keys<SS> = keyof {
   [K in keyof SS as SS[K] extends ComputedRef ? K : never]: any
 }
 
@@ -530,73 +526,6 @@ export type _ExtractGettersFromSetupStore<SS> =
 export interface DefineStoreOptionsBase<S extends StateTree, Store> {}
 
 /**
- * Options parameter of `defineStore()` for option stores. Can be extended to
- * augment stores with the plugin API. @see {@link DefineStoreOptionsBase}.
- */
-export interface DefineStoreOptions<
-  Id extends string,
-  S extends StateTree,
-  G /* extends GettersTree<S> */,
-  A /* extends Record<string, StoreAction> */,
-> extends DefineStoreOptionsBase<S, Store<Id, S, G, A>> {
-  /**
-   * Unique string key to identify the store across the application.
-   */
-  id: Id
-
-  /**
-   * Function to create a fresh state. **Must be an arrow function** to ensure
-   * correct typings!
-   */
-  state?: () => S
-
-  /**
-   * Optional object of getters.
-   */
-  getters?: G &
-    ThisType<UnwrapRef<S> & _StoreWithGetters<G> & PiniaCustomProperties> &
-    _GettersTree<S>
-
-  /**
-   * Optional object of actions.
-   */
-  actions?: A &
-    ThisType<
-      A &
-        UnwrapRef<S> &
-        _StoreWithState<Id, S, G, A> &
-        _StoreWithGetters<G> &
-        PiniaCustomProperties
-    >
-
-  /**
-   * Allows hydrating the store during SSR when complex state (like client side only refs) are used in the store
-   * definition and copying the value from `pinia.state` isn't enough.
-   *
-   * @example
-   * If in your `state`, you use any `customRef`s, any `computed`s, or any `ref`s that have a different value on
-   * Server and Client, you need to manually hydrate them. e.g., a custom ref that is stored in the local
-   * storage:
-   *
-   * ```ts
-   * const useStore = defineStore('main', {
-   *   state: () => ({
-   *     n: useLocalStorage('key', 0)
-   *   }),
-   *   hydrate(storeState, initialState) {
-   *     // @ts-expect-error: https://github.com/microsoft/TypeScript/issues/43826
-   *     storeState.n = useLocalStorage('key', 0)
-   *   }
-   * })
-   * ```
-   *
-   * @param storeState - the current state in the store
-   * @param initialState - initialState
-   */
-  hydrate?(storeState: UnwrapRef<S>, initialState: UnwrapRef<S>): void
-}
-
-/**
  * Options parameter of `defineStore()` for setup stores. Can be extended to
  * augment stores with the plugin API. @see {@link DefineStoreOptionsBase}.
  */
@@ -623,7 +552,7 @@ export interface DefineStoreOptionsInPlugin<
   S extends StateTree,
   G,
   A,
-> extends Omit<DefineStoreOptions<Id, S, G, A>, 'id' | 'actions'> {
+> extends DefineStoreOptionsBase<S, Store<Id, S, G, A>> {
   /**
    * Extracted object of actions. Added by useStore() when the store is built
    * using the setup API, otherwise uses the one passed to `defineStore()`.
