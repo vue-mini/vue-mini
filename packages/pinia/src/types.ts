@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-empty-interface */
 import type {
   ComputedRef,
   DebuggerEvent,
@@ -431,7 +432,6 @@ export interface StoreDefinition<
 /**
  * Interface to be extended by the user when they add properties through plugins.
  */
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface PiniaCustomProperties<
   // @ts-expect-error
   Id extends string = string,
@@ -446,7 +446,6 @@ export interface PiniaCustomProperties<
  * Properties that are added to every `store.$state` by `pinia.use()`.
  */
 // @ts-expect-error
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface PiniaCustomStateProperties<S extends StateTree = StateTree> {}
 
 /**
@@ -522,7 +521,6 @@ export type _ExtractGettersFromSetupStore<SS> =
  * of stores.
  */
 // @ts-expect-error
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface DefineStoreOptionsBase<S extends StateTree, Store> {}
 
 /**

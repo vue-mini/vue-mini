@@ -1,3 +1,4 @@
+/* eslint-disable no-prototype-builtins, symbol-description, prefer-object-spread, promise/prefer-await-to-then, @typescript-eslint/consistent-type-assertions */
 import type {
   DebuggerEvent,
   WatchOptions,
@@ -45,13 +46,11 @@ type _ArrayType<AT> = AT extends Array<infer T> ? T : never
  * Marks a function as an action for `$onAction`
  * @internal
  */
-// eslint-disable-next-line symbol-description
 const ACTION_MARKER = Symbol()
 /**
  * Action name symbol. Allows to add a name to an action after defining it
  * @internal
  */
-// eslint-disable-next-line symbol-description
 const ACTION_NAME = Symbol()
 /**
  * Function type extended with action markers
@@ -76,14 +75,12 @@ function mergeReactiveObjects<
 
   // No need to go through symbols because they cannot be serialized anyway
   for (const key in patchToApply) {
-    // eslint-disable-next-line no-prototype-builtins
     if (!patchToApply.hasOwnProperty(key)) continue
     const subPatch = patchToApply[key]
     const targetValue = target[key]
     if (
       isPlainObject(targetValue) &&
       isPlainObject(subPatch) &&
-      // eslint-disable-next-line no-prototype-builtins
       target.hasOwnProperty(key) &&
       !isRef(subPatch) &&
       !isReactive(subPatch)
@@ -123,9 +120,7 @@ function createStore<
 ): void {
   let scope!: EffectScope
 
-  // eslint-disable-next-line prefer-object-spread
   const optionsForPlugin: DefineStoreOptionsInPlugin<Id, S, G, A> = assign(
-    // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
     { actions: {} as A },
     options,
   )
@@ -184,8 +179,8 @@ function createStore<
       | ((state: UnwrapRef<S>) => void),
   ): void {
     let subscriptionMutation: SubscriptionCallbackMutation<S>
-    // eslint-disable-next-line no-multi-assign
-    isListening = isSyncListening = false
+    isListening = false
+    isSyncListening = false
     // Reset the debugger events since patches are sync
     /* istanbul ignore else */
     if (__DEV__) {
@@ -209,10 +204,9 @@ function createStore<
       }
     }
 
-    // eslint-disable-next-line no-multi-assign, symbol-description
-    const myListenerId = (activeListener = Symbol())
-    // eslint-disable-next-line @typescript-eslint/no-floating-promises, promise/prefer-await-to-then
-    nextTick().then(() => {
+    activeListener = Symbol()
+    const myListenerId = activeListener
+    void nextTick().then(() => {
       if (activeListener === myListenerId) {
         isListening = true
       }
@@ -245,10 +239,7 @@ function createStore<
       return fn
     }
 
-    const wrappedAction = function () {
-      // eslint-disable-next-line unicorn/prefer-spread, prefer-rest-params
-      const args = Array.from(arguments)
-
+    const wrappedAction = function (...args) {
       const afterCallbackList: Array<(resolvedReturn: any) => any> = []
       const onErrorCallbackList: Array<(error: unknown) => unknown> = []
       function after(callback: _ArrayType<typeof afterCallbackList>) {
@@ -270,8 +261,7 @@ function createStore<
 
       let ret: unknown
       try {
-        // eslint-disable-next-line prefer-spread
-        ret = fn.apply(null, args)
+        ret = fn(...args)
         // Handle sync errors
       } catch (error) {
         triggerSubscriptions(onErrorCallbackList, error)
@@ -279,19 +269,15 @@ function createStore<
       }
 
       if (ret instanceof Promise) {
-        return (
-          ret
-            // eslint-disable-next-line promise/prefer-await-to-then
-            .then((value) => {
-              triggerSubscriptions(afterCallbackList, value)
-              return value
-            })
-            // eslint-disable-next-line promise/prefer-await-to-then
-            .catch((error: unknown) => {
-              triggerSubscriptions(onErrorCallbackList, error)
-              throw error
-            })
-        )
+        return ret
+          .then((value) => {
+            triggerSubscriptions(afterCallbackList, value)
+            return value
+          })
+          .catch((error: unknown) => {
+            triggerSubscriptions(onErrorCallbackList, error)
+            throw error
+          })
       }
 
       // Trigger after callbacks
@@ -307,7 +293,6 @@ function createStore<
     return wrappedAction
   }
 
-  // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
   const partialStore = {
     _p: pinia,
     $id,
@@ -318,8 +303,9 @@ function createStore<
         subscriptions,
         callback,
         options.detached,
-        // eslint-disable-next-line @typescript-eslint/no-confusing-void-expression
-        () => stopWatcher(),
+        () => {
+          stopWatcher()
+        },
       )
       const stopWatcher = scope.run(() =>
         watch(
@@ -336,7 +322,6 @@ function createStore<
               )
             }
           },
-          // eslint-disable-next-line prefer-object-spread
           assign({}, $subscribeOptions, options),
         ),
       )!
@@ -357,10 +342,10 @@ function createStore<
   // creating infinite loops.
   pinia._s.set($id, store as Store)
 
-  const setupStore = pinia._e.run(
-    // eslint-disable-next-line no-return-assign
-    () => (scope = effectScope()).run(() => setup()),
-  )!
+  const setupStore = pinia._e.run(() => {
+    scope = effectScope()
+    return scope.run(() => setup())
+  })!
 
   // Overwrite existing actions to support $onAction
   // eslint-disable-next-line guard-for-in
@@ -392,9 +377,10 @@ function createStore<
   // without linking the computed lifespan to wherever the store is first
   // created.
   Object.defineProperty(store, '$state', {
-    get: () => pinia.state.value[$id],
-    // eslint-disable-next-line object-shorthand
-    set: (state) => {
+    get() {
+      return pinia.state.value[$id]
+    },
+    set(state) {
       $patch(($state) => {
         // @ts-expect-error: FIXME: shouldn't error?
         assign($state, state)
