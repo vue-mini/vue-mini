@@ -4,6 +4,11 @@ export default defineConfig({
   define: {
     __DEV__: true,
   },
+  resolve: {
+    alias: {
+      '@vue-mini/core': 'packages/core/src/index.ts',
+    },
+  },
   test: {
     watch: false,
     globals: true,
