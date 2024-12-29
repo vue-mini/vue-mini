@@ -20,6 +20,7 @@
     "@rollup/plugin-replace": "^6.0.2",
     "@rollup/plugin-terser": "^0.4.4",
     "@rollup/plugin-typescript": "^12.1.2",
+    "@types/node": "^22.10.2",
     "@vitest/coverage-istanbul": "^2.1.8",
     "execa": "^9.5.2",
     "fs-extra": "^11.2.0",

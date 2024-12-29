@@ -125,23 +125,23 @@ function createStore<
     options,
   )
 
-  /* istanbul ignore if */
+  /* istanbul ignore if -- @preserve */
   if (__DEV__ && !pinia._e.active) {
     throw new Error('Pinia destroyed')
   }
 
   // Watcher options for $subscribe
   const $subscribeOptions: WatchOptions = { deep: true }
-  /* istanbul ignore else */
+  /* istanbul ignore else -- @preserve */
   if (__DEV__) {
     $subscribeOptions.onTrigger = (event) => {
-      /* istanbul ignore else */
+      /* istanbul ignore else -- @preserve */
       if (isListening) {
         debuggerEvents = event
         // Avoid triggering this while the store is being built and the state is being set in pinia
       } else {
         // Let patch send all the events together later
-        /* istanbul ignore else */
+        /* istanbul ignore else -- @preserve */
         // eslint-disable-next-line no-lonely-if
         if (Array.isArray(debuggerEvents)) {
           debuggerEvents.push(event)
@@ -182,7 +182,7 @@ function createStore<
     isListening = false
     isSyncListening = false
     // Reset the debugger events since patches are sync
-    /* istanbul ignore else */
+    /* istanbul ignore else -- @preserve */
     if (__DEV__) {
       debuggerEvents = []
     }
@@ -354,7 +354,6 @@ function createStore<
 
     if ((isRef(prop) && !isComputed(prop)) || isReactive(prop)) {
       // Transfer the ref to the pinia state to keep everything in sync
-      /* istanbul ignore if */
       pinia.state.value[$id][key] = prop
     } else if (typeof prop === 'function') {
       const actionValue = action(prop as _Method, key)
@@ -454,7 +453,7 @@ export function defineStore<Id extends string, SS extends Record<any, unknown>>(
     if (!pinia._s.has(id)) {
       createStore(id, setup, options, pinia)
 
-      /* istanbul ignore else */
+      /* istanbul ignore else -- @preserve */
       if (__DEV__) {
         // @ts-expect-error: not the right inferred type
         useStore._pinia = pinia

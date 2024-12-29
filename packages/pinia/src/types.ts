@@ -433,19 +433,19 @@ export interface StoreDefinition<
  * Interface to be extended by the user when they add properties through plugins.
  */
 export interface PiniaCustomProperties<
-  // @ts-expect-error
+  // @ts-ignore
   Id extends string = string,
   S extends StateTree = StateTree,
-  // @ts-expect-error
+  // @ts-ignore
   G /* extends GettersTree<S> */ = _GettersTree<S>,
-  // @ts-expect-error
+  // @ts-ignore
   A /* extends ActionsTree */ = _ActionsTree,
 > {}
 
 /**
  * Properties that are added to every `store.$state` by `pinia.use()`.
  */
-// @ts-expect-error
+// @ts-ignore
 export interface PiniaCustomStateProperties<S extends StateTree = StateTree> {}
 
 /**

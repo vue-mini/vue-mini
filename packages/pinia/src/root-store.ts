@@ -53,7 +53,7 @@ export const piniaSymbol = (
   __DEV__ ?
     Symbol('pinia')
     // eslint-disable-next-line symbol-description
-  : /* istanbul ignore next */ Symbol()) as InjectionKey<Pinia>
+  : /* istanbul ignore next -- @preserve */ Symbol()) as InjectionKey<Pinia>
 
 /**
  * Context argument passed to Pinia plugins.
