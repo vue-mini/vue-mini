@@ -105,38 +105,6 @@ describe('state', () => {
     expect(spy).toHaveBeenCalledTimes(1)
   })
 
-  it.skip('state can be watched when a ref is given', async () => {
-    const store = useStore()
-    const spy = vi.fn()
-    watch(() => store.name, spy)
-    expect(spy).not.toHaveBeenCalled()
-    const nameRef = ref('Ed')
-    // @ts-expect-error
-    store.$state.name = nameRef
-    await nextTick()
-    expect(spy).toHaveBeenCalledTimes(1)
-  })
-
-  it.skip('can be given a ref', () => {
-    const store = useStore()
-
-    // If the ref is directly set to the store, it won't work,
-    // it must be set into the `store.$state` so it connects to pinia
-    // store.name = ref('Ed')
-
-    // @ts-expect-error
-    store.$state.name = ref('Ed')
-
-    expect(store.name).toBe('Ed')
-    expect(store.$state.name).toBe('Ed')
-    expect(pinia.state.value.main.name).toBe('Ed')
-
-    store.name = 'Other'
-    expect(store.name).toBe('Other')
-    expect(store.$state.name).toBe('Other')
-    expect(pinia.state.value.main.name).toBe('Other')
-  })
-
   it('unwraps refs', () => {
     const name = ref('Eduardo')
     const counter = ref(0)
