@@ -141,34 +141,6 @@ describe('store.$patch', () => {
       return { arr, name, item }
     })
 
-    it.skip('ref of primitive', () => {
-      const store = useStore()
-      const name = ref('Edu')
-      // @ts-expect-error: because it's a ref
-      store.$patch({ name })
-      expect(pinia.state.value.main.name).toEqual('Edu')
-      expect(store.$state.name).toEqual('Edu')
-      expect(store.name).toEqual('Edu')
-    })
-
-    it.skip('ref of object', () => {
-      const store = useStore()
-      const item = ref({ a: 1, b: 1 })
-      const oldItem = store.item
-      // @ts-expect-error: because it's a ref
-      store.$state.item = item
-      expect(oldItem).toEqual({ a: 0, b: 0 })
-      expect(pinia.state.value.main.item).toEqual({ a: 1, b: 1 })
-      expect(store.$state.item).toEqual({ a: 1, b: 1 })
-      expect(store.item).toEqual({ a: 1, b: 1 })
-
-      // @ts-expect-error: because it's a ref
-      store.$patch({ item: ref({ a: 2, b: 2 }) })
-      expect(pinia.state.value.main.item).toEqual({ a: 2, b: 2 })
-      expect(store.$state.item).toEqual({ a: 2, b: 2 })
-      expect(store.item).toEqual({ a: 2, b: 2 })
-    })
-
     it('nested ref', () => {
       const store = useStore()
       const item = ref({ nested: { a: 1, b: 1 } })
