@@ -277,4 +277,13 @@ describe('supplements', () => {
     expect(spy1).toHaveBeenCalledTimes(2)
     expect(spy2).toHaveBeenCalledTimes(3)
   })
+
+  it('$patch', () => {
+    const useStore = defineStore('main', () => ({ foo: ref('foo') }))
+    const s1 = useStore()
+    const patch = Object.create({ bar: 'bar' })
+    patch.foo = 'f'
+    s1.$patch(patch)
+    expect(s1.$state).toEqual({ foo: 'f' })
+  })
 })
