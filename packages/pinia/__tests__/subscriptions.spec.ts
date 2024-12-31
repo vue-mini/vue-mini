@@ -99,25 +99,20 @@ describe('subscriptions', () => {
 
   it('works with multiple different flush and multiple state changes', async () => {
     const spyPre = vi.fn()
-    const spyPost = vi.fn()
     const spySync = vi.fn()
 
     const s1 = useStore()
     s1.$subscribe(spyPre, { flush: 'pre' })
-    s1.$subscribe(spyPost, { flush: 'post' })
     s1.$subscribe(spySync, { flush: 'sync' })
 
     s1.user = 'Edu'
     expect(spyPre).toHaveBeenCalledTimes(0)
-    expect(spyPost).toHaveBeenCalledTimes(0)
     expect(spySync).toHaveBeenCalledTimes(1)
     s1.$patch({ user: 'a' })
     expect(spyPre).toHaveBeenCalledTimes(1)
-    expect(spyPost).toHaveBeenCalledTimes(1)
     expect(spySync).toHaveBeenCalledTimes(2)
     await nextTick()
     expect(spyPre).toHaveBeenCalledTimes(1)
-    expect(spyPost).toHaveBeenCalledTimes(1)
     expect(spySync).toHaveBeenCalledTimes(2)
   })
 

@@ -14,7 +14,6 @@ import {
   isReactive,
   effectScope,
   toRaw,
-  nextTick,
 } from '@vue-mini/core'
 import type {
   StateTree,
@@ -160,7 +159,7 @@ function createStore<
 
   // Internal state
   let isListening: boolean // Set to true at the end
-  let isSyncListening: boolean // Set to true at the end
+  let triggerByPatch = false
   let subscriptions: Array<SubscriptionCallback<S>> = []
   let actionSubscriptions: Array<StoreOnActionListener<Id, S, G, A>> = []
   let debuggerEvents: DebuggerEvent[] | DebuggerEvent
@@ -172,9 +171,6 @@ function createStore<
     pinia.state.value[$id] = {}
   }
 
-  // Avoid triggering too many listeners
-  // https://github.com/vuejs/pinia/issues/1129
-  let activeListener: Symbol | undefined
   function $patch(stateMutation: (state: UnwrapRef<S>) => void): void
   function $patch(partialState: _DeepPartial<UnwrapRef<S>>): void
   function $patch(
@@ -184,7 +180,6 @@ function createStore<
   ): void {
     let subscriptionMutation: SubscriptionCallbackMutation<S>
     isListening = false
-    isSyncListening = false
     // Reset the debugger events since patches are sync
     /* istanbul ignore else -- @preserve */
     if (__DEV__) {
@@ -208,14 +203,7 @@ function createStore<
       }
     }
 
-    activeListener = Symbol()
-    const myListenerId = activeListener
-    void nextTick().then(() => {
-      if (activeListener === myListenerId) {
-        isListening = true
-      }
-    })
-    isSyncListening = true
+    isListening = true
     // Because we paused the watcher, we need to manually call the subscriptions
     triggerSubscriptions(
       subscriptions,
@@ -311,11 +299,19 @@ function createStore<
           stopWatcher()
         },
       )
-      const stopWatcher = scope.run(() =>
-        watch(
+      const stopWatcher = scope.run(() => {
+        const stop1 = watch(
+          () => pinia.state.value[$id],
+          () => {
+            triggerByPatch = !isListening
+          },
+          { deep: true, flush: 'sync' },
+        )
+
+        const stop2 = watch(
           () => pinia.state.value[$id] as UnwrapRef<S>,
           (state) => {
-            if (options.flush === 'sync' ? isSyncListening : isListening) {
+            if (!triggerByPatch) {
               callback(
                 {
                   storeId: $id,
@@ -327,8 +323,15 @@ function createStore<
             }
           },
           assign({}, $subscribeOptions, options),
-        ),
-      )!
+        )
+
+        const stop = () => {
+          stop1()
+          stop2()
+        }
+
+        return stop
+      })!
 
       return removeSubscription
     },
@@ -406,7 +409,6 @@ function createStore<
   })
 
   isListening = true
-  isSyncListening = true
 }
 
 /**
