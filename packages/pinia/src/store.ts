@@ -62,6 +62,10 @@ interface MarkedAction<Fn extends _Method = _Method> {
   [ACTION_NAME]: string
 }
 
+interface SetupStoreHelpers {
+  action: <Fn extends _Method>(fn: Fn) => Fn
+}
+
 function mergeReactiveObjects<
   T extends Record<any, unknown> | Map<unknown, unknown> | Set<unknown>,
 >(target: T, patchToApply: _DeepPartial<T>): T {
@@ -113,7 +117,7 @@ function createStore<
   A extends _ActionsTree,
 >(
   $id: Id,
-  setup: () => SS,
+  setup: (helpers: SetupStoreHelpers) => SS,
   // eslint-disable-next-line @typescript-eslint/default-param-last
   options: DefineSetupStoreOptions<Id, S, G, A> = {},
   pinia: Pinia,
@@ -344,7 +348,7 @@ function createStore<
 
   const setupStore = pinia._e.run(() => {
     scope = effectScope()
-    return scope.run(() => setup())
+    return scope.run(() => setup({ action }))
   })!
 
   // Overwrite existing actions to support $onAction
@@ -434,7 +438,7 @@ export type StoreState<SS> =
 /*! #__NO_SIDE_EFFECTS__ */
 export function defineStore<Id extends string, SS extends Record<any, unknown>>(
   id: Id,
-  setup: () => SS,
+  setup: (helpers: SetupStoreHelpers) => SS,
   options?: DefineSetupStoreOptions<
     Id,
     _ExtractStateFromSetupStore<SS>,

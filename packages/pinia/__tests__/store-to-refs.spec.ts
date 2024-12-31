@@ -130,17 +130,4 @@ describe('store to refs', () => {
     storeToRefs(store)
     expect(spy).toHaveBeenCalledTimes(0)
   })
-
-  tds(() => {
-    const store1 = defineStore('a', () => {
-      const n = ref(0)
-      const double = computed(() => n.value * 2)
-      return { n, double }
-    })()
-
-    // eslint-disable-next-line @typescript-eslint/no-unused-expressions
-    storeToRefs(store1).double
-  })
-
-  function tds(_fn: Function) {}
 })
