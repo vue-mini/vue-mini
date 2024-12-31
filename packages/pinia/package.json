@@ -1,15 +1,39 @@
 {
   "name": "@vue-mini/pinia",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "Pinia For Vue Mini",
+  "main": "dist/pinia.cjs.js",
+  "module": "dist/pinia.esm-bundler.js",
+  "types": "dist/pinia.d.ts",
   "repository": "https://github.com/vue-mini/vue-mini.git",
   "homepage": "https://vuemini.org",
   "author": "Yang Mingshan <y.mingshan3@gmail.com>",
   "license": "MIT",
+  "files": [
+    "dist"
+  ],
+  "exports": {
+    ".": {
+      "types": "./dist/pinia.d.ts",
+      "import": "./dist/pinia.esm-bundler.js",
+      "require": "./dist/pinia.cjs.js",
+      "default": "./dist/pinia.cjs.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "keywords": [
+    "pinia",
+    "vue",
+    "mini",
+    "vue-mini",
+    "wechat",
+    "weixin",
+    "miniprogram",
+    "mp",
+    "微信",
+    "小程序"
+  ],
   "peerDependencies": {
     "@vue-mini/core": "^1.2.1"
-  },
-  "devDependencies": {
-    "@vue-mini/core": "workspace:*"
   }
 }
