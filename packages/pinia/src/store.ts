@@ -68,14 +68,6 @@ interface SetupStoreHelpers {
 function mergeReactiveObjects<
   T extends Record<any, unknown> | Map<unknown, unknown> | Set<unknown>,
 >(target: T, patchToApply: _DeepPartial<T>): T {
-  // Handle Map instances
-  if (target instanceof Map && patchToApply instanceof Map) {
-    patchToApply.forEach((value, key) => target.set(key, value))
-  } else if (target instanceof Set && patchToApply instanceof Set) {
-    // Handle Set instances
-    patchToApply.forEach((value) => target.add(value))
-  }
-
   // No need to go through symbols because they cannot be serialized anyway
   for (const key in patchToApply) {
     if (!patchToApply.hasOwnProperty(key)) continue
@@ -138,7 +130,6 @@ function createStore<
   /* istanbul ignore else -- @preserve */
   if (__DEV__) {
     $subscribeOptions.onTrigger = (event) => {
-      /* istanbul ignore else -- @preserve */
       if (isListening) {
         debuggerEvents = event
         // Avoid triggering this while the store is being built and the state is being set in pinia
