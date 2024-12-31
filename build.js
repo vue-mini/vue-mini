@@ -7,47 +7,39 @@ import typescript from '@rollup/plugin-typescript'
 import resolve from '@rollup/plugin-node-resolve'
 import dts from 'rollup-plugin-dts'
 
-function getBanner(version) {
-  return `/*!
- * vue-mini v${version}
- * https://github.com/vue-mini/vue-mini
- * (c) 2019-present Yang Mingshan
- * @license MIT
- */`
-}
-
-async function generateDeclaration(target) {
+async function generateDeclaration({ target, external, fileName }) {
   const bundle = await rollup({
-    input: path.join(target, 'src', 'index.ts'),
-    external: ['@vue/reactivity'],
+    input: path.join('packages', target, 'src', 'index.ts'),
+    external,
     plugins: [
       typescript({
         tsconfig: 'tsconfig.build.json',
         compilerOptions: {
           declaration: true,
-          declarationDir: path.join(target, 'dist'),
+          declarationDir: path.join('packages', target, 'dist'),
         },
       }),
     ],
   })
   await bundle.write({
-    dir: path.join(target, 'dist'),
+    dir: path.join('packages', target, 'dist'),
     format: 'es',
   })
 
   const dtsBundle = await rollup({
-    input: path.join(target, 'dist', 'index.d.ts'),
+    input: path.join('packages', target, 'dist', target, 'src', 'index.d.ts'),
+    external,
     plugins: [dts()],
   })
   await dtsBundle.write({
-    file: path.join(target, 'dist', 'vue-mini.d.ts'),
+    file: path.join('packages', target, 'dist', fileName),
     format: 'es',
   })
 
   const removals = []
-  for (const file of fs.readdirSync(path.join(target, 'dist'))) {
-    if (file === 'vue-mini.d.ts') continue
-    removals.push(fs.remove(path.join(target, 'dist', file)))
+  for (const file of fs.readdirSync(path.join('packages', target, 'dist'))) {
+    if (file === fileName) continue
+    removals.push(fs.remove(path.join('packages', target, 'dist', file)))
   }
 
   await Promise.all(removals)
@@ -62,7 +54,7 @@ async function generateCode({
   format,
 }) {
   const bundle = await rollup({
-    input: path.join(target, 'src', 'index.ts'),
+    input: path.join('packages', target, 'src', 'index.ts'),
     external,
     plugins: [
       minify &&
@@ -83,19 +75,30 @@ async function generateCode({
     ].filter(Boolean),
   })
   const { version } = JSON.parse(
-    await fs.readFile(path.resolve(target, 'package.json'), 'utf8'),
+    await fs.readFile(path.resolve('packages', target, 'package.json'), 'utf8'),
+  )
+  const banner = await fs.readFile(
+    path.resolve('packages', target, '.banner'),
+    'utf8',
   )
   await bundle.write({
-    file: path.join(target, 'dist', fileName),
-    banner: getBanner(version),
+    file: path.join('packages', target, 'dist', fileName),
+    banner: banner.trim().replace('$version', version),
     format,
   })
 }
 
-async function build(target) {
-  await fs.remove(path.join(target, 'dist'))
+async function buildVueMini() {
+  const target = 'core'
+  const external = ['@vue/reactivity']
 
-  await generateDeclaration(target)
+  await fs.remove(path.join('packages', target, 'dist'))
+
+  await generateDeclaration({
+    target,
+    external,
+    fileName: 'vue-mini.d.ts',
+  })
 
   await generateCode({
     target,
@@ -122,7 +125,7 @@ async function build(target) {
   await generateCode({
     target,
     minify: false,
-    external: ['@vue/reactivity'],
+    external,
     replaces: {
       __DEV__: `(process.env.NODE_ENV !== 'production')`,
     },
@@ -131,4 +134,51 @@ async function build(target) {
   })
 }
 
-await build(path.join('packages', 'core'))
+async function buildPinia() {
+  const target = 'pinia'
+  const external = ['@vue-mini/core']
+
+  await fs.remove(path.join('packages', target, 'dist'))
+
+  await generateDeclaration({
+    target,
+    external,
+    fileName: 'pinia.d.ts',
+  })
+
+  await generateCode({
+    target,
+    minify: false,
+    external,
+    replaces: {
+      __DEV__: true,
+    },
+    fileName: 'pinia.cjs.js',
+    format: 'cjs',
+  })
+
+  await generateCode({
+    target,
+    minify: true,
+    external,
+    replaces: {
+      __DEV__: false,
+    },
+    fileName: 'pinia.cjs.prod.js',
+    format: 'cjs',
+  })
+
+  await generateCode({
+    target,
+    minify: false,
+    external,
+    replaces: {
+      __DEV__: `(process.env.NODE_ENV !== 'production')`,
+    },
+    fileName: 'pinia.esm-bundler.js',
+    format: 'es',
+  })
+}
+
+await buildVueMini()
+await buildPinia()

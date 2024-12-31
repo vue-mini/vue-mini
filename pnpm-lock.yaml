@@ -68,11 +68,7 @@ importers:
         specifier: ^4.0.2
         version: 4.0.2
 
-  packages/pinia:
-    devDependencies:
-      '@vue-mini/core':
-        specifier: workspace:*
-        version: link:../core
+  packages/pinia: {}
 
 packages:
 
