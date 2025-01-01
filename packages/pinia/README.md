@@ -8,6 +8,10 @@ Pinia 的 Vue Mini 移植版，拥有与 Pinia 完全一样的 API 和能力。
 npm install @vue-mini/pinia
 ```
 
+## 使用
+
+请参考：[vue-mini-pinia](https://github.com/yangmingshan/vue-mini-pinia)
+
 ## 限制
 
 @vue-mini/pinia 相较于 pinia 有额外两点限制：
