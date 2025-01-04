@@ -149,8 +149,8 @@ function createStore<
   }
 
   // Internal state
-  let isListening: boolean // Set to true at the end
-  let triggerByPatch = false
+  let isListening = false // Set to true at the end.
+  let shouldTrigger = false // The initial value does not matter, and no need to set to true at the end.
   let subscriptions: Array<SubscriptionCallback<S>> = []
   let actionSubscriptions: Array<StoreOnActionListener<Id, S, G, A>> = []
   let debuggerEvents: DebuggerEvent[] | DebuggerEvent
@@ -294,7 +294,7 @@ function createStore<
         const stop1 = watch(
           () => pinia.state.value[$id],
           () => {
-            triggerByPatch = !isListening
+            shouldTrigger = isListening
           },
           { deep: true, flush: 'sync' },
         )
@@ -302,7 +302,7 @@ function createStore<
         const stop2 = watch(
           () => pinia.state.value[$id] as UnwrapRef<S>,
           (state) => {
-            if (!triggerByPatch) {
+            if (shouldTrigger) {
               callback(
                 {
                   storeId: $id,
