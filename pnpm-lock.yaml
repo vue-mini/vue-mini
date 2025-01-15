@@ -65,7 +65,7 @@ importers:
         specifier: 3.5.13
         version: 3.5.13
       miniprogram-api-typings:
-        specifier: ^4.0.2
+        specifier: ^4.0.4
         version: 4.0.4
 
   packages/pinia: {}

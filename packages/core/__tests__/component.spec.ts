@@ -58,6 +58,7 @@ globalThis.Component = (options: Record<string, any>) => {
     setUpdatePerformanceListener() {},
     getPassiveEvent() {},
     setPassiveEvent() {},
+    setInitialRenderingCache() {},
     setData(data: Record<string, unknown>, callback: () => void) {
       this.data = this.data || {}
       Object.keys(data).forEach((key) => {
@@ -416,10 +417,20 @@ describe('component', () => {
     defineComponent((_, context) => {
       expect(context.is).toBe('')
       expect(context.triggerEvent).toBeInstanceOf(Function)
+      expect(context.getAppBar).toBe(undefined)
       return { num: 0 }
     })
     component.lifetimes.attached.call(component)
     expect(component.data.num).toBe(0)
+  })
+
+  it('context: high library version', () => {
+    defineComponent((_, context) => {
+      expect(context.getAppBar).toBeInstanceOf(Function)
+    })
+    const extendedComponent = { ...component, getAppBar() {} }
+    // @ts-expect-error
+    extendedComponent.lifetimes.attached.call(extendedComponent)
   })
 
   it('attached', () => {

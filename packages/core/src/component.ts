@@ -159,6 +159,8 @@ export function defineComponent(optionsOrSetup: any, config?: Config): string {
         this.setUpdatePerformanceListener.bind(this),
       getPassiveEvent: this.getPassiveEvent.bind(this),
       setPassiveEvent: this.setPassiveEvent.bind(this),
+      setInitialRenderingCache: this.setInitialRenderingCache.bind(this),
+      getAppBar: this.getAppBar && this.getAppBar.bind(this),
     }
     const bindings = setup(
       __DEV__ ?

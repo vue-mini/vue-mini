@@ -28,6 +28,7 @@ globalThis.Page = (options: Record<string, any>) => {
     setUpdatePerformanceListener() {},
     getPassiveEvent() {},
     setPassiveEvent() {},
+    setInitialRenderingCache() {},
     setData(data: Record<string, unknown>, callback: () => void) {
       this.data = this.data || {}
       Object.keys(data).forEach((key) => {
