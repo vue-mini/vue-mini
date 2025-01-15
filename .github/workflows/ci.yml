@@ -9,12 +9,13 @@ jobs:
         with:
           node-version: 22.x
       - run: corepack enable
+      - run: corepack install --global pnpm@latest-10
       - run: pnpm -v
       - run: pnpm install
       - run: pnpm format
       - run: pnpm lint
       - run: pnpm type
-      - run: pnpm test -- --coverage
+      - run: pnpm test --coverage
       - uses: codecov/codecov-action@v4
         with:
           fail_ci_if_error: true

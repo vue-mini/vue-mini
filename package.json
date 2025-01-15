@@ -2,7 +2,7 @@
   "private": true,
   "version": "1.2.1",
   "type": "module",
-  "packageManager": "pnpm@9.15.2",
+  "packageManager": "pnpm@10.0.0",
   "scripts": {
     "format": "prettier --check \"**/*.{js,cjs,ts,json,md}\"",
     "lint": "eslint --ext .js,.cjs,.ts .",
@@ -36,7 +36,6 @@
   "pnpm": {
     "peerDependencyRules": {
       "ignoreMissing": [
-        "@algolia/client-search",
         "search-insights",
         "webpack"
       ]
