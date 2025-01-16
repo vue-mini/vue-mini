@@ -1,3 +1,9 @@
+# 1.2.2 (2025-01-16)
+
+### 新特性
+
+- Context 新增 `setInitialRenderingCache` `getAppBar` API
+
 # 1.2.1 (2024-11-17)
 
 ### 依赖
