@@ -2,17 +2,17 @@
   "private": true,
   "version": "1.2.2",
   "type": "module",
-  "packageManager": "pnpm@10.0.0",
+  "packageManager": "pnpm@10.1.0",
   "scripts": {
     "format": "prettier --check \"**/*.{js,cjs,ts,json,md}\"",
     "lint": "eslint --ext .js,.cjs,.ts .",
     "type": "tsc --noEmit",
     "test": "vitest",
-    "build": "node build.js",
+    "build": "node build.ts",
     "docs:dev": "vitepress dev docs",
     "docs:build": "vitepress build docs",
     "docs:preview": "vitepress preview docs",
-    "release": "node release.js",
+    "release": "node release.ts",
     "prepare": "husky"
   },
   "devDependencies": {
@@ -20,6 +20,7 @@
     "@rollup/plugin-replace": "^6.0.2",
     "@rollup/plugin-terser": "^0.4.4",
     "@rollup/plugin-typescript": "^12.1.2",
+    "@types/fs-extra": "^11.0.4",
     "@types/node": "^22.10.6",
     "@vitest/coverage-istanbul": "^2.1.8",
     "execa": "^9.5.2",

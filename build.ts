@@ -7,7 +7,15 @@ import typescript from '@rollup/plugin-typescript'
 import resolve from '@rollup/plugin-node-resolve'
 import dts from 'rollup-plugin-dts'
 
-async function generateDeclaration({ target, external, fileName }) {
+async function generateDeclaration({
+  target,
+  external,
+  fileName,
+}: {
+  target: string
+  external: string[]
+  fileName: string
+}) {
   const bundle = await rollup({
     input: path.join('packages', target, 'src', 'index.ts'),
     external,
@@ -52,6 +60,13 @@ async function generateCode({
   replaces,
   fileName,
   format,
+}: {
+  target: string
+  minify: boolean
+  external?: string[]
+  replaces: Record<string, string>
+  fileName: string
+  format: 'es' | 'cjs'
 }) {
   const bundle = await rollup({
     input: path.join('packages', target, 'src', 'index.ts'),
@@ -61,7 +76,6 @@ async function generateCode({
         terser({
           compress: {
             ecma: 2016,
-            // eslint-disable-next-line camelcase
             pure_getters: true,
           },
           format: {
@@ -104,7 +118,7 @@ async function buildVueMini() {
     target,
     minify: false,
     replaces: {
-      __DEV__: true,
+      __DEV__: 'true',
       'process.env.NODE_ENV': JSON.stringify('development'),
     },
     fileName: 'vue-mini.cjs.js',
@@ -115,7 +129,7 @@ async function buildVueMini() {
     target,
     minify: true,
     replaces: {
-      __DEV__: false,
+      __DEV__: 'false',
       'process.env.NODE_ENV': JSON.stringify('production'),
     },
     fileName: 'vue-mini.cjs.prod.js',
@@ -151,7 +165,7 @@ async function buildPinia() {
     minify: false,
     external,
     replaces: {
-      __DEV__: true,
+      __DEV__: 'true',
     },
     fileName: 'pinia.cjs.js',
     format: 'cjs',
@@ -162,7 +176,7 @@ async function buildPinia() {
     minify: true,
     external,
     replaces: {
-      __DEV__: false,
+      __DEV__: 'false',
     },
     fileName: 'pinia.cjs.prod.js',
     format: 'cjs',
@@ -180,5 +194,7 @@ async function buildPinia() {
   })
 }
 
+// @ts-expect-error
 await buildVueMini()
+// @ts-expect-error
 await buildPinia()

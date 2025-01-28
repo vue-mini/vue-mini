@@ -21,6 +21,8 @@
   "include": [
     "packages/core",
     "packages/pinia",
+    "build.ts",
+    "release.ts",
     "global.d.ts",
     "vitest.setup.ts",
     "vitest.config.ts"

@@ -1,4 +1,10 @@
 {
   "extends": "./tsconfig.json",
-  "exclude": ["vitest.setup.ts", "vitest.config.ts", "packages/*/__tests__"]
+  "exclude": [
+    "build.ts",
+    "release.ts",
+    "vitest.setup.ts",
+    "vitest.config.ts",
+    "packages/*/__tests__"
+  ]
 }
