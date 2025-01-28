@@ -8,6 +8,7 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22.x
+      - run: npm i corepack -g
       - run: corepack enable
       - run: corepack install --global pnpm@latest-10
       - run: pnpm -v
@@ -16,7 +17,7 @@ jobs:
       - run: pnpm lint
       - run: pnpm type
       - run: pnpm test --coverage
-      - uses: codecov/codecov-action@v4
+      - uses: codecov/codecov-action@v5
         with:
           fail_ci_if_error: true
         env:
