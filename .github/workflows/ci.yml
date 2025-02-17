@@ -8,9 +8,7 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22.x
-      - run: npm i corepack -g
       - run: corepack enable
-      - run: corepack install --global pnpm@latest-10
       - run: pnpm -v
       - run: pnpm install
       - run: pnpm format
