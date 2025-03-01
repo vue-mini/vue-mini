@@ -30,7 +30,7 @@
     "rollup": "^4.34.9",
     "rollup-plugin-dts": "^6.1.1",
     "typescript": "^5.8.2",
-    "vitepress": "^1.6.3",
+    "vitepress": "^2.0.0-alpha.3",
     "vitest": "^3.0.7",
     "xo": "^0.60.0"
   },
