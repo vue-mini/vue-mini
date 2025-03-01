@@ -22,13 +22,15 @@ let activePostFlushCbs: SchedulerJob[] | null = null
 let postFlushIndex = 0
 
 // eslint-disable-next-line spaced-comment
-const resolvedPromise = /*@__PURE__*/ Promise.resolve() as Promise<any>
+const resolvedPromise = /*@__PURE__*/ Promise.resolve()
 let currentFlushPromise: Promise<void> | null = null
 
 const RECURSION_LIMIT = 100
 type CountMap = Map<SchedulerJob, number>
 
-export function nextTick<R = void>(fn?: () => R): Promise<Awaited<R>> {
+export function nextTick(): Promise<void>
+export function nextTick<R>(fn: () => R | Promise<R>): Promise<R>
+export function nextTick<R>(fn?: () => R | Promise<R>): Promise<void | R> {
   const p = currentFlushPromise || resolvedPromise
   // eslint-disable-next-line promise/prefer-await-to-then
   return fn ? p.then(fn) : p
@@ -45,7 +47,9 @@ export function queueJob(job: SchedulerJob): void {
 function queueFlush(): void {
   if (!currentFlushPromise) {
     // eslint-disable-next-line promise/prefer-await-to-then
-    currentFlushPromise = resolvedPromise.then(flushJobs)
+    currentFlushPromise = resolvedPromise.then(() => {
+      flushJobs()
+    })
   }
 }
 
@@ -80,11 +84,9 @@ export function flushPostFlushCbs(): void {
   }
 }
 
-function flushJobs(seen?: CountMap): void {
-  /* istanbul ignore else -- @preserve  */
-  if (__DEV__) {
-    seen = seen || new Map()
-  }
+function flushJobs(): void {
+  const seen: CountMap | undefined =
+    __DEV__ ? new Map() : /* istanbul ignore next -- @preserve  */ undefined
 
   // Conditional usage of checkRecursiveUpdate must be determined out of
   // try ... catch block since Rollup by default de-optimizes treeshaking
