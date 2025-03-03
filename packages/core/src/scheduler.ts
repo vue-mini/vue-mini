@@ -47,9 +47,7 @@ export function queueJob(job: SchedulerJob): void {
 function queueFlush(): void {
   if (!currentFlushPromise) {
     // eslint-disable-next-line promise/prefer-await-to-then
-    currentFlushPromise = resolvedPromise.then(() => {
-      flushJobs()
-    })
+    currentFlushPromise = resolvedPromise.then(flushJobs)
   }
 }
 
