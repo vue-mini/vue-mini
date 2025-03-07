@@ -1,4 +1,8 @@
-packages:
-  - packages/*
+autoInstallPeers: false
+publicHoistPattern:
+  - '*eslint*'
+  - '*prettier*'
 onlyBuiltDependencies:
   - esbuild
+packages:
+  - packages/*
