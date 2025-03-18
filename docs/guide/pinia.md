@@ -61,7 +61,7 @@ export const useUserStore = defineStore(
       username.value = username
     }
 
-    // 没有 $reset，需要自己实现
+    // setup store 需要自己实现 reset
     function reset() {
       username.value = ''
       // 重置其他状态...
