@@ -4,8 +4,6 @@
 
 ## 1. 安装
 
-首先需要安装相关依赖：
-
 ```bash
 pnpm add @vue-mini/pinia pinia-mini-plugin-persistor
 ```
