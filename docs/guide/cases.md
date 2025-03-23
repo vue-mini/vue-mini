@@ -57,6 +57,7 @@ Vue Mini 已经被很多公司和团队应用在了生产环境，其中不乏�
 .case img {
   margin-bottom: 16px;
   width: 100%;
+  border-radius: 50%;
 }
 
 .case span {
