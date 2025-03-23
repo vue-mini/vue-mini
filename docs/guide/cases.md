@@ -35,6 +35,10 @@ Vue Mini 已经被很多公司和团队应用在了生产环境，其中不乏�
     <img src="/cases/8.jpg" alt="超清4K壁纸酷">
     <span>超清4K壁纸酷</span>
   </div>
+  <div class="case">
+    <img src="/cases/9.jpg" alt="青岛市银行保险业纠纷调解中心">
+    <span>青岛市银行保险业纠纷调解中心</span>
+  </div>
 </div>
 
 <style>
@@ -53,6 +57,10 @@ Vue Mini 已经被很多公司和团队应用在了生产环境，其中不乏�
 .case img {
   margin-bottom: 16px;
   width: 100%;
+}
+
+.case span {
+  text-align: center;
 }
 
 @media (max-width: 420px) {
