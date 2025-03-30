@@ -38,13 +38,14 @@ export default defineConfig({
           { text: '定义组件', link: '/guide/component' },
           { text: '定义页面组件', link: '/guide/page-component' },
           { text: '依赖注入', link: '/guide/provide-inject' },
-          { text: '兼容性', link: '/guide/compatibility' },
-          { text: '比较', link: '/guide/comparisons' },
+          { text: 'Pinia (实验)', link: '/guide/pinia' },
         ],
       },
       {
         text: '深入理解',
         items: [
+          { text: '兼容性', link: '/guide/compatibility' },
+          { text: '比较', link: '/guide/comparisons' },
           { text: '性能', link: '/guide/performance' },
           { text: '常见问题', link: '/guide/faq' },
           { text: '版本发布', link: '/guide/releases' },

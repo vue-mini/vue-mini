@@ -8,16 +8,9 @@ Pinia 的 Vue Mini 移植版，拥有与 Pinia 完全一样的 API 和能力。
 npm install @vue-mini/pinia
 ```
 
-## 使用
+## 文档
 
-请参考：[vue-mini-pinia](https://github.com/yangmingshan/vue-mini-pinia)
-
-## 限制
-
-@vue-mini/pinia 相较于 pinia 有额外两点限制：
-
-- 不支持创建多个 pinia 实例，也就是不可以多次调用 `createPinia()`。
-- `defineStore()` 仅支持组合式 API。
+https://vuemini.org/guide/pinia.html
 
 ## 致谢
 
