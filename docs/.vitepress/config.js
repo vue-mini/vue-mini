@@ -20,6 +20,10 @@ export default defineConfig({
         link: '/guide/',
         activeMatch: '/guide/',
       },
+      {
+        text: 'AI 百科（英文）',
+        link: 'https://deepwiki.com/vue-mini/vue-mini',
+      },
     ],
     sidebar: [
       {
