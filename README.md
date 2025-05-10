@@ -28,6 +28,10 @@ npm create vue-mini@latest
 
 Vue Mini 拥有媲美小程序原生框架的极致性能，详情请查看 [Benchmark](https://github.com/yangmingshan/mp-framework-benchmark)。
 
+## 深入理解
+
+若想深入理解此仓库，可以参考 [DeepWiki](https://deepwiki.com/vue-mini/vue-mini)。
+
 ## 赞助
 
 Vue Mini 从诞生之初到现在一直是我的个人项目，背后没有任何公司支持。你的资金支持将有助于 Vue Mini 更加长远健康的发展。[如何赞助？](https://vuemini.org/guide/sponsor.html#如何赞助)
