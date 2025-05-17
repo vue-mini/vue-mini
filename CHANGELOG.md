@@ -8,13 +8,13 @@
 
 ### 依赖
 
-- **@vue/reactivity:** 从 3.5.12 升至 3.5.13，详情请看 [Vue 更新日志](https://github.com/vuejs/vue-next/blob/main/CHANGELOG.md) ([26af470](https://github.com/vue-mini/vue-mini/commit/26af47030c79777bd3389e248292ca146e33e479))
+- **@vue/reactivity:** 从 3.5.12 升至 3.5.13，详情请看 [Vue 更新日志](https://github.com/vuejs/core/blob/main/CHANGELOG.md) ([26af470](https://github.com/vue-mini/vue-mini/commit/26af47030c79777bd3389e248292ca146e33e479))
 
 # 1.2.0 (2024-10-12)
 
 ### 依赖
 
-- **@vue/reactivity:** 从 3.5.10 升至 3.5.12，详情请看 [Vue 更新日志](https://github.com/vuejs/vue-next/blob/main/CHANGELOG.md) ([5b34143](https://github.com/vue-mini/vue-mini/commit/5b341430fd463f14758de87e5f9dbd778e791cde))
+- **@vue/reactivity:** 从 3.5.10 升至 3.5.12，详情请看 [Vue 更新日志](https://github.com/vuejs/core/blob/main/CHANGELOG.md) ([5b34143](https://github.com/vue-mini/vue-mini/commit/5b341430fd463f14758de87e5f9dbd778e791cde))
 - **miniprogram-api-typings:** 从 v3 升至 v4 ([7d83657](https://github.com/vue-mini/vue-mini/commit/7d836578131ad01dd4408a0b5fb465c8f645c090))
 
 ### 类型破坏性变更
@@ -28,13 +28,13 @@
 
 ### 依赖
 
-- **@vue/reactivity:** 从 3.5.7 升至 3.5.10，详情请看 [Vue 更新日志](https://github.com/vuejs/vue-next/blob/main/CHANGELOG.md) ([53f398e](https://github.com/vue-mini/vue-mini/commit/53f398e0f779a34024e927ffef687147ea06f646))
+- **@vue/reactivity:** 从 3.5.7 升至 3.5.10，详情请看 [Vue 更新日志](https://github.com/vuejs/core/blob/main/CHANGELOG.md) ([53f398e](https://github.com/vue-mini/vue-mini/commit/53f398e0f779a34024e927ffef687147ea06f646))
 
 # 1.1.1 (2024-09-21)
 
 ### 依赖
 
-- **@vue/reactivity:** 从 3.5.5 升至 3.5.7，详情请看 [Vue 更新日志](https://github.com/vuejs/vue-next/blob/main/CHANGELOG.md) ([f1f68b5](https://github.com/vue-mini/vue-mini/commit/f1f68b5d4e237718530965786a78ff63d770b6f7))
+- **@vue/reactivity:** 从 3.5.5 升至 3.5.7，详情请看 [Vue 更新日志](https://github.com/vuejs/core/blob/main/CHANGELOG.md) ([f1f68b5](https://github.com/vue-mini/vue-mini/commit/f1f68b5d4e237718530965786a78ff63d770b6f7))
 
 ### Bug 修复
 
@@ -44,7 +44,7 @@
 
 ### 依赖
 
-- **@vue/reactivity:** 从 3.4.37 升至 3.5.5，详情请看 [Vue 更新日志](https://github.com/vuejs/vue-next/blob/main/CHANGELOG.md) & [Announcing Vue 3.5](https://blog.vuejs.org/posts/vue-3-5)
+- **@vue/reactivity:** 从 3.4.37 升至 3.5.5，详情请看 [Vue 更新日志](https://github.com/vuejs/core/blob/main/CHANGELOG.md) & [Announcing Vue 3.5](https://blog.vuejs.org/posts/vue-3-5)
 
 ### 新特性
 
@@ -71,26 +71,26 @@
 
 ### 依赖
 
-- **@vue/reactivity:** 从 3.4.35 升至 3.4.37，详情请看 [Vue 更新日志](https://github.com/vuejs/vue-next/blob/main/CHANGELOG.md) ([aa8c0fe](https://github.com/vue-mini/vue-mini/commit/aa8c0fe0476eabe9d6e920b25e95da5984b25c85))
+- **@vue/reactivity:** 从 3.4.35 升至 3.4.37，详情请看 [Vue 更新日志](https://github.com/vuejs/core/blob/main/CHANGELOG.md) ([aa8c0fe](https://github.com/vue-mini/vue-mini/commit/aa8c0fe0476eabe9d6e920b25e95da5984b25c85))
 - **miniprogram-api-typings:** 切换回官方版本 ([eef8a6f](https://github.com/vue-mini/vue-mini/commit/eef8a6fe39407f093746a2fea1cce42f75fda2e6))
 
 # 1.0.2 (2024-07-31)
 
 ### 依赖
 
-- **@vue/reactivity:** 从 3.4.33 升至 3.4.35，详情请看 [Vue 更新日志](https://github.com/vuejs/vue-next/blob/main/CHANGELOG.md) ([d456ae2](https://github.com/vue-mini/vue-mini/commit/d456ae2550ecf0cbb40963d7b0a7bcae7ef644aa))
+- **@vue/reactivity:** 从 3.4.33 升至 3.4.35，详情请看 [Vue 更新日志](https://github.com/vuejs/core/blob/main/CHANGELOG.md) ([d456ae2](https://github.com/vue-mini/vue-mini/commit/d456ae2550ecf0cbb40963d7b0a7bcae7ef644aa))
 
 # 1.0.1 (2024-07-21)
 
 ### 依赖
 
-- **@vue/reactivity:** 从 3.4.31 升至 3.4.33，详情请看 [Vue 更新日志](https://github.com/vuejs/vue-next/blob/main/CHANGELOG.md) ([b2acbd8](https://github.com/vue-mini/vue-mini/commit/b2acbd8f90e9c86794fa31db081d68cfbf25472a))
+- **@vue/reactivity:** 从 3.4.31 升至 3.4.33，详情请看 [Vue 更新日志](https://github.com/vuejs/core/blob/main/CHANGELOG.md) ([b2acbd8](https://github.com/vue-mini/vue-mini/commit/b2acbd8f90e9c86794fa31db081d68cfbf25472a))
 
 # 1.0.0 (2024-06-30)
 
 ### 依赖
 
-- **@vue/reactivity:** 从 3.2.19 升至 3.4.31，详情请看 [Vue 更新日志](https://github.com/vuejs/vue-next/blob/main/CHANGELOG.md)
+- **@vue/reactivity:** 从 3.2.19 升至 3.4.31，详情请看 [Vue 更新日志](https://github.com/vuejs/core/blob/main/CHANGELOG.md)
 - **miniprogram-api-typings:** 切换成了基于 3.12.2 的 Fork 版本
 
 ### 新特性
@@ -128,7 +128,7 @@
 
 ### 依赖
 
-- **@vue/reactivity:** 从 3.4.30 升至 3.4.31，详情请看 [Vue 更新日志](https://github.com/vuejs/vue-next/blob/main/CHANGELOG.md) ([59e681f](https://github.com/vue-mini/vue-mini/commit/59e681f6edc76772329ae0e09d517de12bcde12c))
+- **@vue/reactivity:** 从 3.4.30 升至 3.4.31，详情请看 [Vue 更新日志](https://github.com/vuejs/core/blob/main/CHANGELOG.md) ([59e681f](https://github.com/vue-mini/vue-mini/commit/59e681f6edc76772329ae0e09d517de12bcde12c))
 
 # 1.0.0-rc.14 (2024-06-23)
 
@@ -140,13 +140,13 @@
 
 ### 依赖
 
-- **@vue/reactivity:** 从 3.4.29 升至 3.4.30，详情请看 [Vue 更新日志](https://github.com/vuejs/vue-next/blob/main/CHANGELOG.md) ([ef4b036](https://github.com/vue-mini/vue-mini/commit/ef4b0367886da46e2ef205b88bb0461e45fb862f))
+- **@vue/reactivity:** 从 3.4.29 升至 3.4.30，详情请看 [Vue 更新日志](https://github.com/vuejs/core/blob/main/CHANGELOG.md) ([ef4b036](https://github.com/vue-mini/vue-mini/commit/ef4b0367886da46e2ef205b88bb0461e45fb862f))
 
 # 1.0.0-rc.12 (2024-06-15)
 
 ### 依赖
 
-- **@vue/reactivity:** 从 3.4.27 升至 3.4.29，详情请看 [Vue 更新日志](https://github.com/vuejs/vue-next/blob/main/CHANGELOG.md) ([492d724](https://github.com/vue-mini/vue-mini/commit/492d7242eae6c7b9f499968ef5da2a03d6479121))
+- **@vue/reactivity:** 从 3.4.27 升至 3.4.29，详情请看 [Vue 更新日志](https://github.com/vuejs/core/blob/main/CHANGELOG.md) ([492d724](https://github.com/vue-mini/vue-mini/commit/492d7242eae6c7b9f499968ef5da2a03d6479121))
 
 ### Bug 修复
 
@@ -164,25 +164,25 @@
 
 ### 依赖
 
-- **@vue/reactivity:** 从 3.4.26 升至 3.4.27，详情请看 [Vue 更新日志](https://github.com/vuejs/vue-next/blob/main/CHANGELOG.md) ([80f5c27](https://github.com/vue-mini/vue-mini/commit/80f5c271b3712da92272251d000551e7a0dc6403))
+- **@vue/reactivity:** 从 3.4.26 升至 3.4.27，详情请看 [Vue 更新日志](https://github.com/vuejs/core/blob/main/CHANGELOG.md) ([80f5c27](https://github.com/vue-mini/vue-mini/commit/80f5c271b3712da92272251d000551e7a0dc6403))
 
 # 1.0.0-rc.9 (2024-04-30)
 
 ### 依赖
 
-- **@vue/reactivity:** 从 3.4.25 升至 3.4.26，详情请看 [Vue 更新日志](https://github.com/vuejs/vue-next/blob/main/CHANGELOG.md) ([3d6df6a](https://github.com/vue-mini/vue-mini/commit/3d6df6a7ab26fc9ae2b1fdb0642b9e7003d64e24))
+- **@vue/reactivity:** 从 3.4.25 升至 3.4.26，详情请看 [Vue 更新日志](https://github.com/vuejs/core/blob/main/CHANGELOG.md) ([3d6df6a](https://github.com/vue-mini/vue-mini/commit/3d6df6a7ab26fc9ae2b1fdb0642b9e7003d64e24))
 
 # 1.0.0-rc.8 (2024-04-24)
 
 ### 依赖
 
-- **@vue/reactivity:** 从 3.4.24 升至 3.4.25，详情请看 [Vue 更新日志](https://github.com/vuejs/vue-next/blob/main/CHANGELOG.md) ([1a53548](https://github.com/vue-mini/vue-mini/commit/1a53548f73ea852786d0da14e1c908118a161af0))
+- **@vue/reactivity:** 从 3.4.24 升至 3.4.25，详情请看 [Vue 更新日志](https://github.com/vuejs/core/blob/main/CHANGELOG.md) ([1a53548](https://github.com/vue-mini/vue-mini/commit/1a53548f73ea852786d0da14e1c908118a161af0))
 
 # 1.0.0-rc.7 (2024-04-23)
 
 ### 依赖
 
-- **@vue/reactivity:** 从 3.4.23 升至 3.4.24，详情请看 [Vue 更新日志](https://github.com/vuejs/vue-next/blob/main/CHANGELOG.md) ([acff9d8](https://github.com/vue-mini/vue-mini/commit/acff9d8fa4f0c656cfeef350fd6af4509d36564c))
+- **@vue/reactivity:** 从 3.4.23 升至 3.4.24，详情请看 [Vue 更新日志](https://github.com/vuejs/core/blob/main/CHANGELOG.md) ([acff9d8](https://github.com/vue-mini/vue-mini/commit/acff9d8fa4f0c656cfeef350fd6af4509d36564c))
 
 # 1.0.0-rc.6 (2024-04-21)
 
@@ -194,25 +194,25 @@
 
 ### 依赖
 
-- **@vue/reactivity:** 从 3.4.21 升至 3.4.23，详情请看 [Vue 更新日志](https://github.com/vuejs/vue-next/blob/main/CHANGELOG.md) ([1e622e4](https://github.com/vue-mini/vue-mini/commit/1e622e43fd68a0d80c0224f3137d8325ddedb0f6))
+- **@vue/reactivity:** 从 3.4.21 升至 3.4.23，详情请看 [Vue 更新日志](https://github.com/vuejs/core/blob/main/CHANGELOG.md) ([1e622e4](https://github.com/vue-mini/vue-mini/commit/1e622e43fd68a0d80c0224f3137d8325ddedb0f6))
 
 # 1.0.0-rc.4 (2024-03-25)
 
 ### 依赖
 
-- **@vue/reactivity:** 从 3.4.20 升至 3.4.21，详情请看 [Vue 更新日志](https://github.com/vuejs/vue-next/blob/main/CHANGELOG.md) ([fd510a6](https://github.com/vue-mini/vue-mini/commit/fd510a690aaa0e6e81a45912e1d0ea82473c733f))
+- **@vue/reactivity:** 从 3.4.20 升至 3.4.21，详情请看 [Vue 更新日志](https://github.com/vuejs/core/blob/main/CHANGELOG.md) ([fd510a6](https://github.com/vue-mini/vue-mini/commit/fd510a690aaa0e6e81a45912e1d0ea82473c733f))
 
 # 1.0.0-rc.3 (2024-02-27)
 
 ### 依赖
 
-- **@vue/reactivity:** 从 3.4.19 升至 3.4.20，详情请看 [Vue 更新日志](https://github.com/vuejs/vue-next/blob/main/CHANGELOG.md) ([b5debe0](https://github.com/vue-mini/vue-mini/commit/b5debe0b33e288e40b1806d3b9917f34c7a51ddf))
+- **@vue/reactivity:** 从 3.4.19 升至 3.4.20，详情请看 [Vue 更新日志](https://github.com/vuejs/core/blob/main/CHANGELOG.md) ([b5debe0](https://github.com/vue-mini/vue-mini/commit/b5debe0b33e288e40b1806d3b9917f34c7a51ddf))
 
 # 1.0.0-rc.2 (2024-02-14)
 
 ### 依赖
 
-- **@vue/reactivity:** 从 3.4.15 升至 3.4.19，详情请看 [Vue 更新日志](https://github.com/vuejs/vue-next/blob/main/CHANGELOG.md) ([942f6a5](https://github.com/vue-mini/vue-mini/commit/942f6a5b7582e1609a218672ca37133931600a6c))
+- **@vue/reactivity:** 从 3.4.15 升至 3.4.19，详情请看 [Vue 更新日志](https://github.com/vuejs/core/blob/main/CHANGELOG.md) ([942f6a5](https://github.com/vue-mini/vue-mini/commit/942f6a5b7582e1609a218672ca37133931600a6c))
 
 # 1.0.0-rc.1 (2024-01-24)
 
@@ -230,13 +230,13 @@
 
 ### 依赖
 
-- **@vue/reactivity:** 从 3.4.7 升至 3.4.15，详情请看 [Vue 更新日志](https://github.com/vuejs/vue-next/blob/main/CHANGELOG.md) ([0800f3e](https://github.com/vue-mini/vue-mini/commit/0800f3e5466a91fe12bef6a1d3c5b2725e50ba44))
+- **@vue/reactivity:** 从 3.4.7 升至 3.4.15，详情请看 [Vue 更新日志](https://github.com/vuejs/core/blob/main/CHANGELOG.md) ([0800f3e](https://github.com/vue-mini/vue-mini/commit/0800f3e5466a91fe12bef6a1d3c5b2725e50ba44))
 
 # 1.0.0-beta.5 (2024-01-09)
 
 ### 依赖
 
-- **@vue/reactivity:** 从 3.4.5 升至 3.4.7，详情请看 [Vue 更新日志](https://github.com/vuejs/vue-next/blob/main/CHANGELOG.md) ([c3e96e5](https://github.com/vue-mini/vue-mini/commit/c3e96e5c3b7299ec1900c1ff47aa0cd8815da4f3))
+- **@vue/reactivity:** 从 3.4.5 升至 3.4.7，详情请看 [Vue 更新日志](https://github.com/vuejs/core/blob/main/CHANGELOG.md) ([c3e96e5](https://github.com/vue-mini/vue-mini/commit/c3e96e5c3b7299ec1900c1ff47aa0cd8815da4f3))
 
 # 1.0.0-beta.4 (2024-01-05)
 
@@ -252,7 +252,7 @@
 
 ### 依赖
 
-- **@vue/reactivity:** 从 3.4.4 升至 3.4.5，详情请看 [Vue 更新日志](https://github.com/vuejs/vue-next/blob/main/CHANGELOG.md)
+- **@vue/reactivity:** 从 3.4.4 升至 3.4.5，详情请看 [Vue 更新日志](https://github.com/vuejs/core/blob/main/CHANGELOG.md)
 
 ### Bug 修复
 
@@ -262,7 +262,7 @@
 
 ### 依赖
 
-- **@vue/reactivity:** 从 3.4.3 升至 3.4.4，详情请看 [Vue 更新日志](https://github.com/vuejs/vue-next/blob/main/CHANGELOG.md)
+- **@vue/reactivity:** 从 3.4.3 升至 3.4.4，详情请看 [Vue 更新日志](https://github.com/vuejs/core/blob/main/CHANGELOG.md)
 
 ### 性能优化
 
@@ -278,7 +278,7 @@
 
 ### 依赖
 
-- **@vue/reactivity:** 从 3.2.19 升至 3.4.3，详情请看 [Vue 更新日志](https://github.com/vuejs/vue-next/blob/main/CHANGELOG.md)
+- **@vue/reactivity:** 从 3.2.19 升至 3.4.3，详情请看 [Vue 更新日志](https://github.com/vuejs/core/blob/main/CHANGELOG.md)
 
 ### 特性
 
@@ -307,7 +307,7 @@
 
 ### 依赖
 
-- **@vue/reactivity:** 从 3.0.11 升至 3.2.19，详情请看 [Vue 更新日志](https://github.com/vuejs/vue-next/blob/main/CHANGELOG.md) ([ed01c0d](https://github.com/vue-mini/vue-mini/commit/ed01c0de493b3faf6a03b374aa3e6c169e861a3b), [297d36c](https://github.com/vue-mini/vue-mini/commit/297d36c53806600b7d4659ff8d038cdff7781287), [fd89429](https://github.com/vue-mini/vue-mini/commit/fd894297cd03359b01fff4e710dfd6f9e2bff228))
+- **@vue/reactivity:** 从 3.0.11 升至 3.2.19，详情请看 [Vue 更新日志](https://github.com/vuejs/core/blob/main/CHANGELOG.md) ([ed01c0d](https://github.com/vue-mini/vue-mini/commit/ed01c0de493b3faf6a03b374aa3e6c169e861a3b), [297d36c](https://github.com/vue-mini/vue-mini/commit/297d36c53806600b7d4659ff8d038cdff7781287), [fd89429](https://github.com/vue-mini/vue-mini/commit/fd894297cd03359b01fff4e710dfd6f9e2bff228))
 
 ### 特性
 
