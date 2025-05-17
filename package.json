@@ -29,6 +29,7 @@
     "lint-staged": "^16.0.0",
     "rollup": "^4.40.2",
     "rollup-plugin-dts": "^6.2.1",
+    "tslib": "^2.8.1",
     "typescript": "^5.8.3",
     "vitepress": "2.0.0-alpha.4",
     "vitest": "^3.1.3",
