@@ -80,7 +80,6 @@ createApp({
 这些生命周期钩子注册函数只能在 `setup()` 期间同步使用，其他场景下调用这些函数会抛出一个错误。
 
 - **生命周期对应关系**
-
   - `onLaunch` -> `setup`
   - `onShow` -> `onAppShow`
   - `onHide` -> `onAppHide`

@@ -264,7 +264,6 @@ definePage({
 如果条件不满足，在 `setup()` 中调用 `onSaveExitState()` 钩子会抛出一个错误。
 
 - **生命周期对应关系**
-
   - `onLoad` -> `setup`
   - `onShow` -> `onShow`
   - `onReady` -> `onReady`

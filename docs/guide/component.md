@@ -166,7 +166,6 @@ createApp({
 Vue Mini 并没有 `onCreate` 钩子函数，这是因为 `setup` 是在 `attached` 阶段执行的，此时 `created` 生命周期已经执行完毕了。不过在绝大部分情况下，你应该都不需要使用 `created` 生命周期。如果你真的需要，可以使用小程序原生语法。
 
 - **生命周期对应关系**
-
   - `lifetimes.created` -> 无
   - `lifetimes.attached` -> `setup`
   - `lifetimes.ready` -> `onReady`
