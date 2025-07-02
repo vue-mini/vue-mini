@@ -39,6 +39,10 @@ Vue Mini 已经被很多公司和团队应用在了生产环境，其中不乏�
     <img src="/cases/9.jpg" alt="青岛市银行保险业纠纷调解中心">
     <span>青岛市银行保险业纠纷调解中心</span>
   </div>
+  <div class="case">
+    <img src="/cases/10.jpg" alt="心之链">
+    <span>心之链</span>
+  </div>
 </div>
 
 <style>
