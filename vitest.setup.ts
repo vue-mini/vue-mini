@@ -34,6 +34,7 @@ expect.extend({
   },
 
   toHaveBeenWarnedLast(received: string) {
+    // @ts-expect-error
     const passed = warn.mock.calls.at(-1)![0].includes(received)
     if (passed) {
       asserted.add(received)
