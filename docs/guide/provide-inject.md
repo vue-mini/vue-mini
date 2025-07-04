@@ -4,8 +4,7 @@
 
 ## Provide
 
-```js
-// parent-component.js
+```js [parent-component.js]
 import { defineComponent, ref, provide, readonly } from '@vue-mini/core'
 
 defineComponent({
@@ -24,8 +23,7 @@ defineComponent({
 
 ## Inject
 
-```js
-// deep-child-component.js
+```js [deep-child-component.js]
 import { defineComponent, inject } from '@vue-mini/core'
 
 defineComponent({

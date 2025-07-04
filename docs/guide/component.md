@@ -2,8 +2,7 @@
 
 小程序中的每个组件都需要在对应的 js 文件中使用 `defineComponent` 函数进行定义。它是 `Component` 函数的超集，它额外接收一个 `setup` 函数。
 
-```js
-// component.js
+```js [component.js]
 import { defineComponent, reactive, computed } from '@vue-mini/core'
 
 defineComponent({
@@ -27,8 +26,7 @@ defineComponent({
 
 如果 `setup` 返回一个对象，则对象的属性将会被合并到组件实例上，可以直接在组件模版中使用。
 
-```xml
-<!-- component.wxml -->
+```xml [component.wxml]
 <button bindtap="increment">
   Count is: {{ state.count }}, double is: {{ state.double }}
 </button>
@@ -54,8 +52,7 @@ setup 只能是同步函数。
 
 `setup` 函数接收组件 `props` 作为其第一个参数，`props` 的声明与小程序原生语法没有差别。`setup` 函数无需返回 `props`，它的属性默认就能在模版中使用。
 
-```js
-// component.js
+```js [component.js]
 import { defineComponent } from '@vue-mini/core'
 
 defineComponent({
@@ -70,8 +67,7 @@ defineComponent({
 
 注意 `props` 对象是响应式的，可以用 `watchEffect` 或 `watch` 观察和响应 `props` 的更新，也可以基于 `props` 生成新的计算状态。
 
-```js
-// component.js
+```js [component.js]
 import { defineComponent, watchEffect, computed } from '@vue-mini/core'
 
 defineComponent({
@@ -94,8 +90,7 @@ defineComponent({
 
 然而**不要**解构 `props` 对象，那样会使其失去响应性。
 
-```js
-// component.js
+```js [component.js]
 import { defineComponent, watchEffect } from '@vue-mini/core'
 
 defineComponent({
@@ -114,8 +109,7 @@ defineComponent({
 
 第二个参数提供了一个上下文对象，从小程序组件 `this` 中选择性的暴露了一些 property。
 
-```js
-// component.js
+```js [component.js]
 import { defineComponent } from '@vue-mini/core'
 
 defineComponent({
@@ -138,8 +132,7 @@ defineComponent({
 
 可以直接导入 `onXXX` 一族的函数来注册生命周期钩子。它们接收的参数与对应的生命周期一致，每个 `onXXX` 函数都能被多次调用。
 
-```js
-// component.js
+```js [component.js]
 import { defineComponent, onReady, onMove, onDetach } from '@vue-mini/core'
 
 createApp({
@@ -181,8 +174,7 @@ Vue Mini 并没有 `onCreate` 钩子函数，这是因为 `setup` 是在 `attach
 
 由于 `defineComponent()` 是 `Component()` 的超集，所以你也能使用原生语法。
 
-```js
-// component.js
+```js [component.js]
 import { defineComponent, ref } from '@vue-mini/core'
 
 defineComponent({
@@ -217,8 +209,7 @@ defineComponent({
 
 如果组件没有 `props`，且不需要使用原生语法，也可以直接传递一个 `setup` 函数给 `defineComponent()`。
 
-```js
-// page.js
+```js [page.js]
 import { defineComponent, ref } from '@vue-mini/core'
 
 defineComponent(() => {
