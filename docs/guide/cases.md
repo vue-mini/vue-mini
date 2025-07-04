@@ -43,6 +43,10 @@ Vue Mini 已经被很多公司和团队应用在了生产环境，其中不乏�
     <img src="/cases/10.jpg" alt="心之链">
     <span>心之链</span>
   </div>
+  <a class="case" href="https://github.com/vue-mini/vue-mini/issues/59" target="_blank" rel="noreferrer">
+    <img src="/cases/add.svg" alt="添加">
+    <span>添加</span>
+  </a>
 </div>
 
 <style>
