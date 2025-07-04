@@ -2,8 +2,7 @@
 
 小程序中的每个页面都需要在对应的 js 文件中使用 `definePage` 函数进行定义。它是 `Page` 函数的超集，它额外接收一个 `setup` 函数。
 
-```js
-// page.js
+```js [page.js]
 import { definePage, reactive, computed } from '@vue-mini/core'
 
 definePage({
@@ -27,8 +26,7 @@ definePage({
 
 如果 `setup` 返回一个对象，则对象的属性将会被合并到页面实例上，可以直接在页面模版中使用。
 
-```xml
-<!-- page.wxml -->
+```xml [page.wxml]
 <button bindtap="increment">
   Count is: {{ state.count }}, double is: {{ state.double }}
 </button>
@@ -54,8 +52,7 @@ setup 只能是同步函数。
 
 `setup` 函数的第一个参数与 `onLoad` 的参数相同。
 
-```js
-// page.js
+```js [page.js]
 import { definePage } from '@vue-mini/core'
 
 definePage({
@@ -67,8 +64,7 @@ definePage({
 
 第二个参数提供了一个上下文对象，从小程序页面 `this` 中选择性的暴露了一些 property。
 
-```js
-// page.js
+```js [page.js]
 import { definePage } from '@vue-mini/core'
 
 definePage({
@@ -90,8 +86,7 @@ definePage({
 
 可以直接导入 `onXXX` 一族的函数来注册生命周期钩子。它们接收的参数和返回值与对应的生命周期一致，除 `onShareAppMessage`、`onShareTimeline`、 `onAddToFavorites` 和 `onSaveExitState` 外每个 `onXXX` 函数都能被多次调用。
 
-```js
-// page.js
+```js [page.js]
 import { definePage, onShow, onHide, onUnload } from '@vue-mini/core'
 
 definePage({
@@ -117,8 +112,7 @@ definePage({
 
 监听页面滚动会引起小程序渲染层与逻辑层的通信。为避免定义空的 `onPageScroll` 监听造成不必要的性能损耗，需要使用 `definePage` 的第二个参数提前告知 Vue Mini 是否会调用 `onPageScroll()` 钩子。
 
-```js
-// page.js
+```js [page.js]
 import { definePage, onPageScroll } from '@vue-mini/core'
 
 definePage(
@@ -137,8 +131,7 @@ definePage(
 
 如果已存在另外的 `onPageScroll` 选项，那么可以忽略此参数。
 
-```js
-// page.js
+```js [page.js]
 import { definePage, onPageScroll } from '@vue-mini/core'
 
 definePage({
@@ -159,8 +152,7 @@ definePage({
 
 由于小程序会根据是否定义了 `onShareAppMessage` 监听来决定页面是否可以转发，所以需要使用 `definePage` 的第二个参数提前告知 Vue Mini 是否会调用 `onShareAppMessage()` 钩子。又由于 `onShareAppMessage` 会返回自定义转发内容，所以一个页面只能有一个 `onShareAppMessage` 监听。
 
-```js
-// page.js
+```js [page.js]
 import { definePage, onShareAppMessage } from '@vue-mini/core'
 
 definePage(
@@ -188,8 +180,7 @@ definePage(
 
 由于小程序会根据是否定义了 `onShareTimeline` 监听来决定页面是否可以分享到朋友圈，所以需要使用 `definePage` 的第二个参数提前告知 Vue Mini 是否会调用 `onShareTimeline()` 钩子。又由于 `onShareTimeline` 会返回自定义分享内容，所以一个页面只能有一个 `onShareTimeline` 监听。
 
-```js
-// page.js
+```js [page.js]
 import { definePage, onShareTimeline } from '@vue-mini/core'
 
 definePage(
@@ -217,8 +208,7 @@ definePage(
 
 由于 `onAddToFavorites` 会返回自定义收藏内容，所以一个页面只能有一个 `onAddToFavorites` 监听。
 
-```js
-// page.js
+```js [page.js]
 import { definePage, onAddToFavorites } from '@vue-mini/core'
 
 definePage({
@@ -241,8 +231,7 @@ definePage({
 
 由于 `onSaveExitState` 会返回需要保存的状态，所以一个页面只能有一个 `onSaveExitState` 监听。
 
-```js
-// page.js
+```js [page.js]
 import { definePage, ref, onAddToFavorites } from '@vue-mini/core'
 
 definePage({
@@ -284,8 +273,7 @@ definePage({
 
 由于 `definePage()` 是 `Page()` 的超集，所以你也能使用原生语法。
 
-```js
-// page.js
+```js [page.js]
 import { definePage, ref } from '@vue-mini/core'
 
 definePage({
@@ -318,8 +306,7 @@ definePage({
 
 如果不需要使用原生语法，也可以直接传递一个 `setup` 函数给 `definePage()`。
 
-```js
-// page.js
+```js [page.js]
 import { definePage, ref } from '@vue-mini/core'
 
 definePage(() => {

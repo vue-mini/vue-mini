@@ -1,4 +1,8 @@
 import { defineConfig } from 'vitepress'
+import {
+  groupIconMdPlugin,
+  groupIconVitePlugin,
+} from 'vitepress-plugin-group-icons'
 
 export default defineConfig({
   lang: 'zh-cmn-Hans',
@@ -104,5 +108,19 @@ export default defineConfig({
         },
       },
     },
+  },
+  markdown: {
+    config(md) {
+      md.use(groupIconMdPlugin)
+    },
+  },
+  vite: {
+    plugins: [
+      groupIconVitePlugin({
+        customIcon: {
+          wxml: 'vscode-icons:file-type-wxml',
+        },
+      }),
+    ],
   },
 })

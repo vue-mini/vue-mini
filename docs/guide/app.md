@@ -2,8 +2,7 @@
 
 每个小程序都需要在 `app.js` 中调用 `createApp` 函数创建小程序实例。它是 `App` 函数的超集，它额外接收一个 `setup` 函数。
 
-```js
-// app.js
+```js [app.js]
 import { createApp } from '@vue-mini/core'
 
 createApp({
@@ -19,8 +18,7 @@ createApp({
 
 如果 `setup` 返回一个对象，则对象的属性将会被原样合并到小程序实例上。
 
-```js
-// xxx.js
+```js [xxx.js]
 const app = getApp()
 console.log(app.greeting) // Hello World!
 ```
@@ -39,8 +37,7 @@ setup 只能是同步函数。
 
 `setup` 接收与 `onLaunch` 相同的参数。
 
-```js
-// app.js
+```js [app.js]
 import { createApp } from '@vue-mini/core'
 
 createApp({
@@ -58,8 +55,7 @@ createApp({
 
 可以直接导入 `onXXX` 一族的函数来注册生命周期钩子。它们接收的参数与对应的生命周期一致，每个 `onXXX` 函数都能被多次调用。
 
-```js
-// app.js
+```js [app.js]
 import { createApp, onAppShow, onAppHide, onAppError } from '@vue-mini/core'
 
 createApp({
@@ -92,8 +88,7 @@ createApp({
 
 由于 `createApp()` 是 `App()` 的超集，所以你也能使用原生语法。
 
-```js
-// app.js
+```js [app.js]
 import { createApp, onAppShow } from '@vue-mini/core'
 
 createApp({
@@ -123,8 +118,7 @@ createApp({
 
 如果不需要使用原生语法，也可以直接传递一个 `setup` 函数给 `createApp()`。
 
-```js
-// app.js
+```js [app.js]
 import { createApp } from '@vue-mini/core'
 
 createApp(() => {

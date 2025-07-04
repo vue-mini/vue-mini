@@ -30,13 +30,13 @@ $ bun add @vue-mini/pinia
 
 ## 初始化
 
-```js
-// pinia.js
+```js [pinia.js]
 import { createPinia } from '@vue-mini/pinia'
 
 export const pinia = createPinia()
+```
 
-// app.js
+```js [app.js]
 import { createApp } from '@vue-mini/core'
 import './pinia'
 
