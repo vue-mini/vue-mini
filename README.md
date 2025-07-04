@@ -38,7 +38,7 @@ Vue Mini 从诞生之初到现在一直是我的个人项目，背后没有任�
 
 ## 案例
 
-Vue Mini 已经被很多公司和团队应用在了生产环境，其中不乏大厂，如网易。下列是一些使用 Vue Mini 开发的小程序，也欢迎[提交你的小程序](https://github.com/vue-mini/vue-mini/issues/59)。
+Vue Mini 已经被很多公司和团队应用在了生产环境，其中不乏大厂，如网易、腾讯。甚至微信内部都在使用 Vue Mini。下列是一些使用 Vue Mini 开发的小程序，也欢迎[提交你的小程序](https://github.com/vue-mini/vue-mini/issues/59)。
 
 <!-- prettier-ignore -->
 | | | |
