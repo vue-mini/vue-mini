@@ -5,7 +5,7 @@
   "packageManager": "pnpm@10.13.1",
   "scripts": {
     "format": "prettier --check \"**/*.{js,cjs,ts,json,md}\"",
-    "lint": "eslint --ext .js,.cjs,.ts .",
+    "lint": "eslint .",
     "type": "tsc --noEmit",
     "test": "vitest",
     "build": "node build.ts",
@@ -21,7 +21,7 @@
     "@rollup/plugin-terser": "^0.4.4",
     "@rollup/plugin-typescript": "^12.1.4",
     "@types/fs-extra": "^11.0.4",
-    "@types/node": "^24.0.15",
+    "@types/node": "^24.1.0",
     "@vitest/coverage-istanbul": "^3.2.4",
     "execa": "^9.6.0",
     "fs-extra": "^11.3.0",
@@ -34,6 +34,6 @@
     "vitepress": "2.0.0-alpha.7",
     "vitepress-plugin-group-icons": "^1.6.1",
     "vitest": "^3.2.4",
-    "xo": "^0.60.0"
+    "xo": "^1.2.1"
   }
 }

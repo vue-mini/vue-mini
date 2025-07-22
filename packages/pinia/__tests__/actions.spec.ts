@@ -98,7 +98,7 @@ describe('actions', () => {
     const store = useStore()
     expect.assertions(3)
     const spy = vi.fn()
-    // eslint-disable-next-line @typescript-eslint/use-unknown-in-catch-callback-variable
+    // eslint-disable-next-line promise/prefer-await-to-then
     await expect(store.rejects().catch(spy)).resolves.toBe(undefined)
     expect(spy).toHaveBeenCalledTimes(1)
     expect(spy).toHaveBeenCalledWith('fail')

@@ -1,13 +1,12 @@
-autoInstallPeers: false
-peerDependencyRules:
-  ignoreMissing:
-    - search-insights
-    - markdown-it
-    - webpack
-publicHoistPattern:
-  - '*eslint*'
-  - '*prettier*'
-onlyBuiltDependencies:
-  - esbuild
 packages:
   - packages/*
+
+autoInstallPeers: false
+
+onlyBuiltDependencies:
+  - esbuild
+  - unrs-resolver
+
+publicHoistPattern:
+  - eslint
+  - prettier

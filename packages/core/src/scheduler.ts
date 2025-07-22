@@ -21,7 +21,7 @@ const pendingPostFlushCbs: SchedulerJob[] = []
 let activePostFlushCbs: SchedulerJob[] | null = null
 let postFlushIndex = 0
 
-// eslint-disable-next-line spaced-comment
+// eslint-disable-next-line @stylistic/spaced-comment
 const resolvedPromise = /*@__PURE__*/ Promise.resolve()
 let currentFlushPromise: Promise<void> | null = null
 

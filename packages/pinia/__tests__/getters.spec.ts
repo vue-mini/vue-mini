@@ -2,7 +2,6 @@ import { ref, computed } from '@vue-mini/core'
 import type { Pinia } from '../src'
 import { createPinia, disposePinia, defineStore } from '../src'
 
-// eslint-disable-next-line @typescript-eslint/no-empty-function
 function expectType<T>(_value: T): void {}
 
 describe('getters', () => {

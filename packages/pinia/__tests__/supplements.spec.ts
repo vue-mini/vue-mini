@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-empty-function */
 import { definePage, nextTick, ref } from '@vue-mini/core'
 import type { Pinia } from '../src'
 import { createPinia, disposePinia, defineStore, storeToRefs } from '../src'

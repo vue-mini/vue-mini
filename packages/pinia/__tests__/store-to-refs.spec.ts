@@ -20,7 +20,6 @@ describe('store to refs', () => {
       // @ts-expect-error: we only need to match
       newO[key] = expect.objectContaining({ value: o[key] })
       return newO
-      // eslint-disable-next-line @typescript-eslint/prefer-reduce-type-parameter
     }, {} as ToRefs<O>)
   }
 
