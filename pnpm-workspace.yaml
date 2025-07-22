@@ -1,4 +1,9 @@
 autoInstallPeers: false
+peerDependencyRules:
+  ignoreMissing:
+    - search-insights
+    - markdown-it
+    - webpack
 publicHoistPattern:
   - '*eslint*'
   - '*prettier*'

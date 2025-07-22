@@ -35,13 +35,5 @@
     "vitepress-plugin-group-icons": "^1.6.1",
     "vitest": "^3.2.4",
     "xo": "^0.60.0"
-  },
-  "pnpm": {
-    "peerDependencyRules": {
-      "ignoreMissing": [
-        "search-insights",
-        "webpack"
-      ]
-    }
   }
 }
