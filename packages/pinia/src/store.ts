@@ -39,7 +39,7 @@ import type { Pinia } from './root-store'
 import { piniaSymbol } from './root-store'
 import { addSubscription, triggerSubscriptions } from './subscriptions'
 
-type _ArrayType<AT> = AT extends Array<infer T> ? T : never
+type _SetType<AT> = AT extends Set<infer T> ? T : never
 
 /**
  * Marks a function as an action for `$onAction`
@@ -150,8 +150,8 @@ function createStore<
   // Internal state
   let isListening = false // Set to true at the end.
   let shouldTrigger = false // The initial value does not matter, and no need to set to true at the end.
-  let subscriptions: Array<SubscriptionCallback<S>> = []
-  let actionSubscriptions: Array<StoreOnActionListener<Id, S, G, A>> = []
+  const subscriptions = new Set<SubscriptionCallback<S>>()
+  const actionSubscriptions = new Set<StoreOnActionListener<Id, S, G, A>>()
   let debuggerEvents: DebuggerEvent[] | DebuggerEvent
   const initialState = pinia.state.value[$id] as UnwrapRef<S> | undefined
 
@@ -204,8 +204,8 @@ function createStore<
 
   function $dispose() {
     scope.stop()
-    subscriptions = []
-    actionSubscriptions = []
+    subscriptions.clear()
+    actionSubscriptions.clear()
     pinia._s.delete($id)
   }
 
@@ -222,14 +222,14 @@ function createStore<
     }
 
     const wrappedAction = function (...args) {
-      const afterCallbackList: Array<(resolvedReturn: any) => any> = []
-      const onErrorCallbackList: Array<(error: unknown) => unknown> = []
-      function after(callback: _ArrayType<typeof afterCallbackList>) {
-        afterCallbackList.push(callback)
+      const afterCallbackSet = new Set<(resolvedReturn: any) => any>()
+      const onErrorCallbackSet = new Set<(error: unknown) => unknown>()
+      function after(callback: _SetType<typeof afterCallbackSet>) {
+        afterCallbackSet.add(callback)
       }
 
-      function onError(callback: _ArrayType<typeof onErrorCallbackList>) {
-        onErrorCallbackList.push(callback)
+      function onError(callback: _SetType<typeof onErrorCallbackSet>) {
+        onErrorCallbackSet.add(callback)
       }
 
       // @ts-expect-error
@@ -246,24 +246,24 @@ function createStore<
         ret = fn(...args)
         // Handle sync errors
       } catch (error) {
-        triggerSubscriptions(onErrorCallbackList, error)
+        triggerSubscriptions(onErrorCallbackSet, error)
         throw error
       }
 
       if (ret instanceof Promise) {
         return ret
           .then((value) => {
-            triggerSubscriptions(afterCallbackList, value)
+            triggerSubscriptions(afterCallbackSet, value)
             return value
           })
           .catch((error: unknown) => {
-            triggerSubscriptions(onErrorCallbackList, error)
+            triggerSubscriptions(onErrorCallbackSet, error)
             throw error
           })
       }
 
       // Trigger after callbacks
-      triggerSubscriptions(afterCallbackList, ret)
+      triggerSubscriptions(afterCallbackSet, ret)
       return ret
     } as MarkedAction<Fn>
 

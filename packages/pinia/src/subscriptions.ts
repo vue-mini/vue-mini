@@ -2,17 +2,16 @@ import { getCurrentScope, onScopeDispose } from '@vue-mini/core'
 import type { _Method } from './types'
 
 export function addSubscription<T extends _Method>(
-  subscriptions: T[],
+  subscriptions: Set<T>,
   callback: T,
   detached?: boolean,
   onCleanup = (): void => {},
 ): () => void {
-  subscriptions.push(callback)
+  subscriptions.add(callback)
 
   const removeSubscription = () => {
-    const idx = subscriptions.indexOf(callback)
-    if (idx !== -1) {
-      subscriptions.splice(idx, 1)
+    const isDel = subscriptions.delete(callback)
+    if (isDel) {
       onCleanup()
     }
   }
@@ -25,10 +24,10 @@ export function addSubscription<T extends _Method>(
 }
 
 export function triggerSubscriptions<T extends _Method>(
-  subscriptions: T[],
+  subscriptions: Set<T>,
   ...args: Parameters<T>
 ): void {
-  ;[...subscriptions].forEach((callback) => {
+  subscriptions.forEach((callback) => {
     callback(...args)
   })
 }
