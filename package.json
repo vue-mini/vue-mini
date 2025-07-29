@@ -27,7 +27,7 @@
     "fs-extra": "^11.3.0",
     "husky": "^9.1.7",
     "lint-staged": "^16.1.2",
-    "rollup": "^4.45.1",
+    "rollup": "^4.46.1",
     "rollup-plugin-dts": "^6.2.1",
     "tslib": "^2.8.1",
     "typescript": "^5.8.3",
