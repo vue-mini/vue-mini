@@ -1,6 +1,6 @@
 {
   "name": "@vue-mini/core",
-  "version": "1.2.3",
+  "version": "1.2.4",
   "description": "基于 Vue 3 的小程序框架。简单，强大，高性能。 ",
   "main": "dist/vue-mini.cjs.js",
   "module": "dist/vue-mini.esm-bundler.js",
