@@ -12,6 +12,6 @@ Vue Mini 的**次要版本**可能会包含 TypeScript 类型声明的不兼容�
 
 3. Vue 的次要版本可能会包含 TypeScript 类型声明的不兼容变更。
 
-4. 我们可能会在次要版本对 miniprogram-api-typings 做大版本升级。
+4. miniprogram-api-typings 的新版本可能会包含不兼容变更。
 
 如果你正在使用 TypeScript，则可以使用一个语义化版本的范围来锁住当前的次要版本，并在 Vue Mini 新的次要版本发布时进行手动升级。需要说明的是 TypeScript 类型声明的不兼容变更不会导致你的程序运行出错，对于运行时来说仍然是兼容的。
