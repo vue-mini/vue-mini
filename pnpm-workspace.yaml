@@ -3,6 +3,11 @@ packages:
 
 autoInstallPeers: false
 
+peerDependencyRules:
+  ignoreMissing:
+    - markdown-it
+    - search-insights
+
 onlyBuiltDependencies:
   - esbuild
   - unrs-resolver
