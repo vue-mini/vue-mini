@@ -74,8 +74,8 @@ importers:
         specifier: 3.5.18
         version: 3.5.18
       miniprogram-api-typings:
-        specifier: ~4.0.8
-        version: 4.0.8
+        specifier: ~4.1.0
+        version: 4.1.0
 
   packages/pinia: {}
 
@@ -2357,8 +2357,8 @@ packages:
     resolution: {integrity: sha512-qOOzS1cBTWYF4BH8fVePDBOO9iptMnGUEZwNc/cMWnTV2nVLZ7VoNWEPHkYczZA0pdoA7dl6e7FL659nX9S2aw==}
     engines: {node: '>=16 || 14 >=14.17'}
 
-  miniprogram-api-typings@4.0.8:
-    resolution: {integrity: sha512-q3MHCd/r0EsCFsq+nebbBbpwhsQbJg2d8lvRdRBV4KXgp+S1OzzNFpjFoy1X46NA01OD0fbCnxo7tJRSE2pqSw==}
+  miniprogram-api-typings@4.1.0:
+    resolution: {integrity: sha512-4RBsz27nBKyRkVGoNkRaPx24/KeJBw3zaaIlXDR8s/WBh2PbcUAc+q7wLLbp7Qsmb3bLzzUu7tqAti+B06kmjg==}
 
   minisearch@7.1.2:
     resolution: {integrity: sha512-R1Pd9eF+MD5JYDDSPAp/q1ougKglm14uEkPMvQ/05RGmx6G9wvmLTrTI/Q5iPNJLYqNdsDQ7qTGIcNWR+FrHmA==}
@@ -5685,7 +5685,7 @@ snapshots:
 
   minipass@7.1.2: {}
 
-  miniprogram-api-typings@4.0.8: {}
+  miniprogram-api-typings@4.1.0: {}
 
   minisearch@7.1.2: {}
 
