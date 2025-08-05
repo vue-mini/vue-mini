@@ -1,7 +1,8 @@
 import { fileURLToPath } from 'node:url'
+import type { ViteUserConfig } from 'vitest/config'
 import { defineConfig } from 'vitest/config'
 
-export default defineConfig({
+const config: ViteUserConfig = defineConfig({
   define: {
     __DEV__: true,
   },
@@ -27,3 +28,5 @@ export default defineConfig({
     },
   },
 })
+
+export default config

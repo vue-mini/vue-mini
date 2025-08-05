@@ -3,11 +3,12 @@ export const EMPTY_OBJ: Readonly<Record<string, any>> =
 
 /* istanbul ignore next -- @preserve */
 // eslint-disable-next-line @typescript-eslint/no-empty-function
-export const NOOP = () => {}
+export const NOOP = (): void => {}
 
-export const { isArray } = Array
+// eslint-disable-next-line prefer-destructuring
+export const isArray: typeof Array.isArray = Array.isArray
 
-export const extend = Object.assign
+export const extend: typeof Object.assign = Object.assign
 
 export function exclude<T extends Record<string, unknown>, K extends keyof T>(
   obj: T,

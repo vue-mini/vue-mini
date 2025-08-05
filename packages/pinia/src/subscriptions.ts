@@ -6,8 +6,8 @@ export function addSubscription<T extends _Method>(
   callback: T,
   detached?: boolean,
   // eslint-disable-next-line @typescript-eslint/no-empty-function
-  onCleanup = () => {},
-) {
+  onCleanup = (): void => {},
+): () => void {
   subscriptions.push(callback)
 
   const removeSubscription = () => {
@@ -28,7 +28,7 @@ export function addSubscription<T extends _Method>(
 export function triggerSubscriptions<T extends _Method>(
   subscriptions: T[],
   ...args: Parameters<T>
-) {
+): void {
   ;[...subscriptions].forEach((callback) => {
     callback(...args)
   })

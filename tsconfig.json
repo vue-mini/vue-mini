@@ -13,6 +13,8 @@
     "noFallthroughCasesInSwitch": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
+    "declaration": true,
+    "isolatedDeclarations": true,
     "types": ["vitest/globals"],
     "paths": {
       "@vue-mini/core": ["./packages/core/src"]

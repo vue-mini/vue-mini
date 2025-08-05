@@ -39,7 +39,7 @@ export function createPinia(): Pinia {
  *
  * @param pinia - pinia instance
  */
-export function disposePinia(pinia: Pinia) {
+export function disposePinia(pinia: Pinia): void {
   pinia._e.stop()
   pinia._s.clear()
   pinia._p.splice(0)
