@@ -1,0 +1,44 @@
+@use '../../styles/variables' as *;
+@use '../../styles/mixins' as *;
+
+.container {
+  min-height: 100vh;
+  background: $background-color;
+  padding: $spacing-lg;
+  
+  .header {
+    @include flex-center;
+    height: 200rpx;
+    background: linear-gradient(135deg, $primary-color, $secondary-color);
+    border-radius: $border-radius-lg;
+    margin-bottom: $spacing-xl;
+    
+    .title {
+      font-size: $font-size-xl;
+      color: white;
+      font-weight: bold;
+    }
+  }
+  
+  .card {
+    background: white;
+    padding: $spacing-md;
+    border-radius: $border-radius-md;
+    margin-bottom: $spacing-md;
+    @include hairline(bottom);
+    
+    .card-title {
+      font-size: $font-size-lg;
+      color: $text-color;
+      margin-bottom: $spacing-sm;
+      @include text-ellipsis(1);
+    }
+    
+    .card-content {
+      font-size: $font-size-md;
+      color: $text-color-light;
+      line-height: 1.6;
+      @include text-ellipsis(2);
+    }
+  }
+}
