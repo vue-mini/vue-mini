@@ -411,7 +411,7 @@ describe('page', () => {
     expect(injectedFn2).toBeCalledTimes(1)
   })
 
-  it('onUnload', async () => {
+  it('onUnload', () => {
     const fn = vi.fn()
     const injectedFn1 = vi.fn()
     const injectedFn2 = vi.fn()

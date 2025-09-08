@@ -82,7 +82,6 @@ const asserted = new Set<string>()
 beforeEach(() => {
   asserted.clear()
   warn = vi.spyOn(console, 'warn')
-  // eslint-disable-next-line @typescript-eslint/no-empty-function
   warn.mockImplementation(() => {})
 })
 

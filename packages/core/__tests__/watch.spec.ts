@@ -264,9 +264,7 @@ describe('watch', () => {
     watch([() => state.count, count, plus], (vals, oldVals) => {
       dummy = [vals, oldVals]
       // Assert types
-      // eslint-disable-next-line unicorn/prefer-spread
       vals.concat(1)
-      // eslint-disable-next-line unicorn/prefer-spread
       oldVals.concat(1)
     })
 
@@ -307,7 +305,6 @@ describe('watch', () => {
       const [, oldStatus] = oldVals
       // Assert types
       count + 1
-      // eslint-disable-next-line @typescript-eslint/no-unnecessary-boolean-literal-compare
       oldStatus === true
     })
 
@@ -518,13 +515,9 @@ describe('watch', () => {
   })
 
   it('deep with symbols', async () => {
-    // eslint-disable-next-line symbol-description
     const symbol1 = Symbol()
-    // eslint-disable-next-line symbol-description
     const symbol2 = Symbol()
-    // eslint-disable-next-line symbol-description
     const symbol3 = Symbol()
-    // eslint-disable-next-line symbol-description
     const symbol4 = Symbol()
 
     const raw: any = {
@@ -562,7 +555,6 @@ describe('watch', () => {
     expect(spy).toHaveBeenCalledTimes(2)
 
     // Removing a symbol property
-    // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
     delete state[symbol4]
     await nextTick()
     expect(spy).toHaveBeenCalledTimes(3)
@@ -578,7 +570,7 @@ describe('watch', () => {
     expect(cb).toHaveBeenCalledTimes(2)
   })
 
-  it('immediate: triggers when initial value is null', async () => {
+  it('immediate: triggers when initial value is null', () => {
     const state = ref(null)
     const spy = vi.fn()
     watch(() => state.value, spy, { immediate: true })
@@ -1236,7 +1228,7 @@ describe('watch', () => {
     expect(dummy).toBe(1)
   })
 
-  it('warn when using old simple watch api', async () => {
+  it('warn when using old simple watch api', () => {
     const count = ref(0)
     // @ts-expect-error
     watch(() => count.value)

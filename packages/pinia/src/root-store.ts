@@ -52,7 +52,6 @@ export interface Pinia {
 export const piniaSymbol = (
   __DEV__ ?
     Symbol('pinia')
-    // eslint-disable-next-line symbol-description
   : /* istanbul ignore next -- @preserve */ Symbol()) as InjectionKey<Pinia>
 
 /**

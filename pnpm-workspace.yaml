@@ -10,8 +10,3 @@ peerDependencyRules:
 
 onlyBuiltDependencies:
   - esbuild
-  - unrs-resolver
-
-publicHoistPattern:
-  - eslint
-  - prettier

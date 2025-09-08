@@ -196,7 +196,7 @@ describe('store plugins', () => {
     })
   })
 
-  it('run inside store effect', async () => {
+  it('run inside store effect', () => {
     pinia.use(({ store }) => ({
       // @ts-expect-error: invalid computed
       double: computed(() => store.$state.n * 2),
@@ -221,7 +221,7 @@ describe('store plugins', () => {
     stop()
   })
 
-  it('only executes plugins once after multiple installs', async () => {
+  it('only executes plugins once after multiple installs', () => {
     const spy = vi.fn()
     pinia.use(spy)
     useStore()

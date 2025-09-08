@@ -81,9 +81,7 @@ export function storeToRefs<SS extends StoreGeneric>(
 ): StoreToRefs<SS> {
   const rawStore = toRaw(store)
 
-  // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
   const refs = {} as StoreToRefs<SS>
-  // eslint-disable-next-line guard-for-in
   for (const key in rawStore) {
     const value = rawStore[key]
     // There is no native method to check for a computed

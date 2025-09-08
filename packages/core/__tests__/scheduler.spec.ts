@@ -1,4 +1,3 @@
-/* eslint-disable no-bitwise */
 import type { SchedulerJob } from '../src/scheduler'
 import {
   SchedulerJobFlags,
@@ -11,7 +10,6 @@ import {
 describe('scheduler', () => {
   it('nextTick', async () => {
     const calls: string[] = []
-    // eslint-disable-next-line promise/valid-params, promise/prefer-await-to-then
     const dummyThen = Promise.resolve().then()
     const job1 = () => {
       calls.push('job1')
@@ -88,7 +86,7 @@ describe('scheduler', () => {
   })
 
   describe('queuePostFlushCb', () => {
-    it('basic usage', async () => {
+    it('basic usage', () => {
       const calls: string[] = []
 
       const cb1 = () => {
@@ -112,7 +110,7 @@ describe('scheduler', () => {
       expect(calls).toEqual(['cb1', 'cb2', 'cb3'])
     })
 
-    it('should dedupe queued postFlushCb', async () => {
+    it('should dedupe queued postFlushCb', () => {
       const calls: string[] = []
 
       const cb1 = () => {
@@ -140,7 +138,7 @@ describe('scheduler', () => {
       expect(calls).toEqual(['cb1', 'cb2', 'cb3'])
     })
 
-    it('queuePostFlushCb while flushing', async () => {
+    it('queuePostFlushCb while flushing', () => {
       const calls: string[] = []
       const cb1 = () => {
         calls.push('cb1')
@@ -284,7 +282,7 @@ describe('scheduler', () => {
   })
 
   // #1595
-  test('avoid duplicate postFlushCb invocation', async () => {
+  test('avoid duplicate postFlushCb invocation', () => {
     const calls: string[] = []
     const cb1 = () => {
       calls.push('cb1')

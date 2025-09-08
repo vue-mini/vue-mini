@@ -5,7 +5,6 @@ export function addSubscription<T extends _Method>(
   subscriptions: T[],
   callback: T,
   detached?: boolean,
-  // eslint-disable-next-line @typescript-eslint/no-empty-function
   onCleanup = (): void => {},
 ): () => void {
   subscriptions.push(callback)

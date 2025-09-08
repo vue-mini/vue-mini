@@ -16,6 +16,7 @@
     "prepare": "husky"
   },
   "devDependencies": {
+    "@eslint/js": "^9.35.0",
     "@rollup/plugin-node-resolve": "^16.0.1",
     "@rollup/plugin-replace": "^6.0.2",
     "@rollup/plugin-terser": "^0.4.4",
@@ -23,17 +24,19 @@
     "@types/fs-extra": "^11.0.4",
     "@types/node": "^24.3.1",
     "@vitest/coverage-istanbul": "^3.2.4",
+    "eslint": "^9.35.0",
     "execa": "^9.6.0",
     "fs-extra": "^11.3.1",
     "husky": "^9.1.7",
     "lint-staged": "^16.1.6",
+    "prettier": "^3.6.2",
     "rollup": "^4.50.0",
     "rollup-plugin-dts": "^6.2.3",
     "tslib": "^2.8.1",
     "typescript": "^5.9.2",
+    "typescript-eslint": "^8.42.0",
     "vitepress": "2.0.0-alpha.7",
     "vitepress-plugin-group-icons": "^1.6.3",
-    "vitest": "^3.2.4",
-    "xo": "^1.2.2"
+    "vitest": "^3.2.4"
   }
 }

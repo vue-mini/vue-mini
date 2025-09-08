@@ -98,7 +98,6 @@ export function defineComponent(optionsOrSetup: any, config?: Config): string {
     options = {}
   } else {
     if (optionsOrSetup.setup === undefined) {
-      // eslint-disable-next-line new-cap
       return Component(optionsOrSetup)
     }
 
@@ -370,7 +369,6 @@ export function defineComponent(optionsOrSetup: any, config?: Config): string {
     })
   }
 
-  // eslint-disable-next-line new-cap
   return Component(options)
 }
 

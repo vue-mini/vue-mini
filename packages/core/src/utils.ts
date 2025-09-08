@@ -2,10 +2,8 @@ export const EMPTY_OBJ: Readonly<Record<string, any>> =
   __DEV__ ? Object.freeze({}) : /* istanbul ignore next -- @preserve */ {}
 
 /* istanbul ignore next -- @preserve */
-// eslint-disable-next-line @typescript-eslint/no-empty-function
 export const NOOP = (): void => {}
 
-// eslint-disable-next-line prefer-destructuring
 export const isArray: typeof Array.isArray = Array.isArray
 
 export const extend: typeof Object.assign = Object.assign

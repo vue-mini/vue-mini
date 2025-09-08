@@ -73,7 +73,6 @@ export function definePage(optionsOrSetup: any, config?: Config): void {
     options = {}
   } else {
     if (optionsOrSetup.setup === undefined) {
-      // eslint-disable-next-line new-cap
       Page(optionsOrSetup)
       return
     }
@@ -269,7 +268,6 @@ export function definePage(optionsOrSetup: any, config?: Config): void {
     PageLifecycle.ON_TAB_ITEM_TAP,
   )
 
-  // eslint-disable-next-line new-cap
   Page(options)
 }
 

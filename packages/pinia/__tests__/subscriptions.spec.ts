@@ -139,7 +139,7 @@ describe('subscriptions', () => {
   })
 
   describe('multiple', () => {
-    it('triggers subscribe only once', async () => {
+    it('triggers subscribe only once', () => {
       const s1 = useStore()
       const s2 = useStore()
 
@@ -167,7 +167,7 @@ describe('subscriptions', () => {
       // First mutation: works as expected
       s1.$patch({ user: 'Edu' })
       // Anything else than awaiting a non promise or Promise.resolve() works
-      // eslint-disable-next-line @typescript-eslint/await-thenable, unicorn/no-unnecessary-await
+      // eslint-disable-next-line @typescript-eslint/await-thenable
       await false
       expect(spy1).toHaveBeenCalledTimes(1)
       expect(spy1).not.toHaveBeenCalledWith(

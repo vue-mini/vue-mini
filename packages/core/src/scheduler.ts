@@ -1,4 +1,3 @@
-/* eslint-disable no-bitwise, unicorn/prefer-math-trunc, @typescript-eslint/prefer-literal-enum-member */
 import { NOOP } from './utils'
 
 export enum SchedulerJobFlags {
@@ -21,7 +20,6 @@ const pendingPostFlushCbs: SchedulerJob[] = []
 let activePostFlushCbs: SchedulerJob[] | null = null
 let postFlushIndex = 0
 
-// eslint-disable-next-line @stylistic/spaced-comment
 const resolvedPromise = /*@__PURE__*/ Promise.resolve()
 let currentFlushPromise: Promise<void> | null = null
 
@@ -32,7 +30,6 @@ export function nextTick(): Promise<void>
 export function nextTick<R>(fn: () => R | Promise<R>): Promise<R>
 export function nextTick<R>(fn?: () => R | Promise<R>): Promise<void | R> {
   const p = currentFlushPromise || resolvedPromise
-  // eslint-disable-next-line promise/prefer-await-to-then
   return fn ? p.then(fn) : p
 }
 
@@ -46,7 +43,6 @@ export function queueJob(job: SchedulerJob): void {
 
 function queueFlush(): void {
   if (!currentFlushPromise) {
-    // eslint-disable-next-line promise/prefer-await-to-then
     currentFlushPromise = resolvedPromise.then(flushJobs)
   }
 }

@@ -3,7 +3,6 @@ import { isFunction } from './utils'
 const provides = Object.create(null)
 
 // @ts-expect-error
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
 interface InjectionConstraint<T> {}
 
 export type InjectionKey<T> = symbol & InjectionConstraint<T>

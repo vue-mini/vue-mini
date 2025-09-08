@@ -15,6 +15,7 @@ describe('actions', () => {
     const nonA = computed(() => !a.value)
     const otherComputed = computed(() => nonA.value)
 
+    // eslint-disable-next-line @typescript-eslint/require-await
     const getNonA = async () => nonA.value
 
     const toggle = () => {
@@ -39,6 +40,7 @@ describe('actions', () => {
       throw new Error('fail')
     }
 
+    // eslint-disable-next-line @typescript-eslint/require-await
     const rejects = async () => {
       // eslint-disable-next-line @typescript-eslint/only-throw-error
       throw 'fail'
@@ -98,7 +100,6 @@ describe('actions', () => {
     const store = useStore()
     expect.assertions(3)
     const spy = vi.fn()
-    // eslint-disable-next-line promise/prefer-await-to-then
     await expect(store.rejects().catch(spy)).resolves.toBe(undefined)
     expect(spy).toHaveBeenCalledTimes(1)
     expect(spy).toHaveBeenCalledWith('fail')

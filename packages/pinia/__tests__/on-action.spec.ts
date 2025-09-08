@@ -12,17 +12,17 @@ describe('on action', () => {
       user.value = name
     }
 
+    // eslint-disable-next-line @typescript-eslint/require-await
     const asyncUpperName = async () => user.value.toUpperCase()
 
     const upperName = () => user.value.toUpperCase()
 
     const throws = (e: any) => {
-      // eslint-disable-next-line @typescript-eslint/only-throw-error
       throw e
     }
 
+    // eslint-disable-next-line @typescript-eslint/require-await
     const rejects = async (e: any) => {
-      // eslint-disable-next-line @typescript-eslint/only-throw-error
       throw e
     }
 
@@ -190,7 +190,7 @@ describe('on action', () => {
       }
     })
 
-    it('triggers subscribe only once', async () => {
+    it('triggers subscribe only once', () => {
       const s1 = useStore()
       const s2 = useStore()
 

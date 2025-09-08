@@ -1,4 +1,4 @@
-/* eslint-disable no-prototype-builtins, symbol-description, prefer-object-spread, promise/prefer-await-to-then, @typescript-eslint/consistent-type-assertions */
+/* eslint-disable no-prototype-builtins */
 import type {
   DebuggerEvent,
   WatchOptions,
@@ -95,6 +95,7 @@ function mergeReactiveObjects<
 
 const { assign } = Object
 
+// eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
 function isComputed<T>(value: ComputedRef<T> | unknown): value is ComputedRef<T>
 function isComputed(o: any): o is ComputedRef {
   return Boolean(isRef(o) && (o as any).effect)
@@ -109,7 +110,6 @@ function createStore<
 >(
   $id: Id,
   setup: (helpers: SetupStoreHelpers) => SS,
-  // eslint-disable-next-line @typescript-eslint/default-param-last
   options: DefineSetupStoreOptions<Id, S, G, A> = {},
   pinia: Pinia,
 ): void {
@@ -136,7 +136,6 @@ function createStore<
       } else {
         // Let patch send all the events together later
         /* istanbul ignore else -- @preserve */
-        // eslint-disable-next-line no-lonely-if
         if (Array.isArray(debuggerEvents)) {
           debuggerEvents.push(event)
         } else {
@@ -346,7 +345,6 @@ function createStore<
   })!
 
   // Overwrite existing actions to support $onAction
-  // eslint-disable-next-line guard-for-in
   for (const key in setupStore) {
     const prop = setupStore[key]
 

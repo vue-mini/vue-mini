@@ -1,10 +1,22 @@
-import xo from 'xo'
+import eslint from '@eslint/js'
+import tseslint from 'typescript-eslint'
 
 const config = [
-  ...xo.xoToEslintConfig([
-    { ignores: ['packages/api-typings/', '**/cache/', '**/dist/'] },
-    { prettier: 'compat' },
-  ]),
+  { ignores: ['packages/api-typings/', '**/cache/', '**/dist/'] },
+  {
+    files: ['**/*.js', '**/*.ts'],
+    linterOptions: { reportUnusedDisableDirectives: true },
+    rules: {
+      ...eslint.configs.recommended.rules,
+      // Avoid conflicts with Prettier
+      // https://github.com/prettier/eslint-config-prettier#no-unexpected-multiline
+      'no-unexpected-multiline': 'off',
+    },
+  },
+  ...tseslint.configs.recommendedTypeChecked.map((c) => ({
+    ...c,
+    files: ['**/*.ts'],
+  })),
   {
     files: ['**/*.ts'],
     languageOptions: {
@@ -44,36 +56,20 @@ const config = [
             'verbose helpers and should be avoided.',
         },
       ],
-      'logical-assignment-operators': 'off',
-      'import-x/extensions': ['error', 'never'],
-      'import-x/no-duplicates': ['error', { 'prefer-inline': false }],
-      'import-x/no-mutable-exports': 'off',
-      'unicorn/no-array-for-each': 'off',
-      'unicorn/prevent-abbreviations': 'off',
       '@typescript-eslint/ban-ts-comment': 'off',
-      '@typescript-eslint/consistent-type-definitions': 'off',
-      '@typescript-eslint/naming-convention': 'off',
       '@typescript-eslint/no-empty-object-type': 'off',
-      '@typescript-eslint/no-restricted-types': 'off',
+      '@typescript-eslint/no-explicit-any': 'off',
       '@typescript-eslint/no-unsafe-argument': 'off',
       '@typescript-eslint/no-unsafe-assignment': 'off',
       '@typescript-eslint/no-unsafe-call': 'off',
       '@typescript-eslint/no-unsafe-function-type': 'off',
+      '@typescript-eslint/no-unsafe-member-access': 'off',
       '@typescript-eslint/no-unsafe-return': 'off',
-      '@typescript-eslint/prefer-nullish-coalescing': 'off',
-      '@typescript-eslint/prefer-optional-chain': 'off',
-      '@typescript-eslint/promise-function-async': 'off',
+      '@typescript-eslint/no-unused-vars': 'off',
     },
   },
   {
-    files: ['**/*.spec.ts'],
-    rules: {
-      'no-restricted-syntax': 'off',
-      '@typescript-eslint/no-empty-function': 'off',
-    },
-  },
-  {
-    files: ['build.ts', 'release.ts'],
+    files: ['**/*.spec.ts', 'build.ts', 'release.ts'],
     rules: {
       'no-restricted-syntax': 'off',
     },

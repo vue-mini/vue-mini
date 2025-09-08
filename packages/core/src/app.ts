@@ -35,7 +35,6 @@ export function createApp(optionsOrSetup: any): void {
     options = {}
   } else {
     if (optionsOrSetup.setup === undefined) {
-      // eslint-disable-next-line new-cap
       App(optionsOrSetup)
       return
     }
@@ -83,7 +82,6 @@ export function createApp(optionsOrSetup: any): void {
     AppLifecycle.ON_THEME_CHANGE,
   )
 
-  // eslint-disable-next-line new-cap
   App(options)
 }
 

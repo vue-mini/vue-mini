@@ -184,7 +184,6 @@ function doWatch(
     // Important: mark the job as a watcher callback so that scheduler knows
     // it is allowed to self-trigger
     if (cb) {
-      // eslint-disable-next-line no-bitwise
       job.flags! |= SchedulerJobFlags.ALLOW_RECURSE
     }
   }

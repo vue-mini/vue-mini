@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-empty-interface */
 import type {
   ComputedRef,
   DebuggerEvent,
@@ -14,6 +13,7 @@ import type { Pinia } from './root-store'
 export type StateTree = Record<PropertyKey, any>
 
 export function isPlainObject<S extends StateTree>(
+  // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
   value: S | unknown,
 ): value is S
 export function isPlainObject(o: any): o is StateTree {

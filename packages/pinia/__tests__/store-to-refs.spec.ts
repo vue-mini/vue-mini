@@ -15,7 +15,6 @@ describe('store to refs', () => {
   })
 
   function objectOfRefs<O extends Record<any, any>>(o: O): ToRefs<O> {
-    // eslint-disable-next-line unicorn/no-array-reduce
     return Object.keys(o).reduce((newO, key) => {
       // @ts-expect-error: we only need to match
       newO[key] = expect.objectContaining({ value: o[key] })
