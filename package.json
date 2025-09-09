@@ -30,11 +30,11 @@
     "husky": "^9.1.7",
     "lint-staged": "^16.1.6",
     "prettier": "^3.6.2",
-    "rollup": "^4.50.0",
+    "rollup": "^4.50.1",
     "rollup-plugin-dts": "^6.2.3",
     "tslib": "^2.8.1",
     "typescript": "^5.9.2",
-    "typescript-eslint": "^8.42.0",
+    "typescript-eslint": "^8.43.0",
     "vitepress": "2.0.0-alpha.7",
     "vitepress-plugin-group-icons": "^1.6.3",
     "vitest": "^3.2.4"
