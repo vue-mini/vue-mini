@@ -1,6 +1,6 @@
 {
   "name": "@vue-mini/pinia",
-  "version": "0.1.2",
+  "version": "1.0.0",
   "description": "Pinia For Vue Mini",
   "main": "dist/pinia.cjs.js",
   "module": "dist/pinia.esm-bundler.js",
