@@ -23,7 +23,6 @@ async function generateDeclaration({
       typescript({
         tsconfig: 'tsconfig.build.json',
         compilerOptions: {
-          noCheck: true,
           declarationDir: path.join('packages', target, 'dist'),
         },
       }),
@@ -86,7 +85,6 @@ async function generateCode({
       typescript({
         tsconfig: 'tsconfig.build.json',
         compilerOptions: {
-          noCheck: true,
           declaration: false,
           isolatedDeclarations: false,
         },

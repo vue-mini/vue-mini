@@ -1,5 +1,6 @@
 {
   "extends": "./tsconfig.json",
+  "compilerOptions": { "noCheck": true },
   "exclude": [
     "build.ts",
     "release.ts",
