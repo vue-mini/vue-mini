@@ -274,8 +274,6 @@ importers:
         specifier: ^4.1.7
         version: 4.1.7(@types/node@25.9.1)(@vitest/coverage-istanbul@4.1.7)(esbuild@0.27.7)(terser@5.48.0)(yaml@2.9.0)
 
-  packages/api-typings: {}
-
   packages/core:
     dependencies:
       '@vue/reactivity':
