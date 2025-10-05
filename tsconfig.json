@@ -21,8 +21,7 @@
     }
   },
   "include": [
-    "packages/core",
-    "packages/pinia",
+    "packages/*",
     "build.ts",
     "release.ts",
     "global.d.ts",

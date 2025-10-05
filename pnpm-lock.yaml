@@ -75,8 +75,6 @@ importers:
         specifier: ^4.0.18
         version: 4.0.18(@types/node@25.3.2)(terser@5.46.0)(yaml@2.8.2)
 
-  packages/api-typings: {}
-
   packages/core:
     dependencies:
       '@vue/reactivity':
