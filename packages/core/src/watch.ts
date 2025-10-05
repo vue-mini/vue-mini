@@ -56,7 +56,7 @@ export function watchPostEffect(
     effect,
     null,
     __DEV__ ?
-      extend({}, options as any, { flush: 'post' })
+      extend({}, options as WatchEffectOptions, { flush: 'post' })
     : /* istanbul ignore next -- @preserve */ { flush: 'post' },
   )
 }
@@ -69,7 +69,7 @@ export function watchSyncEffect(
     effect,
     null,
     __DEV__ ?
-      extend({}, options as any, { flush: 'sync' })
+      extend({}, options as WatchEffectOptions, { flush: 'sync' })
     : /* istanbul ignore next -- @preserve */ { flush: 'sync' },
   )
 }
