@@ -2,7 +2,7 @@ import eslint from '@eslint/js'
 import tseslint from 'typescript-eslint'
 
 const config = [
-  { ignores: ['packages/api-typings/', '**/cache/', '**/dist/'] },
+  { ignores: ['**/cache/', '**/dist/'] },
   {
     files: ['**/*.js', '**/*.ts'],
     linterOptions: { reportUnusedDisableDirectives: true },
