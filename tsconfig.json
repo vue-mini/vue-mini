@@ -21,7 +21,7 @@
     }
   },
   "include": [
-    "packages/*",
+    "packages",
     "build.ts",
     "release.ts",
     "global.d.ts",
