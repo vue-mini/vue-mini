@@ -4,12 +4,13 @@ jobs:
   run:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v5
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v6
         with:
-          node-version: 22.x
-      - run: corepack enable
-      - run: pnpm -v
+          node-version: 24.x
+          cache: 'pnpm'
+          cache-dependency-path: pnpm-lock.yaml
       - run: pnpm install
       - run: pnpm format
       - run: pnpm lint
