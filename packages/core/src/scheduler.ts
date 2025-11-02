@@ -29,6 +29,7 @@ type CountMap = Map<SchedulerJob, number>
 export function nextTick(): Promise<void>
 export function nextTick<R>(fn: () => R | Promise<R>): Promise<R>
 export function nextTick<R>(fn?: () => R | Promise<R>): Promise<void | R> {
+  // eslint-disable-next-line @typescript-eslint/no-misused-promises
   const p = currentFlushPromise || resolvedPromise
   return fn ? p.then(fn) : p
 }
