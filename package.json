@@ -22,7 +22,7 @@
     "@rollup/plugin-terser": "^0.4.4",
     "@rollup/plugin-typescript": "^12.3.0",
     "@types/fs-extra": "^11.0.4",
-    "@types/node": "^24.10.0",
+    "@types/node": "^24.10.1",
     "@vitest/coverage-istanbul": "^4.0.8",
     "eslint": "^9.39.1",
     "execa": "^9.6.0",
