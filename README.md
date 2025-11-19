@@ -46,7 +46,7 @@ Vue Mini 已经被很多公司和团队应用在了生产环境，其中不乏�
 | <img width="1604" alt="网易游戏印象" src="https://vuemini.org/cases/1.jpg"><p align="center">网易游戏印象</p> | <img width="1604" alt="妙邻社区" src="https://vuemini.org/cases/2.jpg"><p align="center">妙邻社区</p> | <img width="1604" alt="字多" src="https://vuemini.org/cases/3.jpg"><p align="center">字多</p> |
 | <img width="1604" alt="伊旅小向导" src="https://vuemini.org/cases/4.jpg"><p align="center">伊旅小向导</p> | <img width="1604" alt="冒险计算工具" src="https://vuemini.org/cases/5.jpg"><p align="center">冒险计算工具</p> | <img width="1604" alt="时钟表" src="https://vuemini.org/cases/6.jpg"><p align="center">时钟表</p> |
 | <img width="1604" alt="日常计数器" src="https://vuemini.org/cases/7.jpg"><p align="center">日常计数器</p> | <img width="1604" alt="超清4K壁纸酷" src="https://vuemini.org/cases/8.jpg"><p align="center">超清4K壁纸酷</p> | <img width="1604" alt="青岛市银行保险业纠纷调解中心" src="https://vuemini.org/cases/9.jpg"><p align="center">青岛市银行保险业纠纷调解中心</p> |
-| <img width="1604" alt="心之链" src="https://vuemini.org/cases/10.jpg"><p align="center">心之链</p> | <a href="https://github.com/vue-mini/vue-mini/issues/59"><img width="1604" alt="添加" src="https://vuemini.org/cases/add.svg"><p align="center">添加</p></a> | |
+| <img width="1604" alt="心之链" src="https://vuemini.org/cases/10.jpg"><p align="center">心之链</p> | <img width="1604" alt="轻帧" src="https://vuemini.org/cases/11.jpg"><p align="center">轻帧</p> | <a href="https://github.com/vue-mini/vue-mini/issues/59"><img width="1604" alt="添加" src="https://vuemini.org/cases/add.svg"><p align="center">添加</p></a> |
 
 ## 许可证
 
