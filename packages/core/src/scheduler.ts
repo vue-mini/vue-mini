@@ -1,8 +1,6 @@
-import { NOOP } from './utils'
-
 export enum SchedulerJobFlags {
   QUEUED = 1 << 0,
-  ALLOW_RECURSE = 1 << 2,
+  ALLOW_RECURSE = 1 << 1,
 }
 
 export interface SchedulerJob extends Function {
@@ -13,17 +11,18 @@ export interface SchedulerJob extends Function {
   flags?: SchedulerJobFlags
 }
 
-const queue: SchedulerJob[] = []
-let flushIndex = -1
+const jobs: SchedulerJob[] = []
 
-const pendingPostFlushCbs: SchedulerJob[] = []
-let activePostFlushCbs: SchedulerJob[] | null = null
+let postJobs: SchedulerJob[] = []
+let activePostJobs: SchedulerJob[] | null = null
+let currentFlushPromise: Promise<void> | null = null
+let jobsLength = 0
+let flushIndex = 0
 let postFlushIndex = 0
 
 const resolvedPromise = /*@__PURE__*/ Promise.resolve()
-let currentFlushPromise: Promise<void> | null = null
-
 const RECURSION_LIMIT = 100
+
 type CountMap = Map<SchedulerJob, number>
 
 export function nextTick(): Promise<void>
@@ -34,96 +33,111 @@ export function nextTick<R>(fn?: () => R | Promise<R>): Promise<void | R> {
 }
 
 export function queueJob(job: SchedulerJob): void {
-  if (!(job.flags! & SchedulerJobFlags.QUEUED)) {
-    queue.push(job)
-    job.flags! |= SchedulerJobFlags.QUEUED
+  if (queueJobWorker(job, jobs, jobsLength)) {
+    jobsLength++
     queueFlush()
   }
 }
 
-function queueFlush(): void {
-  if (!currentFlushPromise) {
-    currentFlushPromise = resolvedPromise.then(flushJobs)
+function queueJobWorker(
+  job: SchedulerJob,
+  queue: SchedulerJob[],
+  length: number,
+) {
+  const flags = job.flags!
+  if (!(flags & SchedulerJobFlags.QUEUED)) {
+    job.flags = flags | SchedulerJobFlags.QUEUED
+    queue[length] = job
+    return true
+  }
+  return false
+}
+
+const doFlushJobs = () => {
+  try {
+    flushJobs()
+  } catch (e) {
+    currentFlushPromise = null
+    throw e
   }
 }
 
-export function queuePostFlushCb(cb: SchedulerJob): void {
-  if (!(cb.flags! & SchedulerJobFlags.QUEUED)) {
-    pendingPostFlushCbs.push(cb)
-    cb.flags! |= SchedulerJobFlags.QUEUED
+function queueFlush() {
+  if (!currentFlushPromise) {
+    currentFlushPromise = resolvedPromise.then(doFlushJobs)
   }
+}
+
+export function queuePostFlushCb(job: SchedulerJob): void {
+  queueJobWorker(job, postJobs, postJobs.length)
 }
 
 export function flushPostFlushCbs(): void {
-  if (pendingPostFlushCbs.length > 0) {
-    activePostFlushCbs = [...new Set(pendingPostFlushCbs)]
-    pendingPostFlushCbs.length = 0
+  if (postJobs.length) {
+    activePostJobs = postJobs
+    postJobs = []
 
-    for (
-      postFlushIndex = 0;
-      postFlushIndex < activePostFlushCbs.length;
-      postFlushIndex++
-    ) {
-      const cb = activePostFlushCbs[postFlushIndex]
+    while (postFlushIndex < activePostJobs.length) {
+      const cb = activePostJobs[postFlushIndex++]
       if (cb.flags! & SchedulerJobFlags.ALLOW_RECURSE) {
         cb.flags! &= ~SchedulerJobFlags.QUEUED
       }
-
-      cb()
-      cb.flags! &= ~SchedulerJobFlags.QUEUED
+      try {
+        cb()
+      } finally {
+        cb.flags! &= ~SchedulerJobFlags.QUEUED
+      }
     }
 
-    activePostFlushCbs = null
+    activePostJobs = null
     postFlushIndex = 0
   }
 }
 
-function flushJobs(): void {
+function flushJobs() {
   const seen: CountMap | undefined =
     __DEV__ ? new Map() : /* istanbul ignore next -- @preserve  */ undefined
 
-  // Conditional usage of checkRecursiveUpdate must be determined out of
-  // try ... catch block since Rollup by default de-optimizes treeshaking
-  // inside try-catch. This can leave all warning code unshaked. Although
-  // they would get eventually shaken by a minifier like terser, some minifiers
-  // would fail to do that (e.g. https://github.com/evanw/esbuild/issues/1610)
-  const check =
-    __DEV__ ?
-      (job: SchedulerJob) => checkRecursiveUpdates(seen!, job)
-    : /* istanbul ignore next -- @preserve  */ NOOP
-
   try {
-    for (flushIndex = 0; flushIndex < queue.length; flushIndex++) {
-      const job = queue[flushIndex]
+    while (flushIndex < jobsLength) {
+      const job = jobs[flushIndex]
+      jobs[flushIndex++] = undefined as any
+
+      // Conditional usage of checkRecursiveUpdate must be determined out of
+      // try ... catch block since Rollup by default de-optimizes treeshaking
+      // inside try-catch. This can leave all warning code unshaked. Although
+      // they would get eventually shaken by a minifier like terser, some minifiers
+      // would fail to do that (e.g. https://github.com/evanw/esbuild/issues/1610)
       /* istanbul ignore if -- @preserve  */
-      if (__DEV__ && check(job)) {
+      if (__DEV__ && checkRecursiveUpdates(seen!, job)) {
         continue
       }
-
       if (job.flags! & SchedulerJobFlags.ALLOW_RECURSE) {
         job.flags! &= ~SchedulerJobFlags.QUEUED
       }
-
-      job()
-      if (!(job.flags! & SchedulerJobFlags.ALLOW_RECURSE)) {
-        job.flags! &= ~SchedulerJobFlags.QUEUED
+      try {
+        job()
+      } finally {
+        if (!(job.flags! & SchedulerJobFlags.ALLOW_RECURSE)) {
+          job.flags! &= ~SchedulerJobFlags.QUEUED
+        }
       }
     }
   } finally {
     // If there was an error we still need to clear the QUEUED flags
-    for (; flushIndex < queue.length; flushIndex++) {
-      const job = queue[flushIndex]
-      job.flags! &= ~SchedulerJobFlags.QUEUED
+    while (flushIndex < jobsLength) {
+      jobs[flushIndex].flags! &= ~SchedulerJobFlags.QUEUED
+      jobs[flushIndex++] = undefined as any
     }
 
-    flushIndex = -1
-    queue.length = 0
+    flushIndex = 0
+    jobsLength = 0
 
     currentFlushPromise = null
   }
 }
 
-function checkRecursiveUpdates(seen: CountMap, fn: SchedulerJob): boolean {
+function checkRecursiveUpdates(seen: CountMap, fn: SchedulerJob) {
   const count = seen.get(fn) || 0
   /* istanbul ignore if -- @preserve */
   if (count > RECURSION_LIMIT) {

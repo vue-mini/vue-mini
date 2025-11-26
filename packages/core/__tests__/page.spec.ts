@@ -24,6 +24,7 @@ import {
   onAddToFavorites,
   onSaveExitState,
 } from '../src'
+import { getEffectsCount } from './utils'
 
 // Mocks
 let page: Record<string, any>
@@ -197,13 +198,14 @@ describe('page', () => {
       }
     })
     page.onLoad()
-    expect(page.__scope__.effects.length).toBe(2)
+    expect(getEffectsCount(page.__scope__)).toBe(2)
 
     page.increment()
     page.onUnload()
     await nextTick()
     expect(page.data.count).toBe(0)
     expect(page.data.double).toBe(0)
+    expect(getEffectsCount(page.__scope__)).toBe(0)
   })
 
   it('watch', async () => {
@@ -228,7 +230,7 @@ describe('page', () => {
     expect(dummy!).toBe(0)
     expect(page.data.count).toBe(0)
     // The other is `count` sync watcher
-    expect(page.__scope__.effects.length).toBe(2)
+    expect(getEffectsCount(page.__scope__)).toBe(2)
 
     page.increment()
     await nextTick()
@@ -241,7 +243,7 @@ describe('page', () => {
     await nextTick()
     expect(dummy!).toBe(1)
     expect(page.data.count).toBe(2)
-    expect(page.__scope__.effects.length).toBe(1)
+    expect(getEffectsCount(page.__scope__)).toBe(1)
   })
 
   it('post watch', async () => {
@@ -327,7 +329,7 @@ describe('page', () => {
       return {}
     })
     page.onLoad()
-    expect(page.__scope__.effects.length).toBe(0)
+    expect(getEffectsCount(page.__scope__)).toBe(0)
   })
 
   it('onLoad', () => {

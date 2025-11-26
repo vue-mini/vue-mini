@@ -85,7 +85,7 @@ export function definePage(optionsOrSetup: any, config?: Config): void {
   options[PageLifecycle.ON_LOAD] = function (this: PageInstance, query: Query) {
     this.__scope__ = new EffectScope()
 
-    setCurrentPage(this)
+    const scope = setCurrentPage(this)
     const context: PageContext = {
       is: this.is,
       route: this.route,
@@ -132,7 +132,7 @@ export function definePage(optionsOrSetup: any, config?: Config): void {
       }
     }
 
-    unsetCurrentPage()
+    unsetCurrentPage(scope)
 
     if (originOnLoad !== undefined) {
       originOnLoad.call(this, query)

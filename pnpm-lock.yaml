@@ -78,8 +78,8 @@ importers:
   packages/core:
     dependencies:
       '@vue/reactivity':
-        specifier: 3.5.29
-        version: 3.5.29
+        specifier: 3.6.0-alpha.5
+        version: 3.6.0-alpha.5
       miniprogram-api-typings:
         specifier: ~4.1.0
         version: 4.1.0
@@ -896,6 +896,9 @@ packages:
   '@vue/reactivity@3.5.29':
     resolution: {integrity: sha512-zcrANcrRdcLtmGZETBxWqIkoQei8HaFpZWx/GHKxx79JZsiZ8j1du0VUJtu4eJjgFvU/iKL5lRXFXksVmI+5DA==}
 
+  '@vue/reactivity@3.6.0-alpha.5':
+    resolution: {integrity: sha512-owQr29tdKkazdPb5aaHWFnbtYsvcyflAssqgde7kP6MlNphsDtdYOdDffN13fy54RvEVh5XYAxsRsHEicVvV9w==}
+
   '@vue/runtime-core@3.5.29':
     resolution: {integrity: sha512-8DpW2QfdwIWOLqtsNcds4s+QgwSaHSJY/SUe04LptianUQ/0xi6KVsu/pYVh+HO3NTVvVJjIPL2t6GdeKbS4Lg==}
 
@@ -909,6 +912,9 @@ packages:
 
   '@vue/shared@3.5.29':
     resolution: {integrity: sha512-w7SR0A5zyRByL9XUkCfdLs7t9XOHUyJ67qPGQjOou3p6GvBeBW+AVjUUmlxtZ4PIYaRvE+1LmK44O4uajlZwcg==}
+
+  '@vue/shared@3.6.0-alpha.5':
+    resolution: {integrity: sha512-k31SasR388dp6erQ3G9V4fHM8ewvJScHM+wquNiVNAEaZdvjsfVdae+6Mgcflmv2UoPu3/PWJTaih/wKO/jGEw==}
 
   '@vueuse/core@13.9.0':
     resolution: {integrity: sha512-ts3regBQyURfCE2BcytLqzm8+MmLlo5Ln/KLoxDVcsZ2gzIwVNnQpQOL/UKV8alUqjSZOlpFZcRNsLRqj+OzyA==}
@@ -2792,6 +2798,10 @@ snapshots:
     dependencies:
       '@vue/shared': 3.5.29
 
+  '@vue/reactivity@3.6.0-alpha.5':
+    dependencies:
+      '@vue/shared': 3.6.0-alpha.5
+
   '@vue/runtime-core@3.5.29':
     dependencies:
       '@vue/reactivity': 3.5.29
@@ -2811,6 +2821,8 @@ snapshots:
       vue: 3.5.29(typescript@5.9.3)
 
   '@vue/shared@3.5.29': {}
+
+  '@vue/shared@3.6.0-alpha.5': {}
 
   '@vueuse/core@13.9.0(vue@3.5.29(typescript@5.9.3))':
     dependencies:
