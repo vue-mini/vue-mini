@@ -28,6 +28,7 @@ import {
   onAddToFavorites,
   onSaveExitState,
 } from '../src'
+import { getEffectsCount } from './utils'
 
 // Mocks
 let component: Record<string, any>
@@ -207,13 +208,14 @@ describe('component', () => {
       }
     })
     component.lifetimes.attached.call(component)
-    expect(component.__scope__.effects.length).toBe(2)
+    expect(getEffectsCount(component.__scope__)).toBe(2)
 
     component.increment()
     component.lifetimes.detached.call(component)
     await nextTick()
     expect(component.data.count).toBe(0)
     expect(component.data.double).toBe(0)
+    expect(getEffectsCount(component.__scope__)).toBe(0)
   })
 
   it('watch', async () => {
@@ -238,7 +240,7 @@ describe('component', () => {
     expect(dummy!).toBe(0)
     expect(component.data.count).toBe(0)
     // The other is `count` sync watcher
-    expect(component.__scope__.effects.length).toBe(2)
+    expect(getEffectsCount(component.__scope__)).toBe(2)
 
     component.increment()
     await nextTick()
@@ -251,7 +253,7 @@ describe('component', () => {
     await nextTick()
     expect(dummy!).toBe(1)
     expect(component.data.count).toBe(2)
-    expect(component.__scope__.effects.length).toBe(1)
+    expect(getEffectsCount(component.__scope__)).toBe(1)
   })
 
   it('post watch', async () => {
@@ -337,7 +339,7 @@ describe('component', () => {
       return {}
     })
     component.lifetimes.attached.call(component)
-    expect(component.__scope__.effects.length).toBe(0)
+    expect(getEffectsCount(component.__scope__)).toBe(0)
   })
 
   it('props', async () => {

@@ -78,11 +78,11 @@ importers:
   packages/core:
     dependencies:
       '@vue/reactivity':
-        specifier: 3.5.32
-        version: 3.5.32
+        specifier: 3.6.0-alpha.5
+        version: 3.6.0-alpha.5
       miniprogram-api-typings:
         specifier: ~4.1.0
-        version: 4.1.0
+        version: 4.1.3
 
   packages/pinia: {}
 
@@ -934,6 +934,9 @@ packages:
   '@vue/reactivity@3.5.32':
     resolution: {integrity: sha512-/ORasxSGvZ6MN5gc+uE364SxFdJ0+WqVG0CENXaGW58TOCdrAW76WWaplDtECeS1qphvtBZtR+3/o1g1zL4xPQ==}
 
+  '@vue/reactivity@3.6.0-alpha.5':
+    resolution: {integrity: sha512-owQr29tdKkazdPb5aaHWFnbtYsvcyflAssqgde7kP6MlNphsDtdYOdDffN13fy54RvEVh5XYAxsRsHEicVvV9w==}
+
   '@vue/runtime-core@3.5.32':
     resolution: {integrity: sha512-pDrXCejn4UpFDFmMd27AcJEbHaLemaE5o4pbb7sLk79SRIhc6/t34BQA7SGNgYtbMnvbF/HHOftYBgFJtUoJUQ==}
 
@@ -947,6 +950,9 @@ packages:
 
   '@vue/shared@3.5.32':
     resolution: {integrity: sha512-ksNyrmRQzWJJ8n3cRDuSF7zNNontuJg1YHnmWRJd2AMu8Ij2bqwiiri2lH5rHtYPZjj4STkNcgcmiQqlOjiYGg==}
+
+  '@vue/shared@3.6.0-alpha.5':
+    resolution: {integrity: sha512-k31SasR388dp6erQ3G9V4fHM8ewvJScHM+wquNiVNAEaZdvjsfVdae+6Mgcflmv2UoPu3/PWJTaih/wKO/jGEw==}
 
   '@vueuse/core@14.2.1':
     resolution: {integrity: sha512-3vwDzV+GDUNpdegRY6kzpLm4Igptq+GA0QkJ3W61Iv27YWwW/ufSlOfgQIpN6FZRMG0mkaz4gglJRtq5SeJyIQ==}
@@ -1548,8 +1554,8 @@ packages:
     resolution: {integrity: sha512-MULkVLfKGYDFYejP07QOurDLLQpcjk7Fw+7jXS2R2czRQzR56yHRveU5NDJEOviH+hETZKSkIk5c+T23GjFUMg==}
     engines: {node: 18 || 20 || >=22}
 
-  miniprogram-api-typings@4.1.0:
-    resolution: {integrity: sha512-4RBsz27nBKyRkVGoNkRaPx24/KeJBw3zaaIlXDR8s/WBh2PbcUAc+q7wLLbp7Qsmb3bLzzUu7tqAti+B06kmjg==}
+  miniprogram-api-typings@4.1.3:
+    resolution: {integrity: sha512-5mobiXzDS3KFJMM20cIg5m7hiFSJY0YGpgm5yzFeIJ+UP15RGOtW/ztqAhRfOQIvPBD0WyYB+WFCWaeeTTEZTQ==}
 
   minisearch@7.2.0:
     resolution: {integrity: sha512-dqT2XBYUOZOiC5t2HRnwADjhNS2cecp9u+TJRiJ1Qp/f5qjkeT5APcGPjHw+bz89Ms8Jp+cG4AlE+QZ/QnDglg==}
@@ -2858,6 +2864,10 @@ snapshots:
     dependencies:
       '@vue/shared': 3.5.32
 
+  '@vue/reactivity@3.6.0-alpha.5':
+    dependencies:
+      '@vue/shared': 3.6.0-alpha.5
+
   '@vue/runtime-core@3.5.32':
     dependencies:
       '@vue/reactivity': 3.5.32
@@ -2877,6 +2887,8 @@ snapshots:
       vue: 3.5.32(typescript@6.0.2)
 
   '@vue/shared@3.5.32': {}
+
+  '@vue/shared@3.6.0-alpha.5': {}
 
   '@vueuse/core@14.2.1(vue@3.5.32(typescript@6.0.2))':
     dependencies:
@@ -3427,7 +3439,7 @@ snapshots:
     dependencies:
       brace-expansion: 5.0.5
 
-  miniprogram-api-typings@4.1.0: {}
+  miniprogram-api-typings@4.1.3: {}
 
   minisearch@7.2.0: {}
 
