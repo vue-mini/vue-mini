@@ -1,9 +1,6 @@
 export const EMPTY_OBJ: Readonly<Record<string, any>> =
   __DEV__ ? Object.freeze({}) : /* istanbul ignore next -- @preserve */ {}
 
-/* istanbul ignore next -- @preserve */
-export const NOOP = (): void => {}
-
 export const isArray: typeof Array.isArray = Array.isArray
 
 export const extend: typeof Object.assign = Object.assign
