@@ -1,4 +1,9 @@
-import { shallowReactive, shallowReadonly, EffectScope } from '@vue/reactivity'
+import {
+  shallowReactive,
+  shallowReadonly,
+  EffectScope,
+  setCurrentScope,
+} from '@vue/reactivity'
 import { flushPostFlushCbs } from './scheduler'
 import type { Config } from './page'
 import { PageLifecycle } from './page'
@@ -120,8 +125,7 @@ export function defineComponent(optionsOrSetup: any, config?: Config): string {
     this: ComponentInstance,
   ) {
     this.__scope__ = new EffectScope()
-    // @ts-expect-error
-    this.__scope__.on()
+    const scope = setCurrentScope(this.__scope__)
 
     const rawProps: Record<string, any> = {}
     if (properties) {
@@ -190,8 +194,7 @@ export function defineComponent(optionsOrSetup: any, config?: Config): string {
       }
     }
 
-    // @ts-expect-error
-    this.__scope__.off()
+    setCurrentScope(scope)
 
     if (originAttached !== undefined) {
       originAttached.call(this)

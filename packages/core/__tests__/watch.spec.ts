@@ -20,6 +20,7 @@ import {
   ref,
   onWatcherCleanup,
 } from '../src'
+import { getEffectsCount } from './utils'
 
 describe('watch', () => {
   it('effect', async () => {
@@ -1146,11 +1147,9 @@ describe('watch', () => {
         console.log(num.value)
       })
     })
-    // @ts-expect-error
-    expect(scope.effects.length).toBe(1)
+    expect(getEffectsCount(scope)).toBe(1)
     unwatch!()
-    // @ts-expect-error
-    expect(scope.effects.length).toBe(0)
+    expect(getEffectsCount(scope)).toBe(0)
   })
 
   // Simplified case of VueUse syncRef

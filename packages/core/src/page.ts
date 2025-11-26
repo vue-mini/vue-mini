@@ -1,4 +1,4 @@
-import { EffectScope } from '@vue/reactivity'
+import { EffectScope, setCurrentScope } from '@vue/reactivity'
 import { flushPostFlushCbs } from './scheduler'
 import type { Bindings, PageInstance } from './instance'
 import { setCurrentPage, unsetCurrentPage } from './instance'
@@ -84,8 +84,7 @@ export function definePage(optionsOrSetup: any, config?: Config): void {
   const originOnLoad = options[PageLifecycle.ON_LOAD]
   options[PageLifecycle.ON_LOAD] = function (this: PageInstance, query: Query) {
     this.__scope__ = new EffectScope()
-    // @ts-expect-error
-    this.__scope__.on()
+    const scope = setCurrentScope(this.__scope__)
 
     const context: PageContext = {
       is: this.is,
@@ -138,8 +137,7 @@ export function definePage(optionsOrSetup: any, config?: Config): void {
       }
     }
 
-    // @ts-expect-error
-    this.__scope__.off()
+    setCurrentScope(scope)
 
     if (originOnLoad !== undefined) {
       originOnLoad.call(this, query)
