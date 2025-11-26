@@ -121,7 +121,7 @@ export function defineComponent(optionsOrSetup: any, config?: Config): string {
   ) {
     this.__scope__ = new EffectScope()
 
-    setCurrentComponent(this)
+    const scope = setCurrentComponent(this)
     const rawProps: Record<string, any> = {}
     if (properties) {
       properties.forEach((property) => {
@@ -185,7 +185,7 @@ export function defineComponent(optionsOrSetup: any, config?: Config): string {
       }
     }
 
-    unsetCurrentComponent()
+    unsetCurrentComponent(scope)
 
     if (originAttached !== undefined) {
       originAttached.call(this)

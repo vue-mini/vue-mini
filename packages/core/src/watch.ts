@@ -7,7 +7,7 @@ import type {
   WatchHandle,
   WatchSource,
 } from '@vue/reactivity'
-import { watch as baseWatch } from '@vue/reactivity'
+import { EffectFlags, WatcherEffect } from '@vue/reactivity'
 import type { SchedulerJob } from './scheduler'
 import { SchedulerJobFlags, queueJob, queuePostFlushCb } from './scheduler'
 import { EMPTY_OBJ, extend, isFunction } from './utils'
@@ -119,7 +119,7 @@ export function watch<
 // Implementation
 export function watch<T = any, Immediate extends Readonly<boolean> = false>(
   source: T | WatchSource<T>,
-  cb: any,
+  cb: WatchCallback,
   options?: WatchOptions<Immediate>,
 ): WatchHandle {
   if (__DEV__ && !isFunction(cb)) {
@@ -133,13 +133,54 @@ export function watch<T = any, Immediate extends Readonly<boolean> = false>(
   return doWatch(source as any, cb, options)
 }
 
+class RenderWatcherEffect extends WatcherEffect {
+  job: SchedulerJob
+
+  constructor(
+    source: WatchSource | WatchSource[] | WatchEffect | object,
+    cb: WatchCallback | null,
+    options: BaseWatchOptions,
+    private flush: 'pre' | 'post' | 'sync',
+  ) {
+    super(source, cb, options)
+
+    const job: SchedulerJob = () => {
+      if (this.dirty) {
+        this.run()
+      }
+    }
+    // Important: mark the job as a watcher callback so that scheduler knows
+    // it is allowed to self-trigger (#1727)
+    if (cb) {
+      this.flags |= EffectFlags.ALLOW_RECURSE
+      job.flags! |= SchedulerJobFlags.ALLOW_RECURSE
+    }
+    this.job = job
+  }
+
+  notify(): void {
+    const flags = this.flags
+    if (!(flags & EffectFlags.PAUSED)) {
+      const flush = this.flush
+      const job = this.job
+      if (flush === 'post') {
+        queuePostFlushCb(job)
+      } else if (flush === 'pre') {
+        queueJob(job)
+      } else {
+        job()
+      }
+    }
+  }
+}
+
 function doWatch(
   // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
   source: WatchSource | WatchSource[] | WatchEffect | object,
   cb: WatchCallback | null,
   options: WatchOptions = EMPTY_OBJ,
 ): WatchHandle {
-  const { immediate, deep, flush, once } = options
+  const { immediate, deep, flush = 'pre', once } = options
 
   if (__DEV__ && !cb) {
     if (immediate !== undefined) {
@@ -166,31 +207,21 @@ function doWatch(
 
   const baseWatchOptions: BaseWatchOptions = extend({}, options)
 
-  // Scheduler
-  if (flush === 'post') {
-    baseWatchOptions.scheduler = (job) => {
-      queuePostFlushCb(job)
-    }
-  } else if (flush !== 'sync') {
-    baseWatchOptions.scheduler = (job, isFirstRun) => {
-      if (isFirstRun) {
-        job()
-      } else {
-        queueJob(job)
-      }
-    }
+  const effect = new RenderWatcherEffect(source, cb, baseWatchOptions, flush)
+
+  // Initial run
+  if (cb) {
+    effect.run(true)
+  } else if (flush === 'post') {
+    queuePostFlushCb(effect.job)
+  } else {
+    effect.run(true)
   }
 
-  // @ts-expect-error
-  baseWatchOptions.augmentJob = (job: SchedulerJob) => {
-    // Important: mark the job as a watcher callback so that scheduler knows
-    // it is allowed to self-trigger
-    if (cb) {
-      job.flags! |= SchedulerJobFlags.ALLOW_RECURSE
-    }
-  }
+  const stop = effect.stop.bind(effect) as WatchHandle
+  stop.pause = effect.pause.bind(effect)
+  stop.resume = effect.resume.bind(effect)
+  stop.stop = stop
 
-  const watchHandle = baseWatch(source, cb, baseWatchOptions)
-
-  return watchHandle
+  return stop
 }

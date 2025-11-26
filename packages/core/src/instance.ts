@@ -1,4 +1,5 @@
 import type { EffectScope } from '@vue/reactivity'
+import { setCurrentScope } from '@vue/reactivity'
 
 export type Bindings = Record<string, any> | void
 
@@ -45,34 +46,24 @@ export function unsetCurrentApp(): void {
   currentApp = null
 }
 
-export function setCurrentPage(page: PageInstance): void {
+export function setCurrentPage(page: PageInstance): EffectScope | undefined {
   currentPage = page
-  // @ts-expect-error
-  page.__scope__.on()
+  return setCurrentScope(page.__scope__)
 }
 
-export function unsetCurrentPage(): void {
-  /* istanbul ignore else -- @preserve */
-  if (currentPage) {
-    // @ts-expect-error
-    currentPage.__scope__.off()
-  }
-
+export function unsetCurrentPage(scope: EffectScope | undefined): void {
+  setCurrentScope(scope)
   currentPage = null
 }
 
-export function setCurrentComponent(component: ComponentInstance): void {
+export function setCurrentComponent(
+  component: ComponentInstance,
+): EffectScope | undefined {
   currentComponent = component
-  // @ts-expect-error
-  component.__scope__.on()
+  return setCurrentScope(component.__scope__)
 }
 
-export function unsetCurrentComponent(): void {
-  /* istanbul ignore else -- @preserve */
-  if (currentComponent) {
-    // @ts-expect-error
-    currentComponent.__scope__.off()
-  }
-
+export function unsetCurrentComponent(scope: EffectScope | undefined): void {
+  setCurrentScope(scope)
   currentComponent = null
 }
