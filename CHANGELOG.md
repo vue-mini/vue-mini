@@ -1,3 +1,20 @@
+# 1.3.0-alpha.1 (2025-11-27)
+
+### 依赖
+
+- **@vue/reactivity:** 从 3.5.25 升至 3.6.0-alpha.5，详情请看 [Vue 更新日志](https://github.com/vuejs/core/blob/minor/CHANGELOG.md) ([d01d098](https://github.com/vue-mini/vue-mini/commit/d01d098ca2f2c2939fb3e3821179576cc5f216e7))
+- **miniprogram-api-typings:** 从 4.0.x 升至 4.1.x ([1b7dc8f](https://github.com/vue-mini/vue-mini/commit/1b7dc8f5f0b2e389a748b57b61280c709038ab86))
+
+### 性能优化
+
+- **reactivity:** 基于 [alien-signals](https://github.com/stackblitz/alien-signals) 重构了响应式核心
+
+### 类型破坏性变更
+
+请参考 Vue Mini [版本发布说明](https://vuemini.org/guide/releases.html)
+
+- `miniprogram-api-typings` 4.1.0 包含少量[破坏性变更](https://github.com/wechat-miniprogram/api-typings/blob/master/CHANGELOG.md)
+
 # 1.2.8 (2025-11-24)
 
 ### 依赖
