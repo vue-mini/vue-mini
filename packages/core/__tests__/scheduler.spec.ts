@@ -450,6 +450,14 @@ describe('scheduler', () => {
 
   /** Dividing line, the above tests is directly copy from vue.js with some changes **/
 
+  test('error in job should not cause nextTick to stuck in rejected state forever', async () => {
+    queueJob(() => {
+      throw new Error('error')
+    })
+    await expect(nextTick()).rejects.toThrow('error')
+    await expect(nextTick()).resolves.toBeUndefined()
+  })
+
   test('queueJob inside job', async () => {
     const calls: string[] = []
 
