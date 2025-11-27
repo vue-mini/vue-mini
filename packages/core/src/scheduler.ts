@@ -53,18 +53,10 @@ function queueJobWorker(
   return false
 }
 
-const doFlushJobs = () => {
-  try {
-    flushJobs()
-  } catch (e) {
-    currentFlushPromise = null
-    throw e
-  }
-}
-
 function queueFlush() {
   if (!currentFlushPromise) {
-    currentFlushPromise = resolvedPromise.then(doFlushJobs)
+    // We don't flush post jobs on flushJobs's finally block, so we don't need `doFlushJobs` here.
+    currentFlushPromise = resolvedPromise.then(flushJobs)
   }
 }
 
