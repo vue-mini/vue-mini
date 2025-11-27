@@ -10,6 +10,7 @@ import {
   effectScope,
   toRef,
 } from '@vue/reactivity'
+import type { Ref } from '../src/'
 import {
   watch,
   watchEffect,
@@ -217,7 +218,7 @@ describe('watch', () => {
   it('watching shallow reactive array with deep: false', async () => {
     class Foo {
       prop1: ShallowRef<string> = shallowRef('')
-      prop2 = ''
+      prop2: string = ''
     }
 
     const obj1 = new Foo()
@@ -447,6 +448,48 @@ describe('watch', () => {
     expect(cleanupEffect).toHaveBeenCalledTimes(3)
     stopWatch()
     expect(cleanupWatch).toHaveBeenCalledTimes(2)
+  })
+
+  it('nested calls to baseWatch and onWatcherCleanup', async () => {
+    const calls: string[] = []
+    let source: Ref<number>
+    let copyist: Ref<number>
+    const scope = effectScope()
+
+    scope.run(() => {
+      source = ref(0)
+      copyist = ref(0)
+      // sync flush
+      watchEffect(
+        () => {
+          const current = (copyist.value = source.value)
+          onWatcherCleanup(() => calls.push(`sync ${current}`))
+        },
+        { flush: 'sync' },
+      )
+      watchEffect(() => {
+        const current = copyist.value
+        onWatcherCleanup(() => calls.push(`post ${current}`))
+      })
+    })
+
+    await nextTick()
+    expect(calls).toEqual([])
+
+    scope.run(() => source.value++)
+    expect(calls).toEqual(['sync 0'])
+    await nextTick()
+    expect(calls).toEqual(['sync 0', 'post 0'])
+    calls.length = 0
+
+    scope.run(() => source.value++)
+    expect(calls).toEqual(['sync 1'])
+    await nextTick()
+    expect(calls).toEqual(['sync 1', 'post 1'])
+    calls.length = 0
+
+    scope.stop()
+    expect(calls).toEqual(['sync 2', 'post 2'])
   })
 
   it('deep', async () => {
@@ -901,7 +944,7 @@ describe('watch', () => {
 
     num.value++
     await nextTick()
-    // Would not be calld when value>1
+    // Would not be called when value > 1
     expect(spy1).toHaveBeenCalledTimes(1)
     expect(spy2).toHaveBeenCalledTimes(1)
   })
@@ -1149,6 +1192,11 @@ describe('watch', () => {
     })
     expect(getEffectsCount(scope)).toBe(1)
     unwatch!()
+    expect(getEffectsCount(scope)).toBe(0)
+
+    scope.run(() => {
+      watch(num, () => {}, { once: true, immediate: true })
+    })
     expect(getEffectsCount(scope)).toBe(0)
   })
 
