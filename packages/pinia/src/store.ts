@@ -471,10 +471,12 @@ export function defineStore<Id extends string, SS extends Record<any, unknown>>(
  * - `SS` is the return type of the setup function
  * @see {@link StoreDefinition}
  */
-export interface SetupStoreDefinition<Id extends string, SS>
-  extends StoreDefinition<
-    Id,
-    _ExtractStateFromSetupStore<SS>,
-    _ExtractGettersFromSetupStore<SS>,
-    _ExtractActionsFromSetupStore<SS>
-  > {}
+export interface SetupStoreDefinition<
+  Id extends string,
+  SS,
+> extends StoreDefinition<
+  Id,
+  _ExtractStateFromSetupStore<SS>,
+  _ExtractGettersFromSetupStore<SS>,
+  _ExtractActionsFromSetupStore<SS>
+> {}

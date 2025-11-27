@@ -21760,8 +21760,8 @@ wx.checkIsSoterEnrolledInDevice({
 })
 ``` */
     checkIsSoterEnrolledInDevice<
-      T extends
-        CheckIsSoterEnrolledInDeviceOption = CheckIsSoterEnrolledInDeviceOption,
+      T extends CheckIsSoterEnrolledInDeviceOption =
+        CheckIsSoterEnrolledInDeviceOption,
     >(
       option: T,
     ): PromisifySuccessResult<T, CheckIsSoterEnrolledInDeviceOption>
@@ -21785,8 +21785,8 @@ wx.checkIsSupportSoterAuthentication({
 })
 ``` */
     checkIsSupportSoterAuthentication<
-      T extends
-        CheckIsSupportSoterAuthenticationOption = CheckIsSupportSoterAuthenticationOption,
+      T extends CheckIsSupportSoterAuthenticationOption =
+        CheckIsSupportSoterAuthenticationOption,
     >(
       option?: T,
     ): PromisifySuccessResult<T, CheckIsSupportSoterAuthenticationOption>
@@ -22255,8 +22255,8 @@ wx.createBLEConnection({
      *
      * 建立本地作为蓝牙低功耗外围设备的服务端，可创建多个。 */
     createBLEPeripheralServer<
-      T extends
-        CreateBLEPeripheralServerOption = CreateBLEPeripheralServerOption,
+      T extends CreateBLEPeripheralServerOption =
+        CreateBLEPeripheralServerOption,
     >(
       option?: T,
     ): PromisifySuccessResult<T, CreateBLEPeripheralServerOption>
@@ -22393,8 +22393,8 @@ wx.getBLEDeviceCharacteristics({
 })
 ``` */
     getBLEDeviceCharacteristics<
-      T extends
-        GetBLEDeviceCharacteristicsOption = GetBLEDeviceCharacteristicsOption,
+      T extends GetBLEDeviceCharacteristicsOption =
+        GetBLEDeviceCharacteristicsOption,
     >(
       option: T,
     ): PromisifySuccessResult<T, GetBLEDeviceCharacteristicsOption>
@@ -22482,8 +22482,8 @@ wx.getBackgroundAudioPlayerState({
 })
 ``` */
     getBackgroundAudioPlayerState<
-      T extends
-        GetBackgroundAudioPlayerStateOption = GetBackgroundAudioPlayerStateOption,
+      T extends GetBackgroundAudioPlayerStateOption =
+        GetBackgroundAudioPlayerStateOption,
     >(
       option?: T,
     ): PromisifySuccessResult<T, GetBackgroundAudioPlayerStateOption>
@@ -22682,8 +22682,8 @@ wx.getConnectedBluetoothDevices({
 })
 ``` */
     getConnectedBluetoothDevices<
-      T extends
-        GetConnectedBluetoothDevicesOption = GetConnectedBluetoothDevicesOption,
+      T extends GetConnectedBluetoothDevicesOption =
+        GetConnectedBluetoothDevicesOption,
     >(
       option: T,
     ): PromisifySuccessResult<T, GetConnectedBluetoothDevicesOption>
@@ -24035,8 +24035,8 @@ wx.notifyBLECharacteristicValueChange({
 })
 ``` */
     notifyBLECharacteristicValueChange<
-      T extends
-        NotifyBLECharacteristicValueChangeOption = NotifyBLECharacteristicValueChangeOption,
+      T extends NotifyBLECharacteristicValueChangeOption =
+        NotifyBLECharacteristicValueChangeOption,
     >(
       option: T,
     ): PromisifySuccessResult<T, NotifyBLECharacteristicValueChangeOption>
@@ -26231,8 +26231,8 @@ wx.openSystemBluetoothSetting({
 })
 ``` */
     openSystemBluetoothSetting<
-      T extends
-        OpenSystemBluetoothSettingOption = OpenSystemBluetoothSettingOption,
+      T extends OpenSystemBluetoothSettingOption =
+        OpenSystemBluetoothSettingOption,
     >(
       option?: T,
     ): PromisifySuccessResult<T, OpenSystemBluetoothSettingOption>
@@ -26529,8 +26529,8 @@ wx.readBLECharacteristicValue({
 })
 ``` */
     readBLECharacteristicValue<
-      T extends
-        ReadBLECharacteristicValueOption = ReadBLECharacteristicValueOption,
+      T extends ReadBLECharacteristicValueOption =
+        ReadBLECharacteristicValueOption,
     >(
       option: T,
     ): PromisifySuccessResult<T, ReadBLECharacteristicValueOption>
@@ -26936,8 +26936,8 @@ wx.requestSubscribeDeviceMessage({
 })
 ``` */
     requestSubscribeDeviceMessage<
-      T extends
-        RequestSubscribeDeviceMessageOption = RequestSubscribeDeviceMessageOption,
+      T extends RequestSubscribeDeviceMessageOption =
+        RequestSubscribeDeviceMessageOption,
     >(
       option: T,
     ): PromisifySuccessResult<T, RequestSubscribeDeviceMessageOption>
@@ -28053,8 +28053,8 @@ wx.startBluetoothDevicesDiscovery({
 })
 ``` */
     startBluetoothDevicesDiscovery<
-      T extends
-        StartBluetoothDevicesDiscoveryOption = StartBluetoothDevicesDiscoveryOption,
+      T extends StartBluetoothDevicesDiscoveryOption =
+        StartBluetoothDevicesDiscoveryOption,
     >(
       option: T,
     ): PromisifySuccessResult<T, StartBluetoothDevicesDiscoveryOption>
@@ -28082,8 +28082,8 @@ wx.startCompass()
      *
      * 开始监听设备方向的变化。 */
     startDeviceMotionListening<
-      T extends
-        StartDeviceMotionListeningOption = StartDeviceMotionListeningOption,
+      T extends StartDeviceMotionListeningOption =
+        StartDeviceMotionListeningOption,
     >(
       option?: T,
     ): PromisifySuccessResult<T, StartDeviceMotionListeningOption>
@@ -28132,8 +28132,8 @@ wx.startHCE({
      * 2. wx.startLocalServiceDiscovery 是一个消耗性能的行为，开始 30 秒后会自动 stop 并执行 wx.onLocalServiceDiscoveryStop 注册的回调函数。
      * 3. 在调用 wx.startLocalServiceDiscovery 后，在这次搜索行为停止后才能发起下次 wx.startLocalServiceDiscovery。停止本次搜索行为的操作包括调用 wx.stopLocalServiceDiscovery 和 30 秒后系统自动 stop 本次搜索。 */
     startLocalServiceDiscovery<
-      T extends
-        StartLocalServiceDiscoveryOption = StartLocalServiceDiscoveryOption,
+      T extends StartLocalServiceDiscoveryOption =
+        StartLocalServiceDiscoveryOption,
     >(
       option: T,
     ): PromisifySuccessResult<T, StartLocalServiceDiscoveryOption>
@@ -28232,8 +28232,8 @@ wx.startHCE({
      * - 需在app.json中配置requiredBackgroundModes: ['location']后使用
      * - 获取位置信息需配置[地理位置用途说明](https://developers.weixin.qq.com/miniprogram/dev/reference/configuration/app.html#permission)。 */
     startLocationUpdateBackground<
-      T extends
-        StartLocationUpdateBackgroundOption = StartLocationUpdateBackgroundOption,
+      T extends StartLocationUpdateBackgroundOption =
+        StartLocationUpdateBackgroundOption,
     >(
       option: T,
     ): PromisifySuccessResult<T, StartLocationUpdateBackgroundOption>
@@ -28420,8 +28420,8 @@ wx.stopBluetoothDevicesDiscovery({
 })
 ``` */
     stopBluetoothDevicesDiscovery<
-      T extends
-        StopBluetoothDevicesDiscoveryOption = StopBluetoothDevicesDiscoveryOption,
+      T extends StopBluetoothDevicesDiscoveryOption =
+        StopBluetoothDevicesDiscoveryOption,
     >(
       option?: T,
     ): PromisifySuccessResult<T, StopBluetoothDevicesDiscoveryOption>
@@ -28449,8 +28449,8 @@ wx.stopCompass()
      *
      * 停止监听设备方向的变化。 */
     stopDeviceMotionListening<
-      T extends
-        StopDeviceMotionListeningOption = StopDeviceMotionListeningOption,
+      T extends StopDeviceMotionListeningOption =
+        StopDeviceMotionListeningOption,
     >(
       option?: T,
     ): PromisifySuccessResult<T, StopDeviceMotionListeningOption>
@@ -28502,8 +28502,8 @@ wx.stopHCE({
      *
      * 停止搜索 mDNS 服务 */
     stopLocalServiceDiscovery<
-      T extends
-        StopLocalServiceDiscoveryOption = StopLocalServiceDiscoveryOption,
+      T extends StopLocalServiceDiscoveryOption =
+        StopLocalServiceDiscoveryOption,
     >(
       option?: T,
     ): PromisifySuccessResult<T, StopLocalServiceDiscoveryOption>
@@ -28617,8 +28617,8 @@ wx.stopWifi({
      *
      * 订阅视频画面成员。对于视频房间，当成员超过两人时需进行订阅，否则只能看到最先加入房间的两人画面。 */
     subscribeVoIPVideoMembers<
-      T extends
-        SubscribeVoIPVideoMembersOption = SubscribeVoIPVideoMembersOption,
+      T extends SubscribeVoIPVideoMembersOption =
+        SubscribeVoIPVideoMembersOption,
     >(
       option: T,
     ): PromisifySuccessResult<T, SubscribeVoIPVideoMembersOption>
@@ -28772,8 +28772,8 @@ wx.writeBLECharacteristicValue({
 })
 ``` */
     writeBLECharacteristicValue<
-      T extends
-        WriteBLECharacteristicValueOption = WriteBLECharacteristicValueOption,
+      T extends WriteBLECharacteristicValueOption =
+        WriteBLECharacteristicValueOption,
     >(
       option: T,
     ): PromisifySuccessResult<T, WriteBLECharacteristicValueOption>

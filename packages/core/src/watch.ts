@@ -88,6 +88,7 @@ export function watch<
   T extends Readonly<MultiWatchSources>,
   Immediate extends Readonly<boolean> = false,
 >(
+  // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
   sources: readonly [...T] | T,
   cb: [T] extends [ReactiveMarker] ?
     WatchCallback<T, MaybeUndefined<T, Immediate>>
@@ -133,6 +134,7 @@ export function watch<T = any, Immediate extends Readonly<boolean> = false>(
 }
 
 function doWatch(
+  // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
   source: WatchSource | WatchSource[] | WatchEffect | object,
   cb: WatchCallback | null,
   options: WatchOptions = EMPTY_OBJ,

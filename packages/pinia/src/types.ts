@@ -87,8 +87,7 @@ interface _SubscriptionCallbackMutationBase {
  * a store with `store.someState = newValue` or `store.$state.someState =
  * newValue`.
  */
-export interface SubscriptionCallbackMutationDirect
-  extends _SubscriptionCallbackMutationBase {
+export interface SubscriptionCallbackMutationDirect extends _SubscriptionCallbackMutationBase {
   type: MutationType.direct
 
   events: DebuggerEvent
@@ -98,8 +97,9 @@ export interface SubscriptionCallbackMutationDirect
  * Context passed to a subscription callback when `store.$patch()` is called
  * with an object.
  */
-export interface SubscriptionCallbackMutationPatchObject<S>
-  extends _SubscriptionCallbackMutationBase {
+export interface SubscriptionCallbackMutationPatchObject<
+  S,
+> extends _SubscriptionCallbackMutationBase {
   type: MutationType.patchObject
 
   events: DebuggerEvent[]
@@ -114,8 +114,7 @@ export interface SubscriptionCallbackMutationPatchObject<S>
  * Context passed to a subscription callback when `store.$patch()` is called
  * with a function.
  */
-export interface SubscriptionCallbackMutationPatchFunction
-  extends _SubscriptionCallbackMutationBase {
+export interface SubscriptionCallbackMutationPatchFunction extends _SubscriptionCallbackMutationBase {
   type: MutationType.patchFunction
 
   events: DebuggerEvent[]
@@ -391,6 +390,7 @@ export type Store<
   // StoreWithActions<A> &
   (_ActionsTree extends A ? {} : A) &
   PiniaCustomProperties<Id, S, G, A> &
+  // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
   PiniaCustomStateProperties<S>
 
 /**
@@ -498,6 +498,7 @@ export type _UnwrapAll<SS> = { [K in keyof SS]: UnwrapRef<SS[K]> }
  * For internal use **only**
  */
 export type _ExtractStateFromSetupStore<SS> =
+  // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
   SS extends undefined | void ? {}
   : Pick<SS, _ExtractStateFromSetupStore_Keys<SS>>
 
@@ -505,6 +506,7 @@ export type _ExtractStateFromSetupStore<SS> =
  * For internal use **only**
  */
 export type _ExtractActionsFromSetupStore<SS> =
+  // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
   SS extends undefined | void ? {}
   : Pick<SS, _ExtractActionsFromSetupStore_Keys<SS>>
 
@@ -512,6 +514,7 @@ export type _ExtractActionsFromSetupStore<SS> =
  * For internal use **only**
  */
 export type _ExtractGettersFromSetupStore<SS> =
+  // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
   SS extends undefined | void ? {}
   : Pick<SS, _ExtractGettersFromSetupStore_Keys<SS>>
 

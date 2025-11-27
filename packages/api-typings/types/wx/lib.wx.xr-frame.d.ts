@@ -7445,9 +7445,9 @@ declare module 'XrFrame/components/physics/Shape' {
     enable(): void
     disable(): void
   }
-  export abstract class GLTFAbstractShape<T extends IShapeData>
-    implements ShapeImpl
-  {
+  export abstract class GLTFAbstractShape<
+    T extends IShapeData,
+  > implements ShapeImpl {
     el: Element
     shapeComp: Shape<T>
     protected gltf: GLTFComponent

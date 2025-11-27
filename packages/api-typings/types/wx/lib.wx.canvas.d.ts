@@ -406,7 +406,8 @@ declare namespace WechatMiniprogram.CanvasRenderingContext {
 
   /** The CanvasRenderingContext2D interface, part of the Canvas API, provides the 2D rendering context for the drawing surface of a <canvas> element. It is used for drawing shapes, text, images, and other objects. */
   interface CanvasRenderingContext2D
-    extends CanvasCompositing,
+    extends
+      CanvasCompositing,
       CanvasDrawImage,
       CanvasDrawPath,
       CanvasFillStrokeStyles,
@@ -611,7 +612,8 @@ declare namespace WechatMiniprogram.CanvasRenderingContext {
   type OverSampleType = '2x' | '4x' | 'none'
 
   interface WebGL2RenderingContext
-    extends WebGL2RenderingContextBase,
+    extends
+      WebGL2RenderingContextBase,
       WebGL2RenderingContextOverloads,
       WebGLRenderingContextBase {}
 
@@ -1645,8 +1647,7 @@ declare namespace WechatMiniprogram.CanvasRenderingContext {
 
   /** Provides an interface to the OpenGL ES 2.0 graphics rendering context for the drawing surface of an HTML <canvas> element. */
   interface WebGLRenderingContext
-    extends WebGLRenderingContextBase,
-      WebGLRenderingContextOverloads {}
+    extends WebGLRenderingContextBase, WebGLRenderingContextOverloads {}
 
   /** The ANGLE_instanced_arrays extension is part of the WebGL API and allows to draw the same object, or groups of similar objects multiple times, if they share the same vertex data, primitive count and type. */
   interface ANGLE_instanced_arrays {

@@ -87,4 +87,5 @@ export interface PiniaPluginContext<
  */
 export type PiniaPlugin = (
   context: PiniaPluginContext,
+  // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
 ) => Partial<PiniaCustomProperties & PiniaCustomStateProperties> | void
