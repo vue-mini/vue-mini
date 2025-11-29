@@ -47,6 +47,10 @@ Vue Mini 已经被很多公司和团队应用在了生产环境，其中不乏�
     <img src="/cases/11.jpg" alt="轻帧">
     <span>轻帧</span>
   </div>
+  <div class="case">
+    <img src="/cases/12.jpg" alt="拼好喵">
+    <span>拼好喵</span>
+  </div>
   <a class="case" href="https://github.com/vue-mini/vue-mini/issues/59" target="_blank" rel="noreferrer">
     <img src="/cases/add.svg" alt="添加">
     <span>添加</span>
