@@ -5,7 +5,6 @@ const provides = Object.create(null)
 // @ts-expect-error
 interface InjectionConstraint<T> {}
 
-// eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
 export type InjectionKey<T> = symbol & InjectionConstraint<T>
 
 export function provide<T, K = InjectionKey<T> | string>(

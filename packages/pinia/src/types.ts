@@ -390,7 +390,6 @@ export type Store<
   // StoreWithActions<A> &
   (_ActionsTree extends A ? {} : A) &
   PiniaCustomProperties<Id, S, G, A> &
-  // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
   PiniaCustomStateProperties<S>
 
 /**
@@ -498,7 +497,6 @@ export type _UnwrapAll<SS> = { [K in keyof SS]: UnwrapRef<SS[K]> }
  * For internal use **only**
  */
 export type _ExtractStateFromSetupStore<SS> =
-  // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
   SS extends undefined | void ? {}
   : Pick<SS, _ExtractStateFromSetupStore_Keys<SS>>
 
@@ -506,7 +504,6 @@ export type _ExtractStateFromSetupStore<SS> =
  * For internal use **only**
  */
 export type _ExtractActionsFromSetupStore<SS> =
-  // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
   SS extends undefined | void ? {}
   : Pick<SS, _ExtractActionsFromSetupStore_Keys<SS>>
 
@@ -514,7 +511,6 @@ export type _ExtractActionsFromSetupStore<SS> =
  * For internal use **only**
  */
 export type _ExtractGettersFromSetupStore<SS> =
-  // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
   SS extends undefined | void ? {}
   : Pick<SS, _ExtractGettersFromSetupStore_Keys<SS>>
 
