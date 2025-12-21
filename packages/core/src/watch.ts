@@ -136,7 +136,6 @@ class RenderWatcherEffect extends WatcherEffect {
   job: SchedulerJob
 
   constructor(
-    // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
     source: WatchSource | WatchSource[] | WatchEffect | object,
     cb: WatchCallback | null,
     options: BaseWatchOptions,
