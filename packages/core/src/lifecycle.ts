@@ -208,9 +208,8 @@ export const onMove: (hook: () => unknown) => void = createComponentHook(
 export const onDetach: (hook: () => unknown) => void = createComponentHook(
   ComponentLifecycle.DETACHED,
 )
-export const onError: (
-  hook: (error: WechatMiniprogram.Error) => unknown,
-) => void = createComponentHook(ComponentLifecycle.ERROR)
+export const onError: (hook: (error: Error) => unknown) => void =
+  createComponentHook(ComponentLifecycle.ERROR)
 
 function createAppHook(lifecycle: AppLifecycle) {
   return (hook: Function): void => {
