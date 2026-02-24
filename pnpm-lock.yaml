@@ -81,8 +81,8 @@ importers:
         specifier: 3.6.0-alpha.5
         version: 3.6.0-alpha.5
       miniprogram-api-typings:
-        specifier: ~4.1.0
-        version: 4.1.0
+        specifier: ~5.0.1
+        version: 5.0.1
 
   packages/pinia: {}
 
@@ -1470,8 +1470,8 @@ packages:
     resolution: {integrity: sha512-oRjTw/97aTBN0RHbYCdtF1MQfvusSIBQM0IZEgzl6426+8jSC0nF1a/GmnVLpfB9yyr6g6FTqWqiZVbxrtaCIg==}
     engines: {node: 18 || 20 || >=22}
 
-  miniprogram-api-typings@4.1.0:
-    resolution: {integrity: sha512-4RBsz27nBKyRkVGoNkRaPx24/KeJBw3zaaIlXDR8s/WBh2PbcUAc+q7wLLbp7Qsmb3bLzzUu7tqAti+B06kmjg==}
+  miniprogram-api-typings@5.0.1:
+    resolution: {integrity: sha512-saVtqMRpi5IcuJigswo1fGFlMKwGr5ixvI3wu8AM+4hQrH4v2Hov3YbZRlcvfIATObWt+HhLcmcSXzO52NGG+A==}
 
   minisearch@7.2.0:
     resolution: {integrity: sha512-dqT2XBYUOZOiC5t2HRnwADjhNS2cecp9u+TJRiJ1Qp/f5qjkeT5APcGPjHw+bz89Ms8Jp+cG4AlE+QZ/QnDglg==}
@@ -3371,7 +3371,7 @@ snapshots:
     dependencies:
       brace-expansion: 5.0.3
 
-  miniprogram-api-typings@4.1.0: {}
+  miniprogram-api-typings@5.0.1: {}
 
   minisearch@7.2.0: {}
 
