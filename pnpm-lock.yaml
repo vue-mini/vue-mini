@@ -78,8 +78,8 @@ importers:
   packages/core:
     dependencies:
       '@vue/reactivity':
-        specifier: 3.6.0-alpha.5
-        version: 3.6.0-alpha.5
+        specifier: 3.6.0-beta.7
+        version: 3.6.0-beta.7
       miniprogram-api-typings:
         specifier: ~5.1.1
         version: 5.1.1
@@ -934,8 +934,8 @@ packages:
   '@vue/reactivity@3.5.32':
     resolution: {integrity: sha512-/ORasxSGvZ6MN5gc+uE364SxFdJ0+WqVG0CENXaGW58TOCdrAW76WWaplDtECeS1qphvtBZtR+3/o1g1zL4xPQ==}
 
-  '@vue/reactivity@3.6.0-alpha.5':
-    resolution: {integrity: sha512-owQr29tdKkazdPb5aaHWFnbtYsvcyflAssqgde7kP6MlNphsDtdYOdDffN13fy54RvEVh5XYAxsRsHEicVvV9w==}
+  '@vue/reactivity@3.6.0-beta.7':
+    resolution: {integrity: sha512-d1Z7U3QqfrpnT1/m8glRDBGlzQVj4J3u7LvCxieyxvrH03ZcR9qZ8hMw9x/Q3K/VcT2BSHp8A8662cqigCiCEA==}
 
   '@vue/runtime-core@3.5.32':
     resolution: {integrity: sha512-pDrXCejn4UpFDFmMd27AcJEbHaLemaE5o4pbb7sLk79SRIhc6/t34BQA7SGNgYtbMnvbF/HHOftYBgFJtUoJUQ==}
@@ -951,8 +951,8 @@ packages:
   '@vue/shared@3.5.32':
     resolution: {integrity: sha512-ksNyrmRQzWJJ8n3cRDuSF7zNNontuJg1YHnmWRJd2AMu8Ij2bqwiiri2lH5rHtYPZjj4STkNcgcmiQqlOjiYGg==}
 
-  '@vue/shared@3.6.0-alpha.5':
-    resolution: {integrity: sha512-k31SasR388dp6erQ3G9V4fHM8ewvJScHM+wquNiVNAEaZdvjsfVdae+6Mgcflmv2UoPu3/PWJTaih/wKO/jGEw==}
+  '@vue/shared@3.6.0-beta.7':
+    resolution: {integrity: sha512-BNC0ohwv5hYybiUvZ/7gBjSzWFRxpZ2MzRQ/lH2zYZds085ylmAqMGEwbGlWFD+/WPRBsXQd7+e1hNGFksNuCg==}
 
   '@vueuse/core@14.2.1':
     resolution: {integrity: sha512-3vwDzV+GDUNpdegRY6kzpLm4Igptq+GA0QkJ3W61Iv27YWwW/ufSlOfgQIpN6FZRMG0mkaz4gglJRtq5SeJyIQ==}
@@ -2864,9 +2864,9 @@ snapshots:
     dependencies:
       '@vue/shared': 3.5.32
 
-  '@vue/reactivity@3.6.0-alpha.5':
+  '@vue/reactivity@3.6.0-beta.7':
     dependencies:
-      '@vue/shared': 3.6.0-alpha.5
+      '@vue/shared': 3.6.0-beta.7
 
   '@vue/runtime-core@3.5.32':
     dependencies:
@@ -2888,7 +2888,7 @@ snapshots:
 
   '@vue/shared@3.5.32': {}
 
-  '@vue/shared@3.6.0-alpha.5': {}
+  '@vue/shared@3.6.0-beta.7': {}
 
   '@vueuse/core@14.2.1(vue@3.5.32(typescript@6.0.2))':
     dependencies:
