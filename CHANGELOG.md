@@ -1,3 +1,16 @@
+# 1.3.0-beta.1 (2026-02-27)
+
+### 依赖
+
+- **@vue/reactivity:** 从 3.6.0-alpha.5 升至 3.6.0-beta.7，详情请看 [Vue 更新日志](https://github.com/vuejs/core/blob/minor/CHANGELOG.md) ([3354c6b](https://github.com/vue-mini/vue-mini/commit/3354c6bf135188e5522f10e094cf86a57cb1efb6))
+- **miniprogram-api-typings:** 从 4.1.x 升至 5.1.x
+
+### 类型破坏性变更
+
+请参考 Vue Mini [版本发布说明](https://vuemini.org/guide/releases.html)
+
+- `miniprogram-api-typings` 5.0.0 包含少量[破坏性变更](https://github.com/wechat-miniprogram/api-typings/blob/master/CHANGELOG.md)
+
 # 1.3.0-alpha.1 (2025-11-27)
 
 ### 依赖
