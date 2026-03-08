@@ -69,20 +69,29 @@ export function flushPostFlushCbs(): void {
     activePostJobs = postJobs
     postJobs = []
 
-    while (postFlushIndex < activePostJobs.length) {
-      const cb = activePostJobs[postFlushIndex++]
-      if (cb.flags! & SchedulerJobFlags.ALLOW_RECURSE) {
-        cb.flags! &= ~SchedulerJobFlags.QUEUED
+    try {
+      while (postFlushIndex < activePostJobs.length) {
+        const cb = activePostJobs[postFlushIndex++]
+        if (cb.flags! & SchedulerJobFlags.ALLOW_RECURSE) {
+          cb.flags! &= ~SchedulerJobFlags.QUEUED
+        }
+        try {
+          cb()
+        } finally {
+          if (!(cb.flags! & SchedulerJobFlags.ALLOW_RECURSE)) {
+            cb.flags! &= ~SchedulerJobFlags.QUEUED
+          }
+        }
       }
-      try {
-        cb()
-      } finally {
-        cb.flags! &= ~SchedulerJobFlags.QUEUED
+    } finally {
+      // If there was an error we still need to clear the QUEUED flags
+      while (postFlushIndex < activePostJobs.length) {
+        activePostJobs[postFlushIndex++].flags! &= ~SchedulerJobFlags.QUEUED
       }
-    }
 
-    activePostJobs = null
-    postFlushIndex = 0
+      activePostJobs = null
+      postFlushIndex = 0
+    }
   }
 }
 
