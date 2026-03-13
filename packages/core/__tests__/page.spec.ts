@@ -560,6 +560,9 @@ describe('page', () => {
     page.onLoad()
     page.onPageScroll(arg)
     expect(injectedFn).toBeCalledWith(arg)
+
+    definePage(() => {})
+    expect(page.onPageScroll).toBeUndefined()
   })
 
   it('onShareAppMessage', () => {

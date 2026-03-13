@@ -690,6 +690,9 @@ describe('component', () => {
     component.lifetimes.attached.call(component)
     component.methods.onPageScroll.call(component, arg)
     expect(injectedFn).toBeCalledWith(arg)
+
+    defineComponent(() => {})
+    expect(component.methods.onPageScroll).toBeUndefined()
   })
 
   it('onShareAppMessage', () => {
@@ -905,8 +908,8 @@ describe('component', () => {
     component.__isInjectedExitStateHook__ =
       component.methods.__isInjectedExitStateHook__
     component.lifetimes.attached.call(component)
-    const exitSate = component.methods.onSaveExitState.call(component)
-    expect(exitSate).toEqual({ data: { foo: 'foo' } })
+    const exitState = component.methods.onSaveExitState.call(component)
+    expect(exitState).toEqual({ data: { foo: 'foo' } })
 
     defineComponent(() => {})
     expect(component.methods.onSaveExitState.call(component)).toEqual({
