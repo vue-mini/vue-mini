@@ -1,6 +1,6 @@
 {
   "extends": "./tsconfig.json",
-  "compilerOptions": { "noCheck": true },
+  "compilerOptions": { "noCheck": true, "paths": {} },
   "exclude": [
     "build.ts",
     "release.ts",

@@ -23,6 +23,7 @@ async function generateDeclaration({
       typescript({
         tsconfig: 'tsconfig.build.json',
         compilerOptions: {
+          rootDir: path.join('packages', target, 'src'),
           declarationDir: path.join('packages', target, 'dist'),
         },
       }),
@@ -34,7 +35,7 @@ async function generateDeclaration({
   })
 
   const dtsBundle = await rollup({
-    input: path.join('packages', target, 'dist', target, 'src', 'index.d.ts'),
+    input: path.join('packages', target, 'dist', 'index.d.ts'),
     external,
     plugins: [dts()],
   })

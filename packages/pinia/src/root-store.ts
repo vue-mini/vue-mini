@@ -9,7 +9,6 @@ import type {
   DefineStoreOptionsInPlugin,
   StoreGeneric,
 } from './types'
-import { _Method } from './types'
 
 /**
  * Every application must own its own pinia to be able to create stores
