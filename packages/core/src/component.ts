@@ -162,9 +162,8 @@ export function defineComponent(optionsOrSetup: any, config?: Config): string {
       getAppBar: this.getAppBar && this.getAppBar.bind(this),
     }
     const bindings = setup(
-      __DEV__ ?
-        shallowReadonly(this.__props__)
-      : /* istanbul ignore next -- @preserve */ this.__props__,
+      /* istanbul ignore next -- @preserve */
+      __DEV__ ? shallowReadonly(this.__props__) : this.__props__,
       context,
     )
     if (bindings !== undefined) {

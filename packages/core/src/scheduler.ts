@@ -79,18 +79,17 @@ export function flushPostFlushCbs(): void {
 }
 
 function flushJobs(): void {
-  const seen: CountMap | undefined =
-    __DEV__ ? new Map() : /* istanbul ignore next -- @preserve  */ undefined
+  /* istanbul ignore next -- @preserve  */
+  const seen: CountMap | undefined = __DEV__ ? new Map() : undefined
 
   // Conditional usage of checkRecursiveUpdate must be determined out of
   // try ... catch block since Rollup by default de-optimizes treeshaking
   // inside try-catch. This can leave all warning code unshaked. Although
   // they would get eventually shaken by a minifier like terser, some minifiers
   // would fail to do that (e.g. https://github.com/evanw/esbuild/issues/1610)
+  /* istanbul ignore next -- @preserve  */
   const check =
-    __DEV__ ?
-      (job: SchedulerJob) => checkRecursiveUpdates(seen!, job)
-    : /* istanbul ignore next -- @preserve  */ NOOP
+    __DEV__ ? (job: SchedulerJob) => checkRecursiveUpdates(seen!, job) : NOOP
 
   try {
     for (flushIndex = 0; flushIndex < queue.length; flushIndex++) {

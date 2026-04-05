@@ -48,10 +48,11 @@ export interface Pinia {
   use(plugin: PiniaPlugin): Pinia
 }
 
+/* istanbul ignore next -- @preserve  */
 export const piniaSymbol = (
   __DEV__ ?
     Symbol('pinia')
-  : /* istanbul ignore next -- @preserve */ Symbol()) as InjectionKey<Pinia>
+  : Symbol()) as InjectionKey<Pinia>
 
 /**
  * Context argument passed to Pinia plugins.
