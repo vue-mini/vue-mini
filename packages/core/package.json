@@ -32,7 +32,7 @@
     "小程序"
   ],
   "dependencies": {
-    "@vue/reactivity": "3.5.29",
+    "@vue/reactivity": "3.5.32",
     "miniprogram-api-typings": "~4.0.8"
   }
 }
