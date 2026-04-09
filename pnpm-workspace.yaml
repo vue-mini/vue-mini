@@ -3,12 +3,5 @@ packages:
 
 autoInstallPeers: false
 
-peerDependencyRules:
-  ignoreMissing:
-    - '@emnapi/core'
-    - '@emnapi/runtime'
-    - markdown-it
-    - search-insights
-
 onlyBuiltDependencies:
   - esbuild
