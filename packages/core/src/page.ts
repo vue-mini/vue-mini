@@ -119,6 +119,9 @@ export function definePage(optionsOrSetup: any, config?: Config): void {
       Object.keys(bindings).forEach((key) => {
         const value = bindings[key]
         if (isFunction(value)) {
+          if(value.__worklet) {
+            this[`_${key}_worklet_factory_`] = () => value;
+          }
           this[key] = value
           return
         }
