@@ -50,13 +50,13 @@ export function createApp(optionsOrSetup: any): void {
   ) {
     setCurrentApp(this)
     const bindings = setup(options)
+    unsetCurrentApp()
+
     if (bindings !== undefined) {
       Object.keys(bindings).forEach((key) => {
         this[key] = bindings[key]
       })
     }
-
-    unsetCurrentApp()
 
     if (originOnLaunch !== undefined) {
       originOnLaunch.call(this, options)

@@ -120,8 +120,9 @@ export function defineComponent(optionsOrSetup: any, config?: Config): string {
     this: ComponentInstance,
   ) {
     this.__scope__ = new EffectScope()
+    // @ts-expect-error
+    this.__scope__.on()
 
-    setCurrentComponent(this)
     const rawProps: Record<string, any> = {}
     if (properties) {
       properties.forEach((property) => {
@@ -161,11 +162,15 @@ export function defineComponent(optionsOrSetup: any, config?: Config): string {
       setInitialRenderingCache: this.setInitialRenderingCache.bind(this),
       getAppBar: this.getAppBar && this.getAppBar.bind(this),
     }
+
+    setCurrentComponent(this)
     const bindings = setup(
       /* istanbul ignore next -- @preserve */
       __DEV__ ? shallowReadonly(this.__props__) : this.__props__,
       context,
     )
+    unsetCurrentComponent()
+
     if (bindings !== undefined) {
       let data: Record<string, unknown> | undefined
       Object.keys(bindings).forEach((key) => {
@@ -180,11 +185,13 @@ export function defineComponent(optionsOrSetup: any, config?: Config): string {
         deepWatch.call(this, key, value)
       })
       if (data !== undefined) {
+        // May call sub component's setup synchronously, so should call after unsetCurrentComponent()
         this.setData(data, flushPostFlushCbs)
       }
     }
 
-    unsetCurrentComponent()
+    // @ts-expect-error
+    this.__scope__.off()
 
     if (originAttached !== undefined) {
       originAttached.call(this)

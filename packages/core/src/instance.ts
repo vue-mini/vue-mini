@@ -47,32 +47,16 @@ export function unsetCurrentApp(): void {
 
 export function setCurrentPage(page: PageInstance): void {
   currentPage = page
-  // @ts-expect-error
-  page.__scope__.on()
 }
 
 export function unsetCurrentPage(): void {
-  /* istanbul ignore else -- @preserve */
-  if (currentPage) {
-    // @ts-expect-error
-    currentPage.__scope__.off()
-  }
-
   currentPage = null
 }
 
 export function setCurrentComponent(component: ComponentInstance): void {
   currentComponent = component
-  // @ts-expect-error
-  component.__scope__.on()
 }
 
 export function unsetCurrentComponent(): void {
-  /* istanbul ignore else -- @preserve */
-  if (currentComponent) {
-    // @ts-expect-error
-    currentComponent.__scope__.off()
-  }
-
   currentComponent = null
 }

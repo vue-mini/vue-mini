@@ -84,8 +84,9 @@ export function definePage(optionsOrSetup: any, config?: Config): void {
   const originOnLoad = options[PageLifecycle.ON_LOAD]
   options[PageLifecycle.ON_LOAD] = function (this: PageInstance, query: Query) {
     this.__scope__ = new EffectScope()
+    // @ts-expect-error
+    this.__scope__.on()
 
-    setCurrentPage(this)
     const context: PageContext = {
       is: this.is,
       route: this.route,
@@ -113,7 +114,11 @@ export function definePage(optionsOrSetup: any, config?: Config): void {
       setInitialRenderingCache: this.setInitialRenderingCache.bind(this),
       getAppBar: this.getAppBar && this.getAppBar.bind(this),
     }
+
+    setCurrentPage(this)
     const bindings = setup(query, context)
+    unsetCurrentPage()
+
     if (bindings !== undefined) {
       let data: Record<string, unknown> | undefined
       Object.keys(bindings).forEach((key) => {
@@ -128,11 +133,13 @@ export function definePage(optionsOrSetup: any, config?: Config): void {
         deepWatch.call(this, key, value)
       })
       if (data !== undefined) {
+        // May call sub component's setup synchronously, so should call after unsetCurrentPage()
         this.setData(data, flushPostFlushCbs)
       }
     }
 
-    unsetCurrentPage()
+    // @ts-expect-error
+    this.__scope__.off()
 
     if (originOnLoad !== undefined) {
       originOnLoad.call(this, query)
