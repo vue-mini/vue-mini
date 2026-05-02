@@ -1,3 +1,13 @@
+# 1.2.11 (2026-05-02)
+
+### 依赖
+
+- **@vue/reactivity:** 从 3.5.32 升至 3.5.33，详情请看 [Vue 更新日志](https://github.com/vuejs/core/blob/main/CHANGELOG.md) ([f952778](https://github.com/vue-mini/vue-mini/commit/f9527786c1b6e0517f95f7a5253dfeb859517980))
+
+### Bug 修复
+
+- 确保组件生命周期不会被错误的注册到页面实例上 ([ef28882](https://github.com/vue-mini/vue-mini/commit/ef288827489e316a9eae0df1b4438585064ba794))
+
 # 1.2.10 (2026-04-09)
 
 ### 依赖
