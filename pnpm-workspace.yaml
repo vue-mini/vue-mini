@@ -3,5 +3,5 @@ packages:
 
 autoInstallPeers: false
 
-onlyBuiltDependencies:
-  - esbuild
+allowBuilds:
+  esbuild: true

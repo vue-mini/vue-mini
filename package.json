@@ -2,7 +2,6 @@
   "private": true,
   "version": "1.2.10",
   "type": "module",
-  "packageManager": "pnpm@10.33.0",
   "scripts": {
     "format": "prettier --check \"**/*.{js,cjs,ts,json,md}\"",
     "lint": "eslint .",
@@ -14,6 +13,13 @@
     "docs:preview": "vitepress preview docs",
     "release": "node release.ts",
     "prepare": "husky"
+  },
+  "devEngines": {
+    "packageManager": {
+      "name": "pnpm",
+      "version": "^11.0.3",
+      "onFail": "error"
+    }
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
