@@ -1,6 +1,7 @@
 import { isRef, isProxy, toRaw } from '@vue/reactivity'
 import { watch } from './watch'
-import { flushPostFlushCbs } from './scheduler'
+import { queueJob } from './scheduler'
+import type { PageInstance, ComponentInstance } from './instance'
 import {
   isArray,
   getType,
@@ -39,10 +40,7 @@ export function deepToRaw(x: unknown): unknown {
 }
 
 export function deepWatch(
-  this: Pick<
-    WechatMiniprogram.Component.InstanceMethods<Record<string, unknown>>,
-    'setData'
-  >,
+  this: PageInstance | ComponentInstance,
   key: string,
   value: unknown,
 ): void {
@@ -53,7 +51,9 @@ export function deepWatch(
   watch(
     isRef(value) ? value : () => value,
     () => {
-      this.setData({ [key]: deepToRaw(value) }, flushPostFlushCbs)
+      this.__v_data = this.__v_data || {}
+      this.__v_data[key] = deepToRaw(value)
+      queueJob(this.__v_setData!)
     },
     {
       deep: true,

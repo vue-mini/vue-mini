@@ -208,6 +208,46 @@ describe('page', () => {
     expect(getEffectsCount(page.__v_scope)).toBe(0)
   })
 
+  it('should batch multiple state changes into a single setData call with only changed keys', async () => {
+    definePage(() => {
+      const state1 = ref(0)
+      const state2 = ref(0)
+      const state3 = ref(0)
+
+      const increment = () => {
+        state2.value++
+        state2.value++
+        state3.value++
+      }
+
+      return { state1, state2, state3, increment }
+    })
+
+    page.setData = vi.fn(function (this: any, data: Record<string, unknown>) {
+      this.data = this.data || {}
+      Object.keys(data).forEach((key) => {
+        this.data[key] = data[key]
+      })
+    })
+
+    page.onLoad()
+    expect(page.data).toEqual({ state1: 0, state2: 0, state3: 0 })
+    expect(page.setData).toHaveBeenCalledTimes(1)
+    expect(page.setData).toHaveBeenCalledWith(
+      { state1: 0, state2: 0, state3: 0 },
+      expect.any(Function),
+    )
+
+    page.increment()
+    await nextTick()
+    expect(page.data).toEqual({ state1: 0, state2: 2, state3: 1 })
+    expect(page.setData).toHaveBeenCalledTimes(2)
+    expect(page.setData).toHaveBeenLastCalledWith(
+      { state2: 2, state3: 1 },
+      expect.any(Function),
+    )
+  })
+
   it('watch', async () => {
     let dummy: number
     let stopper: () => void
