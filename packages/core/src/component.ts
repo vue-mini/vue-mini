@@ -176,7 +176,6 @@ export function defineComponent(optionsOrSetup: any, config?: Config): string {
     unsetCurrentComponent()
 
     if (bindings !== undefined) {
-      let data: Record<string, unknown> | undefined
       Object.keys(bindings).forEach((key) => {
         const value = bindings[key]
         if (isFunction(value)) {
@@ -184,13 +183,18 @@ export function defineComponent(optionsOrSetup: any, config?: Config): string {
           return
         }
 
-        data = data || {}
-        data[key] = deepToRaw(value)
+        this.__v_data = this.__v_data || {}
+        this.__v_data[key] = deepToRaw(value)
         deepWatch.call(this, key, value)
       })
-      if (data !== undefined) {
+      if (this.__v_data !== undefined) {
         // May call sub component's setup synchronously, so should call after unsetCurrentComponent()
-        this.setData(data, flushPostFlushCbs)
+        this.__v_setData = () => {
+          const data = this.__v_data!
+          this.__v_data = undefined
+          this.setData(data, flushPostFlushCbs)
+        }
+        this.__v_setData()
       }
     }
 
