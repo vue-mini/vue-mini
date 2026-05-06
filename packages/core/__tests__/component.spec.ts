@@ -218,6 +218,49 @@ describe('component', () => {
     expect(getEffectsCount(component.__scope__)).toBe(0)
   })
 
+  it('should batch multiple state changes into a single setData call with only changed keys', async () => {
+    defineComponent(() => {
+      const state1 = ref(0)
+      const state2 = ref(0)
+      const state3 = ref(0)
+
+      const increment = () => {
+        state2.value++
+        state2.value++
+        state3.value++
+      }
+
+      return { state1, state2, state3, increment }
+    })
+
+    component.setData = vi.fn(function (
+      this: any,
+      data: Record<string, unknown>,
+    ) {
+      this.data = this.data || {}
+      Object.keys(data).forEach((key) => {
+        this.data[key] = data[key]
+      })
+    })
+
+    component.lifetimes.attached.call(component)
+    expect(component.data).toEqual({ state1: 0, state2: 0, state3: 0 })
+    expect(component.setData).toHaveBeenCalledTimes(1)
+    expect(component.setData).toHaveBeenCalledWith(
+      { state1: 0, state2: 0, state3: 0 },
+      expect.any(Function),
+    )
+
+    component.increment()
+    await nextTick()
+    expect(component.data).toEqual({ state1: 0, state2: 2, state3: 1 })
+    expect(component.setData).toHaveBeenCalledTimes(2)
+    expect(component.setData).toHaveBeenLastCalledWith(
+      { state2: 2, state3: 1 },
+      expect.any(Function),
+    )
+  })
+
   it('watch', async () => {
     let dummy: number
     let stopper: () => void

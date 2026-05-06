@@ -119,7 +119,6 @@ export function definePage(optionsOrSetup: any, config?: Config): void {
     unsetCurrentPage()
 
     if (bindings !== undefined) {
-      let data: Record<string, unknown> | undefined
       Object.keys(bindings).forEach((key) => {
         const value = bindings[key]
         if (isFunction(value)) {
@@ -127,13 +126,18 @@ export function definePage(optionsOrSetup: any, config?: Config): void {
           return
         }
 
-        data = data || {}
-        data[key] = deepToRaw(value)
+        this.__data__ = this.__data__ || {}
+        this.__data__[key] = deepToRaw(value)
         deepWatch.call(this, key, value)
       })
-      if (data !== undefined) {
+      if (this.__data__ !== undefined) {
         // May call sub component's setup synchronously, so should call after unsetCurrentPage()
-        this.setData(data, flushPostFlushCbs)
+        this.__setData__ = () => {
+          const data = this.__data__!
+          this.__data__ = undefined
+          this.setData(data, flushPostFlushCbs)
+        }
+        this.__setData__()
       }
     }
 

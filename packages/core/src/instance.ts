@@ -12,6 +12,8 @@ export type PageInstance = WechatMiniprogram.Page.InstanceProperties &
     __isInjectedFavoritesHook__?: () => true
     __isInjectedExitStateHook__?: () => true
     __listenPageScroll__?: () => true
+    __setData__?: () => void
+    __data__?: Record<string, any>
     __scope__: EffectScope
   }
 
@@ -23,8 +25,10 @@ export type ComponentInstance = WechatMiniprogram.Component.InstanceProperties &
     __isInjectedFavoritesHook__?: () => true
     __isInjectedExitStateHook__?: () => true
     __listenPageScroll__?: () => true
+    __setData__?: () => void
+    __data__?: Record<string, any>
     __scope__: EffectScope
-    __props__: undefined | Record<string, any>
+    __props__?: Record<string, any>
   }
 
 export let currentApp: AppInstance | null = null
