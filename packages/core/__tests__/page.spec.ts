@@ -9,6 +9,7 @@ import {
   watchPostEffect,
   nextTick,
   effectScope,
+  dataFn,
   onReady,
   onShow,
   onHide,
@@ -173,6 +174,43 @@ describe('page', () => {
     page.increment()
     await nextTick()
     expect(page.data.obj).toEqual({ count: 1, double: 2 })
+  })
+
+  it('data function binding', async () => {
+    definePage(() => {
+      const plus = dataFn((a: number, b: number) => a + b)
+      return { plus }
+    })
+    page.onLoad()
+    expect(page.data.plus(0, 1)).toBe(1)
+    expect(page.data.plus(1, 1)).toBe(2)
+    expect(getEffectsCount(page.__scope__)).toBe(2)
+    page.onUnload()
+    expect(getEffectsCount(page.__scope__)).toBe(0)
+
+    definePage(() => {
+      const count = ref(0)
+
+      const add = dataFn((num: number) => count.value + num)
+
+      const increment = (): void => {
+        count.value++
+      }
+
+      return { add, increment }
+    })
+    page.setData = vi.fn(page.setData)
+    page.onLoad()
+    expect(page.setData).toHaveBeenCalledTimes(1)
+    expect(page.data.add(1)).toBe(1)
+    page.increment()
+    await nextTick()
+    expect(page.setData).toHaveBeenCalledTimes(2)
+    expect(page.data.add(1)).toBe(2)
+    page.increment()
+    await nextTick()
+    expect(page.setData).toHaveBeenCalledTimes(3)
+    expect(page.data.add(1)).toBe(3)
   })
 
   it('error binding', () => {
