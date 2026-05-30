@@ -42,6 +42,7 @@ export {
 export { watch, watchEffect, watchPostEffect, watchSyncEffect } from './watch'
 export { nextTick } from './scheduler'
 export { provide, inject } from './inject'
+export { dataFn } from './data-fn'
 export { createApp } from './app'
 export { definePage } from './page'
 export { defineComponent } from './component'

@@ -10,6 +10,7 @@ import {
   nextTick,
   isReadonly,
   effectScope,
+  dataFn,
   onReady,
   onMove,
   onDetach,
@@ -181,6 +182,43 @@ describe('component', () => {
     component.increment()
     await nextTick()
     expect(component.data.obj).toEqual({ count: 1, double: 2 })
+  })
+
+  it('data function binding', async () => {
+    defineComponent(() => {
+      const plus = dataFn((a: number, b: number) => a + b)
+      return { plus }
+    })
+    component.lifetimes.attached.call(component)
+    expect(component.data.plus(0, 1)).toBe(1)
+    expect(component.data.plus(1, 1)).toBe(2)
+    expect(getEffectsCount(component.__scope__)).toBe(2)
+    component.lifetimes.detached.call(component)
+    expect(getEffectsCount(component.__scope__)).toBe(0)
+
+    defineComponent(() => {
+      const count = ref(0)
+
+      const add = dataFn((num: number) => count.value + num)
+
+      const increment = (): void => {
+        count.value++
+      }
+
+      return { add, increment }
+    })
+    component.setData = vi.fn(component.setData)
+    component.lifetimes.attached.call(component)
+    expect(component.setData).toHaveBeenCalledTimes(1)
+    expect(component.data.add(1)).toBe(1)
+    component.increment()
+    await nextTick()
+    expect(component.setData).toHaveBeenCalledTimes(2)
+    expect(component.data.add(1)).toBe(2)
+    component.increment()
+    await nextTick()
+    expect(component.setData).toHaveBeenCalledTimes(3)
+    expect(component.data.add(1)).toBe(3)
   })
 
   it('error binding', () => {
