@@ -534,4 +534,22 @@ describe('scheduler', () => {
     await nextTick()
     expect(calls).toEqual(['cb1', 'job1'])
   })
+
+  test('job insertion', async () => {
+    const calls: string[] = []
+    const job1 = () => {
+      calls.push('job1')
+    }
+    const job2 = () => {
+      calls.push('job2')
+    }
+    const job3 = () => {
+      calls.push('job3')
+    }
+    queueJob(job1)
+    queueJob(job2, 1)
+    queueJob(job3)
+    await nextTick()
+    expect(calls).toEqual(['job1', 'job3', 'job2'])
+  })
 })
