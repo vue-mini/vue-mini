@@ -53,7 +53,7 @@ export function deepWatch(
     () => {
       this.__v_data = this.__v_data || {}
       this.__v_data[key] = deepToRaw(value)
-      queueJob(this.__v_setData!)
+      queueJob(this.__v_setData!, 1)
     },
     {
       deep: true,

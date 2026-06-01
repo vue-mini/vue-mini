@@ -286,6 +286,33 @@ describe('page', () => {
     )
   })
 
+  it('should batch state changes and dataFn into a single setData call', async () => {
+    definePage(() => {
+      const count = ref(0)
+      const getCount = dataFn(() => count.value)
+      const increment = () => {
+        count.value++
+      }
+      return { count, getCount, increment }
+    })
+
+    page.setData = vi.fn(function (this: any, data: Record<string, unknown>) {
+      this.data = this.data || {}
+      Object.keys(data).forEach((key) => {
+        this.data[key] = data[key]
+      })
+    })
+
+    page.onLoad()
+    expect(page.data.getCount()).toBe(0)
+    expect(page.setData).toHaveBeenCalledTimes(1)
+
+    page.increment()
+    await nextTick()
+    expect(page.data.getCount()).toBe(1)
+    expect(page.setData).toHaveBeenCalledTimes(2)
+  })
+
   it('watch', async () => {
     let dummy: number
     let stopper: () => void

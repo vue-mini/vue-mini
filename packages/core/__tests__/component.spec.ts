@@ -299,6 +299,36 @@ describe('component', () => {
     )
   })
 
+  it('should batch state changes and dataFn into a single setData call', async () => {
+    defineComponent(() => {
+      const count = ref(0)
+      const getCount = dataFn(() => count.value)
+      const increment = () => {
+        count.value++
+      }
+      return { count, getCount, increment }
+    })
+
+    component.setData = vi.fn(function (
+      this: any,
+      data: Record<string, unknown>,
+    ) {
+      this.data = this.data || {}
+      Object.keys(data).forEach((key) => {
+        this.data[key] = data[key]
+      })
+    })
+
+    component.lifetimes.attached.call(component)
+    expect(component.data.getCount()).toBe(0)
+    expect(component.setData).toHaveBeenCalledTimes(1)
+
+    component.increment()
+    await nextTick()
+    expect(component.data.getCount()).toBe(1)
+    expect(component.setData).toHaveBeenCalledTimes(2)
+  })
+
   it('watch', async () => {
     let dummy: number
     let stopper: () => void
