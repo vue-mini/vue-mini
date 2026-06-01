@@ -4,6 +4,7 @@ export enum SchedulerJobFlags {
 }
 
 export interface SchedulerJob extends Function {
+  order?: number
   /**
    * Flags can technically be undefined, but it can still be used in bitwise
    * operations just like 0.
@@ -32,8 +33,33 @@ export function nextTick<R>(fn?: () => R | Promise<R>): Promise<void | R> {
   return fn ? p.then(fn) : p
 }
 
-export function queueJob(job: SchedulerJob): void {
-  if (queueJobWorker(job, jobs, jobsLength)) {
+function findInsertionIndex(
+  order: number,
+  queue: SchedulerJob[],
+  start: number,
+  end: number,
+) {
+  while (start < end) {
+    const middle = (start + end) >>> 1
+    if (queue[middle].order! <= order) {
+      start = middle + 1
+    } else {
+      end = middle
+    }
+  }
+  return start
+}
+
+export function queueJob(job: SchedulerJob, order?: number): void {
+  if (
+    queueJobWorker(
+      job,
+      order === undefined ? 0 : order,
+      jobs,
+      jobsLength,
+      flushIndex,
+    )
+  ) {
     jobsLength++
     queueFlush()
   }
@@ -41,13 +67,24 @@ export function queueJob(job: SchedulerJob): void {
 
 function queueJobWorker(
   job: SchedulerJob,
+  order: number,
   queue: SchedulerJob[],
   length: number,
+  index: number,
 ) {
   const flags = job.flags!
   if (!(flags & SchedulerJobFlags.QUEUED)) {
     job.flags = flags | SchedulerJobFlags.QUEUED
-    queue[length] = job
+    job.order = order
+    if (
+      index === length ||
+      // fast path when the job order is larger than the tail
+      order >= queue[length - 1].order!
+    ) {
+      queue[length] = job
+    } else {
+      queue.splice(findInsertionIndex(order, queue, index, length), 0, job)
+    }
     return true
   }
   return false
@@ -61,7 +98,7 @@ function queueFlush() {
 }
 
 export function queuePostFlushCb(job: SchedulerJob): void {
-  queueJobWorker(job, postJobs, postJobs.length)
+  queueJobWorker(job, 0, postJobs, postJobs.length, 0)
 }
 
 export function flushPostFlushCbs(): void {
