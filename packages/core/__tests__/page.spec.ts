@@ -438,8 +438,8 @@ describe('page', () => {
     })
     definePage({ onLoad, setup })
     page.onLoad(arg)
-    expect(onLoad).toBeCalledWith(arg)
-    expect(setup).toBeCalledTimes(1)
+    expect(onLoad).toHaveBeenCalledWith(arg)
+    expect(setup).toHaveBeenCalledTimes(1)
   })
 
   it('context: high library version', () => {
@@ -467,9 +467,9 @@ describe('page', () => {
     })
     page.onLoad()
     page.onReady()
-    expect(fn).toBeCalledTimes(1)
-    expect(injectedFn1).toBeCalledTimes(1)
-    expect(injectedFn2).toBeCalledTimes(1)
+    expect(fn).toHaveBeenCalledTimes(1)
+    expect(injectedFn1).toHaveBeenCalledTimes(1)
+    expect(injectedFn2).toHaveBeenCalledTimes(1)
   })
 
   it('onShow', () => {
@@ -485,9 +485,9 @@ describe('page', () => {
     })
     page.onLoad()
     page.onShow()
-    expect(fn).toBeCalledTimes(1)
-    expect(injectedFn1).toBeCalledTimes(1)
-    expect(injectedFn2).toBeCalledTimes(1)
+    expect(fn).toHaveBeenCalledTimes(1)
+    expect(injectedFn1).toHaveBeenCalledTimes(1)
+    expect(injectedFn2).toHaveBeenCalledTimes(1)
   })
 
   it('onHide', () => {
@@ -503,9 +503,9 @@ describe('page', () => {
     })
     page.onLoad()
     page.onHide()
-    expect(fn).toBeCalledTimes(1)
-    expect(injectedFn1).toBeCalledTimes(1)
-    expect(injectedFn2).toBeCalledTimes(1)
+    expect(fn).toHaveBeenCalledTimes(1)
+    expect(injectedFn1).toHaveBeenCalledTimes(1)
+    expect(injectedFn2).toHaveBeenCalledTimes(1)
   })
 
   it('onUnload', () => {
@@ -521,9 +521,9 @@ describe('page', () => {
     })
     page.onLoad()
     page.onUnload()
-    expect(fn).toBeCalledTimes(1)
-    expect(injectedFn1).toBeCalledTimes(1)
-    expect(injectedFn2).toBeCalledTimes(1)
+    expect(fn).toHaveBeenCalledTimes(1)
+    expect(injectedFn1).toHaveBeenCalledTimes(1)
+    expect(injectedFn2).toHaveBeenCalledTimes(1)
   })
 
   it('onRouteDone', () => {
@@ -539,9 +539,9 @@ describe('page', () => {
     })
     page.onLoad()
     page.onRouteDone()
-    expect(fn).toBeCalledTimes(1)
-    expect(injectedFn1).toBeCalledTimes(1)
-    expect(injectedFn2).toBeCalledTimes(1)
+    expect(fn).toHaveBeenCalledTimes(1)
+    expect(injectedFn1).toHaveBeenCalledTimes(1)
+    expect(injectedFn2).toHaveBeenCalledTimes(1)
   })
 
   it('onPullDownRefresh', () => {
@@ -557,9 +557,9 @@ describe('page', () => {
     })
     page.onLoad()
     page.onPullDownRefresh()
-    expect(fn).toBeCalledTimes(1)
-    expect(injectedFn1).toBeCalledTimes(1)
-    expect(injectedFn2).toBeCalledTimes(1)
+    expect(fn).toHaveBeenCalledTimes(1)
+    expect(injectedFn1).toHaveBeenCalledTimes(1)
+    expect(injectedFn2).toHaveBeenCalledTimes(1)
   })
 
   it('onReachBottom', () => {
@@ -575,9 +575,9 @@ describe('page', () => {
     })
     page.onLoad()
     page.onReachBottom()
-    expect(fn).toBeCalledTimes(1)
-    expect(injectedFn1).toBeCalledTimes(1)
-    expect(injectedFn2).toBeCalledTimes(1)
+    expect(fn).toHaveBeenCalledTimes(1)
+    expect(injectedFn1).toHaveBeenCalledTimes(1)
+    expect(injectedFn2).toHaveBeenCalledTimes(1)
   })
 
   it('onResize', () => {
@@ -594,9 +594,9 @@ describe('page', () => {
     })
     page.onLoad()
     page.onResize(arg)
-    expect(fn).toBeCalledWith(arg)
-    expect(injectedFn1).toBeCalledWith(arg)
-    expect(injectedFn2).toBeCalledWith(arg)
+    expect(fn).toHaveBeenCalledWith(arg)
+    expect(injectedFn1).toHaveBeenCalledWith(arg)
+    expect(injectedFn2).toHaveBeenCalledWith(arg)
   })
 
   it('onTabItemTap', () => {
@@ -613,9 +613,9 @@ describe('page', () => {
     })
     page.onLoad()
     page.onTabItemTap(arg)
-    expect(fn).toBeCalledWith(arg)
-    expect(injectedFn1).toBeCalledWith(arg)
-    expect(injectedFn2).toBeCalledWith(arg)
+    expect(fn).toHaveBeenCalledWith(arg)
+    expect(injectedFn1).toHaveBeenCalledWith(arg)
+    expect(injectedFn2).toHaveBeenCalledWith(arg)
   })
 
   it('onPageScroll', () => {
@@ -641,9 +641,9 @@ describe('page', () => {
     })
     page.onLoad()
     page.onPageScroll(arg)
-    expect(fn).toBeCalledWith(arg)
-    expect(injectedFn1).toBeCalledWith(arg)
-    expect(injectedFn2).toBeCalledWith(arg)
+    expect(fn).toHaveBeenCalledWith(arg)
+    expect(injectedFn1).toHaveBeenCalledWith(arg)
+    expect(injectedFn2).toHaveBeenCalledWith(arg)
 
     const injectedFn = vi.fn()
     definePage(
@@ -654,7 +654,7 @@ describe('page', () => {
     )
     page.onLoad()
     page.onPageScroll(arg)
-    expect(injectedFn).toBeCalledWith(arg)
+    expect(injectedFn).toHaveBeenCalledWith(arg)
 
     definePage(() => {})
     expect(page.onPageScroll).toBeUndefined()
@@ -701,7 +701,7 @@ describe('page', () => {
     )
     page.onLoad()
     const shareContent = page.onShareAppMessage(arg)
-    expect(fn).toBeCalledWith(arg)
+    expect(fn).toHaveBeenCalledWith(arg)
     expect(shareContent).toEqual({ title: 'test' })
 
     definePage(() => {}, { canShareToOthers: true })
@@ -751,7 +751,7 @@ describe('page', () => {
     )
     page.onLoad()
     const shareContent = page.onShareTimeline()
-    expect(fn).toBeCalledWith()
+    expect(fn).toHaveBeenCalledWith()
     expect(shareContent).toEqual({ title: 'test' })
 
     definePage(() => {}, { canShareToTimeline: true })
@@ -790,7 +790,7 @@ describe('page', () => {
     })
     page.onLoad()
     const favoritesContent = page.onAddToFavorites(arg)
-    expect(fn).toBeCalledWith(arg)
+    expect(fn).toHaveBeenCalledWith(arg)
     expect(favoritesContent).toEqual({ title: 'test' })
 
     definePage(() => {})

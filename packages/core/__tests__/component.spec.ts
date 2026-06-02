@@ -507,7 +507,7 @@ describe('component', () => {
     component.data = { count: 0 }
     component.lifetimes.attached.call(component)
     component.observers.count.call(component, component.data.count)
-    expect(fn).toBeCalledWith(0)
+    expect(fn).toHaveBeenCalledWith(0)
   })
 
   it('context', () => {
@@ -537,7 +537,7 @@ describe('component', () => {
       setup() {},
     })
     component.lifetimes.attached.call(component)
-    expect(fn).toBeCalledTimes(1)
+    expect(fn).toHaveBeenCalledTimes(1)
   })
 
   it('legacy attached', () => {
@@ -547,7 +547,7 @@ describe('component', () => {
       setup() {},
     })
     component.lifetimes.attached.call(component)
-    expect(fn).toBeCalledTimes(1)
+    expect(fn).toHaveBeenCalledTimes(1)
   })
 
   it('ready', () => {
@@ -566,9 +566,9 @@ describe('component', () => {
     })
     component.lifetimes.attached.call(component)
     component.lifetimes.ready.call(component)
-    expect(fn).toBeCalledTimes(1)
-    expect(injectedFn1).toBeCalledTimes(1)
-    expect(injectedFn2).toBeCalledTimes(1)
+    expect(fn).toHaveBeenCalledTimes(1)
+    expect(injectedFn1).toHaveBeenCalledTimes(1)
+    expect(injectedFn2).toHaveBeenCalledTimes(1)
   })
 
   it('legacy ready', () => {
@@ -579,7 +579,7 @@ describe('component', () => {
     })
     component.lifetimes.attached.call(component)
     component.lifetimes.ready.call(component)
-    expect(fn).toBeCalledTimes(1)
+    expect(fn).toHaveBeenCalledTimes(1)
   })
 
   it('moved', () => {
@@ -595,9 +595,9 @@ describe('component', () => {
     })
     component.lifetimes.attached.call(component)
     component.lifetimes.moved.call(component)
-    expect(fn).toBeCalledTimes(1)
-    expect(injectedFn1).toBeCalledTimes(1)
-    expect(injectedFn2).toBeCalledTimes(1)
+    expect(fn).toHaveBeenCalledTimes(1)
+    expect(injectedFn1).toHaveBeenCalledTimes(1)
+    expect(injectedFn2).toHaveBeenCalledTimes(1)
   })
 
   it('legacy moved', () => {
@@ -608,7 +608,7 @@ describe('component', () => {
     })
     component.lifetimes.attached.call(component)
     component.lifetimes.moved.call(component)
-    expect(fn).toBeCalledTimes(1)
+    expect(fn).toHaveBeenCalledTimes(1)
   })
 
   it('detached', () => {
@@ -624,9 +624,9 @@ describe('component', () => {
     })
     component.lifetimes.attached.call(component)
     component.lifetimes.detached.call(component)
-    expect(fn).toBeCalledTimes(1)
-    expect(injectedFn1).toBeCalledTimes(1)
-    expect(injectedFn2).toBeCalledTimes(1)
+    expect(fn).toHaveBeenCalledTimes(1)
+    expect(injectedFn1).toHaveBeenCalledTimes(1)
+    expect(injectedFn2).toHaveBeenCalledTimes(1)
   })
 
   it('legacy detached', () => {
@@ -637,7 +637,7 @@ describe('component', () => {
     })
     component.lifetimes.attached.call(component)
     component.lifetimes.detached.call(component)
-    expect(fn).toBeCalledTimes(1)
+    expect(fn).toHaveBeenCalledTimes(1)
   })
 
   it('error', () => {
@@ -654,9 +654,9 @@ describe('component', () => {
     })
     component.lifetimes.attached.call(component)
     component.lifetimes.error.call(component, error)
-    expect(fn).toBeCalledWith(error)
-    expect(injectedFn1).toBeCalledWith(error)
-    expect(injectedFn2).toBeCalledWith(error)
+    expect(fn).toHaveBeenCalledWith(error)
+    expect(injectedFn1).toHaveBeenCalledWith(error)
+    expect(injectedFn2).toHaveBeenCalledWith(error)
   })
 
   it('legacy error', () => {
@@ -668,7 +668,7 @@ describe('component', () => {
     })
     component.lifetimes.attached.call(component)
     component.lifetimes.error.call(component, error)
-    expect(fn).toBeCalledWith(error)
+    expect(fn).toHaveBeenCalledWith(error)
   })
 
   it('onLoad', () => {
@@ -685,9 +685,9 @@ describe('component', () => {
     })
     component.lifetimes.attached.call(component)
     component.methods.onLoad.call(component, arg)
-    expect(fn).toBeCalledWith(arg)
-    expect(injectedFn1).toBeCalledWith(arg)
-    expect(injectedFn2).toBeCalledWith(arg)
+    expect(fn).toHaveBeenCalledWith(arg)
+    expect(injectedFn1).toHaveBeenCalledWith(arg)
+    expect(injectedFn2).toHaveBeenCalledWith(arg)
   })
 
   it('onPullDownRefresh', () => {
@@ -703,9 +703,9 @@ describe('component', () => {
     })
     component.lifetimes.attached.call(component)
     component.methods.onPullDownRefresh.call(component)
-    expect(fn).toBeCalledTimes(1)
-    expect(injectedFn1).toBeCalledTimes(1)
-    expect(injectedFn2).toBeCalledTimes(1)
+    expect(fn).toHaveBeenCalledTimes(1)
+    expect(injectedFn1).toHaveBeenCalledTimes(1)
+    expect(injectedFn2).toHaveBeenCalledTimes(1)
   })
 
   it('onReachBottom', () => {
@@ -721,9 +721,9 @@ describe('component', () => {
     })
     component.lifetimes.attached.call(component)
     component.methods.onReachBottom.call(component)
-    expect(fn).toBeCalledTimes(1)
-    expect(injectedFn1).toBeCalledTimes(1)
-    expect(injectedFn2).toBeCalledTimes(1)
+    expect(fn).toHaveBeenCalledTimes(1)
+    expect(injectedFn1).toHaveBeenCalledTimes(1)
+    expect(injectedFn2).toHaveBeenCalledTimes(1)
   })
 
   it('onTabItemTap', () => {
@@ -740,9 +740,9 @@ describe('component', () => {
     })
     component.lifetimes.attached.call(component)
     component.methods.onTabItemTap.call(component, arg)
-    expect(fn).toBeCalledWith(arg)
-    expect(injectedFn1).toBeCalledWith(arg)
-    expect(injectedFn2).toBeCalledWith(arg)
+    expect(fn).toHaveBeenCalledWith(arg)
+    expect(injectedFn1).toHaveBeenCalledWith(arg)
+    expect(injectedFn2).toHaveBeenCalledWith(arg)
   })
 
   it('onPageScroll', () => {
@@ -770,9 +770,9 @@ describe('component', () => {
     component.__v_listenPageScroll = component.methods.__v_listenPageScroll
     component.lifetimes.attached.call(component)
     component.methods.onPageScroll.call(component, arg)
-    expect(fn).toBeCalledWith(arg)
-    expect(injectedFn1).toBeCalledWith(arg)
-    expect(injectedFn2).toBeCalledWith(arg)
+    expect(fn).toHaveBeenCalledWith(arg)
+    expect(injectedFn1).toHaveBeenCalledWith(arg)
+    expect(injectedFn2).toHaveBeenCalledWith(arg)
 
     const injectedFn = vi.fn()
     defineComponent(
@@ -784,7 +784,7 @@ describe('component', () => {
     component.__v_listenPageScroll = component.methods.__v_listenPageScroll
     component.lifetimes.attached.call(component)
     component.methods.onPageScroll.call(component, arg)
-    expect(injectedFn).toBeCalledWith(arg)
+    expect(injectedFn).toHaveBeenCalledWith(arg)
 
     defineComponent(() => {})
     expect(component.methods.onPageScroll).toBeUndefined()
@@ -848,7 +848,7 @@ describe('component', () => {
       component,
       arg,
     )
-    expect(fn).toBeCalledWith(arg)
+    expect(fn).toHaveBeenCalledWith(arg)
     expect(shareContent).toEqual({ title: 'test' })
 
     defineComponent(() => {}, { canShareToOthers: true })
@@ -912,7 +912,7 @@ describe('component', () => {
       component.methods.__v_isInjectedShareToTimelineHook
     component.lifetimes.attached.call(component)
     const shareContent = component.methods.onShareTimeline.call(component)
-    expect(fn).toBeCalledWith()
+    expect(fn).toHaveBeenCalledWith()
     expect(shareContent).toEqual({ title: 'test' })
 
     defineComponent(() => {}, { canShareToTimeline: true })
@@ -962,7 +962,7 @@ describe('component', () => {
       component,
       arg,
     )
-    expect(fn).toBeCalledWith(arg)
+    expect(fn).toHaveBeenCalledWith(arg)
     expect(favoritesContent).toEqual({ title: 'test' })
 
     defineComponent(() => {})
@@ -1025,9 +1025,9 @@ describe('component', () => {
     })
     component.lifetimes.attached.call(component)
     component.pageLifetimes.show.call(component)
-    expect(fn).toBeCalledTimes(1)
-    expect(injectedFn1).toBeCalledTimes(1)
-    expect(injectedFn2).toBeCalledTimes(1)
+    expect(fn).toHaveBeenCalledTimes(1)
+    expect(injectedFn1).toHaveBeenCalledTimes(1)
+    expect(injectedFn2).toHaveBeenCalledTimes(1)
   })
 
   it('onHide', () => {
@@ -1043,9 +1043,9 @@ describe('component', () => {
     })
     component.lifetimes.attached.call(component)
     component.pageLifetimes.hide.call(component)
-    expect(fn).toBeCalledTimes(1)
-    expect(injectedFn1).toBeCalledTimes(1)
-    expect(injectedFn2).toBeCalledTimes(1)
+    expect(fn).toHaveBeenCalledTimes(1)
+    expect(injectedFn1).toHaveBeenCalledTimes(1)
+    expect(injectedFn2).toHaveBeenCalledTimes(1)
   })
 
   it('onResize', () => {
@@ -1062,9 +1062,9 @@ describe('component', () => {
     })
     component.lifetimes.attached.call(component)
     component.pageLifetimes.resize.call(component, arg)
-    expect(fn).toBeCalledWith(arg)
-    expect(injectedFn1).toBeCalledWith(arg)
-    expect(injectedFn2).toBeCalledWith(arg)
+    expect(fn).toHaveBeenCalledWith(arg)
+    expect(injectedFn1).toHaveBeenCalledWith(arg)
+    expect(injectedFn2).toHaveBeenCalledWith(arg)
   })
 
   it('onRouteDone', () => {
@@ -1080,9 +1080,9 @@ describe('component', () => {
     })
     component.lifetimes.attached.call(component)
     component.pageLifetimes.routeDone.call(component)
-    expect(fn).toBeCalledTimes(1)
-    expect(injectedFn1).toBeCalledTimes(1)
-    expect(injectedFn2).toBeCalledTimes(1)
+    expect(fn).toHaveBeenCalledTimes(1)
+    expect(injectedFn1).toHaveBeenCalledTimes(1)
+    expect(injectedFn2).toHaveBeenCalledTimes(1)
   })
 
   it('inject component lifecycle outside setup', () => {
