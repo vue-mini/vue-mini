@@ -87,7 +87,7 @@ describe('actions', () => {
 
   it('throws errors', () => {
     const store = useStore()
-    expect(() => store.throws()).toThrowError('fail')
+    expect(() => store.throws()).toThrow('fail')
   })
 
   it('throws async errors', async () => {
