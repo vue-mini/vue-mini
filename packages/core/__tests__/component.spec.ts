@@ -271,15 +271,7 @@ describe('component', () => {
       return { state1, state2, state3, increment }
     })
 
-    component.setData = vi.fn(function (
-      this: any,
-      data: Record<string, unknown>,
-    ) {
-      this.data = this.data || {}
-      Object.keys(data).forEach((key) => {
-        this.data[key] = data[key]
-      })
-    })
+    component.setData = vi.fn(component.setData)
 
     component.lifetimes.attached.call(component)
     expect(component.data).toEqual({ state1: 0, state2: 0, state3: 0 })
@@ -309,15 +301,7 @@ describe('component', () => {
       return { count, getCount, increment }
     })
 
-    component.setData = vi.fn(function (
-      this: any,
-      data: Record<string, unknown>,
-    ) {
-      this.data = this.data || {}
-      Object.keys(data).forEach((key) => {
-        this.data[key] = data[key]
-      })
-    })
+    component.setData = vi.fn(component.setData)
 
     component.lifetimes.attached.call(component)
     expect(component.data.getCount()).toBe(0)
