@@ -1,3 +1,13 @@
+# 1.2.12 (2026-06-24)
+
+### 依赖
+
+- **@vue/reactivity:** 从 3.5.33 升至 3.5.8，详情请看 [Vue 更新日志](https://github.com/vuejs/core/blob/main/CHANGELOG.md) ([f550d50](https://github.com/vue-mini/vue-mini/commit/f550d5080d7e6f24125a9c2b5ac17de2adebcf16))
+
+### Bug 修复
+
+- 重命名内部字段以避免与微信小程序运行时冲突 ([8941905](https://github.com/vue-mini/vue-mini/commit/8941905cefefba7f5a8ae71bb541821b9ac5f3d2))
+
 # 1.2.11 (2026-05-02)
 
 ### 依赖
