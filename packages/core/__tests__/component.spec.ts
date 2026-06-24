@@ -207,7 +207,7 @@ describe('component', () => {
       }
     })
     component.lifetimes.attached.call(component)
-    expect(component.__scope__.effects.length).toBe(2)
+    expect(component.__v_scope.effects.length).toBe(2)
 
     component.increment()
     component.lifetimes.detached.call(component)
@@ -238,7 +238,7 @@ describe('component', () => {
     expect(dummy!).toBe(0)
     expect(component.data.count).toBe(0)
     // The other is `count` sync watcher
-    expect(component.__scope__.effects.length).toBe(2)
+    expect(component.__v_scope.effects.length).toBe(2)
 
     component.increment()
     await nextTick()
@@ -251,7 +251,7 @@ describe('component', () => {
     await nextTick()
     expect(dummy!).toBe(1)
     expect(component.data.count).toBe(2)
-    expect(component.__scope__.effects.length).toBe(1)
+    expect(component.__v_scope.effects.length).toBe(1)
   })
 
   it('post watch', async () => {
@@ -337,7 +337,7 @@ describe('component', () => {
       return {}
     })
     component.lifetimes.attached.call(component)
-    expect(component.__scope__.effects.length).toBe(0)
+    expect(component.__v_scope.effects.length).toBe(0)
   })
 
   it('props', async () => {
@@ -655,7 +655,7 @@ describe('component', () => {
     defineComponent(() => {
       onPageScroll(() => {})
     })
-    component.__listenPageScroll__ = component.methods.__listenPageScroll__
+    component.__v_listenPageScroll = component.methods.__v_listenPageScroll
     component.lifetimes.attached.call(component)
     expect('onPageScroll() hook only').toHaveBeenWarned()
 
@@ -670,7 +670,7 @@ describe('component', () => {
         onPageScroll(injectedFn2)
       },
     })
-    component.__listenPageScroll__ = component.methods.__listenPageScroll__
+    component.__v_listenPageScroll = component.methods.__v_listenPageScroll
     component.lifetimes.attached.call(component)
     component.methods.onPageScroll.call(component, arg)
     expect(fn).toBeCalledWith(arg)
@@ -684,7 +684,7 @@ describe('component', () => {
       },
       { listenPageScroll: true },
     )
-    component.__listenPageScroll__ = component.methods.__listenPageScroll__
+    component.__v_listenPageScroll = component.methods.__v_listenPageScroll
     component.lifetimes.attached.call(component)
     component.methods.onPageScroll.call(component, arg)
     expect(injectedFn).toBeCalledWith(arg)
@@ -705,8 +705,8 @@ describe('component', () => {
       },
     })
     component.onShareAppMessage = component.methods.onShareAppMessage
-    component.__isInjectedShareToOthersHook__ =
-      component.methods.__isInjectedShareToOthersHook__
+    component.__v_isInjectedShareToOthersHook =
+      component.methods.__v_isInjectedShareToOthersHook
     component.lifetimes.attached.call(component)
     expect('onShareAppMessage() hook only').toHaveBeenWarnedTimes(1)
 
@@ -714,8 +714,8 @@ describe('component', () => {
       onShareAppMessage(() => ({}))
     })
     component.onShareAppMessage = component.methods.onShareAppMessage
-    component.__isInjectedShareToOthersHook__ =
-      component.methods.__isInjectedShareToOthersHook__
+    component.__v_isInjectedShareToOthersHook =
+      component.methods.__v_isInjectedShareToOthersHook
     component.lifetimes.attached.call(component)
     expect('onShareAppMessage() hook only').toHaveBeenWarnedTimes(2)
 
@@ -727,8 +727,8 @@ describe('component', () => {
       { canShareToOthers: true },
     )
     component.onShareAppMessage = component.methods.onShareAppMessage
-    component.__isInjectedShareToOthersHook__ =
-      component.methods.__isInjectedShareToOthersHook__
+    component.__v_isInjectedShareToOthersHook =
+      component.methods.__v_isInjectedShareToOthersHook
     component.lifetimes.attached.call(component)
     expect('onShareAppMessage() hook can only').toHaveBeenWarned()
 
@@ -741,8 +741,8 @@ describe('component', () => {
       { canShareToOthers: true },
     )
     component.onShareAppMessage = component.methods.onShareAppMessage
-    component.__isInjectedShareToOthersHook__ =
-      component.methods.__isInjectedShareToOthersHook__
+    component.__v_isInjectedShareToOthersHook =
+      component.methods.__v_isInjectedShareToOthersHook
     component.lifetimes.attached.call(component)
     const shareContent = component.methods.onShareAppMessage.call(
       component,
@@ -773,8 +773,8 @@ describe('component', () => {
       },
     })
     component.onShareTimeline = component.methods.onShareTimeline
-    component.__isInjectedShareToTimelineHook__ =
-      component.methods.__isInjectedShareToTimelineHook__
+    component.__v_isInjectedShareToTimelineHook =
+      component.methods.__v_isInjectedShareToTimelineHook
     component.lifetimes.attached.call(component)
     expect('onShareTimeline() hook only').toHaveBeenWarnedTimes(1)
 
@@ -782,8 +782,8 @@ describe('component', () => {
       onShareTimeline(() => ({}))
     })
     component.onShareTimeline = component.methods.onShareTimeline
-    component.__isInjectedShareToTimelineHook__ =
-      component.methods.__isInjectedShareToTimelineHook__
+    component.__v_isInjectedShareToTimelineHook =
+      component.methods.__v_isInjectedShareToTimelineHook
     component.lifetimes.attached.call(component)
     expect('onShareTimeline() hook only').toHaveBeenWarnedTimes(2)
 
@@ -795,8 +795,8 @@ describe('component', () => {
       { canShareToTimeline: true },
     )
     component.onShareTimeline = component.methods.onShareTimeline
-    component.__isInjectedShareToTimelineHook__ =
-      component.methods.__isInjectedShareToTimelineHook__
+    component.__v_isInjectedShareToTimelineHook =
+      component.methods.__v_isInjectedShareToTimelineHook
     component.lifetimes.attached.call(component)
     expect('onShareTimeline() hook can only').toHaveBeenWarned()
 
@@ -808,8 +808,8 @@ describe('component', () => {
       { canShareToTimeline: true },
     )
     component.onShareTimeline = component.methods.onShareTimeline
-    component.__isInjectedShareToTimelineHook__ =
-      component.methods.__isInjectedShareToTimelineHook__
+    component.__v_isInjectedShareToTimelineHook =
+      component.methods.__v_isInjectedShareToTimelineHook
     component.lifetimes.attached.call(component)
     const shareContent = component.methods.onShareTimeline.call(component)
     expect(fn).toBeCalledWith()
@@ -836,8 +836,8 @@ describe('component', () => {
         onAddToFavorites(() => ({}))
       },
     })
-    component.__isInjectedFavoritesHook__ =
-      component.methods.__isInjectedFavoritesHook__
+    component.__v_isInjectedFavoritesHook =
+      component.methods.__v_isInjectedFavoritesHook
     component.lifetimes.attached.call(component)
     expect('onAddToFavorites() hook only').toHaveBeenWarned()
 
@@ -845,8 +845,8 @@ describe('component', () => {
       onAddToFavorites(() => ({}))
       onAddToFavorites(() => ({}))
     })
-    component.__isInjectedFavoritesHook__ =
-      component.methods.__isInjectedFavoritesHook__
+    component.__v_isInjectedFavoritesHook =
+      component.methods.__v_isInjectedFavoritesHook
     component.lifetimes.attached.call(component)
     expect('onAddToFavorites() hook can only').toHaveBeenWarned()
 
@@ -855,8 +855,8 @@ describe('component', () => {
     defineComponent(() => {
       onAddToFavorites(fn)
     })
-    component.__isInjectedFavoritesHook__ =
-      component.methods.__isInjectedFavoritesHook__
+    component.__v_isInjectedFavoritesHook =
+      component.methods.__v_isInjectedFavoritesHook
     component.lifetimes.attached.call(component)
     const favoritesContent = component.methods.onAddToFavorites.call(
       component,
@@ -883,8 +883,8 @@ describe('component', () => {
         onSaveExitState(() => ({ data: undefined }))
       },
     })
-    component.__isInjectedExitStateHook__ =
-      component.methods.__isInjectedExitStateHook__
+    component.__v_isInjectedExitStateHook =
+      component.methods.__v_isInjectedExitStateHook
     component.lifetimes.attached.call(component)
     expect('onSaveExitState() hook only').toHaveBeenWarned()
 
@@ -892,16 +892,16 @@ describe('component', () => {
       onSaveExitState(() => ({ data: undefined }))
       onSaveExitState(() => ({ data: undefined }))
     })
-    component.__isInjectedExitStateHook__ =
-      component.methods.__isInjectedExitStateHook__
+    component.__v_isInjectedExitStateHook =
+      component.methods.__v_isInjectedExitStateHook
     component.lifetimes.attached.call(component)
     expect('onSaveExitState() hook can only').toHaveBeenWarned()
 
     defineComponent(() => {
       onSaveExitState(() => ({ data: { foo: 'foo' } }))
     })
-    component.__isInjectedExitStateHook__ =
-      component.methods.__isInjectedExitStateHook__
+    component.__v_isInjectedExitStateHook =
+      component.methods.__v_isInjectedExitStateHook
     component.lifetimes.attached.call(component)
     const exitSate = component.methods.onSaveExitState.call(component)
     expect(exitSate).toEqual({ data: { foo: 'foo' } })
