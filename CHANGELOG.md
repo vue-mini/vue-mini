@@ -6,7 +6,7 @@
 
 ### Bug 修复
 
-- 重命名内部字段以避免与微信小程序运行时冲突 ([8941905](https://github.com/vue-mini/vue-mini/commit/8941905cefefba7f5a8ae71bb541821b9ac5f3d2))
+- 重命名内部字段以避免与微信小程序运行时冲突 ([8941905](https://github.com/vue-mini/vue-mini/commit/8941905cefefba7f5a8ae71bb541821b9ac5f3d2)), closes #151
 
 # 1.2.11 (2026-05-02)
 
