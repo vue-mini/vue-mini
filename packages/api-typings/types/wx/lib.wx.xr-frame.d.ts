@@ -7097,13 +7097,7 @@ declare module 'XrFrame/components/ARTracker' {
    * 其中`threeDof`需要基础库`2.30.4`以上支持。
    */
   export type TTrackMode =
-    | 'Plane'
-    | 'Marker'
-    | 'OSD'
-    | 'Face'
-    | 'Hand'
-    | 'Body'
-    | 'threeDof'
+    'Plane' | 'Marker' | 'OSD' | 'Face' | 'Hand' | 'Body' | 'threeDof'
   /**
    * {@link ARTracker}的识别状态。
    * @version v2.29.1
@@ -15010,11 +15004,7 @@ declare module 'XrFrame/loader/glTF/utils/types' {
   import Vector3, { Vector3ReadOnly } from 'XrFrame/math/vector3'
   export namespace GLTF {
     type BufferView =
-      | Int8Array
-      | Uint8Array
-      | Uint16Array
-      | Uint32Array
-      | Float32Array
+      Int8Array | Uint8Array | Uint16Array | Uint32Array | Float32Array
     type IndexBufferView = Uint16Array | Uint32Array | Uint8Array
     class BoundingBox {
       min: Vector3
@@ -15715,11 +15705,7 @@ declare module 'XrFrame/kanata/lib/backend/interface/IWorker' {
       width: number,
       height: number,
       buffer:
-        | ArrayBuffer
-        | ArrayBufferView
-        | IImage
-        | HTMLCanvasElement
-        | ImageData,
+        ArrayBuffer | ArrayBufferView | IImage | HTMLCanvasElement | ImageData,
     ): void
     updateTextureFlags(texture: IHandle, flags: number): void
     createUniformBlockDescriptor(descriptor: IUniformDescriptorOptions): IHandle

@@ -166,11 +166,7 @@ declare namespace WechatMiniprogram {
        * - `空字符串` setData
        */
       source:
-        | 'touch'
-        | 'touch-out-of-bounds'
-        | 'out-of-bounds'
-        | 'friction'
-        | ''
+        'touch' | 'touch-out-of-bounds' | 'out-of-bounds' | 'friction' | ''
     },
     Mark,
     TargetDataset

@@ -9093,15 +9093,7 @@ NFCAdapter.offDiscovered(listener) // 需传入与监听时同一个的函数对
      * - 44100: 44100 采样率;
      * - 48000: 48000 采样率; */
     sampleRate?:
-      | 8000
-      | 11025
-      | 12000
-      | 16000
-      | 22050
-      | 24000
-      | 32000
-      | 44100
-      | 48000
+      8000 | 11025 | 12000 | 16000 | 22050 | 24000 | 32000 | 44100 | 48000
   }
   interface RedirectToOption {
     /** 需要跳转的应用内非 tabBar 的页面的路径 (代码包路径), 路径后可以带参数。参数与路径之间使用 `?` 分隔，参数键与参数值用 `=` 相连，不同参数用 `&` 分隔；如 'path?key=value&key2=value2' */
@@ -9342,9 +9334,7 @@ NFCAdapter.offDiscovered(listener) // 需传入与监听时同一个的函数对
   }
   interface RequestOption<
     T extends string | IAnyObject | ArrayBuffer =
-      | string
-      | IAnyObject
-      | ArrayBuffer,
+      string | IAnyObject | ArrayBuffer,
   > {
     /** 开发者服务器接口地址 */
     url: string
@@ -9621,9 +9611,7 @@ NFCAdapter.offDiscovered(listener) // 需传入与监听时同一个的函数对
   }
   interface RequestSuccessCallbackResult<
     T extends string | IAnyObject | ArrayBuffer =
-      | string
-      | IAnyObject
-      | ArrayBuffer,
+      string | IAnyObject | ArrayBuffer,
   > {
     /** 需要基础库： `2.10.0`
      *
@@ -21042,9 +21030,7 @@ wx.request({
 ``` */
     request<
       T extends string | IAnyObject | ArrayBuffer =
-        | string
-        | IAnyObject
-        | ArrayBuffer,
+        string | IAnyObject | ArrayBuffer,
     >(
       option: RequestOption<T>,
     ): RequestTask
@@ -31133,9 +31119,7 @@ wx.writeBLECharacteristicValue({
   /** 接口调用成功的回调函数 */
   type RequestSuccessCallback<
     T extends string | IAnyObject | ArrayBuffer =
-      | string
-      | IAnyObject
-      | ArrayBuffer,
+      string | IAnyObject | ArrayBuffer,
   > = (result: RequestSuccessCallbackResult<T>) => void
   /** onHeadersReceived 传入的监听函数。不传此参数则移除所有监听函数。 */
   type RequestTaskOffHeadersReceivedCallback = (

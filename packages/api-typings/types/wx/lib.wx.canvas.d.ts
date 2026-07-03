@@ -48,17 +48,9 @@ declare namespace WechatMiniprogram.CanvasRenderingContext {
   type CanvasLineJoin = 'bevel' | 'miter' | 'round'
   type CanvasTextAlign = 'center' | 'end' | 'left' | 'right' | 'start'
   type CanvasTextBaseline =
-    | 'alphabetic'
-    | 'bottom'
-    | 'hanging'
-    | 'ideographic'
-    | 'middle'
-    | 'top'
+    'alphabetic' | 'bottom' | 'hanging' | 'ideographic' | 'middle' | 'top'
   type CanvasTextRendering =
-    | 'auto'
-    | 'geometricPrecision'
-    | 'optimizeLegibility'
-    | 'optimizeSpeed'
+    'auto' | 'geometricPrecision' | 'optimizeLegibility' | 'optimizeSpeed'
 
   type GlobalCompositeOperation =
     | 'color'
@@ -2449,11 +2441,7 @@ declare namespace WechatMiniprogram.CanvasRenderingContext {
   type BufferSource = ArrayBufferView | ArrayBuffer
   type Float32List = Float32Array | GLfloat[]
   type TexImageSource =
-    | Image
-    | ImageData
-    | Canvas
-    | OffscreenCanvas
-    | VideoContext
+    Image | ImageData | Canvas | OffscreenCanvas | VideoContext
 
   interface WebGLRenderingContextOverloads {
     bufferData(target: GLenum, size: GLsizeiptr, usage: GLenum): void

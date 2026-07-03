@@ -131,13 +131,7 @@ declare namespace WXWebAssembly {
   type ImportExportKind = 'function' | 'global' | 'memory' | 'table'
   type TableKind = 'anyfunc' | 'externref'
   type ValueType =
-    | 'anyfunc'
-    | 'externref'
-    | 'f32'
-    | 'f64'
-    | 'i32'
-    | 'i64'
-    | 'v128'
+    'anyfunc' | 'externref' | 'f32' | 'f64' | 'i32' | 'i64' | 'v128'
   // eslint-disable-next-line @typescript-eslint/ban-types
   type ExportValue = Function | Memory | Table
   type Exports = Record<string, ExportValue>

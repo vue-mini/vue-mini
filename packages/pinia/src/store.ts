@@ -165,8 +165,7 @@ function createStore<
   function $patch(partialState: _DeepPartial<UnwrapRef<S>>): void
   function $patch(
     partialStateOrMutator:
-      | _DeepPartial<UnwrapRef<S>>
-      | ((state: UnwrapRef<S>) => void),
+      _DeepPartial<UnwrapRef<S>> | ((state: UnwrapRef<S>) => void),
   ): void {
     let subscriptionMutation: SubscriptionCallbackMutation<S>
     isListening = false
