@@ -170,6 +170,7 @@ function flushJobs() {
 
     flushIndex = 0
     jobsLength = 0
+    jobs.length = 0
 
     currentFlushPromise = null
   }
