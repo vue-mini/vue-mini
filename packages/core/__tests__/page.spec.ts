@@ -184,9 +184,9 @@ describe('page', () => {
     page.onLoad()
     expect(page.data.plus(0, 1)).toBe(1)
     expect(page.data.plus(1, 1)).toBe(2)
-    expect(getEffectsCount(page.__scope__)).toBe(2)
+    expect(getEffectsCount(page.__v_scope)).toBe(2)
     page.onUnload()
-    expect(getEffectsCount(page.__scope__)).toBe(0)
+    expect(getEffectsCount(page.__v_scope)).toBe(0)
 
     definePage(() => {
       const count = ref(0)
