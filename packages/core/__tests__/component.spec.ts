@@ -192,9 +192,9 @@ describe('component', () => {
     component.lifetimes.attached.call(component)
     expect(component.data.plus(0, 1)).toBe(1)
     expect(component.data.plus(1, 1)).toBe(2)
-    expect(getEffectsCount(component.__scope__)).toBe(2)
+    expect(getEffectsCount(component.__v_scope)).toBe(2)
     component.lifetimes.detached.call(component)
-    expect(getEffectsCount(component.__scope__)).toBe(0)
+    expect(getEffectsCount(component.__v_scope)).toBe(0)
 
     defineComponent(() => {
       const count = ref(0)
