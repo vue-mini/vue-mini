@@ -1,8 +1,14 @@
+# 1.2.13 (2026-07-03)
+
+### 依赖
+
+- **@vue/reactivity:** 从 3.5.38 升至 3.5.39，详情请看 [Vue 更新日志](https://github.com/vuejs/core/blob/main/CHANGELOG.md) ([b5394d7](https://github.com/vue-mini/vue-mini/commit/b5394d7c7e41ba18d205032232b82e658065f169))
+
 # 1.2.12 (2026-06-24)
 
 ### 依赖
 
-- **@vue/reactivity:** 从 3.5.33 升至 3.5.8，详情请看 [Vue 更新日志](https://github.com/vuejs/core/blob/main/CHANGELOG.md) ([f550d50](https://github.com/vue-mini/vue-mini/commit/f550d5080d7e6f24125a9c2b5ac17de2adebcf16))
+- **@vue/reactivity:** 从 3.5.33 升至 3.5.38，详情请看 [Vue 更新日志](https://github.com/vuejs/core/blob/main/CHANGELOG.md) ([f550d50](https://github.com/vue-mini/vue-mini/commit/f550d5080d7e6f24125a9c2b5ac17de2adebcf16))
 
 ### Bug 修复
 
