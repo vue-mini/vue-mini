@@ -115,33 +115,39 @@ export function definePage(optionsOrSetup: any, config?: Config): void {
     }
 
     setCurrentPage(this)
-    const bindings = setup(query, context)
-    unsetCurrentPage()
-
-    if (bindings !== undefined) {
-      Object.keys(bindings).forEach((key) => {
-        const value = bindings[key]
-        if (isFunction(value)) {
-          this[key] = value
-          return
-        }
-
-        this.__v_data = this.__v_data || {}
-        this.__v_data[key] = deepToRaw(value)
-        deepWatch.call(this, key, value)
-      })
-      if (this.__v_data !== undefined) {
-        // May call sub component's setup synchronously, so should call after unsetCurrentPage()
-        this.__v_setData = () => {
-          const data = this.__v_data!
-          this.__v_data = undefined
-          this.setData(data, flushPostFlushCbs)
-        }
-        this.__v_setData()
+    try {
+      let bindings: Bindings
+      try {
+        bindings = setup(query, context)
+      } finally {
+        unsetCurrentPage()
       }
-    }
 
-    setCurrentScope(scope)
+      if (bindings !== undefined) {
+        Object.keys(bindings).forEach((key) => {
+          const value = bindings[key]
+          if (isFunction(value)) {
+            this[key] = value
+            return
+          }
+
+          this.__v_data = this.__v_data || {}
+          this.__v_data[key] = deepToRaw(value)
+          deepWatch.call(this, key, value)
+        })
+        if (this.__v_data !== undefined) {
+          // May call sub component's setup synchronously, so should call after unsetCurrentPage()
+          this.__v_setData = () => {
+            const data = this.__v_data!
+            this.__v_data = undefined
+            this.setData(data, flushPostFlushCbs)
+          }
+          this.__v_setData()
+        }
+      }
+    } finally {
+      setCurrentScope(scope)
+    }
 
     if (originOnLoad !== undefined) {
       originOnLoad.call(this, query)
