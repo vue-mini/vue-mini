@@ -9,6 +9,7 @@ import {
   watchPostEffect,
   nextTick,
   effectScope,
+  getCurrentScope,
   dataFn,
   onReady,
   onShow,
@@ -25,6 +26,7 @@ import {
   onAddToFavorites,
   onSaveExitState,
 } from '../src'
+import { currentPage } from '../src/instance'
 import { getEffectsCount } from './utils'
 
 // Mocks
@@ -218,7 +220,27 @@ describe('page', () => {
       const sym = Symbol('sym')
       return { sym }
     })
+    expect(getCurrentScope()).toBe(undefined)
     expect(() => page.onLoad()).toThrow('Symbol value is not supported')
+    expect(getCurrentScope()).toBe(undefined)
+  })
+
+  it('restore current scope when setup throws', () => {
+    definePage(() => {
+      throw new Error('setup error')
+    })
+    expect(getCurrentScope()).toBe(undefined)
+    expect(() => page.onLoad()).toThrow('setup error')
+    expect(getCurrentScope()).toBe(undefined)
+  })
+
+  it('unset current page when setup throws', () => {
+    definePage(() => {
+      throw new Error('setup error')
+    })
+    expect(currentPage).toBe(null)
+    expect(() => page.onLoad()).toThrow('setup error')
+    expect(currentPage).toBe(null)
   })
 
   it('unbundling', async () => {

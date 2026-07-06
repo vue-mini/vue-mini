@@ -10,6 +10,7 @@ import {
   nextTick,
   isReadonly,
   effectScope,
+  getCurrentScope,
   dataFn,
   onReady,
   onMove,
@@ -29,6 +30,7 @@ import {
   onAddToFavorites,
   onSaveExitState,
 } from '../src'
+import { currentComponent } from '../src/instance'
 import { getEffectsCount } from './utils'
 
 // Mocks
@@ -226,9 +228,33 @@ describe('component', () => {
       const sym = Symbol('sym')
       return { sym }
     })
+    expect(getCurrentScope()).toBe(undefined)
     expect(() => {
       component.lifetimes.attached.call(component)
     }).toThrow('Symbol value is not supported')
+    expect(getCurrentScope()).toBe(undefined)
+  })
+
+  it('restore current scope when setup throws', () => {
+    defineComponent(() => {
+      throw new Error('setup error')
+    })
+    expect(getCurrentScope()).toBe(undefined)
+    expect(() => {
+      component.lifetimes.attached.call(component)
+    }).toThrow('setup error')
+    expect(getCurrentScope()).toBe(undefined)
+  })
+
+  it('unset current component when setup throws', () => {
+    defineComponent(() => {
+      throw new Error('setup error')
+    })
+    expect(currentComponent).toBe(null)
+    expect(() => {
+      component.lifetimes.attached.call(component)
+    }).toThrow('setup error')
+    expect(currentComponent).toBe(null)
   })
 
   it('unbundling', async () => {
