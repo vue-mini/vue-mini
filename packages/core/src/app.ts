@@ -49,8 +49,12 @@ export function createApp(optionsOrSetup: any): void {
     options: WechatMiniprogram.App.LaunchShowOption,
   ) {
     setCurrentApp(this)
-    const bindings = setup(options)
-    unsetCurrentApp()
+    let bindings: Bindings
+    try {
+      bindings = setup(options)
+    } finally {
+      unsetCurrentApp()
+    }
 
     if (bindings !== undefined) {
       Object.keys(bindings).forEach((key) => {
