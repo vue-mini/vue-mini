@@ -168,37 +168,43 @@ export function defineComponent(optionsOrSetup: any, config?: Config): string {
     }
 
     setCurrentComponent(this)
-    const bindings = setup(
-      /* istanbul ignore next -- @preserve */
-      __DEV__ ? shallowReadonly(this.__v_props) : this.__v_props,
-      context,
-    )
-    unsetCurrentComponent()
-
-    if (bindings !== undefined) {
-      Object.keys(bindings).forEach((key) => {
-        const value = bindings[key]
-        if (isFunction(value)) {
-          this[key] = value
-          return
-        }
-
-        this.__v_data = this.__v_data || {}
-        this.__v_data[key] = deepToRaw(value)
-        deepWatch.call(this, key, value)
-      })
-      if (this.__v_data !== undefined) {
-        // May call sub component's setup synchronously, so should call after unsetCurrentComponent()
-        this.__v_setData = () => {
-          const data = this.__v_data!
-          this.__v_data = undefined
-          this.setData(data, flushPostFlushCbs)
-        }
-        this.__v_setData()
+    try {
+      let bindings: Bindings
+      try {
+        bindings = setup(
+          /* istanbul ignore next -- @preserve */
+          __DEV__ ? shallowReadonly(this.__v_props) : this.__v_props,
+          context,
+        )
+      } finally {
+        unsetCurrentComponent()
       }
-    }
 
-    setCurrentScope(scope)
+      if (bindings !== undefined) {
+        Object.keys(bindings).forEach((key) => {
+          const value = bindings[key]
+          if (isFunction(value)) {
+            this[key] = value
+            return
+          }
+
+          this.__v_data = this.__v_data || {}
+          this.__v_data[key] = deepToRaw(value)
+          deepWatch.call(this, key, value)
+        })
+        if (this.__v_data !== undefined) {
+          // May call sub component's setup synchronously, so should call after unsetCurrentComponent()
+          this.__v_setData = () => {
+            const data = this.__v_data!
+            this.__v_data = undefined
+            this.setData(data, flushPostFlushCbs)
+          }
+          this.__v_setData()
+        }
+      }
+    } finally {
+      setCurrentScope(scope)
+    }
 
     if (originAttached !== undefined) {
       originAttached.call(this)
