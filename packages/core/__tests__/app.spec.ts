@@ -11,6 +11,7 @@ import {
   onUnhandledRejection,
   onThemeChange,
 } from '../src'
+import { currentApp } from '../src/instance'
 
 // Mocks
 let app: Record<string, any>
@@ -64,6 +65,15 @@ describe('app', () => {
     app.onLaunch(arg)
     expect(onLaunch).toHaveBeenCalledWith(arg)
     expect(setup).toHaveBeenCalledWith(arg)
+  })
+
+  it('unset current app when setup throws', () => {
+    createApp(() => {
+      throw new Error('setup error')
+    })
+    expect(currentApp).toBe(null)
+    expect(() => app.onLaunch()).toThrow('setup error')
+    expect(currentApp).toBe(null)
   })
 
   it('onShow', () => {
