@@ -1,3 +1,9 @@
+# 1.2.14 (2026-07-18)
+
+### 依赖
+
+- **@vue/reactivity:** 从 3.5.39 升至 3.5.40，详情请看 [Vue 更新日志](https://github.com/vuejs/core/blob/main/CHANGELOG.md) ([dba795d](https://github.com/vue-mini/vue-mini/commit/dba795d5eaceac5748e997c172409da52efe731b))
+
 # 1.2.13 (2026-07-03)
 
 ### 依赖
