@@ -87,10 +87,7 @@ export const onShareAppMessage = (
   /* istanbul ignore else -- @preserve  */
   if (currentInstance) {
     /* istanbul ignore else -- @preserve  */
-    if (
-      currentInstance[PageLifecycle.ON_SHARE_APP_MESSAGE] &&
-      currentInstance.__v_isInjectedShareToOthersHook
-    ) {
+    if (currentInstance.__v_isInjectedShareToOthersHook) {
       const hiddenField = toHiddenField(PageLifecycle.ON_SHARE_APP_MESSAGE)
       /* istanbul ignore else -- @preserve  */
       if (currentInstance[hiddenField] === undefined) {
@@ -115,10 +112,7 @@ export const onShareTimeline = (
   /* istanbul ignore else -- @preserve  */
   if (currentInstance) {
     /* istanbul ignore else -- @preserve  */
-    if (
-      currentInstance[PageLifecycle.ON_SHARE_TIMELINE] &&
-      currentInstance.__v_isInjectedShareToTimelineHook
-    ) {
+    if (currentInstance.__v_isInjectedShareToTimelineHook) {
       const hiddenField = toHiddenField(PageLifecycle.ON_SHARE_TIMELINE)
       /* istanbul ignore else -- @preserve  */
       if (currentInstance[hiddenField] === undefined) {
