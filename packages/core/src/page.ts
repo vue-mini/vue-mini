@@ -1,9 +1,9 @@
 import { EffectScope, setCurrentScope } from '@vue/reactivity'
 import { flushPostFlushCbs } from './scheduler'
 import type { Bindings, PageInstance } from './instance'
-import { setCurrentPage, unsetCurrentPage } from './instance'
+import { setCurrentPage, unsetCurrentPage, getLifecycleHooks } from './instance'
 import { deepToRaw, deepWatch } from './shared'
-import { extend, exclude, isFunction, toHiddenField } from './utils'
+import { extend, exclude, isFunction } from './utils'
 
 export type Query = Record<string, string | undefined>
 export type PageContext = WechatMiniprogram.Page.InstanceProperties &
@@ -174,19 +174,10 @@ export function definePage(optionsOrSetup: any, config?: Config): void {
     options[PageLifecycle.ON_SHARE_APP_MESSAGE] === undefined &&
     config.canShareToOthers
   ) {
-    options[PageLifecycle.ON_SHARE_APP_MESSAGE] = function (
-      this: PageInstance,
-      share: WechatMiniprogram.Page.IShareAppMessageOption,
-    ): WechatMiniprogram.Page.ICustomShareContent {
-      const hook = this[toHiddenField(PageLifecycle.ON_SHARE_APP_MESSAGE)] as (
-        share: WechatMiniprogram.Page.IShareAppMessageOption,
-      ) => WechatMiniprogram.Page.ICustomShareContent
-      if (hook) {
-        return hook(share)
-      }
-
-      return {}
-    }
+    options[PageLifecycle.ON_SHARE_APP_MESSAGE] = createReturnLifecycle(
+      PageLifecycle.ON_SHARE_APP_MESSAGE,
+      () => ({}),
+    )
 
     /* istanbul ignore next -- @preserve */
     options.__v_isInjectedShareToOthersHook = () => true
@@ -196,55 +187,30 @@ export function definePage(optionsOrSetup: any, config?: Config): void {
     options[PageLifecycle.ON_SHARE_TIMELINE] === undefined &&
     config.canShareToTimeline
   ) {
-    options[PageLifecycle.ON_SHARE_TIMELINE] = function (
-      this: PageInstance,
-    ): WechatMiniprogram.Page.ICustomTimelineContent {
-      const hook = this[
-        toHiddenField(PageLifecycle.ON_SHARE_TIMELINE)
-      ] as () => WechatMiniprogram.Page.ICustomTimelineContent
-      if (hook) {
-        return hook()
-      }
-
-      return {}
-    }
+    options[PageLifecycle.ON_SHARE_TIMELINE] = createReturnLifecycle(
+      PageLifecycle.ON_SHARE_TIMELINE,
+      () => ({}),
+    )
 
     /* istanbul ignore next -- @preserve */
     options.__v_isInjectedShareToTimelineHook = () => true
   }
 
   if (options[PageLifecycle.ON_ADD_TO_FAVORITES] === undefined) {
-    options[PageLifecycle.ON_ADD_TO_FAVORITES] = function (
-      this: PageInstance,
-      favorites: WechatMiniprogram.Page.IAddToFavoritesOption,
-    ): WechatMiniprogram.Page.IAddToFavoritesContent {
-      const hook = this[toHiddenField(PageLifecycle.ON_ADD_TO_FAVORITES)] as (
-        favorites: WechatMiniprogram.Page.IAddToFavoritesOption,
-      ) => WechatMiniprogram.Page.IAddToFavoritesContent
-      if (hook) {
-        return hook(favorites)
-      }
-
-      return {}
-    }
+    options[PageLifecycle.ON_ADD_TO_FAVORITES] = createReturnLifecycle(
+      PageLifecycle.ON_ADD_TO_FAVORITES,
+      () => ({}),
+    )
 
     /* istanbul ignore next -- @preserve */
     options.__v_isInjectedFavoritesHook = () => true
   }
 
   if (options[PageLifecycle.ON_SAVE_EXIT_STATE] === undefined) {
-    options[PageLifecycle.ON_SAVE_EXIT_STATE] = function (
-      this: PageInstance,
-    ): WechatMiniprogram.Page.ISaveExitState {
-      const hook = this[
-        toHiddenField(PageLifecycle.ON_SAVE_EXIT_STATE)
-      ] as () => WechatMiniprogram.Page.ISaveExitState
-      if (hook) {
-        return hook()
-      }
-
-      return { data: undefined }
-    }
+    options[PageLifecycle.ON_SAVE_EXIT_STATE] = createReturnLifecycle(
+      PageLifecycle.ON_SAVE_EXIT_STATE,
+      () => ({ data: undefined }),
+    )
 
     /* istanbul ignore next -- @preserve */
     options.__v_isInjectedExitStateHook = () => true
@@ -292,13 +258,24 @@ function createLifecycle(
 ): (...args: any[]) => void {
   const originLifecycle = options[lifecycle] as Function
   return function (this: PageInstance, ...args: any[]) {
-    const hooks = this[toHiddenField(lifecycle)]
-    if (hooks) {
-      hooks.forEach((hook: Function) => hook(...args))
-    }
+    getLifecycleHooks(this, lifecycle).forEach((hook) => hook(...args))
 
     if (originLifecycle !== undefined) {
       originLifecycle.call(this, ...args)
     }
+  }
+}
+
+function createReturnLifecycle(
+  lifecycle: PageLifecycle,
+  getDefaultValue: () => any,
+): (...args: any[]) => any {
+  return function (this: PageInstance, ...args: any[]) {
+    const [hook] = getLifecycleHooks(this, lifecycle)
+    if (hook) {
+      return hook(...args)
+    }
+
+    return getDefaultValue()
   }
 }
