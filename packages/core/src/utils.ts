@@ -38,7 +38,3 @@ export function isPlainObject(x: unknown): x is Record<string, unknown> {
 export function isFunction(x: unknown): x is Function {
   return typeof x === 'function'
 }
-
-export function toHiddenField(name: string): string {
-  return `__v_${name}`
-}

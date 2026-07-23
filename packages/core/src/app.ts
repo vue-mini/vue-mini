@@ -1,6 +1,6 @@
 import type { Bindings, AppInstance } from './instance'
-import { setCurrentApp, unsetCurrentApp } from './instance'
-import { exclude, isFunction, toHiddenField } from './utils'
+import { setCurrentApp, unsetCurrentApp, getLifecycleHooks } from './instance'
+import { exclude, isFunction } from './utils'
 
 export type AppSetup = (
   this: void,
@@ -95,10 +95,7 @@ function createLifecycle(
 ): (...args: any[]) => void {
   const originLifecycle = options[lifecycle] as Function
   return function (this: AppInstance, ...args: any[]) {
-    const hooks = this[toHiddenField(lifecycle)]
-    if (hooks) {
-      hooks.forEach((hook: Function) => hook(...args))
-    }
+    getLifecycleHooks(this, lifecycle).forEach((hook) => hook(...args))
 
     if (originLifecycle !== undefined) {
       originLifecycle.call(this, ...args)
