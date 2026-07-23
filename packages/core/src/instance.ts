@@ -2,7 +2,10 @@ import type { EffectScope } from '@vue/reactivity'
 
 export type Bindings = Record<string, any> | void
 
-export type AppInstance = Record<string, any>
+export type AppInstance = {
+  [key: string]: any
+  __v_lifecycle?: Record<string, Function[]>
+}
 
 export type PageInstance = WechatMiniprogram.Page.InstanceProperties &
   WechatMiniprogram.Page.InstanceMethods<Record<string, unknown>> & {
@@ -15,6 +18,7 @@ export type PageInstance = WechatMiniprogram.Page.InstanceProperties &
     __v_setData?: () => void
     __v_data?: Record<string, any>
     __v_scope: EffectScope
+    __v_lifecycle?: Record<string, Function[]>
   }
 
 export type ComponentInstance = WechatMiniprogram.Component.InstanceProperties &
@@ -28,6 +32,7 @@ export type ComponentInstance = WechatMiniprogram.Component.InstanceProperties &
     __v_setData?: () => void
     __v_data?: Record<string, any>
     __v_scope: EffectScope
+    __v_lifecycle?: Record<string, Function[]>
     __v_props: undefined | Record<string, any>
   }
 
@@ -63,4 +68,15 @@ export function setCurrentComponent(component: ComponentInstance): void {
 
 export function unsetCurrentComponent(): void {
   currentComponent = null
+}
+
+export function getLifecycleHooks(
+  instance: AppInstance | PageInstance | ComponentInstance,
+  lifecycle: string,
+): Function[] {
+  const store = instance.__v_lifecycle
+  if (store === undefined || store[lifecycle] === undefined) {
+    return []
+  }
+  return store[lifecycle]
 }
