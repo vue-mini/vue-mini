@@ -1,4 +1,5 @@
 import {
+  isShallow,
   shallowReactive,
   shallowReadonly,
   EffectScope,
@@ -7,9 +8,10 @@ import {
 import { flushPostFlushCbs } from './scheduler'
 import type { Config } from './page'
 import { PageLifecycle } from './page'
-import { deepToRaw, deepWatch } from './shared'
+import { shallowToRaw, deepToRaw, observe } from './shared'
 import type { Bindings, ComponentInstance } from './instance'
 import {
+  respectShallow,
   setCurrentComponent,
   unsetCurrentComponent,
   getLifecycleHooks,
@@ -192,9 +194,10 @@ export function defineComponent(optionsOrSetup: any, config?: Config): string {
             return
           }
 
+          const shallow = respectShallow && isShallow(value)
           this.__v_data = this.__v_data || {}
-          this.__v_data[key] = deepToRaw(value)
-          deepWatch.call(this, key, value)
+          this.__v_data[key] = shallow ? shallowToRaw(value) : deepToRaw(value)
+          observe.call(this, key, value, !shallow)
         })
         if (this.__v_data !== undefined) {
           // May call sub component's setup synchronously, so should call after unsetCurrentComponent()

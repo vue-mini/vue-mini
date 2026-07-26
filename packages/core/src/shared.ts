@@ -11,6 +11,14 @@ import {
   isFunction,
 } from './utils'
 
+export function shallowToRaw(x: unknown): unknown {
+  if (isRef(x)) {
+    return x.value
+  }
+
+  return toRaw(x)
+}
+
 export function deepToRaw(x: unknown): unknown {
   if (isSimpleValue(x) || isFunction(x)) {
     return x
@@ -39,10 +47,11 @@ export function deepToRaw(x: unknown): unknown {
   throw new TypeError(`${getType(x)} value is not supported`)
 }
 
-export function deepWatch(
+export function observe(
   this: PageInstance | ComponentInstance,
   key: string,
   value: unknown,
+  deep: boolean,
 ): void {
   if (!isObject(value)) {
     return
@@ -52,11 +61,10 @@ export function deepWatch(
     isRef(value) ? value : () => value,
     () => {
       this.__v_data = this.__v_data || {}
-      this.__v_data[key] = deepToRaw(value)
+      this.__v_data[key] = deep ? deepToRaw(value) : shallowToRaw(value)
       queueJob(this.__v_setData!, 1)
     },
-    {
-      deep: true,
-    },
+    // shallow reactive: watch top-level only
+    { deep: isRef(value) ? deep : deep || 1 },
   )
 }

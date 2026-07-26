@@ -1,9 +1,13 @@
 import {
+  createApp,
   definePage,
   ref,
+  shallowRef,
   reactive,
+  shallowReactive,
   computed,
   readonly,
+  shallowReadonly,
   watch,
   watchEffect,
   watchPostEffect,
@@ -26,10 +30,12 @@ import {
   onAddToFavorites,
   onSaveExitState,
 } from '../src'
-import { currentPage } from '../src/instance'
+import { setRespectShallow, currentPage } from '../src/instance'
 import { getEffectsCount } from './utils'
 
 // Mocks
+// @ts-expect-error
+globalThis.App = (options: Record<string, any>) => {}
 let page: Record<string, any>
 let renderCb: () => void
 // @ts-expect-error
@@ -67,6 +73,10 @@ globalThis.Page = (options: Record<string, any>) => {
 }
 
 describe('page', () => {
+  afterEach(() => {
+    setRespectShallow(false)
+  })
+
   it('raw binding', () => {
     definePage(() => {
       const count = 0
@@ -323,6 +333,72 @@ describe('page', () => {
     await nextTick()
     expect(page.data.getCount()).toBe(1)
     expect(page.setData).toHaveBeenCalledTimes(2)
+  })
+
+  it('should treat shallow as shallow', async () => {
+    createApp(() => {}, { respectShallow: true })
+
+    const rawRef = reactive({ count: 0 })
+    const rawReactive = { state: reactive({ count: 0 }) }
+    const updated = { count: 1 }
+    definePage(() => {
+      const shallowRefState = shallowRef(rawRef)
+      const shallowReactiveState = shallowReactive(rawReactive)
+      const shallowReadonlyState = shallowReadonly(shallowReactiveState)
+
+      const invalidRefUpdate = () => {
+        shallowRefState.value.count++
+      }
+
+      const invalidReactiveUpdate = () => {
+        shallowReactiveState.state.count++
+      }
+
+      const refUpdate = () => {
+        shallowRefState.value = updated
+      }
+
+      const reactiveUpdate = () => {
+        shallowReactiveState.state = updated
+      }
+
+      return {
+        shallowRefState,
+        shallowReactiveState,
+        shallowReadonlyState,
+        invalidRefUpdate,
+        invalidReactiveUpdate,
+        refUpdate,
+        reactiveUpdate,
+      }
+    })
+
+    page.setData = vi.fn(page.setData)
+
+    page.onLoad()
+    expect(page.data.shallowRefState).toBe(rawRef)
+    expect(page.data.shallowReactiveState).toBe(rawReactive)
+    expect(page.data.shallowReadonlyState).toBe(rawReactive)
+    expect(page.setData).toHaveBeenCalledTimes(1)
+
+    page.invalidRefUpdate()
+    await nextTick()
+    expect(page.setData).toHaveBeenCalledTimes(1)
+
+    page.invalidReactiveUpdate()
+    await nextTick()
+    expect(page.setData).toHaveBeenCalledTimes(1)
+
+    page.refUpdate()
+    await nextTick()
+    expect(page.data.shallowRefState).toBe(updated)
+    expect(page.setData).toHaveBeenCalledTimes(2)
+
+    page.reactiveUpdate()
+    await nextTick()
+    expect(page.data.shallowReactiveState.state).toBe(updated)
+    expect(page.data.shallowReadonlyState.state).toBe(updated)
+    expect(page.setData).toHaveBeenCalledTimes(3)
   })
 
   it('watch', async () => {
