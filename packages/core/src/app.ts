@@ -1,5 +1,10 @@
 import type { Bindings, AppInstance } from './instance'
-import { setCurrentApp, unsetCurrentApp, getLifecycleHooks } from './instance'
+import {
+  setRespectShallow,
+  setCurrentApp,
+  unsetCurrentApp,
+  getLifecycleHooks,
+} from './instance'
 import { exclude, isFunction } from './utils'
 
 export type AppSetup = (
@@ -9,6 +14,9 @@ export type AppSetup = (
 export type AppOptions<T extends WechatMiniprogram.IAnyObject> = {
   setup?: AppSetup
 } & WechatMiniprogram.App.Options<T>
+export interface AppConfig {
+  respectShallow?: boolean
+}
 type Options = Record<string, any>
 
 export enum AppLifecycle {
@@ -21,13 +29,18 @@ export enum AppLifecycle {
   ON_THEME_CHANGE = 'onThemeChange',
 }
 
-export function createApp(setup: AppSetup): void
+export function createApp(setup: AppSetup, config?: AppConfig): void
 
 export function createApp<T extends WechatMiniprogram.IAnyObject>(
   options: AppOptions<T>,
+  config?: AppConfig,
 ): void
 
-export function createApp(optionsOrSetup: any): void {
+export function createApp(optionsOrSetup: any, config?: AppConfig): void {
+  if (config && config.respectShallow) {
+    setRespectShallow(true)
+  }
+
   let setup: AppSetup
   let options: Options
   if (isFunction(optionsOrSetup)) {
