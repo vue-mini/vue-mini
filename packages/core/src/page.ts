@@ -1,8 +1,13 @@
-import { EffectScope, setCurrentScope } from '@vue/reactivity'
+import { isShallow, EffectScope, setCurrentScope } from '@vue/reactivity'
 import { flushPostFlushCbs } from './scheduler'
 import type { Bindings, PageInstance } from './instance'
-import { setCurrentPage, unsetCurrentPage, getLifecycleHooks } from './instance'
-import { deepToRaw, deepWatch } from './shared'
+import {
+  respectShallow,
+  setCurrentPage,
+  unsetCurrentPage,
+  getLifecycleHooks,
+} from './instance'
+import { shallowToRaw, deepToRaw, observe } from './shared'
 import { extend, exclude, isFunction } from './utils'
 
 export type Query = Record<string, string | undefined>
@@ -131,9 +136,10 @@ export function definePage(optionsOrSetup: any, config?: Config): void {
             return
           }
 
+          const shallow = respectShallow && isShallow(value)
           this.__v_data = this.__v_data || {}
-          this.__v_data[key] = deepToRaw(value)
-          deepWatch.call(this, key, value)
+          this.__v_data[key] = shallow ? shallowToRaw(value) : deepToRaw(value)
+          observe.call(this, key, value, !shallow)
         })
         if (this.__v_data !== undefined) {
           // May call sub component's setup synchronously, so should call after unsetCurrentPage()

@@ -116,7 +116,7 @@ export type {
 } from './watch'
 export type { InjectionKey } from './inject'
 export type { Bindings } from './instance'
-export type { AppSetup, AppOptions } from './app'
+export type { AppSetup, AppOptions, AppConfig } from './app'
 export type { Query, PageContext, PageSetup, PageOptions, Config } from './page'
 export type {
   ComponentContext,

@@ -2,9 +2,22 @@ import type { EffectScope } from '@vue/reactivity'
 
 export type Bindings = Record<string, any> | void
 
+export let respectShallow = false
+export function setRespectShallow(value: boolean): void {
+  // Only tests pass false, to reset the flag.
+  respectShallow = value
+}
+
 export type AppInstance = {
   [key: string]: any
   __v_lifecycle?: Record<string, Function[]>
+}
+export let currentApp: AppInstance | null = null
+export function setCurrentApp(app: AppInstance): void {
+  currentApp = app
+}
+export function unsetCurrentApp(): void {
+  currentApp = null
 }
 
 export type PageInstance = WechatMiniprogram.Page.InstanceProperties &
@@ -20,6 +33,13 @@ export type PageInstance = WechatMiniprogram.Page.InstanceProperties &
     __v_scope: EffectScope
     __v_lifecycle?: Record<string, Function[]>
   }
+export let currentPage: PageInstance | null = null
+export function setCurrentPage(page: PageInstance): void {
+  currentPage = page
+}
+export function unsetCurrentPage(): void {
+  currentPage = null
+}
 
 export type ComponentInstance = WechatMiniprogram.Component.InstanceProperties &
   WechatMiniprogram.Component.InstanceMethods<Record<string, unknown>> & {
@@ -35,39 +55,16 @@ export type ComponentInstance = WechatMiniprogram.Component.InstanceProperties &
     __v_lifecycle?: Record<string, Function[]>
     __v_props: undefined | Record<string, any>
   }
-
-export let currentApp: AppInstance | null = null
-
-export let currentPage: PageInstance | null = null
-
 export let currentComponent: ComponentInstance | null = null
-
-export function getCurrentInstance(): PageInstance | ComponentInstance | null {
-  return currentPage || currentComponent
-}
-
-export function setCurrentApp(app: AppInstance): void {
-  currentApp = app
-}
-
-export function unsetCurrentApp(): void {
-  currentApp = null
-}
-
-export function setCurrentPage(page: PageInstance): void {
-  currentPage = page
-}
-
-export function unsetCurrentPage(): void {
-  currentPage = null
-}
-
 export function setCurrentComponent(component: ComponentInstance): void {
   currentComponent = component
 }
-
 export function unsetCurrentComponent(): void {
   currentComponent = null
+}
+
+export function getCurrentInstance(): PageInstance | ComponentInstance | null {
+  return currentPage || currentComponent
 }
 
 export function getLifecycleHooks(
