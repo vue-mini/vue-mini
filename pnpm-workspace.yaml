@@ -2,6 +2,3 @@ packages:
   - packages/*
 
 autoInstallPeers: false
-
-allowBuilds:
-  esbuild: true
