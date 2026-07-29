@@ -1,32 +1,64 @@
-# 1.3.0-beta.1 (2026-02-27)
+# 1.3.0-rc.1 (2026-07-29)
 
 ### 依赖
 
-- **@vue/reactivity:** 从 3.6.0-alpha.5 升至 3.6.0-beta.7，详情请看 [Vue 更新日志](https://github.com/vuejs/core/blob/minor/CHANGELOG.md) ([3354c6b](https://github.com/vue-mini/vue-mini/commit/3354c6bf135188e5522f10e094cf86a57cb1efb6))
-- **miniprogram-api-typings:** 从 4.1.x 升至 5.1.x
+- **@vue/reactivity:** 升至 3.6.0-rc.2，详情请看 [Vue 更新日志](https://github.com/vuejs/core/blob/minor/CHANGELOG.md)
+- **miniprogram-api-typings:** 升至 5.2.x
 
 ### 类型破坏性变更
 
 请参考 Vue Mini [版本发布说明](https://vuemini.org/guide/releases.html)
 
-- `miniprogram-api-typings` 5.0.0 包含少量[破坏性变更](https://github.com/wechat-miniprogram/api-typings/blob/master/CHANGELOG.md)
+- `miniprogram-api-typings` 包含少量[破坏性变更](https://github.com/wechat-miniprogram/api-typings/blob/master/CHANGELOG.md)
 
-# 1.3.0-alpha.1 (2025-11-27)
+### 新特性
+
+- 新增 `dataFn` API 以支持 [Data Function](https://developers.weixin.qq.com/miniprogram/dev/framework/custom-component/glass-easel/call-data-functions.html)
+
+### 性能优化
+
+- **reactivity:** 基于 [alien-signals](https://github.com/stackblitz/alien-signals) 重构了响应式核心
+- 一个组件中多个响应式数据更新现在只会触发一次 `setData`
+- `shallowRef` `shallowReactive` `shallowReadonly` 这三类响应式数据现在可以选择跳过深度监听和深度拷贝
+
+### 其他
+
+- 运行时现在可以更好的从错误中恢复
+- 内部字段收敛以减少可能的冲突面
+
+# 1.3.0-beta.1 (2026-02-27)
 
 ### 依赖
 
-- **@vue/reactivity:** 从 3.5.25 升至 3.6.0-alpha.5，详情请看 [Vue 更新日志](https://github.com/vuejs/core/blob/minor/CHANGELOG.md) ([d01d098](https://github.com/vue-mini/vue-mini/commit/d01d098ca2f2c2939fb3e3821179576cc5f216e7))
-- **miniprogram-api-typings:** 从 4.0.x 升至 4.1.x ([1b7dc8f](https://github.com/vue-mini/vue-mini/commit/1b7dc8f5f0b2e389a748b57b61280c709038ab86))
+- **@vue/reactivity:** 升至 3.6.0-beta.7，详情请看 [Vue 更新日志](https://github.com/vuejs/core/blob/minor/CHANGELOG.md)
+- **miniprogram-api-typings:** 升至 5.1.x
+
+### 类型破坏性变更
+
+请参考 Vue Mini [版本发布说明](https://vuemini.org/guide/releases.html)
+
+- `miniprogram-api-typings` 包含少量[破坏性变更](https://github.com/wechat-miniprogram/api-typings/blob/master/CHANGELOG.md)
 
 ### 性能优化
 
 - **reactivity:** 基于 [alien-signals](https://github.com/stackblitz/alien-signals) 重构了响应式核心
 
+# 1.3.0-alpha.1 (2025-11-27)
+
+### 依赖
+
+- **@vue/reactivity:** 升至 3.6.0-alpha.5，详情请看 [Vue 更新日志](https://github.com/vuejs/core/blob/minor/CHANGELOG.md)
+- **miniprogram-api-typings:** 升至 4.1.x
+
 ### 类型破坏性变更
 
 请参考 Vue Mini [版本发布说明](https://vuemini.org/guide/releases.html)
 
-- `miniprogram-api-typings` 4.1.0 包含少量[破坏性变更](https://github.com/wechat-miniprogram/api-typings/blob/master/CHANGELOG.md)
+- `miniprogram-api-typings` 包含少量[破坏性变更](https://github.com/wechat-miniprogram/api-typings/blob/master/CHANGELOG.md)
+
+### 性能优化
+
+- **reactivity:** 基于 [alien-signals](https://github.com/stackblitz/alien-signals) 重构了响应式核心
 
 # 1.2.15 (2026-08-06)
 
