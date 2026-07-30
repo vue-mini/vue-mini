@@ -2,12 +2,12 @@
 layout: home
 
 title: Vue Mini
-titleTemplate: 基于 Vue 3 的小程序框架
+titleTemplate: 基于 Vue 的小程序框架
 
 hero:
   name: Vue Mini
-  text: 基于 Vue 3 的小程序框架
-  tagline: 简单，强大，高性能。助你准时下班的小程序框架。
+  text: 基于 Vue 的小程序框架
+  tagline: 简单，强大，高性能。为你和 AI 打造。
   image:
     src: /logo-with-shadow.png
     alt: Vue Mini
