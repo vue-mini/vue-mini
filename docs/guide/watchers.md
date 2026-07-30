@@ -10,7 +10,32 @@
 
 ### flush: 'post'
 
-回调会在渲染完毕后被触发，与 `setData` 回调函数的触发时机相同。
+回调会在渲染完毕后被触发，与 `setData` 回调函数的触发时机相同。需要特别注意的是，不要使用 `flush: 'post'` 侦听未参与渲染的数据，例如：
+
+```js [component.js]
+import { defineComponent, ref, watch } from '@vue-mini/core'
+
+defineComponent(() => {
+  const count = ref(0)
+
+  function increment() {
+    count.value++
+  }
+
+  watch(
+    count,
+    () => {
+      // 不会被触发！
+      console.log('count changed')
+    },
+    { flush: 'post' },
+  )
+
+  return { increment }
+})
+```
+
+这里 `count` 没有暴露给模板，因此它更新后页面不会重渲染，侦听器回调也就不会被触发。
 
 ### flush: 'sync'
 
