@@ -7,7 +7,7 @@ import {
 export default defineConfig({
   lang: 'zh-cmn-Hans',
   title: 'Vue Mini',
-  description: '基于 Vue 3 的小程序框架',
+  description: '基于 Vue 的小程序框架',
   head: [['link', { rel: 'icon', href: '/logo.png' }]],
   themeConfig: {
     logo: '/logo.png',
@@ -25,7 +25,7 @@ export default defineConfig({
         activeMatch: '/guide/',
       },
       {
-        text: 'AI 百科（英文）',
+        text: 'DeepWiki',
         link: 'https://deepwiki.com/vue-mini/vue-mini',
       },
     ],
@@ -52,6 +52,7 @@ export default defineConfig({
       {
         text: '深入理解',
         items: [
+          { text: '侦听器', link: '/guide/watchers' },
           { text: '兼容性', link: '/guide/compatibility' },
           { text: '比较', link: '/guide/comparisons' },
           { text: '性能', link: '/guide/performance' },
