@@ -10,9 +10,13 @@ export type InjectionKey<T> = symbol & InjectionConstraint<T>
 export function provide<T, K = InjectionKey<T> | string>(
   key: K,
   value: K extends InjectionKey<infer V> ? V : T,
-): void {
+): () => void {
   // TS doesn't allow symbol as index type
   provides[key as string] = value
+
+  return () => {
+    delete provides[key as string]
+  }
 }
 
 export function inject<T>(key: InjectionKey<T> | string): T | undefined

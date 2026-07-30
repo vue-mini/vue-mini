@@ -120,4 +120,15 @@ describe('provide/inject', () => {
     inject(Symbol('foo'), undefined)
     expect(`injection "Symbol(foo)" not found.`).not.toHaveBeenWarned()
   })
+
+  it('should delete provided value', () => {
+    const remove = provide('foo', 'first')
+    expect(inject('foo')).toBe('first')
+    provide('foo', 'second')
+    expect(inject('foo')).toBe('second')
+
+    remove()
+    expect(inject('foo')).toBeUndefined()
+    expect(`injection "foo" not found.`).toHaveBeenWarned()
+  })
 })
