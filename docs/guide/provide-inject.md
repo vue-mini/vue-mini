@@ -1,6 +1,14 @@
 # 依赖注入
 
-与 Vue 一样，Vue Mini 提供了依赖注入功能，以解决 `props` 深度透传的问题。它们是一对 `provide / inject` 函数，它们的使用方式和 API 均与 Vue 一致。
+与 Vue 一样，Vue Mini 提供了依赖注入功能，以解决 `props` 深度透传的问题。它们是一对 `provide / inject` 函数，它们的使用方式和 API 基本与 Vue 一致。
+
+::: tip 注意
+依赖注入对执行顺序有所要求，`provide` 必须先于 `inject` 执行，所以在 `definePage` 的 `setup` 函数中调用 `provide` 可能会遇到问题。
+:::
+
+::: tip 注意
+Vue 的依赖注入是与组件树绑定的，但是小程序没有提供可靠的方式获取组件树，所以 Vue Mini 的依赖注入与组件树没有关系，每一项依赖都会被保存到一个全局的单一的仓库中。也就是说依赖项的 `key` 必须是全局唯一的，使用 [Symbol](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Symbol) 作 `key` 可以保证这一点。
+:::
 
 ## Provide
 
@@ -39,10 +47,42 @@ defineComponent({
 })
 ```
 
-::: tip 注意
-依赖注入对执行顺序有所要求，`provide` 必须先于 `inject` 执行，所以在 `definePage` 的 `setup` 函数中调用 `provide` 可能会遇到问题。
-:::
+## 删除
 
-::: tip 注意
-Vue 的依赖注入是与组件树绑定的，但是由于小程序的限制我们不能访问组件树，所以 Vue Mini 的依赖注入与组件树并没有什么关系，每一项依赖都会被保存到一个全局单一的仓库中。也就是说依赖的 `key` 需要是全局唯一的，使用 [Symbol](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Symbol) 作 `key` 可以保证这一点。
+由于依赖项被保存在全局仓库中，所以它不会随着组件销毁而被删除回收。在 Vue Mini 1.3+ 中，`provide()` 会返回一个删除函数，调用此函数即可从全局仓库中删除提供的依赖项。删除函数是跟 key 绑定的，与 value 无关。你可以在组件销毁时手动调用，也可以将整个逻辑包装成一个组合函数：
+
+::: code-group
+
+```js [use-provide.js]
+import { provide, onDetach } from '@vue-mini/core'
+
+export function useProvide(key, value) {
+  const remove = provide(key, value)
+
+  onDetach(() => {
+    remove()
+  })
+
+  return remove
+}
+```
+
+```ts [use-provide.ts]
+import type { InjectionKey } from '@vue-mini/core'
+import { provide, onDetach } from '@vue-mini/core'
+
+export function useProvide<T, K = InjectionKey<T> | string>(
+  key: K,
+  value: K extends InjectionKey<infer V> ? V : T,
+): () => void {
+  const remove = provide(key, value)
+
+  onDetach(() => {
+    remove()
+  })
+
+  return remove
+}
+```
+
 :::
