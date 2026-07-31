@@ -1,9 +1,9 @@
 # 依赖注入
 
-与 Vue 一样，Vue Mini 提供了依赖注入功能，以解决 `props` 深度透传的问题。它们是一对 `provide / inject` 函数，它们的使用方式和 API 基本与 Vue 一致。
+与 Vue 一样，Vue Mini 提供了依赖注入功能，以解决 `props` 深度透传的问题。它们是一对 `provide / inject` 函数，它们的使用方式和 API 与 Vue 基本一致。
 
 ::: tip 注意
-依赖注入对执行顺序有所要求，`provide` 必须先于 `inject` 执行，所以在 `definePage` 的 `setup` 函数中调用 `provide` 可能会遇到问题。
+依赖注入对执行顺序有所要求，`provide` 必须先于 `inject` 执行。由于 `definePage` 的 `setup` 会晚于其子组件的 `setup` 执行，所以请不要在 `definePage` 中调用 `provide`。`defineComponent` 没有这个问题，因此建议使用 `defineComponent` 定义页面。
 :::
 
 ::: tip 注意
