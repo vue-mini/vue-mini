@@ -3,23 +3,18 @@
 小程序中的每个页面都需要在对应的 js 文件中使用 `definePage` 函数进行定义。它是 `Page` 函数的超集，它额外接收一个 `setup` 函数。
 
 ```js [page.js]
-import { definePage, reactive, computed } from '@vue-mini/core'
+import { definePage, ref, computed } from '@vue-mini/core'
 
 definePage({
   setup() {
-    const state = reactive({
-      count: 0,
-      double: computed(() => state.count * 2),
-    })
+    const count = ref(0)
+    const double = computed(() => count.value * 2)
 
-    function increment() {
+    const increment = () => {
       state.count++
     }
 
-    return {
-      state,
-      increment,
-    }
+    return { count, double, increment }
   },
 })
 ```
@@ -27,8 +22,8 @@ definePage({
 如果 `setup` 返回一个对象，则对象的属性将会被合并到页面实例上，可以直接在页面模版中使用。
 
 ```xml [page.wxml]
-<button bindtap="increment">
-  Count is: {{ state.count }}, double is: {{ state.double }}
+<button bind:tap="increment">
+  {{ count }} X 2 = {{ double }}
 </button>
 ```
 
@@ -62,7 +57,7 @@ definePage({
 })
 ```
 
-第二个参数提供了一个上下文对象，从小程序页面 `this` 中选择性的暴露了一些 property。
+第二个参数提供了一个上下文对象，从小程序页面 `this` 中选择性的暴露了一些属性。
 
 ```js [page.js]
 import { definePage } from '@vue-mini/core'
@@ -284,10 +279,7 @@ definePage({
       count.value++
     }
 
-    return {
-      count,
-      increment,
-    }
+    return { count, increment }
   },
   data: {
     number: 0,
@@ -300,7 +292,7 @@ definePage({
 
 如果名称相同，`setup()` 返回的数据或方法会覆盖原生语法声明的数据或方法。你应该避免出现这种情况。
 
-请不要在其他选项中访问 `setup()` 返回的数据或方法，这将引起混乱。如果确实有此需求，应该将相关逻辑搬到 `setup()` 内。
+请不要在 `setup()` 之外访问 `setup()` 返回的数据或方法，这将引起混乱。如果确实有此需求，应该将相关逻辑搬到 `setup()` 内。
 
 ## 简洁语法
 
@@ -316,9 +308,6 @@ definePage(() => {
     count.value++
   }
 
-  return {
-    count,
-    increment,
-  }
+  return { count, increment }
 })
 ```
