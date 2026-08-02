@@ -8,10 +8,7 @@ import { createApp } from '@vue-mini/core'
 createApp({
   setup() {
     const greeting = 'Hello World!'
-
-    return {
-      greeting,
-    }
+    return { greeting }
   },
 })
 ```
@@ -99,9 +96,7 @@ createApp({
       console.log('from setup')
     })
 
-    return {
-      hello,
-    }
+    return { hello }
   },
   onShow() {
     console.log('from option')
@@ -123,9 +118,6 @@ import { createApp } from '@vue-mini/core'
 
 createApp(() => {
   const greeting = 'Hello World!'
-
-  return {
-    greeting,
-  }
+  return { greeting }
 })
 ```
