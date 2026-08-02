@@ -55,8 +55,16 @@ export enum PageLifecycle {
   ON_SAVE_EXIT_STATE = 'onSaveExitState',
 }
 
+/**
+ * @deprecated Use `defineComponent()` to define pages instead. The page
+ * `setup()` runs during `onLoad`, after child component `setup()` functions.
+ */
 export function definePage(setup: PageSetup, config?: Config): void
 
+/**
+ * @deprecated Use `defineComponent()` to define pages instead. The page
+ * `setup()` runs during `onLoad`, after child component `setup()` functions.
+ */
 export function definePage<
   Data extends WechatMiniprogram.Page.DataOption,
   Custom extends WechatMiniprogram.Page.CustomOption,
