@@ -1,6 +1,12 @@
 # 定义页面
 
-小程序中的每个页面都需要在对应的 js 文件中使用 `definePage` 函数进行定义。它是 `Page` 函数的超集，它额外接收一个 `setup` 函数。
+::: warning 警告
+`definePage` 已不被推荐使用，请使用 `defineComponent` 定义页面，详见[定义页面组件](/guide/page-component.html)。
+
+原因是 `definePage` 的 `setup` 会在所有子组件的 `setup` 之后执行，所以你不能在 `definePage` 中使用 `provide`，而且子组件 `setup` 执行时，其 `props` 可能也未初始化。
+:::
+
+小程序中的每个页面都可以在对应的 js 文件中使用 `definePage` 函数进行定义。它是 `Page` 函数的超集，它额外接收一个 `setup` 函数。
 
 ```js [page.js]
 import { definePage, ref, computed } from '@vue-mini/core'
@@ -99,7 +105,7 @@ definePage({
 })
 ```
 
-这些生命周期钩子注册函数只能在 `setup()` 期间同步使用，其他场景下调用这些函数会抛出一个错误。
+这些生命周期钩子注册函数只能在 `setup()` 期间同步使用，其他场景下调用这些函数会被忽略并打印一个警告（开发环境）。
 
 在 `setup()` 内同步创建的侦听器和计算状态会在页面销毁时自动删除。
 
@@ -141,7 +147,7 @@ definePage({
 })
 ```
 
-如果以上两个条件都不满足，在 `setup()` 中调用 `onPageScroll()` 钩子会抛出一个错误。
+如果以上两个条件都不满足，在 `setup()` 中调用 `onPageScroll()` 钩子会被忽略并打印一个警告（开发环境）。
 
 - **onShareAppMessage**
 
@@ -169,7 +175,7 @@ definePage(
 )
 ```
 
-如果条件不满足，在 `setup()` 中调用 `onShareAppMessage()` 钩子会抛出一个错误。
+如果条件不满足，在 `setup()` 中调用 `onShareAppMessage()` 钩子会被忽略并打印一个警告（开发环境）。
 
 - **onShareTimeline**
 
@@ -197,7 +203,7 @@ definePage(
 )
 ```
 
-如果条件不满足，在 `setup()` 中调用 `onShareTimeline()` 钩子会抛出一个错误。
+如果条件不满足，在 `setup()` 中调用 `onShareTimeline()` 钩子会被忽略并打印一个警告（开发环境）。
 
 - **onAddToFavorites**
 
@@ -220,14 +226,14 @@ definePage({
 })
 ```
 
-如果条件不满足，在 `setup()` 中调用 `onAddToFavorites()` 钩子会抛出一个错误。
+如果条件不满足，在 `setup()` 中调用 `onAddToFavorites()` 钩子会被忽略并打印一个警告（开发环境）。
 
 - **onSaveExitState**
 
 由于 `onSaveExitState` 会返回需要保存的状态，所以一个页面只能有一个 `onSaveExitState` 监听。
 
 ```js [page.js]
-import { definePage, ref, onAddToFavorites } from '@vue-mini/core'
+import { definePage, ref, onSaveExitState } from '@vue-mini/core'
 
 definePage({
   setup(_, context) {
@@ -245,9 +251,10 @@ definePage({
 })
 ```
 
-如果条件不满足，在 `setup()` 中调用 `onSaveExitState()` 钩子会抛出一个错误。
+如果条件不满足，在 `setup()` 中调用 `onSaveExitState()` 钩子会被忽略并打印一个警告（开发环境）。
 
 - **生命周期对应关系**
+
   - `onLoad` -> `setup`
   - `onShow` -> `onShow`
   - `onReady` -> `onReady`
