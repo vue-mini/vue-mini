@@ -14,7 +14,7 @@ setup 只能是同步函数。
 
 ## 生命周期
 
-```js
+```js [page-component.js]
 import { defineComponent } from '@vue-mini/core'
 
 defineComponent({
