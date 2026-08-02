@@ -3,23 +3,18 @@
 小程序中的每个组件都需要在对应的 js 文件中使用 `defineComponent` 函数进行定义。它是 `Component` 函数的超集，它额外接收一个 `setup` 函数。
 
 ```js [component.js]
-import { defineComponent, reactive, computed } from '@vue-mini/core'
+import { defineComponent, ref, computed } from '@vue-mini/core'
 
 defineComponent({
   setup() {
-    const state = reactive({
-      count: 0,
-      double: computed(() => state.count * 2),
-    })
+    const count = ref(0)
+    const double = computed(() => count.value * 2)
 
-    function increment() {
+    const increment = () => {
       state.count++
     }
 
-    return {
-      state,
-      increment,
-    }
+    return { count, double, increment }
   },
 })
 ```
@@ -27,8 +22,8 @@ defineComponent({
 如果 `setup` 返回一个对象，则对象的属性将会被合并到组件实例上，可以直接在组件模版中使用。
 
 ```xml [component.wxml]
-<button bindtap="increment">
-  Count is: {{ state.count }}, double is: {{ state.double }}
+<button bind:tap="increment">
+  {{ count }} X 2 = {{ double }}
 </button>
 ```
 
@@ -81,9 +76,7 @@ defineComponent({
 
     const double = computed(() => props.count * 2)
 
-    return {
-      double,
-    }
+    return { double }
   },
 })
 ```
@@ -99,15 +92,15 @@ defineComponent({
   },
   setup({ count }) {
     watchEffect(() => {
-      console.log('count is: ' + count) // Will not be reactive!
+      console.log('count is: ' + count) // 不会响应！
     })
   },
 })
 ```
 
-在开发过程中，`props` 对象对用户空间代码是不可变的（用户代码尝试修改 `props` 时会触发警告）。
+在开发过程中，`props` 对象对用户空间代码是不可变的，用户代码尝试修改 `props` 时会触发警告。
 
-第二个参数提供了一个上下文对象，从小程序组件 `this` 中选择性的暴露了一些 property。
+第二个参数提供了一个上下文对象，从小程序组件 `this` 中选择性的暴露了一些属性。
 
 ```js [component.js]
 import { defineComponent } from '@vue-mini/core'
@@ -185,10 +178,7 @@ defineComponent({
       count.value++
     }
 
-    return {
-      count,
-      increment,
-    }
+    return { count, increment }
   },
   data: {
     number: 0,
@@ -203,13 +193,13 @@ defineComponent({
 
 如果名称相同，`setup()` 返回的数据或方法会覆盖原生语法声明的数据或方法。你应该避免出现这种情况。
 
-请不要在其他选项中访问 `setup()` 返回的数据或方法，这将引起混乱。如果确实有此需求，应该将相关逻辑搬到 `setup()` 内。
+请不要在 `setup()` 之外访问 `setup()` 返回的数据或方法，这将引起混乱。如果确实有此需求，应该将相关逻辑搬到 `setup()` 内。
 
 ## 简洁语法
 
 如果组件没有 `props`，且不需要使用原生语法，也可以直接传递一个 `setup` 函数给 `defineComponent()`。
 
-```js [page.js]
+```js [component.js]
 import { defineComponent, ref } from '@vue-mini/core'
 
 defineComponent(() => {
@@ -219,9 +209,6 @@ defineComponent(() => {
     count.value++
   }
 
-  return {
-    count,
-    increment,
-  }
+  return { count, increment }
 })
 ```
