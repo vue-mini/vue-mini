@@ -312,6 +312,10 @@ export function defineComponent(optionsOrSetup: any, config?: Config): string {
     options,
     PageLifecycle.ON_LOAD,
   )
+  options.methods[PageLifecycle.ON_UNLOAD] = createPageLifecycle(
+    options,
+    PageLifecycle.ON_UNLOAD,
+  )
   options.methods[PageLifecycle.ON_PULL_DOWN_REFRESH] = createPageLifecycle(
     options,
     PageLifecycle.ON_PULL_DOWN_REFRESH,

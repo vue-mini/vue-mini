@@ -21,6 +21,7 @@ import {
   onDetach,
   onError,
   onLoad,
+  onUnload,
   onShow,
   onHide,
   onRouteDone,
@@ -787,6 +788,25 @@ describe('component', () => {
     })
     component.lifetimes.attached.call(component)
     component.methods.onLoad.call(component, arg)
+    expect(fn).toHaveBeenCalledWith(arg)
+    expect(injectedFn1).toHaveBeenCalledWith(arg)
+    expect(injectedFn2).toHaveBeenCalledWith(arg)
+  })
+
+  it('onUnload', () => {
+    const arg = {}
+    const fn = vi.fn()
+    const injectedFn1 = vi.fn()
+    const injectedFn2 = vi.fn()
+    defineComponent({
+      methods: { onUnload: fn },
+      setup() {
+        onUnload(injectedFn1)
+        onUnload(injectedFn2)
+      },
+    })
+    component.lifetimes.attached.call(component)
+    component.methods.onUnload.call(component, arg)
     expect(fn).toHaveBeenCalledWith(arg)
     expect(injectedFn1).toHaveBeenCalledWith(arg)
     expect(injectedFn2).toHaveBeenCalledWith(arg)
