@@ -35,13 +35,21 @@ defineComponent({
 setup 只能是同步函数。
 :::
 
+::: tip 注意
+`[Component] property "xxx" of "path/to/component" received type-uncompatible value: ...`
+
+你可能会看到上面这样的警告信息，这是因为模板初次渲染时父组件的 `data` 还未初始化。通常来说你都可以忽略此类警告，如果有特别的需要可以使用原生语法为 `data` 设置初始值。
+:::
+
 - **调用时机**
 
 `setup` 会在 `attached` 阶段被调用。返回的数据和方法也会在此时才会被合并到组件实例上，所以模版初次渲染时数据可能是 `undefined`。不过小程序模版对此做了兼容，所以不用担心会报错。
 
 - **调用顺序**
 
-组件 `setup` 函数会跟 `attached` 钩子一样按组件树从上到下依次执行，但是可能会早于页面的 `setup` 函数执行（取决于定义页面的方式），所以在 `setup` 函数执行时，`props` 可能还未初始化。在这种情况下，如果你需要依据 `props` 派生状态，可以使用 `computed`，如果你需要依据 `props` 执行副作用，可以使用 `watchEffect` 或 `watch`。
+组件 `setup` 函数会跟 `attached` 钩子一样按组件树从上到下依次执行。
+
+如果组件的父级是用 `definePage` 定义的页面，那么组件 `setup` 执行时父级页面的 `setup` 还未执行，此时的 `props` 可能还未初始化。在这种情况下，如果你需要依据 `props` 派生状态，可以使用 `computed`，如果你需要依据 `props` 执行副作用，可以使用 `watch`。如果组件的父级是用 `defineComponent` 定义的页面或组件则没有这个问题，因此建议使用 `defineComponent` 定义页面。
 
 - **参数**
 
@@ -60,7 +68,7 @@ defineComponent({
 })
 ```
 
-注意 `props` 对象是响应式的，可以用 `watchEffect` 或 `watch` 观察和响应 `props` 的更新，也可以基于 `props` 生成新的计算状态。
+注意 `props` 对象是响应式的，可以用 `watch` 观察和响应 `props` 的更新，也可以基于 `props` 生成新的计算状态。
 
 ```js [component.js]
 import { defineComponent, watchEffect, computed } from '@vue-mini/core'
@@ -143,7 +151,7 @@ createApp({
 })
 ```
 
-这些生命周期钩子注册函数只能在 `setup()` 期间同步使用，其他场景下调用这些函数会抛出一个错误。
+这些生命周期钩子注册函数只能在 `setup()` 期间同步使用，其他场景下调用这些函数会被忽略并打印一个警告（开发环境）。
 
 在 `setup()` 内同步创建的侦听器和计算状态会在页面销毁时自动删除。
 
