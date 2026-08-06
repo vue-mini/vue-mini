@@ -2,10 +2,10 @@ import type { EffectScope } from '@vue/reactivity'
 
 export type Bindings = Record<string, any> | void
 
-export let respectShallow = false
-export function setRespectShallow(value: boolean): void {
+export let respectHints = false
+export function setRespectHints(value: boolean): void {
   // Only tests pass false, to reset the flag.
-  respectShallow = value
+  respectHints = value
 }
 
 export type AppInstance = {
