@@ -55,7 +55,7 @@ export default defineConfig({
           { text: '侦听器', link: '/guide/watchers' },
           { text: '兼容性', link: '/guide/compatibility' },
           { text: '比较', link: '/guide/comparisons' },
-          { text: '性能', link: '/guide/performance' },
+          { text: '性能优化', link: '/guide/performance' },
           { text: '常见问题', link: '/guide/faq' },
           { text: '版本发布', link: '/guide/releases' },
         ],

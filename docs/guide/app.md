@@ -81,6 +81,10 @@ createApp({
   - `onUnhandledRejection` -> `onUnhandledRejection`
   - `onThemeChange` -> `onThemeChange`
 
+## 配置参数
+
+Vue Mini 1.3 开始, `createApp()` 还额外接收一个可选的配置参数，用它可以定义一些框架行为。目前仅有一个配置选项 `{ respectHints?: boolean }`，具体请参考[性能优化](/guide/performance.html)。
+
 ## 与原生语法混用
 
 由于 `createApp()` 是 `App()` 的超集，所以你也能使用原生语法。
