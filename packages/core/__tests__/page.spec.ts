@@ -8,6 +8,7 @@ import {
   computed,
   readonly,
   shallowReadonly,
+  markRaw,
   watch,
   watchEffect,
   watchPostEffect,
@@ -30,7 +31,7 @@ import {
   onAddToFavorites,
   onSaveExitState,
 } from '../src'
-import { setRespectShallow, currentPage } from '../src/instance'
+import { setRespectHints, currentPage } from '../src/instance'
 import { getEffectsCount } from './utils'
 
 // Mocks
@@ -74,16 +75,41 @@ globalThis.Page = (options: Record<string, any>) => {
 
 describe('page', () => {
   afterEach(() => {
-    setRespectShallow(false)
+    setRespectHints(false)
   })
 
   it('raw binding', () => {
-    definePage(() => {
-      const count = 0
-      return { count }
-    })
+    definePage(() => ({
+      null: null,
+      undefined: undefined,
+      bool: false,
+      num: 0,
+      str: '',
+    }))
     page.onLoad()
-    expect(page.data.count).toBe(0)
+    expect(page.data.null).toBe(null)
+    expect('undefined' in page.data).toBe(true)
+    expect(page.data.undefined).toBe(undefined)
+    expect(page.data.bool).toBe(false)
+    expect(page.data.num).toBe(0)
+    expect(page.data.str).toBe('')
+
+    createApp(() => {}, { respectHints: true })
+
+    definePage(() => ({
+      null: null,
+      undefined: undefined,
+      bool: false,
+      num: 0,
+      str: '',
+    }))
+    page.onLoad()
+    expect(page.data.null).toBe(null)
+    expect('undefined' in page.data).toBe(true)
+    expect(page.data.undefined).toBe(undefined)
+    expect(page.data.bool).toBe(false)
+    expect(page.data.num).toBe(0)
+    expect(page.data.str).toBe('')
   })
 
   it('ref binding', async () => {
@@ -335,8 +361,17 @@ describe('page', () => {
     expect(page.setData).toHaveBeenCalledTimes(2)
   })
 
-  it('should treat shallow as shallow', async () => {
-    createApp(() => {}, { respectShallow: true })
+  it('should respect raw', () => {
+    createApp(() => {}, { respectHints: true })
+
+    const raw = markRaw({ count: 0 })
+    definePage(() => ({ raw }))
+    page.onLoad()
+    expect(page.data.raw).toBe(raw)
+  })
+
+  it('should respect shallow', async () => {
+    createApp(() => {}, { respectHints: true })
 
     const rawRef = reactive({ count: 0 })
     const rawReactive = { state: reactive({ count: 0 }) }

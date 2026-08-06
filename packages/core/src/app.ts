@@ -1,6 +1,6 @@
 import type { Bindings, AppInstance } from './instance'
 import {
-  setRespectShallow,
+  setRespectHints,
   setCurrentApp,
   unsetCurrentApp,
   getLifecycleHooks,
@@ -15,7 +15,7 @@ export type AppOptions<T extends WechatMiniprogram.IAnyObject> = {
   setup?: AppSetup
 } & WechatMiniprogram.App.Options<T>
 export interface AppConfig {
-  respectShallow?: boolean
+  respectHints?: boolean
 }
 type Options = Record<string, any>
 
@@ -37,8 +37,8 @@ export function createApp<T extends WechatMiniprogram.IAnyObject>(
 ): void
 
 export function createApp(optionsOrSetup: any, config?: AppConfig): void {
-  if (config && config.respectShallow) {
-    setRespectShallow(true)
+  if (config && config.respectHints) {
+    setRespectHints(true)
   }
 
   let setup: AppSetup

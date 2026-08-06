@@ -8,6 +8,7 @@ import {
   computed,
   readonly,
   shallowReadonly,
+  markRaw,
   watch,
   watchEffect,
   watchPostEffect,
@@ -35,7 +36,7 @@ import {
   onAddToFavorites,
   onSaveExitState,
 } from '../src'
-import { setRespectShallow, currentComponent } from '../src/instance'
+import { setRespectHints, currentComponent } from '../src/instance'
 import { getEffectsCount } from './utils'
 
 // Mocks
@@ -83,16 +84,41 @@ globalThis.Component = (options: Record<string, any>) => {
 
 describe('component', () => {
   afterEach(() => {
-    setRespectShallow(false)
+    setRespectHints(false)
   })
 
   it('raw binding', () => {
-    defineComponent(() => {
-      const count = 0
-      return { count }
-    })
+    defineComponent(() => ({
+      null: null,
+      undefined: undefined,
+      bool: false,
+      num: 0,
+      str: '',
+    }))
     component.lifetimes.attached.call(component)
-    expect(component.data.count).toBe(0)
+    expect(component.data.null).toBe(null)
+    expect('undefined' in component.data).toBe(true)
+    expect(component.data.undefined).toBe(undefined)
+    expect(component.data.bool).toBe(false)
+    expect(component.data.num).toBe(0)
+    expect(component.data.str).toBe('')
+
+    createApp(() => {}, { respectHints: true })
+
+    defineComponent(() => ({
+      null: null,
+      undefined: undefined,
+      bool: false,
+      num: 0,
+      str: '',
+    }))
+    component.lifetimes.attached.call(component)
+    expect(component.data.null).toBe(null)
+    expect('undefined' in component.data).toBe(true)
+    expect(component.data.undefined).toBe(undefined)
+    expect(component.data.bool).toBe(false)
+    expect(component.data.num).toBe(0)
+    expect(component.data.str).toBe('')
   })
 
   it('ref binding', async () => {
@@ -350,8 +376,17 @@ describe('component', () => {
     expect(component.setData).toHaveBeenCalledTimes(2)
   })
 
-  it('should treat shallow as shallow', async () => {
-    createApp(() => {}, { respectShallow: true })
+  it('should respect raw', () => {
+    createApp(() => {}, { respectHints: true })
+
+    const raw = markRaw({ count: 0 })
+    defineComponent(() => ({ raw }))
+    component.lifetimes.attached.call(component)
+    expect(component.data.raw).toBe(raw)
+  })
+
+  it('should respect shallow', async () => {
+    createApp(() => {}, { respectHints: true })
 
     const rawRef = reactive({ count: 0 })
     const rawReactive = { state: reactive({ count: 0 }) }
