@@ -4,6 +4,7 @@ import {
   shallowReadonly,
   EffectScope,
   setCurrentScope,
+  ReactiveFlags,
 } from '@vue/reactivity'
 import { flushPostFlushCbs } from './scheduler'
 import type { Config } from './page'
@@ -11,7 +12,7 @@ import { PageLifecycle } from './page'
 import { shallowToRaw, deepToRaw, observe } from './shared'
 import type { Bindings, ComponentInstance } from './instance'
 import {
-  respectShallow,
+  respectHints,
   setCurrentComponent,
   unsetCurrentComponent,
   getLifecycleHooks,
@@ -194,10 +195,16 @@ export function defineComponent(optionsOrSetup: any, config?: Config): string {
             return
           }
 
-          const shallow = respectShallow && isShallow(value)
+          const raw = respectHints && !!(value && value[ReactiveFlags.SKIP])
+          const shallow = respectHints && isShallow(value)
           this.__v_data = this.__v_data || {}
-          this.__v_data[key] = shallow ? shallowToRaw(value) : deepToRaw(value)
-          observe.call(this, key, value, !shallow)
+          this.__v_data[key] =
+            raw ? value
+            : shallow ? shallowToRaw(value)
+            : deepToRaw(value)
+          if (!raw) {
+            observe.call(this, key, value, !shallow)
+          }
         })
         if (this.__v_data !== undefined) {
           // May call sub component's setup synchronously, so should call after unsetCurrentComponent()

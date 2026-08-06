@@ -1,8 +1,13 @@
-import { isShallow, EffectScope, setCurrentScope } from '@vue/reactivity'
+import {
+  isShallow,
+  EffectScope,
+  setCurrentScope,
+  ReactiveFlags,
+} from '@vue/reactivity'
 import { flushPostFlushCbs } from './scheduler'
 import type { Bindings, PageInstance } from './instance'
 import {
-  respectShallow,
+  respectHints,
   setCurrentPage,
   unsetCurrentPage,
   getLifecycleHooks,
@@ -144,10 +149,16 @@ export function definePage(optionsOrSetup: any, config?: Config): void {
             return
           }
 
-          const shallow = respectShallow && isShallow(value)
+          const raw = respectHints && !!(value && value[ReactiveFlags.SKIP])
+          const shallow = respectHints && isShallow(value)
           this.__v_data = this.__v_data || {}
-          this.__v_data[key] = shallow ? shallowToRaw(value) : deepToRaw(value)
-          observe.call(this, key, value, !shallow)
+          this.__v_data[key] =
+            raw ? value
+            : shallow ? shallowToRaw(value)
+            : deepToRaw(value)
+          if (!raw) {
+            observe.call(this, key, value, !shallow)
+          }
         })
         if (this.__v_data !== undefined) {
           // May call sub component's setup synchronously, so should call after unsetCurrentPage()
