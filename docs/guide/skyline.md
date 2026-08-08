@@ -4,7 +4,7 @@
 
 ## 数据函数
 
-Skyline 模式支持在模板中调用[数据函数](https://developers.weixin.qq.com/miniprogram/dev/framework/custom-component/glass-easel/call-data-functions.html)，数据函数很适合用来做多语言、格式化等。Vue Mini 为数据函数提供了专门的支持，你可以使用 `dataFn()` 来声明数据函数，它返回的是一个响应式的 Function Ref。
+Skyline 模式支持在模板中调用[数据函数](https://developers.weixin.qq.com/miniprogram/dev/framework/custom-component/glass-easel/call-data-functions.html)，数据函数很适合用来做多语言、格式化等。Vue Mini 1.3+ 为数据函数提供了专门的支持，你可以使用 `dataFn()` 来声明数据函数，它返回的是一个响应式的 Function Ref。
 
 ::: code-group
 
