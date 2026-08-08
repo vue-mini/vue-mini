@@ -46,6 +46,7 @@ export default defineConfig({
           { text: '定义组件', link: '/guide/component' },
           { text: '定义页面组件', link: '/guide/page-component' },
           { text: '依赖注入', link: '/guide/provide-inject' },
+          { text: 'Skyline', link: '/guide/skyline' },
           { text: 'Pinia', link: '/guide/pinia' },
         ],
       },
