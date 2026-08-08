@@ -1,0 +1,60 @@
+// Flex 布局
+@mixin flex-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+@mixin flex-between {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+// 文本省略
+@mixin text-ellipsis($lines: 1) {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  @if $lines == 1 {
+    white-space: nowrap;
+  } @else {
+    display: -webkit-box;
+    -webkit-line-clamp: $lines;
+    -webkit-box-orient: vertical;
+  }
+}
+
+// 清除按钮默认样式
+@mixin button-reset {
+  padding: 0;
+  margin: 0;
+  background: transparent;
+  border: none;
+  outline: none;
+  font-size: inherit;
+  line-height: inherit;
+  color: inherit;
+  
+  &::after {
+    display: none;
+  }
+}
+
+// 1px 边框
+@mixin hairline($position: bottom, $color: $border-color) {
+  position: relative;
+  
+  &::after {
+    content: '';
+    position: absolute;
+    background-color: $color;
+    
+    @if $position == bottom {
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 1px;
+      transform: scaleY(0.5);
+    }
+  }
+}
