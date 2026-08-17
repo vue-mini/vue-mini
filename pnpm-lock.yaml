@@ -78,8 +78,8 @@ importers:
   packages/core:
     dependencies:
       '@vue/reactivity':
-        specifier: 3.6.0-rc.3
-        version: 3.6.0-rc.3
+        specifier: 3.6.0-rc.4
+        version: 3.6.0-rc.4
       miniprogram-api-typings:
         specifier: ~5.2.3
         version: 5.2.3
@@ -814,8 +814,8 @@ packages:
   '@vue/reactivity@3.5.44':
     resolution: {integrity: sha512-u+QJdKeBBEADkPdevsL+6E12QlYVfBD8Zcw5qjDQKtamI6l14KyqazJMobhCKelhWN5zpyKUiEDoTyHE93cqWw==}
 
-  '@vue/reactivity@3.6.0-rc.3':
-    resolution: {integrity: sha512-+Uvp1i+oozwkyVy2HGUhmA23QDO/YY+QyBm32oddZyG6+FEaEANG7NCQr+asSJzNHWAZmZo97zVNai0tOBdJRw==}
+  '@vue/reactivity@3.6.0-rc.4':
+    resolution: {integrity: sha512-dC7nmEfyNaTOK+EmMzPpLN8nSxm+/SWd8q6Uy33fUF6HODQxZ0nEwjlYDtEqGgGSkymbHVxwQGc80F1BuKT6tA==}
 
   '@vue/runtime-core@3.5.44':
     resolution: {integrity: sha512-uEa/ndwjhrrhnOfb2p+sZy6zeoamJOISqaLSJGk/8R6nABT1ZldpzcJoPzKj+zHVomVBPcmQYyC2r4LtvDV6CQ==}
@@ -829,8 +829,8 @@ packages:
   '@vue/shared@3.5.44':
     resolution: {integrity: sha512-H82XLH0DjmSOdbEwO15x3QTo1f5PWEtv237eLpYKc0mqLu+B8hnq16lFWmuBmNurkeiG3wr+oM1FhOll/YVFRg==}
 
-  '@vue/shared@3.6.0-rc.3':
-    resolution: {integrity: sha512-EFnGq/OonnFgOtgAhXLIv8owITuFsaGglKXjsAUJQ+2uVuCPxypdW7NIZUlt7ED2raM1Hn/C83eTeK0tZVGCZw==}
+  '@vue/shared@3.6.0-rc.4':
+    resolution: {integrity: sha512-7l42Ia1Z5xYLh4zTgqKtZow58wf6kqVY90qnxtW35zxsCR+2iyz1tRAgQULSC5stD7j3s1YtywYhBAybaDYrQw==}
 
   '@vueuse/core@15.0.0':
     resolution: {integrity: sha512-Zv67h5mrk7YHDJsRObx+DXaCBz6RKBUpxqLesJ+3xZNPG6yuQs7ja7kg3veFrrouYLWAqydQ7CwGEbLVxB43Ng==}
@@ -2514,9 +2514,9 @@ snapshots:
     dependencies:
       '@vue/shared': 3.5.44
 
-  '@vue/reactivity@3.6.0-rc.3':
+  '@vue/reactivity@3.6.0-rc.4':
     dependencies:
-      '@vue/shared': 3.6.0-rc.3
+      '@vue/shared': 3.6.0-rc.4
 
   '@vue/runtime-core@3.5.44':
     dependencies:
@@ -2538,7 +2538,7 @@ snapshots:
 
   '@vue/shared@3.5.44': {}
 
-  '@vue/shared@3.6.0-rc.3': {}
+  '@vue/shared@3.6.0-rc.4': {}
 
   '@vueuse/core@15.0.0(vue@3.5.44(typescript@6.0.3))':
     dependencies:
