@@ -34,46 +34,49 @@ import {
 import { setRespectHints, currentPage } from '../src/instance'
 import { getEffectsCount } from './utils'
 
-// Mocks
-// @ts-expect-error
-globalThis.App = (options: Record<string, any>) => {}
-let page: Record<string, any>
-let renderCb: () => void
-// @ts-expect-error
-globalThis.Page = (options: Record<string, any>) => {
-  page = {
-    ...options,
-    is: '',
-    route: '',
-    options: {},
-    createSelectorQuery() {},
-    createIntersectionObserver() {},
-    createMediaQueryObserver() {},
-    selectComponent() {},
-    selectAllComponents() {},
-    getTabBar() {},
-    getPageId() {},
-    animate() {},
-    clearAnimation() {},
-    getOpenerEventChannel() {},
-    applyAnimatedStyle() {},
-    clearAnimatedStyle() {},
-    setUpdatePerformanceListener() {},
-    getPassiveEvent() {},
-    setPassiveEvent() {},
-    setInitialRenderingCache() {},
-    setData(data: Record<string, unknown>, callback: () => void) {
-      this.data = this.data || {}
-      Object.keys(data).forEach((key) => {
-        this.data[key] = data[key]
-      })
-
-      renderCb = callback
-    },
-  }
-}
-
 describe('page', () => {
+  // Mocks
+  let page: Record<string, any>
+  let renderCb: () => void
+
+  beforeEach(() => {
+    // @ts-expect-error
+    globalThis.App = (options: Record<string, any>) => {}
+    // @ts-expect-error
+    globalThis.Page = (options: Record<string, any>) => {
+      page = {
+        ...options,
+        is: '',
+        route: '',
+        options: {},
+        createSelectorQuery() {},
+        createIntersectionObserver() {},
+        createMediaQueryObserver() {},
+        selectComponent() {},
+        selectAllComponents() {},
+        getTabBar() {},
+        getPageId() {},
+        animate() {},
+        clearAnimation() {},
+        getOpenerEventChannel() {},
+        applyAnimatedStyle() {},
+        clearAnimatedStyle() {},
+        setUpdatePerformanceListener() {},
+        getPassiveEvent() {},
+        setPassiveEvent() {},
+        setInitialRenderingCache() {},
+        setData(data: Record<string, unknown>, callback: () => void) {
+          this.data = this.data || {}
+          Object.keys(data).forEach((key) => {
+            this.data[key] = data[key]
+          })
+
+          renderCb = callback
+        },
+      }
+    }
+  })
+
   afterEach(() => {
     setRespectHints(false)
   })

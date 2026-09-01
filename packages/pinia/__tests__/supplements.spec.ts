@@ -2,47 +2,48 @@ import { definePage, nextTick, ref } from '@vue-mini/core'
 import type { Pinia } from '../src'
 import { createPinia, disposePinia, defineStore, storeToRefs } from '../src'
 
-// Mocks
-let page: Record<string, any>
-let renderCb: () => void
-// @ts-expect-error
-globalThis.Page = (options: Record<string, any>) => {
-  page = {
-    ...options,
-    is: '',
-    route: '',
-    options: {},
-    createSelectorQuery() {},
-    createIntersectionObserver() {},
-    createMediaQueryObserver() {},
-    selectComponent() {},
-    selectAllComponents() {},
-    getTabBar() {},
-    getPageId() {},
-    animate() {},
-    clearAnimation() {},
-    getOpenerEventChannel() {},
-    applyAnimatedStyle() {},
-    clearAnimatedStyle() {},
-    setUpdatePerformanceListener() {},
-    getPassiveEvent() {},
-    setPassiveEvent() {},
-    setInitialRenderingCache() {},
-    setData(data: Record<string, unknown>, callback: () => void) {
-      this.data = this.data || {}
-      Object.keys(data).forEach((key) => {
-        this.data[key] = data[key]
-      })
-
-      renderCb = callback
-    },
-  }
-}
-
 describe('supplements', () => {
+  // Mocks
+  let page: Record<string, any>
+  let renderCb: () => void
+
   let pinia: Pinia
 
   beforeEach(() => {
+    // @ts-expect-error
+    globalThis.Page = (options: Record<string, any>) => {
+      page = {
+        ...options,
+        is: '',
+        route: '',
+        options: {},
+        createSelectorQuery() {},
+        createIntersectionObserver() {},
+        createMediaQueryObserver() {},
+        selectComponent() {},
+        selectAllComponents() {},
+        getTabBar() {},
+        getPageId() {},
+        animate() {},
+        clearAnimation() {},
+        getOpenerEventChannel() {},
+        applyAnimatedStyle() {},
+        clearAnimatedStyle() {},
+        setUpdatePerformanceListener() {},
+        getPassiveEvent() {},
+        setPassiveEvent() {},
+        setInitialRenderingCache() {},
+        setData(data: Record<string, unknown>, callback: () => void) {
+          this.data = this.data || {}
+          Object.keys(data).forEach((key) => {
+            this.data[key] = data[key]
+          })
+
+          renderCb = callback
+        },
+      }
+    }
+
     pinia = createPinia()
   })
 
