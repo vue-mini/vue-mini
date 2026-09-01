@@ -13,14 +13,17 @@ import {
 } from '../src'
 import { currentApp } from '../src/instance'
 
-// Mocks
-let app: Record<string, any>
-// @ts-expect-error
-globalThis.App = (options: Record<string, any>) => {
-  app = options
-}
-
 describe('app', () => {
+  // Mocks
+  let app: Record<string, any>
+
+  beforeEach(() => {
+    // @ts-expect-error
+    globalThis.App = (options: Record<string, any>) => {
+      app = options
+    }
+  })
+
   it('binding', async () => {
     createApp(() => {
       const num = 0
