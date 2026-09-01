@@ -39,50 +39,53 @@ import {
 import { setRespectHints, currentComponent } from '../src/instance'
 import { getEffectsCount } from './utils'
 
-// Mocks
-// @ts-expect-error
-globalThis.App = (options: Record<string, any>) => {}
-let component: Record<string, any>
-let renderCb: () => void
-// @ts-expect-error
-globalThis.Component = (options: Record<string, any>) => {
-  component = {
-    ...options,
-    is: '',
-    id: '',
-    dataset: {},
-    triggerEvent() {},
-    createSelectorQuery() {},
-    createIntersectionObserver() {},
-    createMediaQueryObserver() {},
-    selectComponent() {},
-    selectAllComponents() {},
-    selectOwnerComponent() {},
-    getRelationNodes() {},
-    groupSetData() {},
-    getTabBar() {},
-    getPageId() {},
-    animate() {},
-    clearAnimation() {},
-    getOpenerEventChannel() {},
-    applyAnimatedStyle() {},
-    clearAnimatedStyle() {},
-    setUpdatePerformanceListener() {},
-    getPassiveEvent() {},
-    setPassiveEvent() {},
-    setInitialRenderingCache() {},
-    setData(data: Record<string, unknown>, callback: () => void) {
-      this.data = this.data || {}
-      Object.keys(data).forEach((key) => {
-        this.data[key] = data[key]
-      })
-
-      renderCb = callback
-    },
-  }
-}
-
 describe('component', () => {
+  // Mocks
+  let component: Record<string, any>
+  let renderCb: () => void
+
+  beforeEach(() => {
+    // @ts-expect-error
+    globalThis.App = (options: Record<string, any>) => {}
+    // @ts-expect-error
+    globalThis.Component = (options: Record<string, any>) => {
+      component = {
+        ...options,
+        is: '',
+        id: '',
+        dataset: {},
+        triggerEvent() {},
+        createSelectorQuery() {},
+        createIntersectionObserver() {},
+        createMediaQueryObserver() {},
+        selectComponent() {},
+        selectAllComponents() {},
+        selectOwnerComponent() {},
+        getRelationNodes() {},
+        groupSetData() {},
+        getTabBar() {},
+        getPageId() {},
+        animate() {},
+        clearAnimation() {},
+        getOpenerEventChannel() {},
+        applyAnimatedStyle() {},
+        clearAnimatedStyle() {},
+        setUpdatePerformanceListener() {},
+        getPassiveEvent() {},
+        setPassiveEvent() {},
+        setInitialRenderingCache() {},
+        setData(data: Record<string, unknown>, callback: () => void) {
+          this.data = this.data || {}
+          Object.keys(data).forEach((key) => {
+            this.data[key] = data[key]
+          })
+
+          renderCb = callback
+        },
+      }
+    }
+  })
+
   afterEach(() => {
     setRespectHints(false)
   })
