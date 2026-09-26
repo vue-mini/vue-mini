@@ -7,7 +7,7 @@ import {
   ReactiveFlags,
 } from '@vue/reactivity'
 import type { SchedulerJob } from './scheduler'
-import { SchedulerJobFlags, flushPostFlushCbs } from './scheduler'
+import { SchedulerJobFlags } from './scheduler'
 import type { Config } from './page'
 import { PageLifecycle } from './page'
 import { shallowToRaw, deepToRaw, observe } from './shared'
@@ -212,7 +212,7 @@ export function defineComponent(optionsOrSetup: any, config?: Config): string {
           this.__v_setData = () => {
             const data = this.__v_data!
             this.__v_data = undefined
-            this.setData(data, flushPostFlushCbs)
+            this.setData(data)
           }
           this.__v_setData()
         }

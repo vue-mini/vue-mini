@@ -91,25 +91,48 @@ function queueJobWorker(
   return false
 }
 
+function doFlushJobs() {
+  try {
+    flushJobs()
+  } catch (error) {
+    currentFlushPromise = null
+    // If a nested post flush throws after queueing more work, defer the
+    // leftovers to a fresh microtask
+    if (jobsLength || postJobs.length) {
+      queueFlush()
+    }
+    throw error
+  }
+}
+
 function queueFlush() {
   if (!currentFlushPromise) {
-    // We don't flush post jobs on flushJobs's finally block, so we don't need `doFlushJobs` here.
-    currentFlushPromise = resolvedPromise.then(flushJobs)
+    currentFlushPromise = resolvedPromise.then(doFlushJobs)
   }
 }
 
 export function queuePostFlushCb(job: SchedulerJob): void {
   queueJobWorker(job, 0, postJobs, postJobs.length, 0)
+  queueFlush()
 }
 
-export function flushPostFlushCbs(): void {
+function flushPostFlushCbs(seen?: CountMap): void {
   if (postJobs.length) {
     activePostJobs = postJobs
     postJobs = []
 
+    /* istanbul ignore else -- @preserve */
+    if (__DEV__) {
+      seen ||= new Map()
+    }
+
     try {
       while (postFlushIndex < activePostJobs.length) {
         const cb = activePostJobs[postFlushIndex++]
+        /* istanbul ignore if -- @preserve  */
+        if (__DEV__ && checkRecursiveUpdates(seen!, cb)) {
+          continue
+        }
         if (cb.flags! & SchedulerJobFlags.ALLOW_RECURSE) {
           cb.flags! &= ~SchedulerJobFlags.QUEUED
         }
@@ -133,9 +156,11 @@ export function flushPostFlushCbs(): void {
   }
 }
 
-function flushJobs() {
-  /* istanbul ignore next -- @preserve  */
-  const seen: CountMap | undefined = __DEV__ ? new Map() : undefined
+function flushJobs(seen?: CountMap) {
+  /* istanbul ignore else -- @preserve */
+  if (__DEV__) {
+    seen ||= new Map()
+  }
 
   try {
     while (flushIndex < jobsLength) {
@@ -175,7 +200,14 @@ function flushJobs() {
     jobsLength = 0
     jobs.length = 0
 
-    currentFlushPromise = null
+    flushPostFlushCbs(seen)
+
+    // If new jobs have been added to either queue, keep flushing
+    if (jobsLength || postJobs.length) {
+      flushJobs(seen)
+    } else {
+      currentFlushPromise = null
+    }
   }
 }
 

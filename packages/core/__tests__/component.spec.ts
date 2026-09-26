@@ -42,7 +42,6 @@ import { getEffectsCount } from './utils'
 describe('component', () => {
   // Mocks
   let component: Record<string, any>
-  let renderCb: () => void
 
   beforeEach(() => {
     // @ts-expect-error
@@ -74,13 +73,11 @@ describe('component', () => {
         getPassiveEvent() {},
         setPassiveEvent() {},
         setInitialRenderingCache() {},
-        setData(data: Record<string, unknown>, callback: () => void) {
+        setData(data: Record<string, unknown>) {
           this.data = this.data || {}
           Object.keys(data).forEach((key) => {
             this.data[key] = data[key]
           })
-
-          renderCb = callback
         },
       }
     }
@@ -342,19 +339,17 @@ describe('component', () => {
     component.lifetimes.attached.call(component)
     expect(component.data).toEqual({ state1: 0, state2: 0, state3: 0 })
     expect(component.setData).toHaveBeenCalledTimes(1)
-    expect(component.setData).toHaveBeenCalledWith(
-      { state1: 0, state2: 0, state3: 0 },
-      expect.any(Function),
-    )
+    expect(component.setData).toHaveBeenCalledWith({
+      state1: 0,
+      state2: 0,
+      state3: 0,
+    })
 
     component.increment()
     await nextTick()
     expect(component.data).toEqual({ state1: 0, state2: 2, state3: 1 })
     expect(component.setData).toHaveBeenCalledTimes(2)
-    expect(component.setData).toHaveBeenLastCalledWith(
-      { state2: 2, state3: 1 },
-      expect.any(Function),
-    )
+    expect(component.setData).toHaveBeenLastCalledWith({ state2: 2, state3: 1 })
   })
 
   it('should batch state changes and dataFn into a single setData call', async () => {
@@ -546,25 +541,67 @@ describe('component', () => {
     })
     component.lifetimes.attached.call(component)
     await nextTick()
-    expect(foo).toBe(undefined)
-    expect(bar).toBe(undefined)
-    expect(component.data.count).toBe(0)
-
-    renderCb()
     expect(foo).toBe(0)
     expect(bar).toBe(undefined)
     expect(component.data.count).toBe(0)
 
     component.increment()
     await nextTick()
-    expect(foo).toBe(0)
-    expect(bar).toBe(undefined)
-    expect(component.data.count).toBe(1)
-
-    renderCb()
     expect(foo).toBe(1)
     expect(bar).toBe(1)
     expect(component.data.count).toBe(1)
+  })
+
+  it('post watch should run after setData', async () => {
+    const calls: [string[], string[]] = [[], []]
+    defineComponent(() => {
+      const count = ref(0)
+      const increment = (): void => {
+        count.value++
+      }
+
+      watchPostEffect(() => {
+        calls[0].push(
+          `watchEffect ${count.value}, data ${component.data.count}`,
+        )
+      })
+
+      watch(
+        count,
+        () => {
+          calls[1].push(`watch ${count.value}, data ${component.data.count}`)
+        },
+        { flush: 'post' },
+      )
+
+      return { count, increment }
+    })
+
+    const originSetData = component.setData
+    component.setData = function (data: Record<string, unknown>) {
+      calls[0].push(`setData ${String(data.count)}`)
+      calls[1].push(`setData ${String(data.count)}`)
+      originSetData.call(this, data)
+    }
+
+    component.lifetimes.attached.call(component)
+    await nextTick()
+    expect(calls).toEqual([
+      ['setData 0', 'watchEffect 0, data 0'],
+      ['setData 0'],
+    ])
+
+    component.increment()
+    await nextTick()
+    expect(calls).toEqual([
+      [
+        'setData 0',
+        'watchEffect 0, data 0',
+        'setData 1',
+        'watchEffect 1, data 1',
+      ],
+      ['setData 0', 'setData 1', 'watch 1, data 1'],
+    ])
   })
 
   it('no post watch', async () => {
@@ -584,9 +621,6 @@ describe('component', () => {
 
     component.increment()
     await nextTick()
-    expect(component.data.count).toBe(1)
-
-    renderCb()
     expect(component.data.count).toBe(1)
   })
 

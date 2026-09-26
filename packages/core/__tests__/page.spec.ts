@@ -37,7 +37,6 @@ import { getEffectsCount } from './utils'
 describe('page', () => {
   // Mocks
   let page: Record<string, any>
-  let renderCb: () => void
 
   beforeEach(() => {
     // @ts-expect-error
@@ -65,13 +64,11 @@ describe('page', () => {
         getPassiveEvent() {},
         setPassiveEvent() {},
         setInitialRenderingCache() {},
-        setData(data: Record<string, unknown>, callback: () => void) {
+        setData(data: Record<string, unknown>) {
           this.data = this.data || {}
           Object.keys(data).forEach((key) => {
             this.data[key] = data[key]
           })
-
-          renderCb = callback
         },
       }
     }
@@ -327,19 +324,17 @@ describe('page', () => {
     page.onLoad()
     expect(page.data).toEqual({ state1: 0, state2: 0, state3: 0 })
     expect(page.setData).toHaveBeenCalledTimes(1)
-    expect(page.setData).toHaveBeenCalledWith(
-      { state1: 0, state2: 0, state3: 0 },
-      expect.any(Function),
-    )
+    expect(page.setData).toHaveBeenCalledWith({
+      state1: 0,
+      state2: 0,
+      state3: 0,
+    })
 
     page.increment()
     await nextTick()
     expect(page.data).toEqual({ state1: 0, state2: 2, state3: 1 })
     expect(page.setData).toHaveBeenCalledTimes(2)
-    expect(page.setData).toHaveBeenLastCalledWith(
-      { state2: 2, state3: 1 },
-      expect.any(Function),
-    )
+    expect(page.setData).toHaveBeenLastCalledWith({ state2: 2, state3: 1 })
   })
 
   it('should batch state changes and dataFn into a single setData call', async () => {
@@ -529,27 +524,68 @@ describe('page', () => {
         increment,
       }
     })
+
     page.onLoad()
     await nextTick()
-    expect(foo).toBe(undefined)
-    expect(bar).toBe(undefined)
-    expect(page.data.count).toBe(0)
-
-    renderCb()
     expect(foo).toBe(0)
     expect(bar).toBe(undefined)
     expect(page.data.count).toBe(0)
 
     page.increment()
     await nextTick()
-    expect(foo).toBe(0)
-    expect(bar).toBe(undefined)
-    expect(page.data.count).toBe(1)
-
-    renderCb()
     expect(foo).toBe(1)
     expect(bar).toBe(1)
     expect(page.data.count).toBe(1)
+  })
+
+  it('post watch should run after setData', async () => {
+    const calls: [string[], string[]] = [[], []]
+    definePage(() => {
+      const count = ref(0)
+      const increment = (): void => {
+        count.value++
+      }
+
+      watchPostEffect(() => {
+        calls[0].push(`watchEffect ${count.value}, data ${page.data.count}`)
+      })
+
+      watch(
+        count,
+        () => {
+          calls[1].push(`watch ${count.value}, data ${page.data.count}`)
+        },
+        { flush: 'post' },
+      )
+
+      return { count, increment }
+    })
+
+    const originSetData = page.setData
+    page.setData = function (data: Record<string, unknown>) {
+      calls[0].push(`setData ${String(data.count)}`)
+      calls[1].push(`setData ${String(data.count)}`)
+      originSetData.call(this, data)
+    }
+
+    page.onLoad()
+    await nextTick()
+    expect(calls).toEqual([
+      ['setData 0', 'watchEffect 0, data 0'],
+      ['setData 0'],
+    ])
+
+    page.increment()
+    await nextTick()
+    expect(calls).toEqual([
+      [
+        'setData 0',
+        'watchEffect 0, data 0',
+        'setData 1',
+        'watchEffect 1, data 1',
+      ],
+      ['setData 0', 'setData 1', 'watch 1, data 1'],
+    ])
   })
 
   it('no post watch', async () => {
@@ -569,9 +605,6 @@ describe('page', () => {
 
     page.increment()
     await nextTick()
-    expect(page.data.count).toBe(1)
-
-    renderCb()
     expect(page.data.count).toBe(1)
   })
 

@@ -1,7 +1,6 @@
 import type { SchedulerJob } from '../src/scheduler'
 import {
   SchedulerJobFlags,
-  flushPostFlushCbs,
   nextTick,
   queueJob,
   queuePostFlushCb,
@@ -124,7 +123,7 @@ describe('scheduler', () => {
   })
 
   describe('queuePostFlushCb', () => {
-    it('basic usage', () => {
+    it('basic usage', async () => {
       const calls: string[] = []
 
       const cb1 = () => {
@@ -144,11 +143,11 @@ describe('scheduler', () => {
       queuePostFlushCb(cb3)
 
       expect(calls).toEqual([])
-      flushPostFlushCbs()
+      await nextTick()
       expect(calls).toEqual(['cb1', 'cb2', 'cb3'])
     })
 
-    it('should dedupe queued postFlushCb', () => {
+    it('should dedupe queued postFlushCb', async () => {
       const calls: string[] = []
 
       const cb1 = () => {
@@ -172,11 +171,11 @@ describe('scheduler', () => {
       queuePostFlushCb(cb2)
 
       expect(calls).toEqual([])
-      flushPostFlushCbs()
+      await nextTick()
       expect(calls).toEqual(['cb1', 'cb2', 'cb3'])
     })
 
-    it('queuePostFlushCb while flushing', () => {
+    it('queuePostFlushCb while flushing', async () => {
       const calls: string[] = []
       const cb1 = () => {
         calls.push('cb1')
@@ -190,10 +189,7 @@ describe('scheduler', () => {
 
       queuePostFlushCb(cb1)
 
-      flushPostFlushCbs()
-      expect(calls).toEqual(['cb1'])
-
-      flushPostFlushCbs()
+      await nextTick()
       expect(calls).toEqual(['cb1', 'cb2'])
     })
   })
@@ -212,8 +208,6 @@ describe('scheduler', () => {
       }
 
       queuePostFlushCb(cb1)
-      flushPostFlushCbs()
-      expect(calls).toEqual(['cb1'])
       await nextTick()
       expect(calls).toEqual(['cb1', 'job1'])
     })
@@ -237,11 +231,7 @@ describe('scheduler', () => {
       }
 
       queuePostFlushCb(cb1)
-      flushPostFlushCbs()
-      expect(calls).toEqual(['cb1'])
       await nextTick()
-      expect(calls).toEqual(['cb1', 'job1'])
-      flushPostFlushCbs()
       expect(calls).toEqual(['cb1', 'job1', 'cb2'])
     })
 
@@ -259,8 +249,6 @@ describe('scheduler', () => {
 
       queueJob(job1)
       await nextTick()
-      expect(calls).toEqual(['job1'])
-      flushPostFlushCbs()
       expect(calls).toEqual(['job1', 'cb1'])
     })
 
@@ -284,8 +272,6 @@ describe('scheduler', () => {
 
       queueJob(job1)
       await nextTick()
-      expect(calls).toEqual(['job1', 'job2'])
-      flushPostFlushCbs()
       expect(calls).toEqual(['job1', 'job2', 'cb1'])
     })
 
@@ -313,14 +299,32 @@ describe('scheduler', () => {
 
       queueJob(job1)
       await nextTick()
-      expect(calls).toEqual(['job1', 'job2'])
-      flushPostFlushCbs()
       expect(calls).toEqual(['job1', 'job2', 'cb1', 'cb2'])
+    })
+
+    test('jobs added during post flush are ordered correctly', async () => {
+      const calls: string[] = []
+
+      const job1: SchedulerJob = () => {
+        calls.push('job1')
+      }
+      const job2: SchedulerJob = () => {
+        calls.push('job2')
+      }
+
+      queuePostFlushCb(() => {
+        queueJob(job2, 1)
+        queueJob(job1)
+      })
+
+      await nextTick()
+
+      expect(calls).toEqual(['job1', 'job2'])
     })
   })
 
   // #1595
-  test('avoid duplicate postFlushCb invocation', () => {
+  test('avoid duplicate postFlushCb invocation', async () => {
     const calls: string[] = []
     const cb1 = () => {
       calls.push('cb1')
@@ -333,9 +337,7 @@ describe('scheduler', () => {
 
     queuePostFlushCb(cb1)
     queuePostFlushCb(cb2)
-    flushPostFlushCbs()
-    expect(calls).toEqual(['cb1', 'cb2'])
-    flushPostFlushCbs()
+    await nextTick()
     expect(calls).toEqual(['cb1', 'cb2'])
   })
 
@@ -346,7 +348,7 @@ describe('scheduler', () => {
     })
     try {
       await nextTick()
-    } catch (error: any) {
+    } catch (error) {
       expect(error).toBe(err)
     }
 
@@ -382,7 +384,7 @@ describe('scheduler', () => {
     expect(job2).toHaveBeenCalledTimes(1)
   })
 
-  test('post jobs can be re-queued after an error', () => {
+  test('post jobs can be re-queued after an error', async () => {
     const err = new Error('test')
     let shouldThrow = true
 
@@ -398,9 +400,9 @@ describe('scheduler', () => {
     queuePostFlushCb(job2)
 
     try {
-      flushPostFlushCbs()
-    } catch (e: any) {
-      expect(e).toBe(err)
+      await nextTick()
+    } catch (error) {
+      expect(error).toBe(err)
     }
 
     expect(job1).toHaveBeenCalledTimes(1)
@@ -409,10 +411,29 @@ describe('scheduler', () => {
     queuePostFlushCb(job1)
     queuePostFlushCb(job2)
 
-    flushPostFlushCbs()
+    await nextTick()
 
     expect(job1).toHaveBeenCalledTimes(2)
     expect(job2).toHaveBeenCalledTimes(1)
+  })
+
+  test('post job error should not leave newly queued main jobs pending', async () => {
+    const calls: string[] = []
+
+    const job2: SchedulerJob = () => {
+      calls.push('job2')
+    }
+
+    const job1: SchedulerJob = () => {
+      queueJob(job2)
+      throw new Error('test')
+    }
+
+    queuePostFlushCb(job1)
+
+    await expect(nextTick()).rejects.toThrow('test')
+    await nextTick()
+    expect(calls).toEqual(['job2'])
   })
 
   test('should prevent self-triggering jobs by default', async () => {
@@ -455,11 +476,7 @@ describe('scheduler', () => {
 
     cb.flags! |= SchedulerJobFlags.ALLOW_RECURSE
     queuePostFlushCb(cb)
-    flushPostFlushCbs()
-    expect(count).toBe(4)
-    flushPostFlushCbs()
-    expect(count).toBe(5)
-    flushPostFlushCbs()
+    await nextTick()
     expect(count).toBe(5)
   })
 
@@ -509,7 +526,7 @@ describe('scheduler', () => {
     expect(job2).toHaveBeenCalledTimes(2)
   })
 
-  test(`recursive post jobs can't be re-queued by other jobs`, () => {
+  test(`recursive post jobs can't be re-queued by other jobs`, async () => {
     let recurse = true
 
     const job1: SchedulerJob = () => {
@@ -529,9 +546,7 @@ describe('scheduler', () => {
 
     queuePostFlushCb(job2)
 
-    flushPostFlushCbs()
-    flushPostFlushCbs()
-    flushPostFlushCbs()
+    await nextTick()
 
     expect(job2).toHaveBeenCalledTimes(2)
   })
@@ -566,6 +581,14 @@ describe('scheduler', () => {
     expect(p).toBeInstanceOf(Promise)
     expect(await p).toBe(1)
     expect(fn).toHaveBeenCalledTimes(1)
+  })
+
+  test('error in postFlush cb should not cause nextTick to stuck in rejected state forever', async () => {
+    queuePostFlushCb(() => {
+      throw new Error('error')
+    })
+    await expect(nextTick()).rejects.toThrow('error')
+    await expect(nextTick()).resolves.toBeUndefined()
   })
 
   /** Dividing line, the above tests is directly copy from vue.js with some changes **/
