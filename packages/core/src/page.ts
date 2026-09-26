@@ -5,7 +5,7 @@ import {
   ReactiveFlags,
 } from '@vue/reactivity'
 import type { SchedulerJob } from './scheduler'
-import { SchedulerJobFlags, flushPostFlushCbs } from './scheduler'
+import { SchedulerJobFlags } from './scheduler'
 import type { Bindings, PageInstance } from './instance'
 import {
   respectHints,
@@ -166,7 +166,7 @@ export function definePage(optionsOrSetup: any, config?: Config): void {
           this.__v_setData = () => {
             const data = this.__v_data!
             this.__v_data = undefined
-            this.setData(data, flushPostFlushCbs)
+            this.setData(data)
           }
           this.__v_setData()
         }

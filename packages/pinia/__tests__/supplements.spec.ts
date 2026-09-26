@@ -5,7 +5,6 @@ import { createPinia, disposePinia, defineStore, storeToRefs } from '../src'
 describe('supplements', () => {
   // Mocks
   let page: Record<string, any>
-  let renderCb: () => void
 
   let pinia: Pinia
 
@@ -33,13 +32,11 @@ describe('supplements', () => {
         getPassiveEvent() {},
         setPassiveEvent() {},
         setInitialRenderingCache() {},
-        setData(data: Record<string, unknown>, callback: () => void) {
+        setData(data: Record<string, unknown>) {
           this.data = this.data || {}
           Object.keys(data).forEach((key) => {
             this.data[key] = data[key]
           })
-
-          renderCb = callback
         },
       }
     }
@@ -129,10 +126,6 @@ describe('supplements', () => {
 
     s1.user = 'Edu'
     await nextTick()
-    expect(spy1).toHaveBeenCalledTimes(0)
-    expect(spy2).toHaveBeenCalledTimes(0)
-    expect(page.data.user).toBe('Edu')
-    renderCb()
     expect(spy1).toHaveBeenCalledTimes(1)
     expect(spy2).toHaveBeenCalledTimes(1)
     expect(page.data.user).toBe('Edu')
@@ -142,7 +135,6 @@ describe('supplements', () => {
     expect(spy2).toHaveBeenCalledTimes(2)
     await nextTick()
     expect(page.data.user).toBe('a')
-    renderCb()
     expect(spy1).toHaveBeenCalledTimes(2)
     expect(spy2).toHaveBeenCalledTimes(2)
 
@@ -153,16 +145,11 @@ describe('supplements', () => {
     expect(spy2).toHaveBeenCalledTimes(3)
     await nextTick()
     expect(page.data.user).toBe('other')
-    renderCb()
     expect(spy1).toHaveBeenCalledTimes(3)
     expect(spy2).toHaveBeenCalledTimes(3)
 
     s1.user = 'b'
     await nextTick()
-    expect(spy1).toHaveBeenCalledTimes(3)
-    expect(spy2).toHaveBeenCalledTimes(3)
-    expect(page.data.user).toBe('b')
-    renderCb()
     expect(spy1).toHaveBeenCalledTimes(4)
     expect(spy2).toHaveBeenCalledTimes(4)
     expect(page.data.user).toBe('b')
@@ -173,12 +160,9 @@ describe('supplements', () => {
     // Should be executed synchronously after the patch.
     s1.user = 'd'
     await nextTick()
-    expect(spy1).toHaveBeenCalledTimes(5)
-    expect(spy2).toHaveBeenCalledTimes(5)
-    expect(page.data.user).toBe('d')
-    renderCb()
     expect(spy1).toHaveBeenCalledTimes(6)
     expect(spy2).toHaveBeenCalledTimes(6)
+    expect(page.data.user).toBe('d')
   })
 
   it('remove subscription on unmount', async () => {
