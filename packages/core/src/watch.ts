@@ -144,6 +144,7 @@ class RenderWatcherEffect extends WatcherEffect {
     super(source, cb, options)
 
     const job: SchedulerJob = () => {
+      // Dirty check will prevent watchers from running after they have stopped.
       if (this.dirty) {
         this.run()
       }

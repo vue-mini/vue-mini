@@ -6,7 +6,8 @@ import {
   setCurrentScope,
   ReactiveFlags,
 } from '@vue/reactivity'
-import { flushPostFlushCbs } from './scheduler'
+import type { SchedulerJob } from './scheduler'
+import { SchedulerJobFlags, flushPostFlushCbs } from './scheduler'
 import type { Config } from './page'
 import { PageLifecycle } from './page'
 import { shallowToRaw, deepToRaw, observe } from './shared'
@@ -235,6 +236,10 @@ export function defineComponent(optionsOrSetup: any, config?: Config): string {
     detached.call(this)
 
     this.__v_scope.stop()
+    const setDataJob: SchedulerJob | undefined = this.__v_setData
+    if (setDataJob) {
+      setDataJob.flags! |= SchedulerJobFlags.DISPOSED
+    }
   }
 
   const originReady =
