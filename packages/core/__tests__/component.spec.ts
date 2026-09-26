@@ -379,6 +379,32 @@ describe('component', () => {
     expect(component.setData).toHaveBeenCalledTimes(2)
   })
 
+  it('should dispose the scheduled setData job when detached', async () => {
+    const count = ref(0)
+
+    defineComponent(() => {
+      const increment = () => {
+        count.value++
+      }
+      return { count, increment }
+    })
+
+    component.setData = vi.fn(component.setData)
+
+    component.lifetimes.attached.call(component)
+    expect(component.data.count).toBe(0)
+    expect(component.setData).toHaveBeenCalledTimes(1)
+
+    watch(count, () => {
+      component.lifetimes.detached.call(component)
+    })
+
+    component.increment()
+    await nextTick()
+    expect(component.data.count).toBe(0)
+    expect(component.setData).toHaveBeenCalledTimes(1)
+  })
+
   it('should respect raw', () => {
     createApp(() => {}, { respectHints: true })
 

@@ -536,6 +536,28 @@ describe('scheduler', () => {
     expect(job2).toHaveBeenCalledTimes(2)
   })
 
+  // #910
+  test('should not run stopped reactive effects', async () => {
+    const spy = vi.fn()
+
+    // simulate parent component that toggles child
+    const job1 = () => {
+      // @ts-expect-error
+      job2.flags! |= SchedulerJobFlags.DISPOSED
+    }
+    // simulate child that's triggered by the same reactive change that
+    // triggers its toggle
+    const job2 = () => spy()
+    expect(spy).toHaveBeenCalledTimes(0)
+
+    queueJob(job1)
+    queueJob(job2)
+    await nextTick()
+
+    // should not be called
+    expect(spy).toHaveBeenCalledTimes(0)
+  })
+
   it('nextTick should return promise', async () => {
     const fn = vi.fn(() => 1)
 

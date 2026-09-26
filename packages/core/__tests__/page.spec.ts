@@ -364,6 +364,32 @@ describe('page', () => {
     expect(page.setData).toHaveBeenCalledTimes(2)
   })
 
+  it('should dispose the scheduled setData job when detached', async () => {
+    const count = ref(0)
+
+    definePage(() => {
+      const increment = () => {
+        count.value++
+      }
+      return { count, increment }
+    })
+
+    page.setData = vi.fn(page.setData)
+
+    page.onLoad()
+    expect(page.data.count).toBe(0)
+    expect(page.setData).toHaveBeenCalledTimes(1)
+
+    watch(count, () => {
+      page.onUnload()
+    })
+
+    page.increment()
+    await nextTick()
+    expect(page.data.count).toBe(0)
+    expect(page.setData).toHaveBeenCalledTimes(1)
+  })
+
   it('should respect raw', () => {
     createApp(() => {}, { respectHints: true })
 

@@ -4,7 +4,8 @@ import {
   setCurrentScope,
   ReactiveFlags,
 } from '@vue/reactivity'
-import { flushPostFlushCbs } from './scheduler'
+import type { SchedulerJob } from './scheduler'
+import { SchedulerJobFlags, flushPostFlushCbs } from './scheduler'
 import type { Bindings, PageInstance } from './instance'
 import {
   respectHints,
@@ -184,6 +185,10 @@ export function definePage(optionsOrSetup: any, config?: Config): void {
     onUnload.call(this)
 
     this.__v_scope.stop()
+    const setDataJob: SchedulerJob | undefined = this.__v_setData
+    if (setDataJob) {
+      setDataJob.flags! |= SchedulerJobFlags.DISPOSED
+    }
   }
 
   if (options[PageLifecycle.ON_PAGE_SCROLL] || config.listenPageScroll) {

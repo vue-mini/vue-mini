@@ -1,6 +1,7 @@
 export enum SchedulerJobFlags {
   QUEUED = 1 << 0,
   ALLOW_RECURSE = 1 << 1,
+  DISPOSED = 1 << 2,
 }
 
 export interface SchedulerJob extends Function {
@@ -141,23 +142,25 @@ function flushJobs() {
       const job = jobs[flushIndex]
       jobs[flushIndex++] = undefined as any
 
-      // Conditional usage of checkRecursiveUpdate must be determined out of
-      // try ... catch block since Rollup by default de-optimizes treeshaking
-      // inside try-catch. This can leave all warning code unshaked. Although
-      // they would get eventually shaken by a minifier like terser, some minifiers
-      // would fail to do that (e.g. https://github.com/evanw/esbuild/issues/1610)
-      /* istanbul ignore if -- @preserve  */
-      if (__DEV__ && checkRecursiveUpdates(seen!, job)) {
-        continue
-      }
-      if (job.flags! & SchedulerJobFlags.ALLOW_RECURSE) {
-        job.flags! &= ~SchedulerJobFlags.QUEUED
-      }
-      try {
-        job()
-      } finally {
-        if (!(job.flags! & SchedulerJobFlags.ALLOW_RECURSE)) {
+      if (!(job.flags! & SchedulerJobFlags.DISPOSED)) {
+        // Conditional usage of checkRecursiveUpdate must be determined out of
+        // try ... catch block since Rollup by default de-optimizes treeshaking
+        // inside try-catch. This can leave all warning code unshaked. Although
+        // they would get eventually shaken by a minifier like terser, some minifiers
+        // would fail to do that (e.g. https://github.com/evanw/esbuild/issues/1610)
+        /* istanbul ignore if -- @preserve  */
+        if (__DEV__ && checkRecursiveUpdates(seen!, job)) {
+          continue
+        }
+        if (job.flags! & SchedulerJobFlags.ALLOW_RECURSE) {
           job.flags! &= ~SchedulerJobFlags.QUEUED
+        }
+        try {
+          job()
+        } finally {
+          if (!(job.flags! & SchedulerJobFlags.ALLOW_RECURSE)) {
+            job.flags! &= ~SchedulerJobFlags.QUEUED
+          }
         }
       }
     }
