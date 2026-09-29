@@ -1,3 +1,13 @@
+# 1.3.0-rc.4 (2026-09-29)
+
+### 依赖
+
+- **@vue/reactivity:** 升至 3.6.0-rc.9，详情请看 [Vue 更新日志](https://github.com/vuejs/core/blob/minor/CHANGELOG.md)
+
+### 性能优化
+
+- 在 `setData` 调用完成后触发 post watch 回调，不再依赖 `setData` 的回调
+
 # 1.3.0-rc.3 (2026-08-06)
 
 ### 性能优化
