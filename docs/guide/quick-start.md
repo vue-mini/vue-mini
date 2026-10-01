@@ -33,7 +33,7 @@ $ bun create vue-mini@latest
 
 然后你将会看到一些诸如 TypeScript 和测试支持之类的可选功能提示：
 
-<div class="language-sh"><pre class="vp-code"><code><span style="color:#42b883;">✔</span> <span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF;">请输入项目名称：<span style="color:#888;">… <span style="--shiki-light:#00B6FF;--shiki-dark:#89DDFF;">&lt;</span><span style="color:#888;">your-project-name</span><span style="--shiki-light:#00B6FF;--shiki-dark:#89DDFF;">&gt;</span></span></span>
+<div class="language-sh"><pre class="shiki"><code><span style="color:#42b883;">✔</span> <span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF;">请输入项目名称：<span style="color:#888;">… <span style="--shiki-light:#00B6FF;--shiki-dark:#89DDFF;">&lt;</span><span style="color:#888;">your-project-name</span><span style="--shiki-light:#00B6FF;--shiki-dark:#89DDFF;">&gt;</span></span></span>
 <span style="color:#42b883;">✔</span> <span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF;">是否使用 TypeScript 语法？<span style="color:#888;">… <span style="--shiki-light:#00B6FF;--shiki-dark:#89DDFF;text-decoration:underline">否</span> / 是</span></span>
 <span style="color:#42b883;">✔</span> <span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF;">是否引入 Pinia 用于状态管理？<span style="color:#888;">… <span style="--shiki-light:#00B6FF;--shiki-dark:#89DDFF;text-decoration:underline">否</span> / 是</span></span>
 <span style="color:#42b883;">✔</span> <span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF;">是否引入 Vitest 用于单元测试？<span style="color:#888;">… <span style="--shiki-light:#00B6FF;--shiki-dark:#89DDFF;text-decoration:underline">否</span> / 是</span></span>
