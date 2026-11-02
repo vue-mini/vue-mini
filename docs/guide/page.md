@@ -1,7 +1,7 @@
 # 定义页面
 
 ::: warning 警告
-`definePage` 已不被推荐使用，请使用 `defineComponent` 定义页面，详见[定义页面组件](/guide/page-component.html)。
+`definePage` 已不被推荐使用，请使用 `defineComponent` 定义页面，详见[定义页面根组件](/guide/root-component.html)。
 
 原因是 `definePage` 的 `setup` 会在所有子组件的 `setup` 之后执行，所以你不能在 `definePage` 中使用 `provide`，而且子组件 `setup` 执行时，其 `props` 可能也未初始化。
 :::
@@ -47,7 +47,7 @@ setup 只能是同步函数。
 
 - **调用顺序**
 
-由于页面 `onLoad` 钩子会晚于所有子组件的 `attached` 钩子执行，所以 `definePage` 的 `setup` 函数会晚于所有子组件的 `setup` 函数执行。这在某些情况下（如：[依赖注入](/guide/provide-inject.html)）可能会造成问题，如果你需要 `setup` 函数按组件树从上到下依次执行，可以使用[页面组件](/guide/page-component.html)。
+由于页面 `onLoad` 钩子会晚于所有子组件的 `attached` 钩子执行，所以 `definePage` 的 `setup` 函数会晚于所有子组件的 `setup` 函数执行。这在某些情况下（如：[依赖注入](/guide/provide-inject.html)）可能会造成问题，如果你需要 `setup` 函数按组件树从上到下依次执行，可以使用[页面根组件](/guide/root-component.html)。
 
 - **参数**
 

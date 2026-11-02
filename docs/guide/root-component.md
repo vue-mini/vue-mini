@@ -1,6 +1,6 @@
-# 定义页面组件
+# 定义页面根组件
 
-小程序支持将组件作为页面使用，详见[小程序文档](https://developers.weixin.qq.com/miniprogram/dev/framework/custom-component/component.html#%E4%BD%BF%E7%94%A8-Component-%E6%9E%84%E9%80%A0%E5%99%A8%E6%9E%84%E9%80%A0%E9%A1%B5%E9%9D%A2)，本文档将此类组件称为`页面组件`。定义页面组件与定义普通组件没有什么区别，都是使用 `defineComponent`。这是**推荐**的页面定义方式。
+Vue Mini 推荐使用[页面根组件](https://developers.weixin.qq.com/miniprogram/dev/framework/component-framework/)而非传统的页面。定义页面根组件与定义普通组件一样，都是使用 `defineComponent` 函数。
 
 ## setup
 
@@ -10,13 +10,13 @@ setup 只能是同步函数。
 
 - **调用顺序**
 
-页面组件也是组件，所以页面组件的 `setup` 函数会按组件层级优先执行，不会存在晚于子组件 `setup` 函数执行的情况。
+页面根组件也是组件，所以页面根组件的 `setup` 函数会按组件层级优先执行，不会存在晚于子组件 `setup` 函数执行的情况。
 
 - **参数**
 
-页面组件的 `props` 可以用于接收页面的参数。
+页面根组件的 `props` 可以用于接收页面的参数。
 
-```js [page-component.js]
+```js [root-component.js]
 import { defineComponent } from '@vue-mini/core'
 
 defineComponent({
@@ -34,7 +34,7 @@ defineComponent({
 
 ## 生命周期
 
-```js [page-component.js]
+```js [root-component.js]
 import { defineComponent } from '@vue-mini/core'
 
 defineComponent({
@@ -122,23 +122,23 @@ defineComponent({
 })
 ```
 
-相较于普通组件，页面组件有一些额外的生命周期。以上是页面组件可用的所有生命周期，可以看到这些生命周期有些混乱，并且很多是重复的。
+相较于普通组件，页面根组件有一些额外的生命周期。以上是页面根组件可用的所有生命周期，可以看到这些生命周期有些混乱，并且很多是重复的。
 
-Vue Mini 对页面组件的生命周期钩子做了些许整合和简化。同样它们是一族 `onXXX` 函数，它们接收的参数和返回值与对应的生命周期一致。除 `onShareAppMessage`、`onShareTimeline`、 `onAddToFavorites` 和 `onSaveExitState` 外每个 `onXXX` 函数都能被多次调用。
+Vue Mini 对页面根组件的生命周期钩子做了些许整合和简化。同样它们是一族 `onXXX` 函数，它们接收的参数和返回值与对应的生命周期一致。除 `onShareAppMessage`、`onShareTimeline`、 `onAddToFavorites` 和 `onSaveExitState` 外每个 `onXXX` 函数都能被多次调用。
 
 - **onLoad**
 
-`onLoad()` 是页面组件特有的生命周期钩子，在页面中使用会被忽略并打印一个警告（开发环境），在普通组件中使用不会有效果。
+`onLoad()` 是页面根组件特有的生命周期钩子，在页面中使用会被忽略并打印一个警告（开发环境），在普通组件中使用不会有效果。
 
 - **onUnload**
 
-`onUnload()` 可用于页面组件，但是在普通组件中使用不会有效果。
+`onUnload()` 可用于页面根组件，但是在普通组件中使用不会有效果。
 
 - **onPageScroll**
 
 监听页面滚动会引起小程序渲染层与逻辑层的通信。为避免定义空的 `onPageScroll` 监听造成不必要的性能损耗，需要使用 `defineComponent` 的第二个参数提前告知 Vue Mini 是否会调用 `onPageScroll()` 钩子。
 
-```js [page-component.js]
+```js [root-component.js]
 import { defineComponent, onPageScroll } from '@vue-mini/core'
 
 defineComponent(
@@ -157,7 +157,7 @@ defineComponent(
 
 如果已存在另外的 `onPageScroll` 方法，那么可以忽略此参数。
 
-```js [page-component.js]
+```js [root-component.js]
 import { defineComponent, onPageScroll } from '@vue-mini/core'
 
 defineComponent({
@@ -180,7 +180,7 @@ defineComponent({
 
 由于小程序会根据是否定义了 `onShareAppMessage` 监听来决定页面是否可以转发，所以需要使用 `defineComponent` 的第二个参数提前告知 Vue Mini 是否会调用 `onShareAppMessage()` 钩子。又由于 `onShareAppMessage` 会返回自定义转发内容，所以一个页面只能有一个 `onShareAppMessage` 监听。
 
-```js [page-component.js]
+```js [root-component.js]
 import { defineComponent, onShareAppMessage } from '@vue-mini/core'
 
 defineComponent(
@@ -208,7 +208,7 @@ defineComponent(
 
 由于小程序会根据是否定义了 `onShareTimeline` 监听来决定页面是否可以分享到朋友圈，所以需要使用 `defineComponent` 的第二个参数提前告知 Vue Mini 是否会调用 `onShareTimeline()` 钩子。又由于 `onShareTimeline` 会返回自定义分享内容，所以一个页面只能有一个 `onShareTimeline` 监听。
 
-```js [page-component.js]
+```js [root-component.js]
 import { defineComponent, onShareTimeline } from '@vue-mini/core'
 
 defineComponent(
@@ -236,7 +236,7 @@ defineComponent(
 
 由于 `onAddToFavorites` 会返回自定义收藏内容，所以一个页面只能有一个 `onAddToFavorites` 监听。
 
-```js [page-component.js]
+```js [root-component.js]
 import { defineComponent, onAddToFavorites } from '@vue-mini/core'
 
 defineComponent({
@@ -259,7 +259,7 @@ defineComponent({
 
 由于 `onSaveExitState` 会返回需要保存的状态，所以一个页面只能有一个 `onSaveExitState` 监听。
 
-```js [page-component.js]
+```js [root-component.js]
 import { defineComponent, ref, onSaveExitState } from '@vue-mini/core'
 
 defineComponent({

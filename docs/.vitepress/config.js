@@ -44,7 +44,7 @@ export default defineConfig({
           { text: '创建小程序', link: '/guide/app' },
           { text: '定义页面', link: '/guide/page' },
           { text: '定义组件', link: '/guide/component' },
-          { text: '定义页面组件', link: '/guide/page-component' },
+          { text: '定义页面根组件', link: '/guide/root-component' },
           { text: '依赖注入', link: '/guide/provide-inject' },
           { text: 'Skyline', link: '/guide/skyline' },
           { text: 'Pinia', link: '/guide/pinia' },
