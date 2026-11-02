@@ -1,10 +1,10 @@
 # Skyline
 
-[Skyline](https://developers.weixin.qq.com/miniprogram/dev/framework/runtime/skyline/introduction.html) 是微信小程序的高性能渲染引擎，它与 [glass-easel](https://developers.weixin.qq.com/miniprogram/dev/framework/custom-component/glass-easel/introduction.html) 组件框架绑定。因此本文档提到 Skyline 模式时是指 Skyline 渲染引擎 + glass-easel 组件框架。Vue Mini 完美支持 Skyline 模式。
+[Skyline](https://developers.weixin.qq.com/miniprogram/dev/framework/runtime/skyline/introduction.html) 是微信小程序的高性能渲染引擎，它与 [glass-easel](https://developers.weixin.qq.com/miniprogram/dev/framework/custom-component/glass-easel/migration.html) 组件框架绑定。因此本文档提到 Skyline 模式时是指 Skyline 渲染引擎 + glass-easel 组件框架。Vue Mini 完美支持 Skyline 模式。
 
 ## 数据函数
 
-Skyline 模式支持在模板中调用[数据函数](https://developers.weixin.qq.com/miniprogram/dev/framework/custom-component/glass-easel/call-data-functions.html)，数据函数很适合用来做多语言、格式化等。Vue Mini 1.3+ 为数据函数提供了专门的支持，你可以使用 `dataFn()` 来声明数据函数，它返回的是一个响应式的 Function Ref。
+Skyline 模式中组件 data 的字段可以是函数，并且你可以直接在模板里调用这类数据函数，只是要注意[调用限制](https://developers.weixin.qq.com/miniprogram/dev/reference/wxml/expression.html#函数调用限制)。数据函数很适合用来做多语言、格式化等。Vue Mini 1.3+ 为数据函数提供了专门的支持，你可以使用 `dataFn()` 来声明数据函数，它返回的是一个响应式的 Function Ref。
 
 ::: code-group
 
@@ -42,6 +42,30 @@ defineComponent({
 
 :::
 
+你也可以将数据函数向下传递给子组件，并在子组件中使用它。
+
+::: code-group
+
+```html [parent.wxml]
+<child data-fn="{{ dataFn }}" />
+```
+
+```js [child.js]
+import { defineComponent } from '@vue-mini/core'
+
+defineComponent({
+  properties: {
+    dataFn: Function,
+  },
+})
+```
+
+```html [child.wxml]
+<view>{{ dataFn() }}</view>
+```
+
+:::
+
 ::: tip 注意
 `dataFn()` 的参数函数**不能**包含副作用，因为不仅模版渲染时会调用它，Vue Mini 内部在某些时候也会调用它。它可以是一个纯函数，或者是上面例子中那样的纯 getter 函数。
 :::
@@ -52,29 +76,6 @@ defineComponent({
 ```js
 // 不支持，依赖项不能随着参数变化而变化！
 const fn = dataFn((condition) => (condition ? fooRef.value : barRef.value))
-```
-
-:::
-
-::: tip 注意
-此文档编写时，作者观察到如果从模板回传对象，微信小程序运行时会修改对象的每个属性名，给每个属性名添加 `nv_` 前缀。
-
-::: code-group
-
-```js [component.js]
-defineComponent({
-  setup() {
-    const t = dataFn((obj) => {
-      return JSON.stringify(obj) // {"nv_foo":"foo"}
-    })
-
-    return { t }
-  },
-})
-```
-
-```html [component.wxml]
-<view>{{ t({ foo: 'foo' }) }}</view>
 ```
 
 :::
